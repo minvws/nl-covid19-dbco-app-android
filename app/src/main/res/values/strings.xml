@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Digitale ondersteuning BCO</string>
+    <string name="app_name_develop">[DEV] Digitale ondersteuning BCO</string>
+    <string name="placeholder">Placeholder</string>
+</resources>
