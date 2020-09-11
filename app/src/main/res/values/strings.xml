@@ -2,4 +2,9 @@
     <string name="app_name">Digitale ondersteuning BCO</string>
     <string name="app_name_develop">[DEV] Digitale ondersteuning BCO</string>
     <string name="placeholder">Placeholder</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_error_box">Warning</string>
+    <string name="cd_info_box">Important</string>
+
+    <string name="placeholder_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
 </resources>

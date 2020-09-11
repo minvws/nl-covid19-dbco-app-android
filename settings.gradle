@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "nl-covid19-bco-app-android"
+rootProject.name = "nl-covid19-dbco-app-android"

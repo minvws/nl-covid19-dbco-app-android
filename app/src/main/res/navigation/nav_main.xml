@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/placeholderFragment">
+
+
+    <fragment
+        android:id="@+id/placeholderFragment"
+        android:name="nl.rijksoverheid.dbco.debug.PlaceholderFragment"
+        android:label="PlaceholderFragment"
+        tools:layout="@layout/fragment_placeholder">
+        <action
+            android:id="@+id/toStylingFragment"
+            app:destination="@id/stylingDebugFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/stylingDebugFragment"
+        android:name="nl.rijksoverheid.dbco.debug.StylingDebugFragment"
+        android:label="StylingDebugFragment"
+        tools:layout="@layout/fragment_styling"/>
+</navigation>
