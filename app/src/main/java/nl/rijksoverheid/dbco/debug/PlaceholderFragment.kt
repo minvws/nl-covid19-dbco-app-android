@@ -15,5 +15,9 @@ class PlaceholderFragment : BaseFragment(R.layout.fragment_placeholder){
         binding.buttonStyling.setOnClickListener {
             findNavController().navigate(PlaceholderFragmentDirections.toStylingFragment())
         }
+
+        button_about.setOnClickListener {
+            findNavController().navigate(PlaceholderFragmentDirections.toAboutFragment())
+        }
     }
 }
