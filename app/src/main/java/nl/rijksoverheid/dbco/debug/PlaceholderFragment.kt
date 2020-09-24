@@ -1,3 +1,11 @@
+/*
+ *  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *   SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 package nl.rijksoverheid.dbco.debug
 
 import android.os.Bundle
@@ -14,6 +22,10 @@ class PlaceholderFragment : BaseFragment(R.layout.fragment_placeholder){
         val binding = FragmentPlaceholderBinding.bind(view)
         binding.buttonStyling.setOnClickListener {
             findNavController().navigate(PlaceholderFragmentDirections.toStylingFragment())
+        }
+
+        binding.buttonAbout.setOnClickListener {
+            findNavController().navigate(PlaceholderFragmentDirections.toAboutFragment())
         }
     }
 }
