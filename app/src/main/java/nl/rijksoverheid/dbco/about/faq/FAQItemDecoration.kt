@@ -20,16 +20,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.GroupieViewHolder
 import kotlin.math.roundToInt
 
-private val ATTRS = intArrayOf(android.R.attr.listDivider)
+
 
 class FAQItemDecoration(context: Context, @Dimension val startOffset: Int) :
     RecyclerView.ItemDecoration() {
 
+    private val attributes = intArrayOf(android.R.attr.listDivider)
     private val bounds = Rect()
     private val divider: Drawable
 
     init {
-        val a: TypedArray = context.obtainStyledAttributes(ATTRS)
+        val a: TypedArray = context.obtainStyledAttributes(attributes)
         val divider = a.getDrawable(0)
         if (divider == null) {
             throw IllegalStateException("@android:attr/listDivider was not set in the theme used for this decoration")
