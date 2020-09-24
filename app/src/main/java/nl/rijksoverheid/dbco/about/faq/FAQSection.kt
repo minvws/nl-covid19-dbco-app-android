@@ -1,3 +1,11 @@
+/*
+ *  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *   SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 package nl.rijksoverheid.dbco.about.faq
 
 import androidx.annotation.Keep
@@ -9,7 +17,7 @@ import nl.rijksoverheid.dbco.items.ParagraphItem
 @Keep
 enum class FAQItemId { DUMMY }
 
-class FAQDetailSections{
+class FAQDetailSections {
     fun getSection(faqItemId: FAQItemId) = when (faqItemId) {
         FAQItemId.DUMMY -> {
             Section(
