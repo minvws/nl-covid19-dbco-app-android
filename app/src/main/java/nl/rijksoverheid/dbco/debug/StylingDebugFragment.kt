@@ -9,7 +9,6 @@ import nl.rijksoverheid.dbco.databinding.FragmentStylingBinding
 
 class StylingDebugFragment : BaseFragment(R.layout.fragment_styling) {
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentStylingBinding.bind(view)
