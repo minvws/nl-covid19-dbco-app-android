@@ -65,6 +65,18 @@
             app:argType="nl.rijksoverheid.dbco.about.faq.FAQItemId" />
     </fragment>
     <fragment
+        android:id="@+id/contactPickerStart"
+        android:name="nl.rijksoverheid.dbco.contacts.ContactPickerAboutFragment"
+        android:label="ContactPickerAboutFragment" >
+        <action
+            android:id="@+id/toContactPicker"
+            app:destination="@id/contactPickerSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactPickerSelectionFragment"
+        android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerSelectionFragment"
+        android:label="ContactPickerSelectionFragment" />
+    <fragment
         android:id="@+id/myContactsFragment"
         android:name="nl.rijksoverheid.dbco.contacts.MyContactsFragment"
         android:label="MyContactsFragment" />
