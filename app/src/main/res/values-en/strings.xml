@@ -16,7 +16,7 @@
 
     <string name="placeholder_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
     <string name="about_app_title">About the app</string>
-    <string name="mycontacts_header">Mijn contacten</string>
-    <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
+    <string name="mycontacts_header">My contacts</string>
+    <string name="mycontacts_summary">Fill in the contact details of the contacts you\'ve identified with the GGD. Fill these in as soon as possible.</string>
     <string name="mycontacts_add_contact">Add contact</string>
 </resources>

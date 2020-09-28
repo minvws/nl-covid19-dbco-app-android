@@ -10,12 +10,12 @@
     <string name="app_name">Digitale ondersteuning BCO</string>
     <string name="app_name_develop">[DEV] Digitale ondersteuning BCO</string>
     <string name="placeholder">Placeholder</string>
-    <string name="cd_back">Back</string>
-    <string name="cd_error_box">Warning</string>
-    <string name="cd_info_box">Important</string>
+    <string name="cd_back">Terug</string>
+    <string name="cd_error_box">Waarschuwing</string>
+    <string name="cd_info_box">Belangrijk</string>
 
     <string name="placeholder_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
-    <string name="about_app_title">About the app</string>
+    <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
