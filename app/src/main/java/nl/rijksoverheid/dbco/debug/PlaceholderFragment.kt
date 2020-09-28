@@ -27,5 +27,9 @@ class PlaceholderFragment : BaseFragment(R.layout.fragment_placeholder){
         binding.buttonAbout.setOnClickListener {
             findNavController().navigate(PlaceholderFragmentDirections.toAboutFragment())
         }
+
+        binding.buttonMyContacts.setOnClickListener {
+            findNavController().navigate(PlaceholderFragmentDirections.toMyContactsFragment())
+        }
     }
 }
