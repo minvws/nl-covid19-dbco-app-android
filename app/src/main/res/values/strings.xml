@@ -16,6 +16,7 @@
 
     <string name="placeholder_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
     <string name="about_app_title">About the app</string>
+    <string name="header_all_contacts">ALLE CONTACTEN</string>
     <string name="mycontacts_header">My contacts</string>
     <string name="mycontacts_summary">Fill in the contact details of the contacts you\'ve identified with the GGD. Fill these in as soon as possible.</string>
     <string name="mycontacts_add_contact">Add contact</string>

@@ -8,25 +8,26 @@
 
 package nl.rijksoverheid.dbco.contacts.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.annotation.Keep
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_contact.*
-import kotlinx.android.synthetic.main.item_contact.view.*
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.databinding.ItemContactBinding
+import nl.rijksoverheid.dbco.items.BaseBindableItem
+import java.io.Serializable
 
 class Contact(
     val id: String,
-    val displayName : String,
+    val displayName: String,
     var state: State = State.PRESENT // Present by default
-) : Item() {
+) : BaseBindableItem<ItemContactBinding>(), Serializable {
     var numbers = ArrayList<String>()
     var emails = ArrayList<String>()
     var address = ArrayList<ContactAddress>()
-    var name = ContactName("","")
+    var name = ContactName("", "")
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.contactName.text = displayName
+    override fun bind(viewBinding: ItemContactBinding, position: Int) {
+        viewBinding.contactName.text = displayName
     }
 
     override fun getLayout() = R.layout.item_contact
@@ -34,6 +35,11 @@ class Contact(
     override fun toString(): String {
         return "Contact(id='$id', displayName='$displayName', state=$state, numbers=$numbers, emails=$emails, address=$address, name=$name)"
     }
+
+    override fun isClickable(): Boolean {
+        return false
+    }
+
 
 
 }

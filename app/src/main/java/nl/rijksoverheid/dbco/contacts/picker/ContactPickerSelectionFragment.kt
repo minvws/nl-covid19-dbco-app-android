@@ -18,14 +18,17 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.Contact
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
+import nl.rijksoverheid.dbco.items.HeaderItem
 import nl.rijksoverheid.dbco.items.SearchFieldItem
 import timber.log.Timber
 
@@ -48,32 +51,36 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
             )
         )
 
+
+
+
+
+
         contactsViewModel.contactsLiveData.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(
-                requireContext(),
-                "Retrieved ${it.size ?: 0} contacts in total",
-                Toast.LENGTH_SHORT
-            ).show()
+            adapter.clear()
+            adapter.add(SearchFieldItem { content ->
+                Timber.d("Searching for ${content.toString()}")
+                contactsViewModel.filterOnName(content.toString())
+            })
 
-            adapter.add(SearchFieldItem({ }))
+           val contactsSection = Section(
+                HeaderItem(R.string.header_all_contacts),
+                it
+            )
 
-            adapter.addAll(it)
-            it.forEach {
-                Timber.d("Found contact $it")
-
-            }
-        })
-
-        contactsViewModel.fetchContacts()
-
-        adapter.setOnItemClickListener { item, _ ->
-            when(item) {
-                is Contact -> {
-                    Timber.d("Clicked contact $item")
+            adapter.add(contactsSection)
+            adapter.setOnItemClickListener { item, _ ->
+                Timber.d("Found item ${item.toString()}")
+                when (item) {
+                    is Contact -> {
+                        Timber.d("Clicked contact $item")
+                    }
                 }
             }
 
-        }
+        })
+
+        contactsViewModel.fetchContacts()
 
 
     }

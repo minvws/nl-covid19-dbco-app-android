@@ -33,6 +33,8 @@ class ContactsViewModel(val context: Context) : ViewModel() {
     private val _contactsLiveData = MutableLiveData<ArrayList<Contact>>()
     val contactsLiveData: LiveData<ArrayList<Contact>> = _contactsLiveData
 
+    private val fullContacts : ArrayList<Contact> = ArrayList<Contact>()
+
     fun fetchContacts() {
         viewModelScope.launch {
             val contactsListAsync = async { getPhoneContacts() }
@@ -57,6 +59,8 @@ class ContactsViewModel(val context: Context) : ViewModel() {
 //                    it.name = name
 //                }
             }
+            fullContacts.clear()
+            fullContacts.addAll(contacts)
             _contactsLiveData.postValue(contacts)
         }
     }
@@ -200,6 +204,13 @@ class ContactsViewModel(val context: Context) : ViewModel() {
 
 
         return contactName
+    }
+
+    fun filterOnName(name: String) {
+        val filteredList = fullContacts.filter {
+            it.displayName.contains(name, true)
+        } as ArrayList<Contact>
+        _contactsLiveData.postValue(filteredList)
     }
 
 }
