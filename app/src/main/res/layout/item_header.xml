@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp"
         android:accessibilityHeading="true"
         android:text="@{text}"
-        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textAppearance="?attr/textAppearanceHeadline5"
         tools:text="@string/placeholder"
         tools:targetApi="p" />
 </layout>

@@ -6,20 +6,23 @@
  *
  */
 
-package nl.rijksoverheid.dbco.items
+package nl.rijksoverheid.dbco.items.input
 
 import android.text.Editable
-import android.text.TextWatcher
 import androidx.core.widget.doAfterTextChanged
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSearchFieldBinding
+import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.items.ItemType
 
-class SearchFieldItem(private val test : (text: Editable?) -> Unit) :
+class SearchFieldItem(private val afterTextCallback: (text: Editable?) -> Unit) :
     BaseBindableItem<ItemSearchFieldBinding>() {
     override fun getLayout() = R.layout.item_search_field
 
+    override val itemType = ItemType.INPUT_SEARCH
+
     override fun bind(viewBinding: ItemSearchFieldBinding, position: Int) {
-        viewBinding.searchView.editText!!.doAfterTextChanged(test)
+        viewBinding.searchView.editText!!.doAfterTextChanged(afterTextCallback)
     }
 
 }

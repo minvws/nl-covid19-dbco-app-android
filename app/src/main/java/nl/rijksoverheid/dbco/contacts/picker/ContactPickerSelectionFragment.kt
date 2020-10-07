@@ -8,17 +8,12 @@
 
 package nl.rijksoverheid.dbco.contacts.picker
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.xwray.groupie.Group
+import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -26,10 +21,10 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.contacts.data.Contact
+import nl.rijksoverheid.dbco.contacts.data.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
-import nl.rijksoverheid.dbco.items.HeaderItem
-import nl.rijksoverheid.dbco.items.SearchFieldItem
+import nl.rijksoverheid.dbco.items.input.SearchFieldItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import timber.log.Timber
 
 
@@ -51,19 +46,14 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
             )
         )
 
-
-
-
-
-
-        contactsViewModel.contactsLiveData.observe(viewLifecycleOwner, Observer {
+        contactsViewModel.localContactsLiveData.observe(viewLifecycleOwner, Observer {
             adapter.clear()
             adapter.add(SearchFieldItem { content ->
                 Timber.d("Searching for ${content.toString()}")
-                contactsViewModel.filterOnName(content.toString())
+                contactsViewModel.filterLocalContactsOnName(content.toString())
             })
 
-           val contactsSection = Section(
+            val contactsSection = Section(
                 HeaderItem(R.string.header_all_contacts),
                 it
             )
@@ -72,15 +62,20 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
             adapter.setOnItemClickListener { item, _ ->
                 Timber.d("Found item ${item.toString()}")
                 when (item) {
-                    is Contact -> {
+                    is LocalContact -> {
                         Timber.d("Clicked contact $item")
+                        findNavController().navigate(
+                            ContactPickerSelectionFragmentDirections.toContactDetails(
+                                item
+                            )
+                        )
                     }
                 }
             }
 
         })
 
-        contactsViewModel.fetchContacts()
+        contactsViewModel.fetchLocalContacts()
 
 
     }

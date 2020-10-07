@@ -19,6 +19,15 @@
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
+    <string name="mycontacts_grant_permission">Geef toestemming tot contacten</string>
+    <string name="hint_phone_number">Telefoonnummer</string>
+    <string name="hint_email_address">E-mailadres</string>
+    <string name="header_all_contacts">ALLE CONTACTEN</string>
+    <string name="hint_first_name">Voornaam</string>
+    <string name="hint_last_name">Achternaam</string>
+    <string name="save">Opslaan</string>
+    <string name="error_valid_email">Vul een geldig e-mailadres in</string>
+    <string name="indexcontact_subtitle">Vul gegevens aan</string>
     <string name="onboarding_subtext">Als je contact hebt gehad met de GGD kun je deze app gebruiken. Met deze app versnel je het bron en contactonderzoek.</string>
     <string name="onboarding_btn_received_code">Ik heb een code gekregen</string>
     <string name="onboarding_btn_no_code">Ik heb nog geen code</string>

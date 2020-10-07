@@ -54,7 +54,11 @@
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/toAboutDetailFragment"
-            app:destination="@id/FAQDetailFragment" />
+            app:destination="@id/FAQDetailFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/FAQDetailFragment"
@@ -66,20 +70,48 @@
     </fragment>
     <fragment
         android:id="@+id/contactPickerStart"
-        android:name="nl.rijksoverheid.dbco.contacts.ContactPickerAboutFragment"
-        android:label="ContactPickerAboutFragment" >
+        android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
+        android:label="ContactPickerAboutFragment">
         <action
             android:id="@+id/toContactPicker"
-            app:destination="@id/contactPickerSelectionFragment" />
+            app:destination="@id/contactPickerSelectionFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/contactPickerSelectionFragment"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerSelectionFragment"
-        android:label="ContactPickerSelectionFragment" />
+        android:label="ContactPickerSelectionFragment">
+        <action
+            android:id="@+id/toContactDetails"
+            app:destination="@id/contactDetailsInputFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myContactsFragment"
-        android:name="nl.rijksoverheid.dbco.contacts.MyContactsFragment"
-        android:label="MyContactsFragment" />
+        android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsFragment"
+        android:label="MyContactsFragment">
+        <action
+            android:id="@+id/toContactPickerAbout"
+            app:destination="@id/contactPickerStart"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/toContactPickerSelection"
+            app:destination="@id/contactPickerSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactDetailsInputFragment"
+        android:name="nl.rijksoverheid.dbco.contacts.details.ContactDetailsInputFragment"
+        android:label="ContactDetailsInputFragment">
+        <argument
+            android:name="selectedContact"
+            app:argType="nl.rijksoverheid.dbco.contacts.data.LocalContact" />
+    </fragment>
+
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFragment"

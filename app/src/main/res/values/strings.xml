@@ -20,6 +20,14 @@
     <string name="mycontacts_header">My contacts</string>
     <string name="mycontacts_summary">Fill in the contact details of the contacts you\'ve identified with the GGD. Fill these in as soon as possible.</string>
     <string name="mycontacts_add_contact">Add contact</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="hint_email_address">Email Address</string>
+    <string name="mycontacts_grant_permission">Grant permission to contacts</string>
+    <string name="hint_first_name">First name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="save">Save</string>
+    <string name="error_valid_email">Please fill in a valid email address</string>
+    <string name="indexcontact_subtitle">Add additional information</string>
     <string name="onboarding_subtext">If you have been in contact with the GGD you can use this app. With this app you speed up the source and contact research.</string>
     <string name="onboarding_btn_received_code">I\'ve received a code</string>
     <string name="onboarding_btn_no_code">I did not receive a code</string>

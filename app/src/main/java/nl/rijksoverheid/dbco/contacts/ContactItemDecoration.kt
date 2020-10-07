@@ -18,7 +18,7 @@ import androidx.annotation.Dimension
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.GroupieViewHolder
-import nl.rijksoverheid.dbco.contacts.data.Contact
+import nl.rijksoverheid.dbco.contacts.data.IndexContact
 import kotlin.math.roundToInt
 
 private val ATTRS = intArrayOf(android.R.attr.listDivider)
@@ -42,7 +42,7 @@ class ContactItemDecoration(context: Context, @Dimension val startOffset: Int) :
 
     private fun isContact(view: View, parent: RecyclerView): Boolean {
         val item = (parent.getChildViewHolder(view) as? GroupieViewHolder)?.item
-        return item is Contact
+        return item is IndexContact
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
