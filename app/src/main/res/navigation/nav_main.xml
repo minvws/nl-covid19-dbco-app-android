@@ -10,7 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/placeholderFragment">
+    app:startDestination="@id/onboardingFragment">
 
 
     <fragment
@@ -68,6 +68,15 @@
         android:id="@+id/myContactsFragment"
         android:name="nl.rijksoverheid.dbco.contacts.MyContactsFragment"
         android:label="MyContactsFragment" />
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFragment"
+        android:label="OnboardingFragment"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment" />
+    </fragment>
 
 
 </navigation>
