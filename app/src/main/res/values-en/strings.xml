@@ -19,4 +19,8 @@
     <string name="mycontacts_header">My contacts</string>
     <string name="mycontacts_summary">Fill in the contact details of the contacts you\'ve identified with the GGD. Fill these in as soon as possible.</string>
     <string name="mycontacts_add_contact">Add contact</string>
+    <string name="onboarding_subtext">If you have been in contact with the GGD you can use this app. With this app you speed up the source and contact research.</string>
+    <string name="onboarding_btn_received_code">Ik heb een code gekregen</string>
+    <string name="onboarding_btn_no_code">I did not receive a code</string>
+    <string name="onboarding_header">Share your contacts who have run a risk of infection with the GGD</string>
 </resources>
