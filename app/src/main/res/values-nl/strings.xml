@@ -19,5 +19,9 @@
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
+    <string name="onboarding_subtext">Als je contact hebt gehad met de GGD kun je deze app gebruiken. Met deze app versnel je het bron en contactonderzoek.</string>
+    <string name="onboarding_btn_received_code">Ik heb een code gekregen</string>
+    <string name="onboarding_btn_no_code">Ik heb nog geen code</string>
+    <string name="onboarding_header">Deel je contacten die een besmettingsrisico hebben gelopen met de GGD</string>
 
 </resources>
