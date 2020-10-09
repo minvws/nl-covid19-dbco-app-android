@@ -17,7 +17,7 @@
 
     <application
         android:name="nl.rijksoverheid.dbco.BcoApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="${appLabel}"
         android:roundIcon="@mipmap/ic_launcher_round"

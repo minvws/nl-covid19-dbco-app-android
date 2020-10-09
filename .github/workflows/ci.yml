@@ -1,4 +1,4 @@
-name: test
+name: Run lint and test on PR
 
 on:
   pull_request:
@@ -9,6 +9,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
+    # Get sources
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -54,3 +55,7 @@ jobs:
         bundle config set path 'vendor/bundle'
         bundle install
         bundle exec fastlane android test
+
+    # Run lint
+    - name: Run Fastlane Lint Lane
+      run: fastlane lint

@@ -7,4 +7,9 @@ platform :android do
   lane :test do
     gradle(task: "test")
   end
+
+  desc "Executes Android lint"
+  lane :lint do
+    gradle(task: "lintAccRelease")
+  end
 end
