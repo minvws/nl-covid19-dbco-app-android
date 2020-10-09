@@ -23,6 +23,7 @@
     <color name="faq_onboarding_background">@color/light_blue</color>
     <color name="technical_explanation_background">@color/light_yellow</color>
     <color name="faq_github_background">@color/gray_lighter</color>
+    <color name="index_contact_background">@color/gray_lighter</color>
 
     <!-- Color palette -->
     <color name="dark_blue">#0047FF</color>
@@ -34,4 +35,5 @@
     <color name="red">#ED395A</color>
     <color name="pink">#B8275D</color>
     <color name="green">#34C759</color>
+    <color name="dark_yellow">#ff9d12</color>
 </resources>

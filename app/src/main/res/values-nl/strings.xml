@@ -9,19 +9,32 @@
 <resources>
     <string name="app_name">Digitale ondersteuning BCO</string>
     <string name="app_name_develop">[DEV] Digitale ondersteuning BCO</string>
-    <string name="placeholder">Placeholder</string>
     <string name="cd_back">Terug</string>
     <string name="cd_error_box">Waarschuwing</string>
     <string name="cd_info_box">Belangrijk</string>
 
-    <string name="placeholder_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
+    <string name="mycontacts_grant_permission">Geef Toestemming</string>
+    <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
+    <string name="hint_phone_number">Telefoonnummer</string>
+    <string name="hint_email_address">E-mailadres</string>
+    <string name="header_all_contacts">ALLE CONTACTEN</string>
+    <string name="hint_first_name">Voornaam</string>
+    <string name="hint_last_name">Achternaam</string>
+    <string name="save">Opslaan</string>
+    <string name="error_valid_email">Vul een geldig e-mailadres in</string>
+    <string name="indexcontact_subtitle">Vul gegevens aan</string>
     <string name="onboarding_subtext">Als je contact hebt gehad met de GGD kun je deze app gebruiken. Met deze app versnel je het bron en contactonderzoek.</string>
     <string name="onboarding_btn_received_code">Ik heb een code gekregen</string>
     <string name="onboarding_btn_no_code">Ik heb nog geen code</string>
     <string name="onboarding_header">Deel je contacten die een besmettingsrisico hebben gelopen met de GGD</string>
+    <string name="contacts_picker_title">Selecteer contact</string>
+
+    <string name="contact_permission_header">Contacten delen gaat sneller als we toestemming hebben</string>
+    <string name="contact_permission_summary">Je beslist zelf welke contactgegevens je deelt met de GGD.</string>
+    <string name="contact_picker_search_hint">Zoek een contact</string>
 
 </resources>

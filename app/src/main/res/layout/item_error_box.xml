@@ -14,7 +14,7 @@
 
         <variable
             name="viewState"
-            type="nl.rijksoverheid.dbco.items.ErrorBoxItem.ViewState" />
+            type="nl.rijksoverheid.dbco.items.ui.ErrorBoxItem.ViewState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

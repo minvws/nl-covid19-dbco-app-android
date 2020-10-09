@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 
 class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     private val context = context.applicationContext
@@ -18,7 +19,7 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
-            // Placeholder only
+            ContactsViewModel::class.java -> ContactsViewModel(context) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }
