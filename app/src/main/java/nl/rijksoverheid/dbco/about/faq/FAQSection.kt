@@ -11,8 +11,8 @@ package nl.rijksoverheid.dbco.about.faq
 import androidx.annotation.Keep
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.items.HeaderItem
-import nl.rijksoverheid.dbco.items.ParagraphItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 
 @Keep
 enum class FAQItemId { DUMMY }
