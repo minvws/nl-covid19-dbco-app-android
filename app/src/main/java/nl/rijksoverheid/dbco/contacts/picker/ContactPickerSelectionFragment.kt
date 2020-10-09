@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.contacts.picker
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -28,8 +27,7 @@ import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import timber.log.Timber
 
 
-class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
-    SearchView.OnQueryTextListener {
+class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
 
@@ -37,7 +35,7 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentListBinding.bind(view)
-        binding.toolbar.setTitle("Contact list")
+        binding.toolbar.title = getString(R.string.contacts_picker_title)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
             ContactItemDecoration(
@@ -48,10 +46,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
 
         contactsViewModel.localContactsLiveData.observe(viewLifecycleOwner, Observer {
             adapter.clear()
-            adapter.add(SearchFieldItem { content ->
+            adapter.add(SearchFieldItem({ content ->
                 Timber.d("Searching for ${content.toString()}")
                 contactsViewModel.filterLocalContactsOnName(content.toString())
-            })
+            }, R.string.contact_picker_search_hint))
 
             val contactsSection = Section(
                 HeaderItem(R.string.header_all_contacts),
@@ -60,7 +58,6 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
 
             adapter.add(contactsSection)
             adapter.setOnItemClickListener { item, _ ->
-                Timber.d("Found item ${item.toString()}")
                 when (item) {
                     is LocalContact -> {
                         Timber.d("Clicked contact $item")
@@ -80,13 +77,4 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list),
 
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        Timber.d("Submitted : $query")
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        Timber.d("New input: $newText")
-        return true
-    }
 }

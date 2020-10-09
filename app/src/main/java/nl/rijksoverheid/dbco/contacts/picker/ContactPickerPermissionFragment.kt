@@ -23,7 +23,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.ui.BulletedListItem
+import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 
@@ -33,18 +33,9 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                Toast.makeText(
-                    context,
-                    "Access to Contacts given after request",
-                    Toast.LENGTH_SHORT
-                ).show()
                 findNavController().navigate(ContactPickerPermissionFragmentDirections.toContactPicker())
             } else {
-                Toast.makeText(
-                    context,
-                    "Access to Contacts denied after request",
-                    Toast.LENGTH_SHORT
-                ).show()
+                // Todo: Handle permanently denied permission. Behavior TBD
             }
         }
 
@@ -55,10 +46,15 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
             listOf(
                 HeaderItem(R.string.contact_permission_header),
                 ParagraphItem(R.string.contact_permission_summary),
-                BulletedListItem(R.string.placeholder_list),
                 ButtonItem(
                     R.string.mycontacts_grant_permission,
-                    { requestContactAccess() })
+                    { requestContactAccess() }),
+                ButtonItem(
+                    R.string.mycontacts_deny_permission,
+                    {
+                        // Todo: Handle denying permission Behavior TBD
+                    }, type = ButtonType.LIGHT
+                )
             )
         )
 
@@ -69,7 +65,6 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentListBinding.bind(view)
-        //binding.toolbar.setTitle(getString(R.string.about_app_title))
         binding.content.adapter = adapter
     }
 

@@ -69,14 +69,17 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_list) {
         val binding = FragmentListBinding.bind(view)
         binding.content.adapter = adapter
 
+        binding.toolbar.visibility = View.GONE
+
         // After retrieving data, clear list before showing new
         contactsViewModel.indexContactsLiveData.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
             contentSection.addAll(it)
         })
 
+        // Fake loading from backend
         lifecycleScope.launch {
-            delay(1500)
+            delay(250)
             contactsViewModel.fetchBackendIndexContacts()
         }
 

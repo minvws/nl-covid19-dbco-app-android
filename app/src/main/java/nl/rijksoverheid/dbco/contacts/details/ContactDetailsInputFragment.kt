@@ -16,6 +16,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
@@ -41,36 +42,46 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
         Timber.d("Found selected user ${args.selectedContact}");
 
-        args.selectedContact.also {
-            binding.toolbar.title = it.displayName
-            val nameParts = it.displayName.split(" ", limit = 2)
-            val firstName = nameParts[0] ?: ""
-            val lastName = if (nameParts.size > 1) {
-                nameParts[1]
-            } else {
-                ""
-            }
+        args.selectedContact.also { contact ->
+            binding.toolbar.title = contact.displayName
+            setupBasicFields(contact)
+        }
+    }
 
-            val primaryPhone = if (it.numbers.isNotEmpty()) {
-                it.numbers[0]
-            } else {
-                ""
-            }
+    private fun setupBasicFields(contact: LocalContact) {
+        val nameParts = contact.displayName.split(" ", limit = 2)
+        val firstName = nameParts[0] ?: ""
+        val lastName = if (nameParts.size > 1) {
+            nameParts[1]
+        } else {
+            ""
+        }
 
-            // Default items to always add
-            adapter.add(
-                Section(
-                    listOf(
-                        ContactNameItem(firstName, lastName),
-                        PhoneNumberItem(primaryPhone),
-                        EmailAdressItem("test@egeniq.com"),
-                        ButtonItem(R.string.save, {
-                            parseInput()
-                        })
-                    )
+        val primaryPhone = if (contact.numbers.isNotEmpty()) {
+            contact.numbers[0]
+        } else {
+            ""
+        }
+
+        val primaryEmail = if (contact.emails.isNotEmpty()) {
+            contact.emails[0]
+        } else {
+            ""
+        }
+
+        // Default items to always add
+        adapter.add(
+            Section(
+                listOf(
+                    ContactNameItem(firstName, lastName),
+                    PhoneNumberItem(primaryPhone),
+                    EmailAdressItem(primaryEmail),
+                    ButtonItem(R.string.save, {
+                        parseInput()
+                    })
                 )
             )
-        }
+        )
     }
 
 
@@ -84,6 +95,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
                         Timber.d("Found name field with content ${(item as ContactNameItem).getFirstNameAndLastName()}")
                     }
 
+                    else -> {
+                        // Todo: Handle rest of input fields
+                    }
                 }
                 i++
             }
