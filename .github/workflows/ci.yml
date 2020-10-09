@@ -1,4 +1,4 @@
-name: test
+name: Run lint and test on PR
 
 on:
   pull_request:
@@ -9,8 +9,13 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
+    # Get sources
     - name: Checkout
       uses: actions/checkout@v2
+
+    # Run lint
+    - name: Run Fastlane Lint Lane
+      run: fastlane lint
 
     # Setup caches
     - name: Cache Gradle
