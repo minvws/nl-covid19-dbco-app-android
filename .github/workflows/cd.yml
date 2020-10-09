@@ -1,12 +1,12 @@
-name: Run lint and test on PR
+name: Build and distribute app to Firebase App Distribution
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     steps:
     # Get sources
