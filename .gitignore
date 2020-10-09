@@ -14,3 +14,5 @@
 .externalNativeBuild
 .cxx
 vendor/bundle
+/fastlane/report.xml
+/fastlane/README.md
