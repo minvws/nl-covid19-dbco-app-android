@@ -24,4 +24,7 @@
     <string name="placeholder_hint" translatable="false">Placeholder hint</string>
     <string name="input_field_filled" translatable="false">Input field - Filled</string>
     <string name="input_field_filled_dense" translatable="false">Input field - Filled - Dense</string>
+    <string name="open_styling_page" translatable="false">Open Styling Page</string>
+    <string name="open_about_page" translatable="false">Open About page</string>
+    <string name="open_my_contacts" translatable="false">Open My Contacts</string>
 </resources>
