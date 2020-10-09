@@ -35,6 +35,15 @@ android {
         }
     }
 
+    signingConfigs {
+        acc {
+            storeFile file('demo_keystore.jks')
+            storePassword 'store_password'
+            keyAlias = 'key_alias'
+            keyPassword 'key_password'
+        }
+    }
+
     flavorDimensions "environment"
 
     productFlavors {
@@ -46,6 +55,7 @@ android {
         acc {
             dimension "environment"
             manifestPlaceholders = [appLabel: "@string/app_name"]
+            signingConfig signingConfigs.acc
         }
     }
 
