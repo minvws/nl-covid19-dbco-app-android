@@ -22,7 +22,7 @@ platform :android do
       firebase_app_distribution(
           app: "1:14711935107:android:5ef53bbc991b05c1074bb6",
           firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
-          testers: "testers",
+          groups: "testers",
           release_notes: "Release via Firebase"
       )
   end
