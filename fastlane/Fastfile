@@ -23,7 +23,7 @@ platform :android do
           app: "1:14711935107:android:5ef53bbc991b05c1074bb6",
           firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
           testers: "testers",
-          release_notes: "Trying to release via firebase..."
+          release_notes: "Release via Firebase"
       )
   end
 end
