@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -108,6 +110,12 @@ public class PinEntryEditText extends AppCompatEditText {
     public PinEntryEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public int getAutofillType() {
+        return AUTOFILL_TYPE_NONE;
     }
 
     public void setMaxLength(final int maxLength) {

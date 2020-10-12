@@ -12,7 +12,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5dp"
+            android:paddingVertical="16dp"
+            android:text="@string/previous"
+            android:textColor="@color/color_primary"
+            android:textSize="17sp"
+            app:drawableStartCompat="@drawable/ic_chevron_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/onboarding_header"
@@ -23,7 +37,7 @@
             android:textAppearance="@style/TextAppearance.App.Headline5"
             android:textSize="@dimen/onboarding_title_textsize"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/back_button" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,6 +50,7 @@
             <com.alimuzaffar.lib.pin.PinEntryEditText
                 android:id="@+id/pin_entry_1"
                 style="@style/CodeEntryEditText"
+                android:cursorVisible="true"
                 android:maxLength="3"
                 app:pinCharacterSpacing="10dp"
                 app:pinLineColors="@android:color/transparent"
@@ -67,6 +82,7 @@
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/onboarding_button_background"
             android:enabled="false"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
