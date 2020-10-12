@@ -10,7 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/onboardingFragment">
+    app:startDestination="@id/onboardingFragmentHelp">
 
 
     <fragment
@@ -113,10 +113,28 @@
     </fragment>
 
     <fragment
-        android:id="@+id/onboardingFragment"
-        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFragment"
-        android:label="OnboardingFragment"
-        tools:layout="@layout/fragment_onboarding">
+        android:id="@+id/onboardingFragmentHelp"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingHelpFragment"
+        android:label="OnboardingHelpFragment"
+        tools:layout="@layout/fragment_onboarding_help">
+        <action
+            android:id="@+id/toFillCodeFragment"
+            app:destination="@id/fillCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fillCodeFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.FillCodeFragment"
+        tools:layout="@layout/fragment_fill_code"
+        android:label="FillCodeFragment" >
+        <action
+            android:id="@+id/toOnboardingAddDataFragment"
+            app:destination="@id/onboardingAddDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onboardingAddDataFragment"
+        tools:layout="@layout/fragment_onboarding_add_data"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingAddDataFragment"
+        android:label="OnboardingAddDataFragment" >
         <action
             android:id="@+id/toMyContactsFragment"
             app:destination="@id/myContactsFragment" />

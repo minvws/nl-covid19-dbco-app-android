@@ -25,12 +25,18 @@
     <string name="hint_first_name">First name</string>
     <string name="hint_last_name">Last Name</string>
     <string name="save">Save</string>
+    <string name="next">Next</string>
     <string name="error_valid_email">Please fill in a valid email address</string>
     <string name="indexcontact_subtitle">Add additional information</string>
-    <string name="onboarding_subtext">If you have been in contact with the GGD you can use this app. With this app you speed up the source and contact research.</string>
-    <string name="onboarding_btn_received_code">I\'ve received a code</string>
-    <string name="onboarding_btn_no_code">I did not receive a code</string>
-    <string name="onboarding_header">Share your contacts who have run a risk of infection with the GGD</string>
+
+    <string name="onboarding_help_title">Help the GGD with the contact investigation + share action perspective</string>
+    <string name="onboarding_help_subtext">You can share data from your contacts with the GGD via this app. This way you ensure that the contact investigation goes faster.</string>
+
+    <string name="fill_code_title">Enter the code you received from the GGD employee</string>
+    <string name="pincode_hint" translatable="false">000-000-000</string>
+
+    <string name="onboarding_add_data_title">Add the details of your contacts</string>
+    <string name="onboarding_add_data_subtext">The GGD needs contact details of people you have met. The data is only shared when you are completely ready.</string>
 
     <string name="contacts_picker_title">Select contact</string>
     <string name="contact_picker_search_hint">Search for a contact</string>

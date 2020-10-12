@@ -25,7 +25,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.EmailAdressItem
 import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
-import nl.rijksoverheid.dbco.util.toDp
+import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
@@ -38,7 +38,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
         val binding = FragmentListBinding.bind(view)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
-            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toDp())
+            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toPx())
         )
 
         Timber.d("Found selected user ${args.selectedContact}");

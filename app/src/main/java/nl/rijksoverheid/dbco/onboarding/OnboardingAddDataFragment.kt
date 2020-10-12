@@ -13,15 +13,15 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentOnboardingBinding
+import nl.rijksoverheid.dbco.databinding.FragmentOnboardingAddDataBinding
 
-class OnboardingFragment : BaseFragment(R.layout.fragment_onboarding) {
+class OnboardingAddDataFragment : BaseFragment(R.layout.fragment_onboarding_add_data) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentOnboardingBinding.bind(view)
-        binding.btnWithCode.setOnClickListener {
-            findNavController().navigate(OnboardingFragmentDirections.toMyContactsFragment())
+        val binding = FragmentOnboardingAddDataBinding.bind(view)
+        binding.btnNext.setOnClickListener {
+            findNavController().navigate(OnboardingAddDataFragmentDirections.toMyContactsFragment())
         }
     }
 
