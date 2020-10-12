@@ -119,25 +119,37 @@
         tools:layout="@layout/fragment_onboarding_help">
         <action
             android:id="@+id/toFillCodeFragment"
-            app:destination="@id/fillCodeFragment" />
+            app:destination="@id/fillCodeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.FillCodeFragment"
-        tools:layout="@layout/fragment_fill_code"
-        android:label="FillCodeFragment" >
+        android:label="FillCodeFragment"
+        tools:layout="@layout/fragment_fill_code">
         <action
             android:id="@+id/toOnboardingAddDataFragment"
-            app:destination="@id/onboardingAddDataFragment" />
+            app:destination="@id/onboardingAddDataFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/onboardingAddDataFragment"
-        tools:layout="@layout/fragment_onboarding_add_data"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingAddDataFragment"
-        android:label="OnboardingAddDataFragment" >
+        android:label="OnboardingAddDataFragment"
+        tools:layout="@layout/fragment_onboarding_add_data">
         <action
             android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment" />
+            app:destination="@id/myContactsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
 

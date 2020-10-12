@@ -35,35 +35,62 @@
 
             <com.alimuzaffar.lib.pin.PinEntryEditText
                 android:id="@+id/pin_entry_1"
-                android:layout_width="60dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:cursorVisible="true"
                 android:digits="1234567890"
                 android:inputType="number"
                 android:maxLength="3"
                 android:textIsSelectable="true"
-                android:textSize="20sp"
-                app:pinCharacterSpacing="8dp"
+                android:textSize="22sp"
                 app:pinLineColors="@android:color/transparent"
+                app:pinCharacterSpacing="10dp"
+                app:pinAnimationType="none"
                 app:pinRepeatedHint="0" />
 
             <TextView
                 android:text="-"
+                android:textSize="22sp"
+                android:padding="8dp"
                 android:textColor="#993C3C43"
+                android:layout_marginBottom="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.alimuzaffar.lib.pin.PinEntryEditText
                 android:id="@+id/pin_entry_2"
-                android:layout_width="60dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:cursorVisible="true"
                 android:digits="1234567890"
                 android:inputType="number"
                 android:maxLength="3"
                 android:textIsSelectable="true"
-                android:textSize="20sp"
-                app:pinCharacterSpacing="8dp"
+                android:textSize="22sp"
+                app:pinCharacterSpacing="10dp"
+                app:pinLineColors="@android:color/transparent"
+                app:pinRepeatedHint="0" />
+
+            <TextView
+                android:text="-"
+                android:textSize="22sp"
+                android:padding="8dp"
+                android:textColor="#993C3C43"
+                android:layout_marginBottom="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/pin_entry_3"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:digits="1234567890"
+                android:inputType="number"
+                android:maxLength="3"
+                android:textIsSelectable="true"
+                android:textSize="22sp"
+                app:pinCharacterSpacing="10dp"
                 app:pinLineColors="@android:color/transparent"
                 app:pinRepeatedHint="0" />
 
@@ -74,6 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/next"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

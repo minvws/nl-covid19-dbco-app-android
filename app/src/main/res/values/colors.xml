@@ -20,6 +20,7 @@
     <color name="technical_explanation_background">@color/light_yellow</color>
     <color name="faq_github_background">@color/gray_lighter</color>
     <color name="index_contact_background">@color/gray_lighter</color>
+    <color name="pin_normal">#6B767E</color>
 
     <!-- Color palette -->
     <color name="dark_blue">#0047FF</color>
