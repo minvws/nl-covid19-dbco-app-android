@@ -29,6 +29,7 @@ android {
 
         debug {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GIT_VERSION", "\"dev\""

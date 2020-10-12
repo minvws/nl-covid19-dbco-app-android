@@ -25,14 +25,19 @@
     <string name="hint_first_name">Voornaam</string>
     <string name="hint_last_name">Achternaam</string>
     <string name="save">Opslaan</string>
+    <string name="next">Volgende</string>
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
-    <string name="onboarding_subtext">Als je contact hebt gehad met de GGD kun je deze app gebruiken. Met deze app versnel je het bron en contactonderzoek.</string>
-    <string name="onboarding_btn_received_code">Ik heb een code gekregen</string>
-    <string name="onboarding_btn_no_code">Ik heb nog geen code</string>
-    <string name="onboarding_header">Deel je contacten die een besmettingsrisico hebben gelopen met de GGD</string>
-    <string name="contacts_picker_title">Selecteer contact</string>
 
+    <string name="onboarding_help_title">Help de GGD bij het contactonderzoek + handelingsperspectief delen</string>
+    <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
+
+    <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
+
+    <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
+    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet.   De gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
+
+    <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Contacten delen gaat sneller als we toestemming hebben</string>
     <string name="contact_permission_summary">Je beslist zelf welke contactgegevens je deelt met de GGD.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>

@@ -32,10 +32,9 @@
             android:id="@+id/onboarding_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="16dp"
-            android:text="@string/onboarding_header"
+            android:textSize="@dimen/onboarding_title_textsize"
+            android:text="@string/onboarding_help_title"
             app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -44,39 +43,18 @@
             android:id="@+id/onboarding_subtext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="32dp"
-            android:text="@string/onboarding_subtext"
-            app:layout_constraintBottom_toTopOf="@+id/btn_with_code"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-
-        <Button
-            android:id="@+id/btn_with_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="16dp"
-
-            android:text="@string/onboarding_btn_received_code"
-            app:layout_constraintBottom_toTopOf="@+id/btn_no_code"
+            android:textSize="@dimen/onboarding_subtext_textsize"
+            android:text="@string/onboarding_help_subtext"
+            app:layout_constraintBottom_toTopOf="@+id/btn_next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/btn_no_code"
+            android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/gray_lighter"
-            android:text="@string/onboarding_btn_no_code"
-            android:textColor="@color/dark_blue"
+            android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

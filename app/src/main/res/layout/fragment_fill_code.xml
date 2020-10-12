@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+  ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+  ~
+  ~   SPDX-License-Identifier: EUPL-1.2
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/onboarding_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="77dp"
+            android:text="@string/fill_code_title"
+            android:textAppearance="@style/TextAppearance.App.Headline5"
+            android:textSize="@dimen/onboarding_title_textsize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/onboarding_header">
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/pin_entry_1"
+                style="@style/CodeEntryEditText"
+                android:maxLength="3"
+                app:pinCharacterSpacing="10dp"
+                app:pinLineColors="@android:color/transparent"
+                app:pinRepeatedHint="0" />
+
+            <TextView style="@style/CodeEntryDivider" />
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/pin_entry_2"
+                style="@style/CodeEntryEditText"
+                android:maxLength="3"
+                app:pinCharacterSpacing="10dp"
+                app:pinLineColors="@android:color/transparent"
+                app:pinRepeatedHint="0" />
+
+            <TextView style="@style/CodeEntryDivider" />
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/pin_entry_3"
+                style="@style/CodeEntryEditText"
+                android:maxLength="3"
+                app:pinCharacterSpacing="10dp"
+                app:pinLineColors="@android:color/transparent"
+                app:pinRepeatedHint="0" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
