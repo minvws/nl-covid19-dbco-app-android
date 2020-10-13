@@ -14,9 +14,12 @@ import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
@@ -45,11 +48,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
         args.selectedContact.also { contact ->
             binding.toolbar.title = contact.displayName
-            setupBasicFields(contact)
+
+            val response: ContactDetailsResponse = Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
+            setupBasicFields(contact, response)
         }
     }
 
-    private fun setupBasicFields(contact: LocalContact) {
+    private fun setupBasicFields(contact: LocalContact, response: ContactDetailsResponse) {
         val nameParts = contact.displayName.split(" ", limit = 2)
         val firstName = nameParts[0] ?: ""
         val lastName = if (nameParts.size > 1) {
@@ -103,6 +108,92 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
                 i++
             }
         }
+    }
+
+    companion object {
+        const val MOCKED_OUTPUT = "{\n" +
+                "  \"questionnaires\": [\n" +
+                "    {\n" +
+                "      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"questions\": [\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368387\",\n" +
+                "              \"group\": \"context\",\n" +
+                "              \"questionType\": \"classificationdetails\",\n" +
+                "              \"label\": \"Vragen over jullie ontmoeting\",\n" +
+                "              \"description\": null,\n" +
+                "              \"relevantForCategories\": [ \"1\", \"2a\", \"2b\", \"3\" ]\n" +
+                "\t\t  },\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368388\",\n" +
+                "              \"group\": \"contactdetails\",\n" +
+                "              \"questionType\": \"date\",\n" +
+                "              \"label\": \"Geboortedatum\",\n" +
+                "              \"description\": null,\n" +
+                "              \"relevantForCategories\": [ \"1\" ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368389\",\n" +
+                "              \"group\": \"contactdetails\",\n" +
+                "              \"questionType\": \"open\",\n" +
+                "              \"label\": \"Beroep\",\n" +
+                "              \"description\": null,\n" +
+                "              \"relevantForCategories\": [ \"1\" ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368390\",\n" +
+                "              \"group\": \"contactdetails\",\n" +
+                "              \"questionType\": \"open\",\n" +
+                "              \"label\": \"Beroep\",\n" +
+                "              \"description\": null,\n" +
+                "              \"relevantForCategories\": [ \"1\" ]\n" +
+                "          },\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368391\",\n" +
+                "              \"group\": \"contactdetails\",\n" +
+                "              \"questionType\": \"multiplechoice\",\n" +
+                "              \"label\": \"Waar ken je deze persoon van?\",\n" +
+                "              \"description\": null,\n" +
+                "              \"relevantForCategories\": [ \"2a\", \"2b\" ],\n" +
+                "              \"answerOptions\": [\n" +
+                "                  {\n" +
+                "                      \"label\": \"Vriend of kennis\",\n" +
+                "                      \"value\": \"Vriend of kennis\"\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                      \"label\": \"Collega\",\n" +
+                "                      \"value\": \"Collega\"\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                      \"label\": \"Overig\",\n" +
+                "                      \"value\": \"Overig\"\n" +
+                "                  }\n" +
+                "              ]\n" +
+                "              \n" +
+                "          },\n" +
+                "          {\n" +
+                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368392\",\n" +
+                "              \"group\": \"contactdetails\",\n" +
+                "              \"questionType\": \"multiplechoice\",\n" +
+                "              \"label\": \"Is een of meerdere onderstaande zaken van toepassing voor deze persoon?\",\n" +
+                "              \"description\": \"<ul><li>Is student<li>70 jaar of ouder<li>Heeft gezondheidsklachten of loopt extra gezondheidsrisico's<li>Woont in een asielzoekerscentrum<li>Spreekt slecht of geen Nederlands</ul>\",\n" +
+                "              \"relevantForCategories\": [ \"1\", \"2a\", \"2b\" ],\n" +
+                "              \"answerOptions\": [\n" +
+                "                  {\n" +
+                "                      \"label\": \"Ja, één of meerdere dingen\",\n" +
+                "                      \"value\": \"Ja\"\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                      \"label\": \"Nee, ik denk het niet\",\n" +
+                "                      \"value\": \"Nee\"\n" +
+                "                  }\n" +
+                "              ]\n" +
+                "          }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}"
     }
 
 }

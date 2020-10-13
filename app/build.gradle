@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 30
@@ -90,6 +91,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$androidx_activity_version"
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
     implementation "androidx.core:core-ktx:$androidx_core_version"
+
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version"
@@ -108,6 +110,7 @@ dependencies {
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-viewbinding:$groupie_version"
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$androidx_test_ext_junit_version"
