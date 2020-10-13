@@ -19,6 +19,12 @@ platform :android do
             ext_constant_name:"versionName"
         )
 
+        build_android_app(
+            task: "assemble",
+            flavor: "Acc",
+            build_type: "Release"
+        )
+
         firebase_app_distribution(
             app: "1:14711935107:android:5ef53bbc991b05c1074bb6",
             firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
