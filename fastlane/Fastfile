@@ -13,6 +13,9 @@ platform :android do
 
     desc "Builds and distributes app via firebase"
     lane :distribute do
+
+        versionName = build_version_name()
+
         build_android_app(
             task: "assemble",
             flavor: "Acc",
@@ -28,12 +31,16 @@ platform :android do
 
         inform_slack(
             default_payloads: [:git_author],
-            message: "Successfully distributed beta build #{version} (#{build_number}) :rocket:",
+            message: "Successfully distributed beta build #{versionName} (ENV['GITHUB_RUN_NUMBER']) :rocket:",
         )
     end
 
-    private_lane :determine_build_number do |options|
-        ENV['GITHUB_RUN_NUMBER']
+    lane :build_version_name do
+        value = get_version_name(
+            gradle_file_path:"app/build.gradle",
+            ext_constant_name:"versionName"
+            )
+        puts "VALUE = #{value}"
     end
 
     private_lane :inform_slack do |options|
