@@ -20,6 +20,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionType
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
@@ -28,6 +29,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.EmailAdressItem
 import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
+import nl.rijksoverheid.dbco.items.ui.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
 
@@ -46,12 +48,38 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
         Timber.d("Found selected user ${args.selectedContact}");
 
+        val response: ContactDetailsResponse =
+            Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
+
+        setupQuestionnary(response)
+
         args.selectedContact.also { contact ->
             binding.toolbar.title = contact.displayName
-
-            val response: ContactDetailsResponse = Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
             setupBasicFields(contact, response)
         }
+    }
+
+    private fun setupQuestionnary(response: ContactDetailsResponse) {
+        val section = Section()
+        response.questionnaires?.forEach {
+            it?.questions?.forEach { question ->
+                when (question?.questionType) {
+                    QuestionType.Multiplechoice -> {
+                        question.answerOptions?.size?.let { size ->
+                            if (size > 2) {
+//                                section.add(QuestionItemMultipleChoice(question)) TODO
+                            } else if (size == 2) {
+                                section.add(QuestionTwoOptionsItem(question))
+                            }
+                        }
+                    }
+                    // TODO handle other types
+                }
+            }
+        }
+        adapter.add(
+            section
+        )
     }
 
     private fun setupBasicFields(contact: LocalContact, response: ContactDetailsResponse) {
