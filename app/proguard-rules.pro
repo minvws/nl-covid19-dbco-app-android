@@ -24,3 +24,22 @@
 
 -keepnames class * extends android.os.Parcelable
 -keepnames class * extends java.io.Serializable
+
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
+
+# kotlinx-serialization-json specific. Add this if you have java.lang.NoClassDefFoundError kotlinx.serialization.json.JsonObjectSerializer
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+-keep,includedescriptorclasses class nl.rijksoverheid.dbco.**$$serializer { *; }
+-keepclassmembers class nl.rijksoverheid.dbco.** {
+    *** Companion;
+}
+-keepclasseswithmembers class nl.rijksoverheid.dbco.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
