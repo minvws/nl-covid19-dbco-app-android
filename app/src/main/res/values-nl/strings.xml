@@ -26,6 +26,8 @@
     <string name="hint_last_name">Achternaam</string>
     <string name="save">Opslaan</string>
     <string name="next">Volgende</string>
+    <string name="previous">Vorige</string>
+    <string name="begin">Beginnen</string>
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
@@ -35,7 +37,7 @@
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
 
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
-    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet.   De gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
+    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet.\n\nDe gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
 
     <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Contacten delen gaat sneller als we toestemming hebben</string>
