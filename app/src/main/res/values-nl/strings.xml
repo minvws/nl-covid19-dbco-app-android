@@ -45,4 +45,15 @@
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
 
+    <string name="contact_section_typeofcontact_header">Aard van het contact</string>
+    <string name="contact_section_typeofcontact_subtext">Vragen over jullie ontmoeting</string>
+    <string name="contact_section_contactdetails_header">Contactgegevens</string>
+    <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
+    <string name="contact_section_inform_header">Informeren</string>
+    <string name="contact_section_inform_subtext">Deel het handelingsperspectief</string>
+    <string name="contact_section_inform_content_header">Jij bent verantwoordelijk om deze persoon te vertellen dat hij of zij mogelijk besmet is</string>
+    <string name="contact_section_inform_content_details">Je hebt nauw contact gehad. Daarom is het belangrijk dat deze persoon zo snel mogelijk in thuisquarantaine gaat. Je kunt de uitleg delen via de knop hieronder.</string>
+    <string name="contact_section_inform_share">Deel instructies</string>
+    <string name="close">Sluiten</string>
+
 </resources>

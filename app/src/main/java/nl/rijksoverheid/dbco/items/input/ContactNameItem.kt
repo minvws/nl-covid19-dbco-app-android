@@ -8,30 +8,64 @@
 
 package nl.rijksoverheid.dbco.items.input
 
+import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.MutableLiveData
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.ContactName
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
+import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
-class ContactNameItem(private val firstName: String?, private val lastName: String?) :
-    BaseBindableItem<ItemContactNameBinding>() {
+class ContactNameItem(private var firstName: String = "", private var lastName: String = "") :
+    BaseBindableItem<ItemContactNameBinding>(), QuestionnaireItem {
     override fun getLayout() = R.layout.item_contact_name
+
+
     override fun isRequired() = true
-    override val itemType = ItemType.INPUT_NAME
+    override fun getItemType() = ItemType.INPUT_NAME
+
+    val viewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+
+    init {
+        viewState.value = QuestionnaireItemViewState()
+    }
+
+
     private var binding: ItemContactNameBinding? = null;
 
     override fun bind(viewBinding: ItemContactNameBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.firstName.editText?.setText(firstName)
         viewBinding.lastName.editText?.setText(lastName)
+
+        viewBinding.firstName.editText?.doAfterTextChanged {
+            firstName = it.toString()
+        }
+
+        viewBinding.lastName.editText?.doAfterTextChanged {
+            lastName = it.toString()
+        }
+
+        viewBinding.firstName.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                viewState.value = currentViewState().copy(isCompleted = isCompleted())
+            }
+        }
     }
+
+    fun currentViewState(): QuestionnaireItemViewState = viewState.value!!
 
     fun getFirstNameAndLastName(): ContactName {
         return ContactName(
-            binding?.firstName?.editText?.text.toString(),
-            binding?.lastName?.editText?.text.toString()
+            firstName,
+            lastName
         )
+    }
+
+    override fun isCompleted(): Boolean {
+        return (firstName.isNotEmpty() && lastName.isNotEmpty())
     }
 
 

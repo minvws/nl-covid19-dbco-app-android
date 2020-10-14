@@ -9,16 +9,19 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
+import androidx.core.widget.doAfterTextChanged
+import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
+import nl.rijksoverheid.dbco.items.QuestionnaireItem
 
-class PhoneNumberItem(private val phoneNumber: String?) :
-    BaseBindableItem<ItemSingleInputBinding>() {
+class PhoneNumberItem(private var phoneNumber: String?) :
+    BaseBindableItem<ItemSingleInputBinding>(), QuestionnaireItem {
     override fun getLayout() = R.layout.item_single_input
     override fun isRequired() = true
-    override val itemType = ItemType.INPUT_PHONE
+    override fun getItemType() = ItemType.INPUT_PHONE
 
     override fun bind(viewBinding: ItemSingleInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
@@ -29,5 +32,19 @@ class PhoneNumberItem(private val phoneNumber: String?) :
         viewBinding.inputField.apply {
             this.hint = this.context.getString(R.string.hint_phone_number)
         }
+
+        viewBinding.inputField.editText?.doAfterTextChanged {
+            phoneNumber = it.toString()
+        }
+    }
+
+    override fun isSameAs(other: Item<*>): Boolean =
+        other is PhoneNumberItem && other.phoneNumber == phoneNumber
+
+    override fun hasSameContentAs(other: Item<*>) =
+        other is PhoneNumberItem && other.phoneNumber == phoneNumber
+
+    override fun isCompleted(): Boolean {
+        return !phoneNumber.isNullOrEmpty()
     }
 }

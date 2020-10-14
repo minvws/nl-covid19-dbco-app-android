@@ -31,7 +31,7 @@
             android:id="@+id/section_chevron"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_warning"
+            android:src="@drawable/ic_chevron_down_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,14 +45,14 @@
             android:layout_marginBottom="4dp"
             android:textAppearance="@style/TextAppearance.App.Subtitle1"
             android:text="Aard van het contact"
-            app:layout_constraintBottom_toTopOf="@+id/seaction_subtext"
+            app:layout_constraintBottom_toTopOf="@+id/section_subtext"
             app:layout_constraintEnd_toStartOf="@+id/section_chevron"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/section_status_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/seaction_subtext"
+            android:id="@+id/section_subtext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

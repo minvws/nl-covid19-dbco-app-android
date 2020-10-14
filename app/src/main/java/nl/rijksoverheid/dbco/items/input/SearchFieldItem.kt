@@ -14,7 +14,6 @@ import androidx.core.widget.doAfterTextChanged
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSearchFieldBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.ItemType
 
 class SearchFieldItem(
     private val afterTextCallback: (text: Editable?) -> Unit,
@@ -22,8 +21,6 @@ class SearchFieldItem(
 ) :
     BaseBindableItem<ItemSearchFieldBinding>() {
     override fun getLayout() = R.layout.item_search_field
-
-    override val itemType = ItemType.INPUT_SEARCH
 
     override fun bind(viewBinding: ItemSearchFieldBinding, position: Int) {
         viewBinding.searchView.editText!!.doAfterTextChanged(afterTextCallback)
