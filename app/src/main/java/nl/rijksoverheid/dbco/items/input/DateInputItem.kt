@@ -24,9 +24,9 @@ import org.joda.time.format.DateTimeFormatter
 
 class DateInputItem(
     val context: Context,
-    val question: Question?
+    question: Question?
 ) :
-    BaseBindableItem<ItemQuestionDateBinding>(), DatePickerDialog.OnDateSetListener {
+    BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
 
     private var binding: ItemQuestionDateBinding? = null
     private var date: LocalDate? = null

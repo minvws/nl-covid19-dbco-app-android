@@ -33,6 +33,4 @@ class ContactNameItem(private val firstName: String?, private val lastName: Stri
             binding?.lastName?.editText?.text.toString()
         )
     }
-
-
 }

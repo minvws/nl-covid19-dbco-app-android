@@ -13,18 +13,24 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class QuestionTwoOptionsItem(
-    val question: Question?,
+    question: Question?,
     private val answerSelectedListener: (AnswerOption) -> Unit
 ) :
-    BaseBindableItem<ItemQuestion2OptionsBinding>() {
+    BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_2_options
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
+
+        question?.description?.let {
+            val context = viewBinding.root.context
+            val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
+            viewBinding.questionDescription.text = spannableBuilder
+        }
     }
 
     fun onCheckChanged(buttonView: CompoundButton, isChecked: Boolean) {

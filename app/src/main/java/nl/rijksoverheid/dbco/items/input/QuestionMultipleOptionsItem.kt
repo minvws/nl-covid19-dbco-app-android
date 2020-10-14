@@ -22,10 +22,10 @@ import nl.rijksoverheid.dbco.util.SpinnerAdapterWithDefaultLabel
 
 class QuestionMultipleOptionsItem(
     val context: Context,
-    val question: Question?,
+    question: Question?,
     val answerSelectedListener: (AnswerOption) -> Unit
 ) :
-    BaseBindableItem<ItemQuestionMultipleOptionsBinding>() {
+    BaseQuestionItem<ItemQuestionMultipleOptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
 

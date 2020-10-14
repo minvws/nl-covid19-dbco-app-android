@@ -11,12 +11,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="item"
             type="nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/activity_horizontal_margin">
@@ -26,15 +29,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{item.question.label}"
-            android:paddingBottom="16dp"
+            android:paddingBottom="10dp"
             style="@style/QuestionText.Bold"
-            android:textAppearance="?attr/textAppearanceBody1"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+        <TextView
+            android:id="@+id/question_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            style="@style/QuestionText"
+            android:lineSpacingMultiplier="1.4"
+            android:textColor="#993C3C43"
+            android:visibility="@{item.question.description == null ? View.GONE : View.VISIBLE}"
+            android:textAppearance="?attr/textAppearanceBody1" />
 
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/question_label">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option1"
@@ -51,5 +63,5 @@
 
         </RadioGroup>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>
