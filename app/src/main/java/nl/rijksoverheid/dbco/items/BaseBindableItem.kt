@@ -9,13 +9,12 @@
 package nl.rijksoverheid.dbco.items
 
 import android.view.View
-import androidx.annotation.Keep
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 
-abstract class BaseBindableItem<T : ViewDataBinding> : BindableItem<T>() {
+abstract class BaseBindableItem<T : ViewDataBinding>() : BindableItem<T>() {
 
     override fun initializeViewBinding(view: View): T = DataBindingUtil.bind<T>(view)!!
 
@@ -26,10 +25,6 @@ abstract class BaseBindableItem<T : ViewDataBinding> : BindableItem<T>() {
 
     override fun isClickable() = false
     override fun isLongClickable() = false
-    open fun isRequired() = false
-    open val itemType = ItemType.OUTPUT
 
 }
 
-@Keep
-enum class ItemType { OUTPUT, INPUT_GENERAL, INPUT_SEARCH, INPUT_BUTTON, INPUT_NAME, INPUT_EMAIL, INPUT_PHONE, INPUT_COMMENT, INPUT_BIRTHDAY }

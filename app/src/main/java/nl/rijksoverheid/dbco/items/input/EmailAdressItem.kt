@@ -11,18 +11,29 @@ package nl.rijksoverheid.dbco.items.input
 import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.MutableLiveData
+import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
+import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
+import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
-class EmailAdressItem(private val emailAddress: String?) :
-    BaseBindableItem<ItemSingleInputBinding>() {
-    override fun getLayout() = R.layout.item_single_input
-    override fun isRequired() = true
-    override val itemType = ItemType.INPUT_EMAIL
+class EmailAdressItem(private var emailAddress: String?) :
+    BaseBindableItem<ItemEmailInputBinding>(), QuestionnaireItem {
+    override fun getLayout() = R.layout.item_email_input
+    override fun isRequired() = false
+    override fun getItemType() = ItemType.INPUT_EMAIL
+    private var isValidEmail: Boolean = false
 
-    override fun bind(viewBinding: ItemSingleInputBinding, position: Int) {
+    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+
+    init {
+        currentViewState.value = QuestionnaireItemViewState()
+    }
+
+    override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             setText(emailAddress)
@@ -37,9 +48,33 @@ class EmailAdressItem(private val emailAddress: String?) :
             ) {
                 viewBinding.inputField.error =
                     viewBinding.inputField.context.getString(R.string.error_valid_email)
+                isValidEmail = false
             } else {
                 viewBinding.inputField.error = null
+                isValidEmail = true
+            }
+
+            emailAddress = it.toString()
+        }
+
+        viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                currentViewState.value = currentViewState.value!!.copy(isCompleted = isCompleted())
             }
         }
+    }
+
+    override fun isSameAs(other: Item<*>): Boolean =
+        other is EmailAdressItem && other.emailAddress == emailAddress
+
+    override fun hasSameContentAs(other: Item<*>) =
+        other is EmailAdressItem && other.emailAddress == emailAddress
+
+    override fun isCompleted(): Boolean {
+        return !emailAddress.isNullOrEmpty() && isValidEmail
+    }
+
+    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
+        return currentViewState
     }
 }

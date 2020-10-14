@@ -14,7 +14,6 @@ import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.ItemType
 
 class ButtonItem(
     @StringRes private val text: Int,
@@ -34,8 +33,6 @@ class ButtonItem(
             enabled,
             buttonClickListener
         )
-
-    override val itemType = ItemType.INPUT_BUTTON
 
     override fun getLayout() = R.layout.item_button
 

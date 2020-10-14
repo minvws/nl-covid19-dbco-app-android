@@ -43,6 +43,19 @@
     <string name="contact_picker_search_hint">Search for a contact</string>
     <string name="contact_permission_header">Sharing contacts is faster if we have permission</string>
     <string name="contact_permission_summary">You can decide which information to share with the GGD yourself.</string>
+
+    <string name="contact_section_typeofcontact_header">Nature of contact</string>
+    <string name="contact_section_typeofcontact_subtext">Questions about your meeting</string>
+
+    <string name="contact_section_contactdetails_header">Contact details</string>
+    <string name="contact_section_contactdetails_subtext">Add as many details as possible</string>
+
+    <string name="contact_section_inform_header">Inform</string>
+    <string name="contact_section_inform_subtext">Share the action perspective</string>
+    <string name="contact_section_inform_content_header">You are responsible for telling this person that he or she might be infected</string>
+    <string name="contact_section_inform_content_details">You have been in close contact. Therefore it is important that this person goes into selfquarantaine is quickly as possible. You can share the instructions using the button below.</string>
+    <string name="contact_section_inform_share">Share instructions</string>
+    <string name="close">Close</string>
     <string name="contact_question_select_option">Choose</string>
 
 </resources>
