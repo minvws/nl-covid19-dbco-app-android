@@ -43,4 +43,6 @@
     <string name="contact_picker_search_hint">Search for a contact</string>
     <string name="contact_permission_header">Sharing contacts is faster if we have permission</string>
     <string name="contact_permission_summary">You can decide which information to share with the GGD yourself.</string>
+    <string name="contact_question_select_option">Choose</string>
+
 </resources>

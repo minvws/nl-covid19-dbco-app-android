@@ -10,11 +10,15 @@ package nl.rijksoverheid.dbco.items.ui
 import android.widget.CompoundButton
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
-class QuestionTwoOptionsItem(val question: Question?) :
+class QuestionTwoOptionsItem(
+    val question: Question?,
+    private val answerSelectedListener: (AnswerOption) -> Unit
+) :
     BaseBindableItem<ItemQuestion2OptionsBinding>() {
 
     override fun getLayout() = R.layout.item_question_2_options
@@ -24,7 +28,15 @@ class QuestionTwoOptionsItem(val question: Question?) :
     }
 
     fun onCheckChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        // TODO handle click
+        if (isChecked) {
+            val answerOption = when (buttonView.id) {
+                R.id.option1 -> question?.answerOptions?.get(0)
+                else -> question?.answerOptions?.get(1)
+            }
+            answerOption?.let {
+                answerSelectedListener.invoke(it)
+            }
+        }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
