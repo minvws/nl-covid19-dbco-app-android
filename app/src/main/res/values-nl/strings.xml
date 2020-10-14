@@ -43,5 +43,6 @@
     <string name="contact_permission_header">Contacten delen gaat sneller als we toestemming hebben</string>
     <string name="contact_permission_summary">Je beslist zelf welke contactgegevens je deelt met de GGD.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>
+    <string name="contact_question_select_option">Kiezen</string>
 
 </resources>

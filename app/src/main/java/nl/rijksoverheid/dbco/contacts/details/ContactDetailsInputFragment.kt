@@ -19,6 +19,7 @@ import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionType
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
@@ -29,6 +30,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.EmailAdressItem
 import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
+import nl.rijksoverheid.dbco.items.ui.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.ui.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
@@ -37,6 +39,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
+    private val answerSelectedListener: (AnswerOption) -> Unit = {
+        // TODO handle
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,9 +72,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
                     QuestionType.Multiplechoice -> {
                         question.answerOptions?.size?.let { size ->
                             if (size > 2) {
-//                                section.add(QuestionItemMultipleChoice(question)) TODO
+                                section.add(QuestionMultipleOptionsItem(requireContext(), question, answerSelectedListener))
                             } else if (size == 2) {
-                                section.add(QuestionTwoOptionsItem(question))
+                                section.add(QuestionTwoOptionsItem(question, answerSelectedListener))
                             }
                         }
                     }
