@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.contacts.details
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -22,20 +23,17 @@ import nl.rijksoverheid.dbco.contacts.data.LocalContact
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionType
-import nl.rijksoverheid.dbco.databinding.FragmentListBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.ItemType
+import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ContactNameItem
-import nl.rijksoverheid.dbco.items.input.EmailAdressItem
-import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
-import nl.rijksoverheid.dbco.items.ui.QuestionMultipleOptionsItem
-import nl.rijksoverheid.dbco.items.ui.QuestionTwoOptionsItem
-import nl.rijksoverheid.dbco.util.toPx
+import nl.rijksoverheid.dbco.items.input.*
+import nl.rijksoverheid.dbco.items.ui.*
+import nl.rijksoverheid.dbco.util.toDp
 import timber.log.Timber
 
-class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
+class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
@@ -45,10 +43,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentListBinding.bind(view)
+        val binding = FragmentContactInputBinding.bind(view)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
-            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toPx())
+            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toDp())
+        )
+        binding.content.addItemDecoration(
+            QuestionnaireSectionDecorator(
+                requireContext(),
+                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
+            )
         )
 
         Timber.d("Found selected user ${args.selectedContact}");
@@ -56,38 +60,62 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
         val response: ContactDetailsResponse =
             Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
 
-        setupQuestionnary(response)
 
         args.selectedContact.also { contact ->
             binding.toolbar.title = contact.displayName
-            setupBasicFields(contact, response)
+            setupContactTypeSection(response)
+            setupContactDetailsSection(contact, response)
+            setupContactInformSection()
         }
     }
 
-    private fun setupQuestionnary(response: ContactDetailsResponse) {
-        val section = Section()
-        response.questionnaires?.forEach {
-            it?.questions?.forEach { question ->
-                when (question?.questionType) {
-                    QuestionType.Multiplechoice -> {
-                        question.answerOptions?.size?.let { size ->
-                            if (size > 2) {
-                                section.add(QuestionMultipleOptionsItem(requireContext(), question, answerSelectedListener))
-                            } else if (size == 2) {
-                                section.add(QuestionTwoOptionsItem(question, answerSelectedListener))
+    private fun setupContactTypeSection(response: ContactDetailsResponse) {
+        adapter.add(
+            QuestionnaireSection(
+                this,
+                QuestionnaireSectionHeader(
+                    R.string.contact_section_typeofcontact_header,
+                    R.string.contact_section_typeofcontact_subtext,
+                    1
+                ), false
+            ).apply {
+                response.questionnaires?.forEach {
+                    it?.questions?.forEach { question ->
+                        when (question?.questionType) {
+                            QuestionType.Multiplechoice -> {
+                                question.answerOptions?.size?.let { size ->
+                                    if (size > 2) {
+                                        add(
+                                            QuestionMultipleOptionsItem(
+                                                requireContext(),
+                                                question,
+                                                answerSelectedListener
+                                            )
+                                        )
+                                    } else if (size == 2) {
+                                        add(
+                                            QuestionTwoOptionsItem(
+                                                question,
+                                                answerSelectedListener
+                                            )
+                                        )
+                                    }
+                                }
                             }
+                            // TODO handle other types
                         }
                     }
-                    // TODO handle other types
                 }
+
             }
-        }
-        adapter.add(
-            section
         )
     }
 
-    private fun setupBasicFields(contact: LocalContact, response: ContactDetailsResponse) {
+
+    private fun setupContactDetailsSection(
+        contact: LocalContact,
+        response: ContactDetailsResponse
+    ) {
         val nameParts = contact.displayName.split(" ", limit = 2)
         val firstName = nameParts[0] ?: ""
         val lastName = if (nameParts.size > 1) {
@@ -110,26 +138,63 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
 
         // Default items to always add
         adapter.add(
-            Section(
-                listOf(
-                    ContactNameItem(firstName, lastName),
-                    PhoneNumberItem(primaryPhone),
-                    EmailAdressItem(primaryEmail),
-                    ButtonItem(R.string.save, {
-                        parseInput()
-                    })
+            QuestionnaireSection(
+                this,
+                QuestionnaireSectionHeader(
+                    R.string.contact_section_contactdetails_header,
+                    R.string.contact_section_contactdetails_subtext,
+                    2
+                ), false
+            ).apply {
+                addAll(
+                    listOf(
+                        ContactNameItem(firstName, lastName),
+                        PhoneNumberItem(primaryPhone),
+                        EmailAdressItem(primaryEmail)
+                    )
+
                 )
-            )
+            }
+        )
+    }
+
+    private fun setupContactInformSection() {
+        adapter.add(
+            QuestionnaireSection(
+                this,
+                QuestionnaireSectionHeader(
+                    R.string.contact_section_inform_header,
+                    R.string.contact_section_inform_subtext,
+                    3
+                ), false
+            ).apply {
+                add(
+                    Section(
+                        listOf(
+                            SubHeaderItem(R.string.contact_section_inform_content_header),
+                            ParagraphItem(R.string.contact_section_inform_content_details),
+                            ButtonItem(
+                                R.string.contact_section_inform_share,
+                                {},
+                                type = ButtonType.LIGHT
+                            )
+                        )
+                    )
+                )
+            }
         )
     }
 
 
     private fun parseInput() {
+
+        Toast.makeText(context, "Nog niet actief", Toast.LENGTH_SHORT).show()
+
         var i = 0
         while (i < adapter.itemCount) {
             val item = adapter.getItem(i)
-            if (item is BaseBindableItem<*>) {
-                when (item.itemType) {
+            if (item is QuestionnaireItem) {
+                when (item.getItemType()) {
                     ItemType.INPUT_NAME -> {
                         Timber.d("Found name field with content ${(item as ContactNameItem).getFirstNameAndLastName()}")
                     }

@@ -8,20 +8,30 @@
 package nl.rijksoverheid.dbco.items.ui
 
 import android.widget.CompoundButton
+import androidx.lifecycle.MutableLiveData
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.items.ItemType
+import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
 class QuestionTwoOptionsItem(
     val question: Question?,
     private val answerSelectedListener: (AnswerOption) -> Unit
 ) :
-    BaseBindableItem<ItemQuestion2OptionsBinding>() {
+    BaseBindableItem<ItemQuestion2OptionsBinding>(), QuestionnaireItem {
 
     override fun getLayout() = R.layout.item_question_2_options
+    private var selectedAnswer: AnswerOption? = null
+    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+
+    init {
+        currentViewState.value = QuestionnaireItemViewState()
+    }
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
@@ -35,6 +45,8 @@ class QuestionTwoOptionsItem(
             }
             answerOption?.let {
                 answerSelectedListener.invoke(it)
+                selectedAnswer = it
+                currentViewState.value = currentViewState.value!!.copy(isCompleted = true)
             }
         }
     }
@@ -44,4 +56,16 @@ class QuestionTwoOptionsItem(
 
     override fun hasSameContentAs(other: Item<*>) =
         other is QuestionTwoOptionsItem && other.question?.id == question?.id
+
+    override fun isRequired(): Boolean = true
+
+    override fun getItemType(): ItemType = ItemType.INPUT_MULTIPLE_CHOICE
+
+    override fun isCompleted(): Boolean {
+        return (selectedAnswer != null)
+    }
+
+    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
+        return currentViewState
+    }
 }
