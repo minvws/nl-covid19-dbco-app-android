@@ -60,66 +60,54 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val response: ContactDetailsResponse =
             Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
 
-        setupQuestionnary(response)
 
         args.selectedContact.also { contact ->
             binding.toolbar.title = contact.displayName
-            setupContactTypeSection()
+            setupContactTypeSection(response)
             setupContactDetailsSection(contact, response)
             setupContactInformSection()
         }
     }
 
-    private fun setupContactTypeSection() {
-        adapter.add(QuestionnaireSection(
-            this,
-            QuestionnaireSectionHeader(
-                R.string.contact_section_typeofcontact_header,
-                R.string.contact_section_typeofcontact_subtext,
-                1
-            ), false
-        ).apply {
-            add(
-                Section(
-                    listOf(
-                    )
-                )
-            )
-        }
-        )
-    }
-
-    private fun setupQuestionnary(response: ContactDetailsResponse) {
-        val section = Section()
-        response.questionnaires?.forEach {
-            it?.questions?.forEach { question ->
-                when (question?.questionType) {
-                    QuestionType.Multiplechoice -> {
-                        question.answerOptions?.size?.let { size ->
-                            if (size > 2) {
-                                section.add(
-                                    QuestionMultipleOptionsItem(
-                                        requireContext(),
-                                        question,
-                                        answerSelectedListener
-                                    )
-                                )
-                            } else if (size == 2) {
-                                section.add(
-                                    QuestionTwoOptionsItem(
-                                        question,
-                                        answerSelectedListener
-                                    )
-                                )
+    private fun setupContactTypeSection(response: ContactDetailsResponse) {
+        adapter.add(
+            QuestionnaireSection(
+                this,
+                QuestionnaireSectionHeader(
+                    R.string.contact_section_typeofcontact_header,
+                    R.string.contact_section_typeofcontact_subtext,
+                    1
+                ), false
+            ).apply {
+                response.questionnaires?.forEach {
+                    it?.questions?.forEach { question ->
+                        when (question?.questionType) {
+                            QuestionType.Multiplechoice -> {
+                                question.answerOptions?.size?.let { size ->
+                                    if (size > 2) {
+                                        add(
+                                            QuestionMultipleOptionsItem(
+                                                requireContext(),
+                                                question,
+                                                answerSelectedListener
+                                            )
+                                        )
+                                    } else if (size == 2) {
+                                        add(
+                                            QuestionTwoOptionsItem(
+                                                question,
+                                                answerSelectedListener
+                                            )
+                                        )
+                                    }
+                                }
                             }
+                            // TODO handle other types
                         }
                     }
-                    // TODO handle other types
                 }
+
             }
-        }
-        adapter.add(
-            section
         )
     }
 
@@ -184,16 +172,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     Section(
                         listOf(
                             SubHeaderItem(R.string.contact_section_inform_content_header),
-                        ParagraphItem(R.string.contact_section_inform_content_details),
-                        ButtonItem(
-                            R.string.contact_section_inform_share,
-                            {},
-                            type = ButtonType.LIGHT
+                            ParagraphItem(R.string.contact_section_inform_content_details),
+                            ButtonItem(
+                                R.string.contact_section_inform_share,
+                                {},
+                                type = ButtonType.LIGHT
+                            )
                         )
                     )
                 )
-            )
-        }
+            }
         )
     }
 

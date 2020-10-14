@@ -11,12 +11,14 @@ package nl.rijksoverheid.dbco.items.input
 import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.MutableLiveData
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
 import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
 class EmailAdressItem(private var emailAddress: String?) :
     BaseBindableItem<ItemEmailInputBinding>(), QuestionnaireItem {
@@ -24,6 +26,12 @@ class EmailAdressItem(private var emailAddress: String?) :
     override fun isRequired() = false
     override fun getItemType() = ItemType.INPUT_EMAIL
     private var isValidEmail: Boolean = false
+
+    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+
+    init {
+        currentViewState.value = QuestionnaireItemViewState()
+    }
 
     override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
@@ -48,6 +56,12 @@ class EmailAdressItem(private var emailAddress: String?) :
 
             emailAddress = it.toString()
         }
+
+        viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                currentViewState.value = currentViewState.value!!.copy(isCompleted = isCompleted())
+            }
+        }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -58,5 +72,9 @@ class EmailAdressItem(private var emailAddress: String?) :
 
     override fun isCompleted(): Boolean {
         return !emailAddress.isNullOrEmpty() && isValidEmail
+    }
+
+    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
+        return currentViewState
     }
 }

@@ -26,10 +26,10 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
     override fun isRequired() = true
     override fun getItemType() = ItemType.INPUT_NAME
 
-    val viewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
 
     init {
-        viewState.value = QuestionnaireItemViewState()
+        currentViewState.value = QuestionnaireItemViewState()
     }
 
 
@@ -50,12 +50,18 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
 
         viewBinding.firstName.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                viewState.value = currentViewState().copy(isCompleted = isCompleted())
+                currentViewState.value = currentViewState().copy(isCompleted = isCompleted())
+            }
+        }
+
+        viewBinding.lastName.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                currentViewState.value = currentViewState().copy(isCompleted = isCompleted())
             }
         }
     }
 
-    fun currentViewState(): QuestionnaireItemViewState = viewState.value!!
+    private fun currentViewState(): QuestionnaireItemViewState = currentViewState.value!!
 
     fun getFirstNameAndLastName(): ContactName {
         return ContactName(
@@ -66,6 +72,10 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
 
     override fun isCompleted(): Boolean {
         return (firstName.isNotEmpty() && lastName.isNotEmpty())
+    }
+
+    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
+        return currentViewState
     }
 
 
