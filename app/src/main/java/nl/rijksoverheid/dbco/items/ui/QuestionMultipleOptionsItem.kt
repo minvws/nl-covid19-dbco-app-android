@@ -34,8 +34,7 @@ class QuestionMultipleOptionsItem(
 
         val list = question?.answerOptions?.map { option -> option?.label } ?: mutableListOf<String>()
 
-        val adapter: ArrayAdapter<String> =
-            SpinnerAdapterWithDefaultLabel(
+        val adapter: ArrayAdapter<String> = SpinnerAdapterWithDefaultLabel(
                 context,
                 android.R.layout.simple_spinner_dropdown_item,
                 list.toTypedArray(),
