@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco
 
 import android.annotation.SuppressLint
 import android.app.Application
+import net.danlew.android.joda.JodaTimeAndroid
 import timber.log.Timber
 
 class BcoApplication : Application() {
@@ -17,6 +18,8 @@ class BcoApplication : Application() {
     @SuppressLint("RestrictedApi") // for WM Logger api
     override fun onCreate() {
         super.onCreate()
+        JodaTimeAndroid.init(this)
+
         if (BuildConfig.FEATURE_LOGGING) {
             Timber.plant(Timber.DebugTree())
             Timber.plant(FileTree(getExternalFilesDir(null)))

@@ -5,7 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
-package nl.rijksoverheid.dbco.items.ui
+package nl.rijksoverheid.dbco.items.input
 
 import android.widget.CompoundButton
 import com.xwray.groupie.Item

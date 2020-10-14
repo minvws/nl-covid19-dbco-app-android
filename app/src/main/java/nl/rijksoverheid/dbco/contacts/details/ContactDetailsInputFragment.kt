@@ -26,12 +26,7 @@ import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
 import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ContactNameItem
-import nl.rijksoverheid.dbco.items.input.EmailAdressItem
-import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
-import nl.rijksoverheid.dbco.items.ui.QuestionMultipleOptionsItem
-import nl.rijksoverheid.dbco.items.ui.QuestionTwoOptionsItem
+import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
 
@@ -77,6 +72,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_list) {
                                 section.add(QuestionTwoOptionsItem(question, answerSelectedListener))
                             }
                         }
+                    }
+                    QuestionType.Date -> {
+                        section.add(DateInputItem(requireContext(), question))
                     }
                     // TODO handle other types
                 }

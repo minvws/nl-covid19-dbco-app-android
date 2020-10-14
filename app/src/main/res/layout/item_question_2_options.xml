@@ -13,7 +13,7 @@
 
         <variable
             name="item"
-            type="nl.rijksoverheid.dbco.items.ui.QuestionTwoOptionsItem" />
+            type="nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,7 @@
         android:paddingHorizontal="@dimen/activity_horizontal_margin">
 
         <TextView
-            android:id="@+id/questionText"
+            android:id="@+id/question_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{item.question.label}"
@@ -34,7 +34,7 @@
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/questionText">
+            app:layout_constraintTop_toBottomOf="@id/question_label">
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option1"
