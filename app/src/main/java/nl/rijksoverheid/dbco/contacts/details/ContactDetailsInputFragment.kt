@@ -102,6 +102,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                     }
                                 }
                             }
+                            QuestionType.Date -> {
+                                add(DateInputItem(requireContext(), question))
+                            }
                             // TODO handle other types
                         }
                     }

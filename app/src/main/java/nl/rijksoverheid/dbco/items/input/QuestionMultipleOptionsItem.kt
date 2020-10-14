@@ -5,7 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
-package nl.rijksoverheid.dbco.items.ui
+package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import android.view.View
@@ -17,9 +17,8 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.ItemType
 import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.ItemType
 import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 import nl.rijksoverheid.dbco.util.SpinnerAdapterWithDefaultLabel
 import timber.log.Timber
@@ -27,10 +26,9 @@ import timber.log.Timber
 
 class QuestionMultipleOptionsItem(
     val context: Context,
-    val question: Question?,
+    question: Question?,
     val answerSelectedListener: (AnswerOption) -> Unit
-) :
-    BaseBindableItem<ItemQuestionMultipleOptionsBinding>(), QuestionnaireItem {
+) : BaseQuestionItem<ItemQuestionMultipleOptionsBinding>(question), QuestionnaireItem {
 
     override fun getLayout() = R.layout.item_question_multiple_options
     private var selectedAnswer: AnswerOption? = null

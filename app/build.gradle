@@ -110,6 +110,8 @@ dependencies {
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-viewbinding:$groupie_version"
 
+    implementation 'net.danlew:android.joda:2.10.6.2'
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 
     testImplementation "junit:junit:$junit_version"

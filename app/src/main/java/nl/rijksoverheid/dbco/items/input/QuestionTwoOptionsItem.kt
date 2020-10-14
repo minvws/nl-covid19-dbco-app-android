@@ -5,7 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
-package nl.rijksoverheid.dbco.items.ui
+package nl.rijksoverheid.dbco.items.input
 
 import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
@@ -14,16 +14,15 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.ItemType
 import nl.rijksoverheid.dbco.items.QuestionnaireItem
 import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class QuestionTwoOptionsItem(
-    val question: Question?,
+    question: Question?,
     private val answerSelectedListener: (AnswerOption) -> Unit
-) :
-    BaseBindableItem<ItemQuestion2OptionsBinding>(), QuestionnaireItem {
+) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question), QuestionnaireItem {
 
     override fun getLayout() = R.layout.item_question_2_options
     private var selectedAnswer: AnswerOption? = null
@@ -35,6 +34,12 @@ class QuestionTwoOptionsItem(
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
+
+        question?.description?.let {
+            val context = viewBinding.root.context
+            val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
+            viewBinding.questionDescription.text = spannableBuilder
+        }
     }
 
     fun onCheckChanged(buttonView: CompoundButton, isChecked: Boolean) {

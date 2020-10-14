@@ -26,6 +26,5 @@ abstract class BaseBindableItem<T : ViewDataBinding>() : BindableItem<T>() {
     override fun isClickable() = false
     override fun isLongClickable() = false
 
-
 }
 
