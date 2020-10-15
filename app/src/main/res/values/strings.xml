@@ -31,7 +31,7 @@
     <string name="error_valid_email">Please fill in a valid email address</string>
     <string name="indexcontact_subtitle">Add additional information</string>
 
-    <string name="onboarding_help_title">Help the GGD with the contact investigation + share action perspective</string>
+    <string name="onboarding_help_title">Help the GGD with the contact investigation and inform your environment</string>
     <string name="onboarding_help_subtext">You can share data from your contacts with the GGD via this app. This way you ensure that the contact investigation goes faster.</string>
 
     <string name="fill_code_title">Enter the code you received from the GGD employee</string>
