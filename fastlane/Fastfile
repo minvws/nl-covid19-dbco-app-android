@@ -29,7 +29,7 @@ platform :android do
 
         inform_slack(
             default_payloads: [:git_author],
-            message: "Successfully distributed beta build 0.1.#{ENV['GITHUB_RUN_NUMBER'] (#{ENV['GITHUB_RUN_NUMBER']}) :rocket:",
+            message: "Successfully distributed beta build 0.1.#{ENV['GITHUB_RUN_NUMBER']} (#{ENV['GITHUB_RUN_NUMBER']}) :rocket:",
         )
     end
 
