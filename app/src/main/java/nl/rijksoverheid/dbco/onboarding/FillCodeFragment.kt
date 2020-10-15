@@ -11,8 +11,10 @@ package nl.rijksoverheid.dbco.onboarding
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import com.alimuzaffar.lib.pin.PinEntryEditText
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
@@ -70,19 +72,41 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                     binding.btnNext.isEnabled = binding.pinEntry1.text?.length == ENTRY_MAX_LENGTH
                             && binding.pinEntry2.text?.length == ENTRY_MAX_LENGTH
                             && binding.pinEntry3.text?.length == ENTRY_MAX_LENGTH
-
-                    if (text?.length == 0) { // handle backspace button
-                        when (it.id) {
-                            R.id.pin_entry_3 -> binding.pinEntry2.requestFocus()
-                            R.id.pin_entry_2 -> binding.pinEntry1.requestFocus()
-                        }
-                    }
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
                 }
             })
+            it.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                    // handle backspace button
+                    if ((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_DEL)) {
+                        if (it.text?.isEmpty() == true) {
+                            when (it.id) {
+                                R.id.pin_entry_3 -> {
+                                    backspaceAndFocus(binding.pinEntry2)
+                                }
+                                R.id.pin_entry_2 -> {
+                                    backspaceAndFocus(binding.pinEntry1)
+                                }
+                            }
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+            })
         }
+    }
+
+    private fun backspaceAndFocus(pinEntry: PinEntryEditText) {
+        val pinText = pinEntry.text.toString()
+        // manually removing last symbol from previous entry as we intercepted backspace key
+        pinEntry.setText(pinText.substring(0, ENTRY_MAX_LENGTH - 1))
+        pinEntry.requestFocus()
+        // put cursor at the end
+        pinEntry.setSelection(ENTRY_MAX_LENGTH - 1)
     }
 
     companion object {
