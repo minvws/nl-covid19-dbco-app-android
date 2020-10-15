@@ -32,7 +32,7 @@
             android:id="@+id/onboarding_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="77dp"
+            android:layout_marginTop="@dimen/fill_password_top_margin"
             android:text="@string/fill_code_title"
             android:textAppearance="@style/TextAppearance.App.Headline5"
             android:textSize="@dimen/onboarding_title_textsize"
