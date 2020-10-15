@@ -47,7 +47,7 @@ class QuestionTwoOptionsItem(
             answerOption?.let {
                 answerSelectedListener.invoke(it)
                 selectedAnswer = it
-                currentViewState.value = currentViewState.value!!.copy(isCompleted = true)
+                currentViewState.value = currentViewState.value?.copy(isCompleted = true)
             }
         }
     }

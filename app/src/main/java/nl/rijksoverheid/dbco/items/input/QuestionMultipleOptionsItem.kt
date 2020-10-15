@@ -56,13 +56,13 @@ class QuestionMultipleOptionsItem(
                         answerSelectedListener.invoke(it)
                         selectedAnswer = it
                         Timber.d("Selected option $it")
-                        currentViewState.value = currentViewState.value!!.copy(isCompleted = true)
+                        currentViewState.value = currentViewState.value?.copy(isCompleted = true)
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     selectedAnswer = null
-                    currentViewState.value = currentViewState.value!!.copy(isCompleted = false)
+                    currentViewState.value = currentViewState.value?.copy(isCompleted = false)
                 }
             }
         }

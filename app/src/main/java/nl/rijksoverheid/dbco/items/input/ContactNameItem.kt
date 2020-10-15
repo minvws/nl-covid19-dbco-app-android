@@ -42,18 +42,16 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
 
         viewBinding.firstName.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState().copy(isCompleted = isCompleted())
+                currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
             }
         }
 
         viewBinding.lastName.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState().copy(isCompleted = isCompleted())
+                currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
             }
         }
     }
-
-    private fun currentViewState(): QuestionnaireItemViewState = currentViewState.value!!
 
     fun getFirstNameAndLastName(): ContactName {
         return ContactName(
@@ -61,5 +59,4 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
             lastName
         )
     }
-
 }
