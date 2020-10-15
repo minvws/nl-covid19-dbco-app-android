@@ -8,4 +8,6 @@
 
 package nl.rijksoverheid.dbco.contacts.data
 
-data class ContactName(val firstName: String, val lastName: String)
+import java.io.Serializable
+
+data class ContactName(val firstName: String, val lastName: String) : Serializable
