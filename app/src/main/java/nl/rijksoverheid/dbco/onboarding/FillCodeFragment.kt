@@ -84,10 +84,10 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                         if (it.text?.isEmpty() == true) {
                             when (it.id) {
                                 R.id.pin_entry_3 -> {
-                                    deletlLastCharAndFocus(binding.pinEntry2)
+                                    backspaceAndFocus(binding.pinEntry2)
                                 }
                                 R.id.pin_entry_2 -> {
-                                    deletlLastCharAndFocus(binding.pinEntry1)
+                                    backspaceAndFocus(binding.pinEntry1)
                                 }
                             }
                             return true
@@ -100,7 +100,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
         }
     }
 
-    private fun deletlLastCharAndFocus(pinEntry: PinEntryEditText) {
+    private fun backspaceAndFocus(pinEntry: PinEntryEditText) {
         val pinText = pinEntry.text.toString()
         // manually removing last symbol from previous entry as we intercepted backspace key
         pinEntry.setText(pinText.substring(0, ENTRY_MAX_LENGTH - 1))
