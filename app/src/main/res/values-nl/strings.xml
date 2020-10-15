@@ -31,7 +31,7 @@
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
-    <string name="onboarding_help_title">Help de GGD bij het contactonderzoek + handelingsperspectief delen</string>
+    <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
 
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
