@@ -21,20 +21,20 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
-import nl.rijksoverheid.dbco.databinding.FragmentListBinding
+import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
-import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
 import timber.log.Timber
 
 
-class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list) {
+class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentListBinding.bind(view)
+        val binding = FragmentContactSelectionBinding.bind(view)
         binding.toolbar.title = getString(R.string.contacts_picker_title)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
@@ -44,33 +44,35 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_list) {
             )
         )
 
-        contactsViewModel.localContactsLiveData.observe(viewLifecycleOwner, Observer {
-            adapter.clear()
-            adapter.add(SearchFieldItem({ content ->
-                Timber.d("Searching for ${content.toString()}")
-                contactsViewModel.filterLocalContactsOnName(content.toString())
-            }, R.string.contact_picker_search_hint))
+        contactsViewModel.localContactsLiveData.observe(
+            viewLifecycleOwner,
+            Observer { allContacts ->
+                adapter.clear()
+                adapter.add(SearchFieldItem({ content ->
+                    Timber.d("Searching for ${content.toString()}")
+                    contactsViewModel.filterLocalContactsOnName(content.toString())
+                }, R.string.contact_picker_search_hint))
 
-            val contactsSection = Section(
-                HeaderItem(R.string.header_all_contacts),
-                it
-            )
+                val contactsSection = Section(
+                    TinyHeaderItem(R.string.header_all_contacts),
+                    allContacts
+                )
 
-            adapter.add(contactsSection)
-            adapter.setOnItemClickListener { item, _ ->
-                when (item) {
-                    is LocalContact -> {
-                        Timber.d("Clicked contact $item")
-                        findNavController().navigate(
-                            ContactPickerSelectionFragmentDirections.toContactDetails(
-                                item
+                adapter.add(contactsSection)
+                adapter.setOnItemClickListener { item, _ ->
+                    when (item) {
+                        is LocalContact -> {
+                            Timber.d("Clicked contact $item")
+                            findNavController().navigate(
+                                ContactPickerSelectionFragmentDirections.toContactDetails(
+                                    item
+                                )
                             )
-                        )
+                        }
                     }
                 }
-            }
 
-        })
+            })
 
         contactsViewModel.fetchLocalContacts()
 

@@ -25,17 +25,13 @@ import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.databinding.FragmentListBinding
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ButtonType
-import nl.rijksoverheid.dbco.items.ui.HeaderItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
  */
 
-class MyContactsFragment : BaseFragment(R.layout.fragment_list) {
+class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
@@ -43,33 +39,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_list) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter.add(
-            // Somewhat placeholder data. Will include contacts from GGD endpoint
-            Section(
-                listOf(
-                    HeaderItem(R.string.mycontacts_header),
-                    ParagraphItem(R.string.mycontacts_summary)
-                )
-            )
-        )
         contentSection.setHideWhenEmpty(true)
-        contentSection.setFooter(
-            ButtonItem(
-                R.string.mycontacts_add_contact,
-                {
-                    checkPermissionAndNavigate()
-                }, type = ButtonType.LIGHT
-            )
-        )
         adapter.add(contentSection)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentListBinding.bind(view)
+        val binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
+
+        binding.manualEntryButton.setOnClickListener {
+            checkPermissionAndNavigate()
+        }
 
         // After retrieving data, clear list before showing new
         contactsViewModel.indexContactsLiveData.observe(viewLifecycleOwner, Observer {

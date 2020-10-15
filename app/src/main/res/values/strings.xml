@@ -57,5 +57,8 @@
     <string name="contact_section_inform_share">Share instructions</string>
     <string name="close">Close</string>
     <string name="contact_question_select_option">Choose</string>
+    <string name="add_manually">Add manually</string>
+    <string name="send_data">Send data</string>
+    <string name="add_contact">Add contact</string>
 
 </resources>

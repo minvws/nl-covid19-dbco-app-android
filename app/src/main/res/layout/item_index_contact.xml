@@ -22,51 +22,63 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/message_box_background"
-        android:backgroundTint="@color/gray_lighter"
         android:clickable="true"
+        android:clipToPadding="false"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:padding="16dp">
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp">
 
         <ImageView
             android:id="@+id/chevron"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginRight="16dp"
             android:contentDescription="@string/cd_info_box"
             android:src="@drawable/ic_chevron_right"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/index_contact_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/index_contact_name"
+            app:tint="#D0D0DB" />
 
         <TextView
             android:id="@+id/index_contact_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/index_contact_subtitle"
+            app:layout_constraintStart_toEndOf="@+id/index_contact_state"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Aziz F" />
 
         <ImageView
             android:id="@+id/index_contact_state"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="@string/cd_info_box"
             android:src="@drawable/ic_error_yellow"
-            app:layout_constraintStart_toStartOf="@+id/index_contact_name"
-            app:layout_constraintTop_toBottomOf="@+id/index_contact_name" />
+            app:layout_constraintBottom_toBottomOf="@+id/index_contact_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/index_contact_name" />
 
         <TextView
             android:id="@+id/index_contact_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/indexcontact_subtitle"
             android:textAppearance="?attr/textAppearanceCaption"
-            app:layout_constraintBottom_toBottomOf="@+id/index_contact_state"
-            app:layout_constraintStart_toEndOf="@+id/index_contact_state"
-            app:layout_constraintTop_toTopOf="@+id/index_contact_state" />
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintStart_toStartOf="@id/index_contact_name" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_lighter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
