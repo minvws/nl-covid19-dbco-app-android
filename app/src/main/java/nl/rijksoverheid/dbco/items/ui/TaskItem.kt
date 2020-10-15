@@ -6,26 +6,26 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data
+package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.Keep
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemIndexContactBinding
+import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.entity.Task
+import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import java.io.Serializable
 
-class IndexContact(
-    val id: String,
-    val displayName: String,
-    var state: State = State.PRESENT // Present by default
-) : BaseBindableItem<ItemIndexContactBinding>(), Serializable {
+class TaskItem(
+    val task: Task
+) : BaseBindableItem<ItemTaskBinding>(), Serializable {
     var linkedContact: LocalContact? = null
 
-    override fun bind(viewBinding: ItemIndexContactBinding, position: Int) {
-        viewBinding.indexContactName.text = displayName
+    override fun bind(viewBinding: ItemTaskBinding, position: Int) {
+        viewBinding.task = task
     }
 
-    override fun getLayout() = R.layout.item_index_contact
+    override fun getLayout() = R.layout.item_task
 
 
     override fun isClickable(): Boolean {

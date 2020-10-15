@@ -14,6 +14,9 @@ import android.provider.ContactsContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
 
 class ContactsRepository(val context: Context) {
 
@@ -130,24 +133,65 @@ class ContactsRepository(val context: Context) {
 
     //endregion local
 
-    //region External Contacts
+    //region Tasks from backend
 
-    suspend fun fetchBackendContacts(): ArrayList<IndexContact> {
-        return withContext(Dispatchers.IO) {
-            val backendContacts = ArrayList<IndexContact>()
-
-            // Create dummy accounts for now
-            backendContacts.addAll(
-                listOf(
-                    IndexContact("1", "Aziz F"),
-                    IndexContact("2", "Job J"),
-                    IndexContact("3", "Lia B")
-                )
-            )
-
-            return@withContext backendContacts
-        }
+    suspend fun retrieveTasksForUUID(uuid: String = ""): TasksResponse {
+        return Json.decodeFromString(MOCK_TASKS)
     }
 
     //endregion
+
+
+    companion object {
+        const val MOCK_TASKS = "{\n" +
+                "  \"tasks\": [\n" +
+                "    {\n" +
+                "      \"uuid\": \"123e4567-e89b-12d3-a456-426614172000\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"source\": \"portal\",\n" +
+                "      \"label\": \"Lia B\",\n" +
+                "      \"taskContext\": \"Partner\",\n" +
+                "      \"category\": \"1\",\n" +
+                "      \"communication\": \"index\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"uuid\": \"123e4567-e89b-22d3-a456-426614172000\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"source\": \"portal\",\n" +
+                "      \"label\": \"Aziz F.\",\n" +
+                "      \"taskContext\": \"Voetbaltrainer\",\n" +
+                "      \"category\": \"2a\",\n" +
+                "      \"communication\": \"index\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"uuid\": \"123e4567-e89b-32d3-a456-426614172000\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"source\": \"portal\",\n" +
+                "      \"label\": \"Job J.\",\n" +
+                "      \"taskContext\": \"Collega\",\n" +
+                "      \"category\": \"2b\",\n" +
+                "      \"communication\": \"staff\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"uuid\": \"123e4567-e89b-42d3-a456-426614172000\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"source\": \"portal\",\n" +
+                "      \"label\": \"Joris L.\",\n" +
+                "      \"taskContext\": \"null\",\n" +
+                "      \"category\": \"3\",\n" +
+                "      \"communication\": \"index\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"uuid\": \"123e4567-e89b-52d3-a456-426614172000\",\n" +
+                "      \"taskType\": \"contact\",\n" +
+                "      \"source\": \"portal\",\n" +
+                "      \"label\": \"Peter V.\",\n" +
+                "      \"taskContext\": \"Zakenrelatie\",\n" +
+                "      \"category\": \"3\",\n" +
+                "      \"communication\": \"none\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}"
+    }
+
 }

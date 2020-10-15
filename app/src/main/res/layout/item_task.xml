@@ -12,6 +12,10 @@
 
     <data>
 
+        <variable
+            name="task"
+            type="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+
 
     </data>
 
@@ -46,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="@{task.label}"
             android:textAppearance="?attr/textAppearanceHeadline6"
             app:layout_constraintBottom_toTopOf="@+id/index_contact_subtitle"
             app:layout_constraintStart_toEndOf="@+id/index_contact_state"
@@ -67,8 +72,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/indexcontact_subtitle"
+            android:text="@{task.taskContext}"
             android:textAppearance="?attr/textAppearanceCaption"
+            tools:text="@string/indexcontact_subtitle"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintStart_toStartOf="@id/index_contact_name" />
 

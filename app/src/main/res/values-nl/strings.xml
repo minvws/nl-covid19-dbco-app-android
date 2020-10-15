@@ -58,5 +58,8 @@
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Verstuur gegevens</string>
     <string name="add_contact">Contact toevoegen</string>
+    <string name="mycontacts_inform_personally_header">Jij informeert deze contacten</string>
+    <string name="mycontacts_inform_ggd_header">De GGD informeert deze contacten</string>
+    <string name="mycontacts_inform_subtext">Vul zo veel mogelijk gegevens aan</string>
 
 </resources>
