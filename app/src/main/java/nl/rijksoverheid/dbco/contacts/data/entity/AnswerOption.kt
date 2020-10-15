@@ -13,5 +13,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AnswerOption(
 	val label: String? = null,
+	val trigger: String? = null,
 	val value: String? = null
 )

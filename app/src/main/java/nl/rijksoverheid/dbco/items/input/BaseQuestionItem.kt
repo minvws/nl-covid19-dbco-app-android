@@ -9,10 +9,24 @@
 package nl.rijksoverheid.dbco.items.input
 
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.MutableLiveData
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
-abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question?) : BaseBindableItem<T>() {
+abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question? = null) : BaseBindableItem<T>() {
 
+    val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
+
+    init {
+        currentViewState.value = QuestionnaireItemViewState()
+    }
+
+    fun getUserAnswers(): Map<String, String> {
+        return HashMap()
+    }
+
+    abstract fun isRequired(): Boolean
+    abstract fun isCompleted(): Boolean
 
 }

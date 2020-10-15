@@ -11,27 +11,15 @@ package nl.rijksoverheid.dbco.items.input
 import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.MutableLiveData
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.ItemType
-import nl.rijksoverheid.dbco.items.QuestionnaireItem
-import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
 class EmailAdressItem(private var emailAddress: String?) :
-    BaseBindableItem<ItemEmailInputBinding>(), QuestionnaireItem {
+    BaseQuestionItem<ItemEmailInputBinding>() {
     override fun getLayout() = R.layout.item_email_input
     override fun isRequired() = false
-    override fun getItemType() = ItemType.INPUT_EMAIL
     private var isValidEmail: Boolean = false
-
-    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
-
-    init {
-        currentViewState.value = QuestionnaireItemViewState()
-    }
 
     override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
@@ -74,7 +62,4 @@ class EmailAdressItem(private var emailAddress: String?) :
         return !emailAddress.isNullOrEmpty() && isValidEmail
     }
 
-    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
-        return currentViewState
-    }
 }

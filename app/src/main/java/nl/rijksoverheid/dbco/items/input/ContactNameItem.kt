@@ -9,31 +9,23 @@
 package nl.rijksoverheid.dbco.items.input
 
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.MutableLiveData
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.ContactName
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.ItemType
-import nl.rijksoverheid.dbco.items.QuestionnaireItem
 import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
 class ContactNameItem(private var firstName: String = "", private var lastName: String = "") :
-    BaseBindableItem<ItemContactNameBinding>(), QuestionnaireItem {
+    BaseQuestionItem<ItemContactNameBinding>() {
+
     override fun getLayout() = R.layout.item_contact_name
 
-
     override fun isRequired() = true
-    override fun getItemType() = ItemType.INPUT_NAME
 
-    private val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
-
-    init {
-        currentViewState.value = QuestionnaireItemViewState()
+    override fun isCompleted(): Boolean {
+        return (firstName.isNotEmpty() && lastName.isNotEmpty())
     }
 
-
-    private var binding: ItemContactNameBinding? = null;
+    private var binding: ItemContactNameBinding? = null
 
     override fun bind(viewBinding: ItemContactNameBinding, position: Int) {
         this.binding = viewBinding
@@ -69,14 +61,5 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
             lastName
         )
     }
-
-    override fun isCompleted(): Boolean {
-        return (firstName.isNotEmpty() && lastName.isNotEmpty())
-    }
-
-    override fun getViewStateLiveData(): MutableLiveData<QuestionnaireItemViewState> {
-        return currentViewState
-    }
-
 
 }
