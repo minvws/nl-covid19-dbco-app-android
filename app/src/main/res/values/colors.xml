@@ -21,6 +21,8 @@
     <color name="faq_github_background">@color/gray_lighter</color>
     <color name="index_contact_background">@color/gray_lighter</color>
     <color name="pin_normal">#6B767E</color>
+    <color name="text_color_primary">#DD000000</color>
+    <color name="text_color_secondary">#89000000</color>
 
     <!-- Color palette -->
     <color name="dark_blue">#0047FF</color>

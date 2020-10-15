@@ -55,5 +55,8 @@
     <string name="contact_section_inform_content_details">Je hebt nauw contact gehad. Daarom is het belangrijk dat deze persoon zo snel mogelijk in thuisquarantaine gaat. Je kunt de uitleg delen via de knop hieronder.</string>
     <string name="contact_section_inform_share">Deel instructies</string>
     <string name="close">Sluiten</string>
+    <string name="add_manually">Handmatig toevoegen</string>
+    <string name="send_data">Verstuur gegevens</string>
+    <string name="add_contact">Contact toevoegen</string>
 
 </resources>
