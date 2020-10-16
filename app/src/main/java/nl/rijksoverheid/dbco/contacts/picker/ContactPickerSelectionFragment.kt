@@ -10,6 +10,8 @@ package nl.rijksoverheid.dbco.contacts.picker
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -75,8 +77,11 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             })
 
         contactsViewModel.fetchLocalContacts()
+    }
 
-
+    override fun onPause() {
+        super.onPause()
+        view?.findViewById<View>(R.id.searchView)?.clearFocus() // make search input inactive
     }
 
 }

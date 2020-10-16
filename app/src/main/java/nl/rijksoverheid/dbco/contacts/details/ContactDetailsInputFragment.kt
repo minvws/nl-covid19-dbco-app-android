@@ -17,7 +17,6 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
@@ -103,6 +102,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 when (question?.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, sectionToAddTo)
+                    }
+                    QuestionType.Open -> {
+                        sectionToAddTo?.add(SingleInputItem(requireContext(), question))
                     }
                     QuestionType.Date -> {
                         sectionToAddTo?.add(DateInputItem(requireContext(), question))
