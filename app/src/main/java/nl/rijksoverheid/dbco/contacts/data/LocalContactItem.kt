@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.contacts.data
 import android.text.SpannableStringBuilder
 import androidx.core.text.bold
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.ItemContactBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import java.io.Serializable
@@ -18,24 +19,16 @@ import java.io.Serializable
 /**
  * Class representing a user's contact from their contacts list
  */
-class LocalContact(
-    val id: String,
-    val displayName: String
+class LocalContactItem(
+    val contact: LocalContact
 ) : BaseBindableItem<ItemContactBinding>(), Serializable {
-    var numbers = ArrayList<String>()
-    var emails = ArrayList<String>()
-    var address = ArrayList<ContactAddress>()
-    var name = ContactName("", "")
 
     override fun bind(viewBinding: ItemContactBinding, position: Int) {
-        viewBinding.contactName.text = formatDisplayName(displayName)
+        viewBinding.contactName.text = formatDisplayName(contact.displayName)
     }
 
     override fun getLayout() = R.layout.item_contact
 
-    override fun toString(): String {
-        return "Contact(id='$id', displayName='$displayName', numbers=$numbers, emails=$emails, address=$address, name=$name)"
-    }
 
     override fun isClickable(): Boolean {
         return true
@@ -50,5 +43,9 @@ class LocalContact(
                     it.append(" ${nameSplit[1]}")
                 }
             }
+    }
+
+    override fun toString(): String {
+        return "LocalContactItem(contact=$contact)"
     }
 }

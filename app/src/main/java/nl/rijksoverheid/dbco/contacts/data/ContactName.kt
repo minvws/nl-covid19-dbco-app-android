@@ -10,4 +10,5 @@ package nl.rijksoverheid.dbco.contacts.data
 
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class ContactName(val firstName: String, val lastName: String) : Serializable

@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -30,10 +31,15 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val args: ContactPickerPermissionFragmentArgs by navArgs()
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                findNavController().navigate(ContactPickerPermissionFragmentDirections.toContactPicker())
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactPicker(
+                        args.indexTask
+                    )
+                )
             } else {
                 // Todo: Handle permanently denied permission. Behavior TBD
             }
@@ -41,6 +47,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         val content = Section(
             listOf(
@@ -59,6 +66,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
         )
 
         adapter.add(content)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,6 +74,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
         val binding = FragmentListBinding.bind(view)
         binding.content.adapter = adapter
+        binding.toolbar.visibility = View.GONE
     }
 
 
@@ -78,7 +87,11 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
         ) {
             requestCallback.launch(Manifest.permission.READ_CONTACTS)
         } else {
-            findNavController().navigate(ContactPickerPermissionFragmentDirections.toContactPicker())
+            findNavController().navigate(
+                ContactPickerPermissionFragmentDirections.toContactPicker(
+                    args.indexTask
+                )
+            )
         }
     }
 

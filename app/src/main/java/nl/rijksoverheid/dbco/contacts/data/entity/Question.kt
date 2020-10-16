@@ -8,9 +8,11 @@
 
 package nl.rijksoverheid.dbco.contacts.data.entity
 
+import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Keep
 @Serializable
 data class Question(
     val relevantForCategories: List<Category?>? = null,
@@ -22,6 +24,7 @@ data class Question(
     val answerOptions: List<AnswerOption?>? = null
 )
 
+@Keep
 @Serializable
 enum class QuestionType {
 
@@ -41,6 +44,7 @@ enum class QuestionType {
     Multiplechoice
 }
 
+@Keep
 @Serializable
 enum class Group {
 

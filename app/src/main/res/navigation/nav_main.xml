@@ -70,8 +70,14 @@
     </fragment>
     <fragment
         android:id="@+id/contactPickerStart"
+        tools:layout="@layout/fragment_list"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
         android:label="ContactPickerAboutFragment">
+        <argument
+            android:name="indexTask"
+            android:defaultValue="@null"
+            app:nullable="true"
+            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -83,7 +89,13 @@
     <fragment
         android:id="@+id/contactPickerSelectionFragment"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerSelectionFragment"
+        tools:layout="@layout/fragment_contact_selection"
         android:label="ContactPickerSelectionFragment">
+        <argument
+            android:name="indexTask"
+            android:defaultValue="@null"
+            app:nullable="true"
+            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
         <action
             android:id="@+id/toContactDetails"
             app:destination="@id/contactDetailsInputFragment" />
@@ -91,6 +103,7 @@
     <fragment
         android:id="@+id/myContactsFragment"
         android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsFragment"
+        tools:layout="@layout/fragment_my_contacts"
         android:label="MyContactsFragment">
         <action
             android:id="@+id/toContactPickerAbout"
@@ -102,14 +115,16 @@
         <action
             android:id="@+id/toContactPickerSelection"
             app:destination="@id/contactPickerSelectionFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/contactDetailsInputFragment"
+        tools:layout="@layout/fragment_contact_input"
         android:name="nl.rijksoverheid.dbco.contacts.details.ContactDetailsInputFragment"
         android:label="ContactDetailsInputFragment">
         <argument
             android:name="selectedContact"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.LocalContact" />
+            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.LocalContact" />
     </fragment>
 
     <fragment
