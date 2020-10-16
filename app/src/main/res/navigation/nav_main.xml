@@ -123,7 +123,14 @@
         android:name="nl.rijksoverheid.dbco.contacts.details.ContactDetailsInputFragment"
         android:label="ContactDetailsInputFragment">
         <argument
+            android:name="indexTask"
+            android:defaultValue="@null"
+            app:nullable="true"
+            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+        <argument
             android:name="selectedContact"
+            android:defaultValue="@null"
+            app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.contacts.data.entity.LocalContact" />
     </fragment>
 
