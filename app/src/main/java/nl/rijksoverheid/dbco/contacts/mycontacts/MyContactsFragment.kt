@@ -23,6 +23,7 @@ import com.xwray.groupie.Section
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
+import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
@@ -49,6 +50,13 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentMyContactsBinding.bind(view)
+
+        binding.buildVersion.text = getString(
+            R.string.status_app_version,
+            BuildConfig.VERSION_NAME,
+            "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
+        )
+
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
