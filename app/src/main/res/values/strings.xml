@@ -61,4 +61,8 @@
     <string name="send_data">Send data</string>
     <string name="add_contact">Add contact</string>
 
+    <string name="mycontacts_inform_personally_header">You inform these contacts</string>
+    <string name="mycontacts_inform_ggd_header">The GGD informs these contacts</string>
+    <string name="mycontacts_inform_subtext">Add as many details as possible</string>
+
 </resources>

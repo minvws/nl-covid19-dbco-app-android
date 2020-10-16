@@ -26,6 +26,9 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
+import nl.rijksoverheid.dbco.items.ui.TaskItem
+import timber.log.Timber
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -54,16 +57,62 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             checkPermissionAndNavigate()
         }
 
-        // After retrieving data, clear list before showing new
-        contactsViewModel.indexContactsLiveData.observe(viewLifecycleOwner, Observer {
+        contactsViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
-            contentSection.addAll(it)
+            val informPersonallySection = Section().apply {
+                setHeader(
+                    DuoHeaderItem(
+                        R.string.mycontacts_inform_personally_header,
+                        R.string.mycontacts_inform_subtext
+                    )
+                )
+            }
+            val informGgdSection = Section()
+                .apply {
+                    setHeader(
+                        DuoHeaderItem(
+                            R.string.mycontacts_inform_ggd_header,
+                            R.string.mycontacts_inform_subtext
+                        )
+                    )
+                }
+
+
+            it.tasks?.forEach { task ->
+                Timber.d("Found task $task")
+                when (task.taskType) {
+                    "contact" -> {
+                        when (task.communication) {
+                            "index" -> {
+                                informPersonallySection.add(TaskItem(task))
+                            }
+                            "staff" -> {
+                                informGgdSection.add(TaskItem(task))
+                            }
+                            else -> {
+                                informPersonallySection.add(TaskItem(task))
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            if (informPersonallySection.groupCount > 1) {
+                contentSection.add(informPersonallySection)
+            }
+
+            if (informGgdSection.groupCount > 1) {
+                contentSection.add(informGgdSection)
+            }
+
+
         })
 
         // Fake loading from backend
         lifecycleScope.launch {
             delay(250)
-            contactsViewModel.fetchBackendIndexContacts()
+            contactsViewModel.fetchTasksForUUID()
         }
 
 

@@ -15,8 +15,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.contacts.data.IndexContact
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
 
 
 class ContactsViewModel(val context: Context) : ViewModel() {
@@ -24,12 +24,13 @@ class ContactsViewModel(val context: Context) : ViewModel() {
     private val _localContactsLiveData = MutableLiveData<ArrayList<LocalContact>>()
     val localContactsLiveData: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
-    private val _indexContactsLiveData = MutableLiveData<ArrayList<IndexContact>>()
-    val indexContactsLiveData: LiveData<ArrayList<IndexContact>> = _indexContactsLiveData
 
     private val repository = ContactsRepository(context)
 
     private val fullLocalContacts: ArrayList<LocalContact> = ArrayList<LocalContact>()
+
+    private val _indexTasks = MutableLiveData<TasksResponse>()
+    val indexTasksLivedata: LiveData<TasksResponse> = _indexTasks
 
     fun fetchLocalContacts() {
         viewModelScope.launch {
@@ -48,15 +49,11 @@ class ContactsViewModel(val context: Context) : ViewModel() {
     }
 
 
-    fun fetchBackendIndexContacts() {
+    fun fetchTasksForUUID(uuid: String = "") {
         viewModelScope.launch {
-            val indexContacts = repository.fetchBackendContacts()
-            _indexContactsLiveData.postValue(indexContacts)
+            val taskResponse = repository.retrieveTasksForUUID()
+            _indexTasks.postValue(taskResponse)
         }
-    }
-
-    fun addNewIndexContact(indexContact: IndexContact) {
-        _indexContactsLiveData.value?.add(indexContact)
     }
 
 
