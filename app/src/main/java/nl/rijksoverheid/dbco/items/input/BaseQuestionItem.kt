@@ -22,8 +22,15 @@ abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question? = n
         currentViewState.value = QuestionnaireItemViewState()
     }
 
-    fun getUserAnswers(): Map<String, String> {
+    open fun getUserAnswers(): Map<String, Any> {
         return HashMap()
+    }
+
+    fun checkCompleted(isCompleted: Boolean? = null) {
+        val finalCompleted = isCompleted ?: isCompleted()
+        currentViewState.value?.let {
+            currentViewState.value = it.copy(isCompleted = finalCompleted)
+        }
     }
 
     abstract fun isRequired(): Boolean

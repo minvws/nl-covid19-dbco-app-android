@@ -54,7 +54,7 @@ class DateInputItem(
         date = LocalDate(year, month, dayOfMonth).apply {
             binding?.dateLabel?.text = this.toString(FORMAT)
         }
-        currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
+        checkCompleted()
     }
 
     override fun isSameAs(other: Item<*>): Boolean =

@@ -208,7 +208,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         Toast.makeText(context, "Nog niet actief", Toast.LENGTH_SHORT).show()
 
-        val answers = HashMap<String, String>()
+        val answers = HashMap<String, Any>()
 
         for (i: Int in 0 until adapter.itemCount) {
             val item = adapter.getItem(i)

@@ -47,7 +47,7 @@ class EmailAdressItem(private var emailAddress: String?) :
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
+                checkCompleted()
             }
         }
     }

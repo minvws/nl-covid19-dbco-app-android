@@ -36,10 +36,9 @@ class PhoneNumberItem(private var phoneNumber: String?) :
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState.value!!.copy(isCompleted = isCompleted())
+                checkCompleted()
             }
         }
-
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
