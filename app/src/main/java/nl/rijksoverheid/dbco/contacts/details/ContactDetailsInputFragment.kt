@@ -62,15 +62,20 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
 
 
-        args.selectedContact.also { contact ->
+        args.selectedContact?.also { contact ->
             binding.toolbar.title = contact.displayName
             addQuestionnarySections(contact, response)
+            addContactInformSection()
+        }
+        if (args.selectedContact == null) {
+            binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
+            addQuestionnarySections(null, response)
             addContactInformSection()
         }
     }
 
     private fun addQuestionnarySections(
-        contactItem: LocalContact,
+        contactItem: LocalContact?,
         response: ContactDetailsResponse
     ) {
         val classificationSection = QuestionnaireSection(
@@ -148,10 +153,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addContactDetailsItems(
-        contactItem: LocalContact,
+        contactItem: LocalContact?,
         sectionToAddTo: QuestionnaireSection?
     ) {
-        val nameParts = contactItem.displayName.split(" ", limit = 2)
+        val nameParts: List<String> =
+            contactItem?.displayName?.split(" ", limit = 2) ?: listOf("", "")
         val firstName = nameParts[0] ?: ""
         val lastName = if (nameParts.size > 1) {
             nameParts[1]
@@ -159,14 +165,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ""
         }
 
-        val primaryPhone = if (!contactItem.number.isNullOrEmpty()) {
-            contactItem.number
+        val primaryPhone = if (!contactItem?.number.isNullOrEmpty()) {
+            contactItem?.number
         } else {
             ""
         }
 
-        val primaryEmail = if (!contactItem.email.isNullOrEmpty()) {
-            contactItem.email
+        val primaryEmail = if (!contactItem?.email.isNullOrEmpty()) {
+            contactItem?.email
         } else {
             ""
         }

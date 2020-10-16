@@ -52,6 +52,16 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             selectedTask = it
         }
 
+        binding.manualEntryButton.setOnClickListener {
+            // User chooses not to select an existing contact from their device, start fresh
+            findNavController().navigate(
+                ContactPickerSelectionFragmentDirections.toContactDetails(
+                    selectedTask,
+                    null
+                )
+            )
+        }
+
 
         contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner,
@@ -93,6 +103,7 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                             Timber.d("Clicked contact $item")
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
+                                    selectedTask,
                                     item.contact
                                 )
                             )
