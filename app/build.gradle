@@ -5,6 +5,15 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'kotlin-android-extensions'
 
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
@@ -27,6 +36,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
         }
 
         debug {

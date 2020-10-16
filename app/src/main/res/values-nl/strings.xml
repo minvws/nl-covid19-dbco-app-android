@@ -33,6 +33,7 @@
 
     <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
+    <string name="status_app_version">Versie %1$s build %2$s</string>
 
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
 
