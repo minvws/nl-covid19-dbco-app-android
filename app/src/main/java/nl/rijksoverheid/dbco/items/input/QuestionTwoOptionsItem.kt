@@ -13,8 +13,7 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
-import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
-import nl.rijksoverheid.dbco.util.HtmlHelper
+import nl.rijksoverheid.dbco.util.MarkdownHelper
 
 class QuestionTwoOptionsItem(
     question: Question?,
@@ -29,7 +28,7 @@ class QuestionTwoOptionsItem(
 
         question?.description?.let {
             val context = viewBinding.root.context
-            val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
+            val spannableBuilder = MarkdownHelper.formatText(it, context)
             viewBinding.questionDescription.text = spannableBuilder
         }
     }

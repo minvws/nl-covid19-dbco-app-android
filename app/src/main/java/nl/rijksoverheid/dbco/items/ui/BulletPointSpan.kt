@@ -73,7 +73,7 @@ class BulletPointSpan(
     }
 
     private fun getCircleYLocation(lineBaseline: Int) =
-        lineBaseline - bulletRadius * 1.1f // tiny bit above the baseline, otherwise it looks off
+        lineBaseline - bulletRadius * 1.3f // tiny bit above the baseline, otherwise it looks off
 
     private fun getCircleXLocation(currentMarginLocation: Int, paragraphDirection: Int) =
         (bulletRadius * paragraphDirection) / 2 + currentMarginLocation + (paragraphDirection * bulletRadius)
