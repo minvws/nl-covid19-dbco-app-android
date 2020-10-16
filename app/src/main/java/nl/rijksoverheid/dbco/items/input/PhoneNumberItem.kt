@@ -12,15 +12,14 @@ import android.text.InputType
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
-import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
+import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 
 class PhoneNumberItem(private var phoneNumber: String?) :
-    BaseQuestionItem<ItemSingleInputBinding>() {
-    override fun getLayout() = R.layout.item_single_input
+    BaseQuestionItem<ItemPhoneInputBinding>() {
+    override fun getLayout() = R.layout.item_phone_input
     override fun isRequired() = true
 
-    override fun bind(viewBinding: ItemSingleInputBinding, position: Int) {
+    override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_CLASS_PHONE
             setText(phoneNumber)

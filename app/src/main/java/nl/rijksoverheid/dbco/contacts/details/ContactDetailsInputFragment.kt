@@ -112,6 +112,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, sectionToAddTo)
                     }
+                    QuestionType.Open -> {
+                        sectionToAddTo?.add(SingleInputItem(requireContext(), question))
+                    }
                     QuestionType.Date -> {
                         sectionToAddTo?.add(DateInputItem(requireContext(), question))
                     }
