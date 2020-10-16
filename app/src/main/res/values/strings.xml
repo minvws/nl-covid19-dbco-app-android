@@ -37,7 +37,7 @@
     <string name="fill_code_title">Enter the code you received from the GGD employee</string>
 
     <string name="onboarding_add_data_title">Add the details of your contacts</string>
-    <string name="onboarding_add_data_subtext">The GGD needs contact details of people you have met.\n\nThe data is only shared when you are completely ready.</string>
+    <string name="onboarding_add_data_subtext">The GGD needs contact details of people you have met. You can easily share it via this app.\n\nThe data will only be shared when you are completely ready.</string>
 
     <string name="contacts_picker_title">Select contact</string>
     <string name="contact_picker_search_hint">Search for a contact</string>

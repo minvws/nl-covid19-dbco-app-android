@@ -68,7 +68,7 @@ android {
     }
 
     lintOptions {
-        disable "UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning"  // disable check in 3-rd party libs
+        disable "UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning",  "NullSafeMutableLiveData"  // disable check in 3-rd party libs
     }
 }
 
