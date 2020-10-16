@@ -17,10 +17,8 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.LocalContact
 import nl.rijksoverheid.dbco.contacts.data.entity.*
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
@@ -59,7 +57,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
 
         val response: ContactDetailsResponse =
-            Json{ignoreUnknownKeys = true}.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
+            Json {
+                ignoreUnknownKeys = true
+            }.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
 
 
         args.selectedContact.also { contact ->
@@ -69,7 +69,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
-    private fun addQuestionnarySections(contact: LocalContact, response: ContactDetailsResponse) {
+    private fun addQuestionnarySections(
+        contactItem: LocalContact,
+        response: ContactDetailsResponse
+    ) {
         val classificationSection = QuestionnaireSection(
             this,
             QuestionnaireSectionHeader(
@@ -108,7 +111,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         sectionToAddTo?.add(DateInputItem(requireContext(), question))
                     }
                     QuestionType.ContactDetails -> {
-                        addContactDetailsItems(contact, sectionToAddTo)
+                        addContactDetailsItems(contactItem, sectionToAddTo)
                     }
                 }
             }
@@ -138,16 +141,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         )
                     )
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
 
     private fun addContactDetailsItems(
-        contact: LocalContact,
+        contactItem: LocalContact,
         sectionToAddTo: QuestionnaireSection?
     ) {
-        val nameParts = contact.displayName.split(" ", limit = 2)
+        val nameParts = contactItem.displayName.split(" ", limit = 2)
         val firstName = nameParts[0] ?: ""
         val lastName = if (nameParts.size > 1) {
             nameParts[1]
@@ -155,14 +159,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ""
         }
 
-        val primaryPhone = if (contact.numbers.isNotEmpty()) {
-            contact.numbers[0]
+        val primaryPhone = if (!contactItem.number.isNullOrEmpty()) {
+            contactItem.number
         } else {
             ""
         }
 
-        val primaryEmail = if (contact.emails.isNotEmpty()) {
-            contact.emails[0]
+        val primaryEmail = if (!contactItem.email.isNullOrEmpty()) {
+            contactItem.email
         } else {
             ""
         }

@@ -13,6 +13,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -20,7 +21,8 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.LocalContactItem
+import nl.rijksoverheid.dbco.contacts.data.entity.Task
 import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
@@ -29,7 +31,9 @@ import timber.log.Timber
 
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val args: ContactPickerSelectionFragmentArgs by navArgs()
     private val contactsViewModel by viewModels<ContactsViewModel>()
+    private var selectedTask: Task? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,7 +48,12 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             )
         )
 
-        contactsViewModel.localContactsLiveData.observe(
+        args.indexTask?.let {
+            selectedTask = it
+        }
+
+
+        contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner,
             Observer { allContacts ->
                 adapter.clear()
@@ -53,19 +62,38 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                     contactsViewModel.filterLocalContactsOnName(content.toString())
                 }, R.string.contact_picker_search_hint))
 
+                // If the user has selected a task, see if we can suggest contacts that match the label of this task
+                if (selectedTask != null) {
+                    val suggestedContacts =
+                        contactsViewModel.filterSuggestedContacts(selectedTask?.label ?: "")
+                    if (suggestedContacts.isNotEmpty()) {
+                        val suggestedContactsSection = Section(
+                            TinyHeaderItem(R.string.header_suggested_contacts)
+                        )
+                        suggestedContacts.forEach {
+                            suggestedContactsSection.add(LocalContactItem(it))
+                        }
+                        adapter.add(suggestedContactsSection)
+                    }
+                }
+
+
                 val contactsSection = Section(
-                    TinyHeaderItem(R.string.header_all_contacts),
-                    allContacts
+                    TinyHeaderItem(R.string.header_all_contacts)
                 )
+
+                allContacts.forEach {
+                    contactsSection.add(LocalContactItem(it))
+                }
 
                 adapter.add(contactsSection)
                 adapter.setOnItemClickListener { item, _ ->
                     when (item) {
-                        is LocalContact -> {
+                        is LocalContactItem -> {
                             Timber.d("Clicked contact $item")
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                                    item
+                                    item.contact
                                 )
                             )
                         }

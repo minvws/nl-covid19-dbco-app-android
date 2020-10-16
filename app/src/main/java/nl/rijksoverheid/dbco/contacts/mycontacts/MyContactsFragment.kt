@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
+import nl.rijksoverheid.dbco.contacts.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.contacts.data.entity.Task
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
@@ -83,10 +85,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 when (task.taskType) {
                     "contact" -> {
                         when (task.communication) {
-                            "index" -> {
+                            CommunicationType.Index -> {
                                 informPersonallySection.add(TaskItem(task))
                             }
-                            "staff" -> {
+                            CommunicationType.Staff -> {
                                 informGgdSection.add(TaskItem(task))
                             }
                             else -> {
@@ -109,6 +111,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         })
 
+        adapter.setOnItemClickListener { item, view ->
+            if (item is TaskItem) {
+                checkPermissionAndNavigate(item.task)
+            }
+        }
+
         // Fake loading from backend
         lifecycleScope.launch {
             delay(250)
@@ -118,16 +126,16 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     }
 
-    private fun checkPermissionAndNavigate() {
+    private fun checkPermissionAndNavigate(task: Task? = null) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Will navigate to picker
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout())
+            // If not granted send users to permission grant screen
+            findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
         } else {
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerSelection())
+            findNavController().navigate(MyContactsFragmentDirections.toContactPickerSelection(task))
         }
     }
 

@@ -16,6 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
 
 class ContactsRepository(val context: Context) {
@@ -33,10 +34,10 @@ class ContactsRepository(val context: Context) {
 
             contacts.forEach {
                 contactNumbers[it.id]?.let { numbers ->
-                    it.numbers = numbers
+                    it.number = numbers[0]
                 }
                 contactEmails[it.id]?.let { emails ->
-                    it.emails = emails
+                    it.email = emails[0]
                 }
             }
 

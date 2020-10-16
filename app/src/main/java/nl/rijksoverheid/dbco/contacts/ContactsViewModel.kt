@@ -15,19 +15,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.contacts.data.LocalContact
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
 
 
 class ContactsViewModel(val context: Context) : ViewModel() {
 
     private val _localContactsLiveData = MutableLiveData<ArrayList<LocalContact>>()
-    val localContactsLiveData: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
+    val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
 
     private val repository = ContactsRepository(context)
 
-    private val fullLocalContacts: ArrayList<LocalContact> = ArrayList<LocalContact>()
+    private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList<LocalContact>()
 
     private val _indexTasks = MutableLiveData<TasksResponse>()
     val indexTasksLivedata: LiveData<TasksResponse> = _indexTasks
@@ -35,17 +35,24 @@ class ContactsViewModel(val context: Context) : ViewModel() {
     fun fetchLocalContacts() {
         viewModelScope.launch {
             val contacts = repository.fetchDeviceContacts()
-            fullLocalContacts.clear()
-            fullLocalContacts.addAll(contacts)
+            fullLocalContactItems.clear()
+            fullLocalContactItems.addAll(contacts)
             _localContactsLiveData.postValue(contacts)
         }
     }
 
     fun filterLocalContactsOnName(name: String) {
-        val filteredList = fullLocalContacts.filter {
+        val filteredList = fullLocalContactItems.filter {
             it.displayName.contains(name, true)
         } as ArrayList<LocalContact>
         _localContactsLiveData.postValue(filteredList)
+    }
+
+    fun filterSuggestedContacts(name: String): ArrayList<LocalContact> {
+        val firstName = name.split(" ")[0]
+        return fullLocalContactItems.filter {
+            it.displayName.contains(firstName, true)
+        } as ArrayList<LocalContact>
     }
 
 
