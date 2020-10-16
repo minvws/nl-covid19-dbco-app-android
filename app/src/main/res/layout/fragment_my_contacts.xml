@@ -91,6 +91,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_lighter"
+                    android:layout_gravity="top" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/send_button"
                     android:layout_width="match_parent"

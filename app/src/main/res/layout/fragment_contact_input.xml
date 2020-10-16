@@ -59,6 +59,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_lighter"
+                    android:layout_gravity="top" />
+
                 <Button
                     android:id="@+id/save_button"
                     android:layout_width="match_parent"
