@@ -17,19 +17,19 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.LocalContact
-import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.contacts.data.entity.QuestionType
+import nl.rijksoverheid.dbco.contacts.data.entity.*
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
-import nl.rijksoverheid.dbco.items.ItemType
-import nl.rijksoverheid.dbco.items.QuestionnaireItem
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
 import nl.rijksoverheid.dbco.items.input.*
-import nl.rijksoverheid.dbco.items.ui.*
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
+import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
+import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.util.toDp
 import timber.log.Timber
 
@@ -57,67 +57,95 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         Timber.d("Found selected user ${args.selectedContact}");
 
+
         val response: ContactDetailsResponse =
-            Json.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
+            Json{ignoreUnknownKeys = true}.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
 
 
         args.selectedContact.also { contact ->
             binding.toolbar.title = contact.displayName
-            setupContactTypeSection(response)
-            setupContactDetailsSection(contact, response)
-            setupContactInformSection()
+            addQuestionnarySections(contact, response)
+            addContactInformSection()
         }
     }
 
-    private fun setupContactTypeSection(response: ContactDetailsResponse) {
-        adapter.add(
-            QuestionnaireSection(
-                this,
-                QuestionnaireSectionHeader(
-                    R.string.contact_section_typeofcontact_header,
-                    R.string.contact_section_typeofcontact_subtext,
-                    1
-                ), false
-            ).apply {
-                response.questionnaires?.forEach {
-                    it?.questions?.forEach { question ->
-                        when (question?.questionType) {
-                            QuestionType.Multiplechoice -> {
-                                question.answerOptions?.size?.let { size ->
-                                    if (size > 2) {
-                                        add(
-                                            QuestionMultipleOptionsItem(
-                                                requireContext(),
-                                                question,
-                                                answerSelectedListener
-                                            )
-                                        )
-                                    } else if (size == 2) {
-                                        add(
-                                            QuestionTwoOptionsItem(
-                                                question,
-                                                answerSelectedListener
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                            QuestionType.Date -> {
-                                add(DateInputItem(requireContext(), question))
-                            }
-                            // TODO handle other types
-                        }
+    private fun addQuestionnarySections(contact: LocalContact, response: ContactDetailsResponse) {
+        val classificationSection = QuestionnaireSection(
+            this,
+            QuestionnaireSectionHeader(
+                R.string.contact_section_typeofcontact_header,
+                R.string.contact_section_typeofcontact_subtext,
+                1
+            ), false
+        )
+        adapter.add(classificationSection)
+
+        val contactDetailsSection = QuestionnaireSection(
+            this,
+            QuestionnaireSectionHeader(
+                R.string.contact_section_contactdetails_header,
+                R.string.contact_section_contactdetails_subtext,
+                2
+            ), false
+        )
+        adapter.add(contactDetailsSection)
+
+        // add questions to sections, based on their "group"
+        response.questionnaires?.forEach {
+            it?.questions?.forEach { question ->
+                val sectionToAddTo =
+                    when (question?.group) {
+                        Group.ContactDetails -> contactDetailsSection
+                        Group.Classification -> classificationSection
+                        else -> null
+                    }
+
+                when (question?.questionType) {
+                    QuestionType.Multiplechoice -> {
+                        addMultiChoiceItem(question, sectionToAddTo)
+                    }
+                    QuestionType.Date -> {
+                        sectionToAddTo?.add(DateInputItem(requireContext(), question))
+                    }
+                    QuestionType.ContactDetails -> {
+                        addContactDetailsItems(contact, sectionToAddTo)
                     }
                 }
-
             }
-        )
+        }
     }
 
+    private fun addMultiChoiceItem(
+        question: Question,
+        sectionToAddTo: QuestionnaireSection?
+    ) {
+        question.answerOptions?.size?.let { size ->
+            when {
+                size > 2 -> {
+                    sectionToAddTo?.add(
+                        QuestionMultipleOptionsItem(
+                            requireContext(),
+                            question,
+                            answerSelectedListener
+                        )
+                    )
+                }
+                size == 2 -> {
+                    sectionToAddTo?.add(
+                        QuestionTwoOptionsItem(
+                            question,
+                            answerSelectedListener
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
 
-    private fun setupContactDetailsSection(
+    private fun addContactDetailsItems(
         contact: LocalContact,
-        response: ContactDetailsResponse
+        sectionToAddTo: QuestionnaireSection?
     ) {
         val nameParts = contact.displayName.split(" ", limit = 2)
         val firstName = nameParts[0] ?: ""
@@ -139,29 +167,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ""
         }
 
-        // Default items to always add
-        adapter.add(
-            QuestionnaireSection(
-                this,
-                QuestionnaireSectionHeader(
-                    R.string.contact_section_contactdetails_header,
-                    R.string.contact_section_contactdetails_subtext,
-                    2
-                ), false
-            ).apply {
-                addAll(
-                    listOf(
-                        ContactNameItem(firstName, lastName),
-                        PhoneNumberItem(primaryPhone),
-                        EmailAdressItem(primaryEmail)
-                    )
-
-                )
-            }
+        sectionToAddTo?.addAll(
+            listOf(
+                ContactNameItem(firstName, lastName),
+                PhoneNumberItem(primaryPhone),
+                EmailAdressItem(primaryEmail)
+            )
         )
     }
 
-    private fun setupContactInformSection() {
+    private fun addContactInformSection() {
         adapter.add(
             QuestionnaireSection(
                 this,
@@ -189,111 +204,187 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
 
-    private fun parseInput() {
+    private fun collectAnswers() {
 
         Toast.makeText(context, "Nog niet actief", Toast.LENGTH_SHORT).show()
 
-        var i = 0
-        while (i < adapter.itemCount) {
-            val item = adapter.getItem(i)
-            if (item is QuestionnaireItem) {
-                when (item.getItemType()) {
-                    ItemType.INPUT_NAME -> {
-                        Timber.d("Found name field with content ${(item as ContactNameItem).getFirstNameAndLastName()}")
-                    }
+        val answers = HashMap<String, String>()
 
-                    else -> {
-                        // Todo: Handle rest of input fields
-                    }
-                }
-                i++
+        for (i: Int in 0 until adapter.itemCount) {
+            val item = adapter.getItem(i)
+            (item as? BaseQuestionItem<*>)?.let {
+                answers.putAll(it.getUserAnswers())
             }
         }
     }
 
     companion object {
         const val MOCKED_OUTPUT = "{\n" +
-                "  \"questionnaires\": [\n" +
-                "    {\n" +
-                "      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-                "      \"taskType\": \"contact\",\n" +
-                "      \"questions\": [\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368387\",\n" +
-                "              \"group\": \"context\",\n" +
-                "              \"questionType\": \"classificationdetails\",\n" +
-                "              \"label\": \"Vragen over jullie ontmoeting\",\n" +
-                "              \"description\": null,\n" +
-                "              \"relevantForCategories\": [ \"1\", \"2a\", \"2b\", \"3\" ]\n" +
-                "\t\t  },\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368388\",\n" +
-                "              \"group\": \"contactdetails\",\n" +
-                "              \"questionType\": \"date\",\n" +
-                "              \"label\": \"Geboortedatum\",\n" +
-                "              \"description\": null,\n" +
-                "              \"relevantForCategories\": [ \"1\" ]\n" +
-                "          },\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368389\",\n" +
-                "              \"group\": \"contactdetails\",\n" +
-                "              \"questionType\": \"open\",\n" +
-                "              \"label\": \"Beroep\",\n" +
-                "              \"description\": null,\n" +
-                "              \"relevantForCategories\": [ \"1\" ]\n" +
-                "          },\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368390\",\n" +
-                "              \"group\": \"contactdetails\",\n" +
-                "              \"questionType\": \"open\",\n" +
-                "              \"label\": \"Beroep\",\n" +
-                "              \"description\": null,\n" +
-                "              \"relevantForCategories\": [ \"1\" ]\n" +
-                "          },\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368391\",\n" +
-                "              \"group\": \"contactdetails\",\n" +
-                "              \"questionType\": \"multiplechoice\",\n" +
-                "              \"label\": \"Waar ken je deze persoon van?\",\n" +
-                "              \"description\": null,\n" +
-                "              \"relevantForCategories\": [ \"2a\", \"2b\" ],\n" +
-                "              \"answerOptions\": [\n" +
-                "                  {\n" +
-                "                      \"label\": \"Vriend of kennis\",\n" +
-                "                      \"value\": \"Vriend of kennis\"\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                      \"label\": \"Collega\",\n" +
-                "                      \"value\": \"Collega\"\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                      \"label\": \"Overig\",\n" +
-                "                      \"value\": \"Overig\"\n" +
-                "                  }\n" +
-                "              ]\n" +
-                "              \n" +
-                "          },\n" +
-                "          {\n" +
-                "              \"id\": \"37d818ed-9499-4b9a-9771-725467368392\",\n" +
-                "              \"group\": \"contactdetails\",\n" +
-                "              \"questionType\": \"multiplechoice\",\n" +
-                "              \"label\": \"Is een of meerdere onderstaande zaken van toepassing voor deze persoon?\",\n" +
-                "              \"description\": \"<ul><li>Is student<li>70 jaar of ouder<li>Heeft gezondheidsklachten of loopt extra gezondheidsrisico's<li>Woont in een asielzoekerscentrum<li>Spreekt slecht of geen Nederlands</ul>\",\n" +
-                "              \"relevantForCategories\": [ \"1\", \"2a\", \"2b\" ],\n" +
-                "              \"answerOptions\": [\n" +
-                "                  {\n" +
-                "                      \"label\": \"Ja, één of meerdere dingen\",\n" +
-                "                      \"value\": \"Ja\"\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                      \"label\": \"Nee, ik denk het niet\",\n" +
-                "                      \"value\": \"Nee\"\n" +
-                "                  }\n" +
-                "              ]\n" +
-                "          }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  ]\n" +
+                "    \"questionnaires\": [\n" +
+                "        {\n" +
+                "            \"uuid\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
+                "            \"taskType\": \"contact\",\n" +
+                "            \"questions\": [\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368387\",\n" +
+                "                    \"group\": \"classification\",\n" +
+                "                    \"questionType\": \"classificationdetails\",\n" +
+                "                    \"label\": \"Vragen over jullie ontmoeting\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    },{\n" +
+                "                        \"category\": \"2a\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"2b\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"3\"\n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9772-725467368387\",\n" +
+                "                    \"group\": \"classification\",\n" +
+                "                    \"questionType\": \"date\",\n" +
+                "                    \"label\": \"Wanneer was de laatste ontmoeting?\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    },{\n" +
+                "                        \"category\": \"2a\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"2b\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"3\"\n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9770-725467368388\",\n" +
+                "                    \"group\": \"contactdetails\",\n" +
+                "                    \"questionType\": \"contactdetails\",\n" +
+                "                    \"label\": \"Contactgegevens\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    },{\n" +
+                "                        \"category\": \"2a\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"2b\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"3\"\n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368388\",\n" +
+                "                    \"group\": \"contactdetails\",\n" +
+                "                    \"questionType\": \"date\",\n" +
+                "                    \"label\": \"Geboortedatum\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368389\",\n" +
+                "                    \"group\": \"contactdetails\",\n" +
+                "                    \"questionType\": \"open\",\n" +
+                "                    \"label\": \"Beroep\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368391\",\n" +
+                "                    \"group\": \"contactdetails\",\n" +
+                "                    \"questionType\": \"multiplechoice\",\n" +
+                "                    \"label\": \"Waar ken je deze persoon van?\",\n" +
+                "                    \"description\": null,\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"2a\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"2b\"\n" +
+                "                    }],\n" +
+                "                    \"answerOptions\": [\n" +
+                "                        {\n" +
+                "                            \"label\": \"Ouder\",\n" +
+                "                            \"value\": \"Ouder\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Kind\",\n" +
+                "                            \"value\": \"Kind\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Broer of zus\",\n" +
+                "                            \"value\": \"Broer of zus\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Partner\",\n" +
+                "                            \"value\": \"Partner\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Familielid (overig)\",\n" +
+                "                            \"value\": \"Familielid (overig)\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Huisgenoot\",\n" +
+                "                            \"value\": \"Huisgenoot\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Vriend of kennis\",\n" +
+                "                            \"value\": \"Vriend of kennis\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Medestudent of leerling\",\n" +
+                "                            \"value\": \"Medestudent of leerling\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Collega\",\n" +
+                "                            \"value\": \"Collega\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Gezondheidszorg medewerker\",\n" +
+                "                            \"value\": \"Gezondheidszorg medewerker\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Ex-partner\",\n" +
+                "                            \"value\": \"Ex-partner\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Overig\",\n" +
+                "                            \"value\": \"Overig\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368392\",\n" +
+                "                    \"group\": \"contactdetails\",\n" +
+                "                    \"questionType\": \"multiplechoice\",\n" +
+                "                    \"label\": \"Is een of meerdere onderstaande zaken van toepassing voor deze persoon?\",\n" +
+                "                    \"description\": \"* Is student\\n* 70 jaar of ouder\\n* Heeft gezondheidsklachten of loopt extra gezondheidsrisico's\\n* Woont in een asielzoekerscentrum\\n* Spreekt slecht of geen Nederlands\",\n" +
+                "                    \"relevantForCategories\": [{\n" +
+                "                        \"category\": \"1\" \n" +
+                "                    },{\n" +
+                "                        \"category\": \"2a\"\n" +
+                "                    },{\n" +
+                "                        \"category\": \"2b\"\n" +
+                "                    }],\n" +
+                "                    \"answerOptions\": [\n" +
+                "                        {\n" +
+                "                            \"label\": \"Ja, één of meerdere dingen\",\n" +
+                "                            \"value\": \"Ja\",\n" +
+                "                            \"trigger\": \"communication_staff\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"label\": \"Nee, ik denk het niet\",\n" +
+                "                            \"value\": \"Nee\",\n" +
+                "                            \"trigger\": \"communication_index\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ]\n" +
                 "}"
     }
 

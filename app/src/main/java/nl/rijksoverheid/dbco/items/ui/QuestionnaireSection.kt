@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Group
-import nl.rijksoverheid.dbco.items.QuestionnaireItem
+import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
 import timber.log.Timber
 
 class QuestionnaireSection(
@@ -24,8 +24,8 @@ class QuestionnaireSection(
 
     override fun add(group: Group) {
         super.add(group)
-        if (group is QuestionnaireItem) {
-            group.getViewStateLiveData().observe(lifecycleOwner, Observer { state ->
+        if (group is BaseQuestionItem<*>) {
+            group.currentViewState.observe(lifecycleOwner, Observer { state ->
                 if (state.isCompleted) {
                     Timber.d("Received isCompleted = true from $group")
                     checkReadiness()
@@ -37,8 +37,8 @@ class QuestionnaireSection(
     override fun addAll(groups: Collection<out Group>) {
         super.addAll(groups)
         groups.forEach {
-            if (it is QuestionnaireItem) {
-                it.getViewStateLiveData().observe(lifecycleOwner, Observer { state ->
+            if (it is BaseQuestionItem<*>) {
+                it.currentViewState.observe(lifecycleOwner, Observer { state ->
                     if (state.isCompleted) {
                         Timber.d("Received isCompleted = true from $it")
                         checkReadiness()
@@ -52,7 +52,7 @@ class QuestionnaireSection(
         var totalReady = true
         for (i in 0 until (childCount + 1)) {
             val child = getGroup(i)
-            if (child is QuestionnaireItem && (child.isRequired() && !child.isCompleted())) {
+            if (child is BaseQuestionItem<*> && (child.isRequired() && !child.isCompleted())) {
                 totalReady = false
             }
         }

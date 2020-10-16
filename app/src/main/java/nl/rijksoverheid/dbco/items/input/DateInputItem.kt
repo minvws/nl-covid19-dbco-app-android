@@ -7,7 +7,6 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.view.View
@@ -16,7 +15,6 @@ import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestionDateBinding
-import nl.rijksoverheid.dbco.items.BaseBindableItem
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -56,15 +54,24 @@ class DateInputItem(
         date = LocalDate(year, month, dayOfMonth).apply {
             binding?.dateLabel?.text = this.toString(FORMAT)
         }
+        currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-        other is DateInputItem && other.question?.id == question?.id
+        other is DateInputItem && other.question?.uuid == question?.uuid
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is DateInputItem && other.question?.id == question?.id
+        other is DateInputItem && other.question?.uuid == question?.uuid
 
     companion object {
         val FORMAT: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy")
+    }
+
+    override fun isRequired(): Boolean {
+        return true
+    }
+
+    override fun isCompleted(): Boolean {
+        return date != null
     }
 }

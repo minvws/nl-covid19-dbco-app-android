@@ -5,13 +5,12 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Questionnairy(
-	val taskType: String? = null,
-	val questions: List<Question?>? = null,
-	val uuid: String? = null
+data class Category(
+	val category: String? = null
 )

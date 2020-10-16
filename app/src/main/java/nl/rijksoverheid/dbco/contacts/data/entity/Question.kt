@@ -13,22 +13,26 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Question(
-	val relevantForCategories: List<String?>? = null,
-	val description: String? = null,
-	val id: String? = null,
-	val label: String? = null,
-	val questionType: QuestionType? = null,
-	val group: Group? = null,
-	val answerOptions: List<AnswerOption?>? = null
+    val relevantForCategories: List<Category?>? = null,
+    val description: String? = null,
+    val uuid: String? = null,
+    val label: String? = null,
+    val questionType: QuestionType? = null,
+    val group: Group? = null,
+    val answerOptions: List<AnswerOption?>? = null
 )
 
 @Serializable
 enum class QuestionType {
+
     @SerialName("date")
     Date,
 
     @SerialName("classificationdetails")
     ClassificationDetails,
+
+    @SerialName("contactdetails")
+    ContactDetails,
 
     @SerialName("open")
     Open,
@@ -39,6 +43,10 @@ enum class QuestionType {
 
 @Serializable
 enum class Group {
+
+    @SerialName("classification")
+    Classification,
+
     @SerialName("contactdetails")
     ContactDetails,
 
