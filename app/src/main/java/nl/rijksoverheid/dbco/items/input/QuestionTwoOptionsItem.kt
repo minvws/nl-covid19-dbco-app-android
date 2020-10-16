@@ -24,10 +24,6 @@ class QuestionTwoOptionsItem(
     override fun getLayout() = R.layout.item_question_2_options
     private var selectedAnswer: AnswerOption? = null
 
-    init {
-        currentViewState.value = QuestionnaireItemViewState()
-    }
-
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
 
@@ -47,7 +43,7 @@ class QuestionTwoOptionsItem(
             answerOption?.let {
                 answerSelectedListener.invoke(it)
                 selectedAnswer = it
-                currentViewState.value = currentViewState.value?.copy(isCompleted = true)
+                checkCompleted()
             }
         }
     }

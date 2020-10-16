@@ -10,9 +10,7 @@ package nl.rijksoverheid.dbco.items.input
 
 import androidx.core.widget.doAfterTextChanged
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.ContactName
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
-import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 
 class ContactNameItem(private var firstName: String = "", private var lastName: String = "") :
     BaseQuestionItem<ItemContactNameBinding>() {
@@ -42,21 +40,20 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
 
         viewBinding.firstName.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
+                checkCompleted()
             }
         }
 
         viewBinding.lastName.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                currentViewState.value = currentViewState.value?.copy(isCompleted = isCompleted())
+                checkCompleted()
             }
         }
     }
 
-    fun getFirstNameAndLastName(): ContactName {
-        return ContactName(
-            firstName,
-            lastName
-        )
+    override fun getUserAnswers() : Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        // TODO
+        return answers
     }
 }
