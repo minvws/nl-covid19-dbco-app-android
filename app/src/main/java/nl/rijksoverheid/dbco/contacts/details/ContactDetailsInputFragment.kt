@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.contacts.details
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -54,6 +54,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         )
 
         Timber.d("Found selected user ${args.selectedContact}");
+        Timber.d("Found task ${args.indexTask}")
 
 
         val response: ContactDetailsResponse =
@@ -71,6 +72,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
             addQuestionnarySections(null, response)
             addContactInformSection()
+        }
+
+        binding.saveButton.setOnClickListener {
+            findNavController().navigate(ContactDetailsInputFragmentDirections.toMyContactsFragment())
         }
     }
 
@@ -99,16 +104,23 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         adapter.add(contactDetailsSection)
 
         // add questions to sections, based on their "group"
-        response.questionnaires?.forEach {
+        response.questionnaires?.firstOrNull().let {
             it?.questions?.forEach { question ->
+                val questionCategory = Category(args.indexTask?.category)
+                if (!question?.relevantForCategories!!.contains(questionCategory)) {
+                    Timber.d("Skipping $question")
+                    return@forEach
+                }
+
                 val sectionToAddTo =
-                    when (question?.group) {
+                    when (question.group) {
                         Group.ContactDetails -> contactDetailsSection
                         Group.Classification -> classificationSection
                         else -> null
                     }
 
-                when (question?.questionType) {
+
+                when (question.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, sectionToAddTo)
                     }
@@ -122,6 +134,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         addContactDetailsItems(contactItem, sectionToAddTo)
                     }
                 }
+
             }
         }
     }
@@ -219,7 +232,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun collectAnswers() {
 
-        Toast.makeText(context, "Nog niet actief", Toast.LENGTH_SHORT).show()
 
         val answers = HashMap<String, Any>()
 

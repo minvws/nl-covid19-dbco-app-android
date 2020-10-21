@@ -8,11 +8,13 @@
 
 package nl.rijksoverheid.dbco.items.input
 
+import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.InputType
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
+import java.util.*
 
 class PhoneNumberItem(private var phoneNumber: String?) :
     BaseQuestionItem<ItemPhoneInputBinding>() {
@@ -22,6 +24,7 @@ class PhoneNumberItem(private var phoneNumber: String?) :
     override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_CLASS_PHONE
+            addTextChangedListener(PhoneNumberFormattingTextWatcher(Locale.getDefault().country))
             setText(phoneNumber)
         }
 
