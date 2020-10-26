@@ -14,8 +14,8 @@ import android.widget.ArrayAdapter
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
-import nl.rijksoverheid.dbco.questionnary.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.questionnary.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.SpinnerAdapterWithDefaultLabel
 import timber.log.Timber
 

@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.questionnary
+package nl.rijksoverheid.dbco.questionnaire
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -15,11 +15,11 @@ import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import retrofit2.Response
 
-class QuestionnaryRepository(context: Context) {
+class QuestionnareRepository(context: Context) {
 
     private val api = StubbedAPI.create(context)
 
-    suspend fun retrieveQuestionnairy(): Response<ContactDetailsResponse> {
+    suspend fun retrieveQuestionnaires(): Response<ContactDetailsResponse> {
         return withContext(Dispatchers.IO) {
             return@withContext withContext(Dispatchers.Default) { api.getQuestionnaires() }
         }

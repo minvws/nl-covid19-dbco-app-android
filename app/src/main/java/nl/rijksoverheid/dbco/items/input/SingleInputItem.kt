@@ -13,7 +13,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
-import nl.rijksoverheid.dbco.questionnary.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 class SingleInputItem(val context: Context, question: Question) :
     BaseQuestionItem<ItemSingleInputBinding>(question) {

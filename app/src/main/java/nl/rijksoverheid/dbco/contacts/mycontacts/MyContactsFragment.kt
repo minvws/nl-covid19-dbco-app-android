@@ -141,7 +141,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         // Load data from backend
         lifecycleScope.launch {
             tasksViewModel.fetchTasksForUUID("1234")
-            tasksViewModel.fetchQuestionnary()
+            tasksViewModel.retrieveQuestionnaires()
         }
 
 

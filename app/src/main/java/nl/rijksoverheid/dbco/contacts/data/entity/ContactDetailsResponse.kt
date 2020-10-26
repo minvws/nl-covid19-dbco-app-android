@@ -9,9 +9,9 @@
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.questionnary.data.entity.Questionnairy
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 @Serializable
 data class ContactDetailsResponse(
-	val questionnaires: List<Questionnairy?>? = null
+	val questionnaires: List<Questionnaire?>? = null
 )

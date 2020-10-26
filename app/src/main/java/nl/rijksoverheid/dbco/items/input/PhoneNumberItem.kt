@@ -14,7 +14,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
-import nl.rijksoverheid.dbco.questionnary.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import java.util.*
 
 class PhoneNumberItem(private var phoneNumber: String?, question: Question?) :

@@ -11,7 +11,7 @@ package nl.rijksoverheid.dbco.items.input
 import androidx.core.widget.doAfterTextChanged
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
-import nl.rijksoverheid.dbco.questionnary.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 class ContactNameItem(
     private var firstName: String = "",

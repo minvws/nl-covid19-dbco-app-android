@@ -31,7 +31,7 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
-import nl.rijksoverheid.dbco.questionnary.data.entity.*
+import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.toDp
@@ -58,7 +58,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private lateinit var selectedTask: Task
     private lateinit var selectedContact: LocalContact
-    private var questionnairy: Questionnairy? = null
+    private var questionnaire: Questionnaire? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,16 +78,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         selectedTask = args.indexTask ?: Task(taskType = "contact", source = "app")
 
 
-        tasksViewModel.questionnairy.observe(viewLifecycleOwner) { response ->
-            questionnairy = response.questionnaires?.firstOrNull()
+        tasksViewModel.questionnaire.observe(viewLifecycleOwner) { response ->
+            questionnaire = response.questionnaires?.firstOrNull()
             args.selectedContact?.also { contact ->
                 binding.toolbar.title = contact.displayName
-                addQuestionnarySections(contact, response)
+                addQuestionnaireSections(contact, response)
                 addContactInformSection()
             }
             if (args.selectedContact == null) {
                 binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
-                addQuestionnarySections(null, response)
+                addQuestionnaireSections(null, response)
                 addContactInformSection()
             }
         }
@@ -97,7 +97,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
-    private fun addQuestionnarySections(
+    private fun addQuestionnaireSections(
         contactItem: LocalContact?,
         response: ContactDetailsResponse
     ) {
@@ -293,7 +293,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
             selectedTask.let {
                 it.linkedContact = selectedContact
-                it.questionnaireResult = QuestionnaireResult(questionnairy?.uuid!!, finalAnswers)
+                it.questionnaireResult = QuestionnaireResult(questionnaire?.uuid!!, finalAnswers)
                 tasksViewModel.saveChangesToTask(it)
             }
 

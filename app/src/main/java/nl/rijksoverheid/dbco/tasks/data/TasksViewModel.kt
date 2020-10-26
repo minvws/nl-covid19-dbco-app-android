@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.questionnary.QuestionnaryRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
@@ -22,15 +22,15 @@ import timber.log.Timber
 
 class TasksViewModel(
     private val tasksRepository: TasksRepository,
-    private val questionnaryRepository: QuestionnaryRepository
+    private val questionnareRepository: QuestionnareRepository
 ) : ViewModel() {
 
 
     private val _indexTasks = MutableLiveData<TasksResponse>()
     val indexTasksLivedata: LiveData<TasksResponse> = _indexTasks
 
-    private val _questionnary = MutableLiveData<ContactDetailsResponse>()
-    val questionnairy: LiveData<ContactDetailsResponse> = _questionnary
+    private val _questionnaire = MutableLiveData<ContactDetailsResponse>()
+    val questionnaire: LiveData<ContactDetailsResponse> = _questionnaire
 
     override fun onCleared() {
         super.onCleared()
@@ -48,11 +48,11 @@ class TasksViewModel(
         }
     }
 
-    fun fetchQuestionnary() {
+    fun retrieveQuestionnaires() {
         viewModelScope.launch {
-            val questionnaryResponse = questionnaryRepository.retrieveQuestionnairy()
-            if (questionnaryResponse.isSuccessful) {
-                _questionnary.postValue(questionnaryResponse.body())
+            val questionnairesResponse = questionnareRepository.retrieveQuestionnaires()
+            if (questionnairesResponse.isSuccessful) {
+                _questionnaire.postValue(questionnairesResponse.body())
             }
         }
     }

@@ -14,7 +14,7 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.questionnary.data.entity.QuestionnaireResult
+import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 
 @Serializable
 @Parcelize

@@ -12,9 +12,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.questionnary.QuestionnaryRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,17 +26,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        Timber.d("Retrieving viewmodel factory")
         if (factory != null) {
-            Timber.d("Retrieving viewmodel factory as old")
             return factory as ViewModelFactory
         }
         factory = ViewModelFactory(
             TasksRepository(this),
             ContactsRepository(this),
-            QuestionnaryRepository(this)
+            QuestionnareRepository(this)
         )
-        Timber.d("Retrieving viewmodel factory as new")
         return factory as ViewModelFactory
 
     }

@@ -14,7 +14,7 @@ import android.widget.DatePicker
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionDateBinding
-import nl.rijksoverheid.dbco.questionnary.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter

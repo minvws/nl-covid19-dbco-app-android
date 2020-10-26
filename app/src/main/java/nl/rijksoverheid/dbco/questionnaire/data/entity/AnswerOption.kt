@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.questionnary.data.entity
+package nl.rijksoverheid.dbco.questionnaire.data.entity
 
 import kotlinx.serialization.Serializable
 

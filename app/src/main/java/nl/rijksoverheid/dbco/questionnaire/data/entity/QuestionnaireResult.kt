@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.questionnary.data.entity
+package nl.rijksoverheid.dbco.questionnaire.data.entity
 
 
 import android.os.Parcelable
@@ -18,11 +18,11 @@ import kotlinx.serialization.json.JsonObject
 @Serializable
 @Parcelize
 class QuestionnaireResult(
-    val questionaireUuid: String,
+    val questionnaireUuid: String,
     var answers: ArrayList<@RawValue JsonObject>
 ) : Parcelable {
 
     override fun toString(): String {
-        return "QuestionnaireResult(questionaireUuid='$questionaireUuid', answers=${answers.size})"
+        return "QuestionnaireResult(questionaireUuid='$questionnaireUuid', answers=${answers.size})"
     }
 }
