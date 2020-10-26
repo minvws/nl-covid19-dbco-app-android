@@ -9,9 +9,9 @@
 package nl.rijksoverheid.dbco.items.ui
 
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.Task
 import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import java.io.Serializable
 
 class TaskItem(

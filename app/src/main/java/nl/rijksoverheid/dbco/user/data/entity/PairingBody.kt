@@ -6,12 +6,11 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.user.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.questionnary.data.entity.Questionnairy
 
 @Serializable
-data class ContactDetailsResponse(
-	val questionnaires: List<Questionnairy?>? = null
+data class PairingBody(
+    val pairingCode: String? = null
 )

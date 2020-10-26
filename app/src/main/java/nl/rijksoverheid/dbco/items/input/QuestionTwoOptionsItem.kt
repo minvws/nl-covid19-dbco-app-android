@@ -10,9 +10,9 @@ package nl.rijksoverheid.dbco.items.input
 import android.widget.CompoundButton
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
+import nl.rijksoverheid.dbco.questionnary.data.entity.AnswerOption
+import nl.rijksoverheid.dbco.questionnary.data.entity.Question
 import nl.rijksoverheid.dbco.util.MarkdownHelper
 
 class QuestionTwoOptionsItem(
@@ -57,5 +57,15 @@ class QuestionTwoOptionsItem(
 
     override fun isCompleted(): Boolean {
         return (selectedAnswer != null)
+    }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        selectedAnswer?.let {
+            it.value?.let {
+                answers.put("value", it)
+            }
+        }
+        return answers
     }
 }

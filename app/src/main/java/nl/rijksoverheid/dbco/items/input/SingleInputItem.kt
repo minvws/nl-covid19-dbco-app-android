@@ -12,8 +12,8 @@ import android.content.Context
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
+import nl.rijksoverheid.dbco.questionnary.data.entity.Question
 
 class SingleInputItem(val context: Context, question: Question) :
     BaseQuestionItem<ItemSingleInputBinding>(question) {
@@ -47,5 +47,13 @@ class SingleInputItem(val context: Context, question: Question) :
 
     override fun isCompleted(): Boolean {
         return !input.isNullOrEmpty()
+    }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        input?.let {
+            answers.put("value", it)
+        }
+        return answers
     }
 }

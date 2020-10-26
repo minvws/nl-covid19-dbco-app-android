@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
-data class TasksResponse(val tasks: List<Task>? = null)
+data class Case(val dateOfSymptomOnset: String? = null, val tasks: MutableList<Task>? = null)

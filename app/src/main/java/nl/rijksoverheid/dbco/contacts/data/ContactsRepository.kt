@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 
 class ContactsRepository(val context: Context) {
 

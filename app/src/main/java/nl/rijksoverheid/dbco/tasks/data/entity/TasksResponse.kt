@@ -6,13 +6,10 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.tasks.data.entity
 
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
 
 @Serializable
-data class AnswerOption(
-	val label: String? = null,
-	val trigger: String? = null,
-	val value: String? = null
-)
+data class TasksResponse(val case: Case? = null)

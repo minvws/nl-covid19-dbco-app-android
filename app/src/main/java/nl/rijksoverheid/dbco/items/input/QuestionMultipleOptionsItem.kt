@@ -13,9 +13,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
+import nl.rijksoverheid.dbco.questionnary.data.entity.AnswerOption
+import nl.rijksoverheid.dbco.questionnary.data.entity.Question
 import nl.rijksoverheid.dbco.util.SpinnerAdapterWithDefaultLabel
 import timber.log.Timber
 
@@ -79,5 +79,16 @@ class QuestionMultipleOptionsItem(
     override fun isCompleted(): Boolean {
         return (selectedAnswer != null)
     }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        selectedAnswer?.let {
+            it.value?.let {
+                answers.put("value", it)
+            }
+        }
+        return answers
+    }
+
 
 }

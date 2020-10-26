@@ -14,9 +14,10 @@ import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
+import nl.rijksoverheid.dbco.questionnary.data.entity.Question
 
-class EmailAdressItem(private var emailAddress: String?) :
-    BaseQuestionItem<ItemEmailInputBinding>() {
+class EmailAdressItem(private var emailAddress: String?, question: Question?) :
+    BaseQuestionItem<ItemEmailInputBinding>(question) {
     override fun getLayout() = R.layout.item_email_input
     override fun isRequired() = false
     private var isValidEmail: Boolean = false
@@ -60,6 +61,14 @@ class EmailAdressItem(private var emailAddress: String?) :
 
     override fun isCompleted(): Boolean {
         return !emailAddress.isNullOrEmpty() && isValidEmail
+    }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        emailAddress?.let {
+            answers.put("email", it)
+        }
+        return answers
     }
 
 }
