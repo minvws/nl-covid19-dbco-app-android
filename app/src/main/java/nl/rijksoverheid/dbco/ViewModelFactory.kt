@@ -8,18 +8,27 @@
 
 package nl.rijksoverheid.dbco
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
+import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
+import nl.rijksoverheid.dbco.tasks.TasksRepository
+import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 
-class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
-    private val context = context.applicationContext
+class ViewModelFactory(
+    private val tasksRepository: TasksRepository,
+    private val contactsRepository: ContactsRepository,
+    private val questionnareRepository: QuestionnareRepository
+) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
-            ContactsViewModel::class.java -> ContactsViewModel(context) as T
+            ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
+            TasksViewModel::class.java -> TasksViewModel(
+                tasksRepository, questionnareRepository
+            ) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }

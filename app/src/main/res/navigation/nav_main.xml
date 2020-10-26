@@ -77,7 +77,7 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -105,7 +105,7 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactDetails"
             app:destination="@id/contactDetailsInputFragment"
@@ -144,7 +144,7 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <argument
             android:name="selectedContact"
             android:defaultValue="@null"

@@ -13,6 +13,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.alimuzaffar.lib.pin.PinEntryEditText
 import nl.rijksoverheid.dbco.BaseFragment
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.NotNull
  */
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
 
+    private val viewModel by viewModels<FillCodeViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentFillCodeBinding.bind(view)
@@ -39,6 +42,12 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
         }
 
         binding.btnNext.setOnClickListener {
+            val pin = binding.pinEntry1.text.toString() +
+                    binding.pinEntry2.text.toString() +
+                    binding.pinEntry3.text.toString()
+            // viewModel.pair(pin)
+            // Pairing is stubbed till we have access to the portal to create new pairings
+
             it.hideKeyboard()
             it.postDelayed({
                 findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())

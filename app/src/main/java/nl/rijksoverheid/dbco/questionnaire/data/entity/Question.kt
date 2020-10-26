@@ -6,11 +6,12 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.questionnaire.data.entity
 
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 
 @Keep
 @Serializable

@@ -13,11 +13,14 @@ import android.view.View
 import android.widget.DatePicker
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.databinding.ItemQuestionDateBinding
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class DateInputItem(
@@ -73,5 +76,14 @@ class DateInputItem(
 
     override fun isCompleted(): Boolean {
         return date != null
+    }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        date?.let {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            answers.put("value", sdf.format(it))
+        }
+        return answers
     }
 }

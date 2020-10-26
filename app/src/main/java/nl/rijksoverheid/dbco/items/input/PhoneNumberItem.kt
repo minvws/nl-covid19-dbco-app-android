@@ -14,10 +14,11 @@ import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import java.util.*
 
-class PhoneNumberItem(private var phoneNumber: String?) :
-    BaseQuestionItem<ItemPhoneInputBinding>() {
+class PhoneNumberItem(private var phoneNumber: String?, question: Question?) :
+    BaseQuestionItem<ItemPhoneInputBinding>(question) {
     override fun getLayout() = R.layout.item_phone_input
     override fun isRequired() = true
 
@@ -51,5 +52,13 @@ class PhoneNumberItem(private var phoneNumber: String?) :
 
     override fun isCompleted(): Boolean {
         return !phoneNumber.isNullOrEmpty()
+    }
+
+    override fun getUserAnswers(): Map<String, Any> {
+        val answers = HashMap<String, Any>()
+        phoneNumber?.let {
+            answers.put("phoneNumber", it)
+        }
+        return answers
     }
 }
