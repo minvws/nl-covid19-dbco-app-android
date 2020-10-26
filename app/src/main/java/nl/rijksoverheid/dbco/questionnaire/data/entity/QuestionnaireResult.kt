@@ -23,6 +23,6 @@ class QuestionnaireResult(
 ) : Parcelable {
 
     override fun toString(): String {
-        return "QuestionnaireResult(questionaireUuid='$questionnaireUuid', answers=${answers.size})"
+        return "QuestionnaireResult(questionnaireUuid='$questionnaireUuid', answers=${answers.size})"
     }
 }

@@ -157,7 +157,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
         } else {
             findNavController().navigate(MyContactsFragmentDirections.toContactPickerSelection(task))
-            // Timber.d("Found taskViewModel has ${tasksViewModel.questionnairy.value}")
         }
     }
 
