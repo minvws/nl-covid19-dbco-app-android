@@ -37,21 +37,46 @@
             android:transitionName="content"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/content"
+            <TextView
+                android:id="@+id/buildVersion"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:clipToPadding="false"
-                android:paddingBottom="32dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingTop="10dp"
+                android:textSize="10sp"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
 
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@+id/save_button_holder"
+            <TextView
+                android:id="@+id/my_contacts_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="16dp"
+                android:text="Kun je de gegevens van deze contacten controleren?"
+                android:textAppearance="?attr/textAppearanceHeadline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+
+                android:paddingBottom="32dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/send_button_holder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/my_contacts_header" />
+
             <FrameLayout
-                android:id="@+id/save_button_holder"
+                android:id="@+id/send_button_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
@@ -65,14 +90,12 @@
                     android:background="@color/gray_lighter"
                     android:layout_gravity="top" />
 
-                <Button
-                    android:id="@+id/save_button"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/send_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:backgroundTint="@color/gray_lighter"
-                    android:text="@string/close"
-                    android:textColor="@color/green_blue" />
+                    android:text="@string/send_data" />
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

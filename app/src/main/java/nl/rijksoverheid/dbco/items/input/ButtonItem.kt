@@ -42,7 +42,7 @@ class ButtonItem(
         if (type == ButtonType.LIGHT) {
             viewBinding.button.apply {
                 backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.dark_blue))
+                setTextColor(context.getColor(R.color.green_blue))
             }
         }
     }

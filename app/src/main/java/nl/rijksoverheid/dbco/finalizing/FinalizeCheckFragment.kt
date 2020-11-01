@@ -6,49 +6,33 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.mycontacts
+package nl.rijksoverheid.dbco.finalizing
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
-import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.databinding.FragmentFinalizingCheckBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
-/**
- * Overview fragment showing selected or suggested contacts of the user
- */
-
-class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
+class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
-
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             TasksViewModel::class.java
         )
     }
-
     private val contentSection = Section()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,25 +43,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentMyContactsBinding.bind(view)
 
-        binding.buildVersion.text = getString(
-            R.string.status_app_version,
-            BuildConfig.VERSION_NAME,
-            "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
-        )
-
+        val binding = FragmentFinalizingCheckBinding.bind(view)
         binding.content.adapter = adapter
-
         binding.toolbar.visibility = View.GONE
-
-        binding.manualEntryButton.setOnClickListener {
-            checkPermissionAndNavigate()
-        }
-
-        binding.sendButton.setOnClickListener {
-            findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
-        }
 
         tasksViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
@@ -102,20 +71,22 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
             it.case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
-                when (task.taskType) {
-                    "contact" -> {
-                        when (task.communication) {
-                            CommunicationType.Index -> {
-                                informPersonallySection.add(TaskItem(task))
+                if (task.questionnaireResult == null) {
+                    when (task.taskType) {
+                        "contact" -> {
+                            when (task.communication) {
+                                CommunicationType.Index -> {
+                                    informPersonallySection.add(TaskItem(task))
+                                }
+                                CommunicationType.Staff -> {
+                                    informGgdSection.add(TaskItem(task))
+                                }
+                                else -> {
+                                    informPersonallySection.add(TaskItem(task))
+                                }
                             }
-                            CommunicationType.Staff -> {
-                                informGgdSection.add(TaskItem(task))
-                            }
-                            else -> {
-                                informPersonallySection.add(TaskItem(task))
-                            }
-                        }
 
+                        }
                     }
                 }
             }
@@ -131,32 +102,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         })
 
-        adapter.setOnItemClickListener { item, view ->
-            if (item is TaskItem) {
-                checkPermissionAndNavigate(item.task)
-            }
-        }
-
-        // Load data from backend
-        lifecycleScope.launch {
-            tasksViewModel.fetchTasksForUUID("1234")
-            tasksViewModel.retrieveQuestionnaires()
-        }
-
-
-    }
-
-    private fun checkPermissionAndNavigate(task: Task? = null) {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // If not granted send users to permission grant screen
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
-        } else {
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerSelection(task))
+        binding.sendButton.setOnClickListener {
+            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
         }
     }
+
 
 }

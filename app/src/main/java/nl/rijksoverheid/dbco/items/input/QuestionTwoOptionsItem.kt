@@ -13,11 +13,12 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.util.MarkdownHelper
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class QuestionTwoOptionsItem(
     question: Question?,
-    private val answerSelectedListener: (AnswerOption) -> Unit
+    private val answerSelectedListener: (AnswerOption) -> Unit,
+    private val optionalValueLabel: String? = null
 ) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_2_options
@@ -28,7 +29,7 @@ class QuestionTwoOptionsItem(
 
         question?.description?.let {
             val context = viewBinding.root.context
-            val spannableBuilder = MarkdownHelper.formatText(it, context)
+            val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.questionDescription.text = spannableBuilder
         }
     }
@@ -63,7 +64,11 @@ class QuestionTwoOptionsItem(
         val answers = HashMap<String, Any>()
         selectedAnswer?.let {
             it.value?.let {
-                answers.put("value", it)
+                if (optionalValueLabel != null) {
+                    answers.put(optionalValueLabel, it)
+                } else {
+                    answers.put("value", it)
+                }
             }
         }
         return answers

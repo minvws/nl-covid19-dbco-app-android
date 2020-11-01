@@ -12,8 +12,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
+import nl.rijksoverheid.dbco.debug.usertest.UsertestQuestionnaireRepository
+import nl.rijksoverheid.dbco.debug.usertest.UsertestTaskRepository
+import nl.rijksoverheid.dbco.debug.usertest.UsertestUserRepository
 import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
+import nl.rijksoverheid.dbco.user.UserRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,11 +33,23 @@ class MainActivity : AppCompatActivity() {
         if (factory != null) {
             return factory as ViewModelFactory
         }
-        factory = ViewModelFactory(
-            TasksRepository(this),
-            ContactsRepository(this),
-            QuestionnareRepository(this)
-        )
+        if (!BuildConfig.USER_TEST) {
+            factory = ViewModelFactory(
+                baseContext,
+                TasksRepository(this),
+                ContactsRepository(this),
+                QuestionnareRepository(this),
+                UserRepository(this)
+            )
+        } else {
+            factory = ViewModelFactory(
+                baseContext,
+                UsertestTaskRepository(this),
+                ContactsRepository(this),
+                UsertestQuestionnaireRepository(this),
+                UsertestUserRepository(this)
+            )
+        }
         return factory as ViewModelFactory
 
     }

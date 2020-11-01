@@ -12,7 +12,7 @@ import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.util.MarkdownHelper
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 
 class BulletedListItem(
@@ -24,7 +24,7 @@ class BulletedListItem(
         val context = viewBinding.root.context
         val html = context.getString(text)
 
-        val spannableBuilder = MarkdownHelper.formatText(html, context)
+        val spannableBuilder = HtmlHelper.buildSpannableFromHtml(html, context)
         viewBinding.text = spannableBuilder
     }
 

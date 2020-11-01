@@ -50,13 +50,13 @@ class QuestionnaireSectionHeader(
             1 -> R.drawable.ic_section_one
             2 -> R.drawable.ic_section_two
             3 -> R.drawable.ic_section_three
-            else -> R.drawable.ic_section_done
+            else -> R.drawable.ic_valid
         }
 
 
     fun setSectionDone(sectionDone: Boolean) {
         if (sectionDone) {
-            binding.sectionStatusIcon.setImageResource(R.drawable.ic_section_done)
+            binding.sectionStatusIcon.setImageResource(R.drawable.ic_valid)
         } else {
             binding.sectionStatusIcon.setImageResource(getSectionIcon())
         }

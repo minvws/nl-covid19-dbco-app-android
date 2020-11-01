@@ -8,21 +8,30 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.user.UserRepository
+import nl.rijksoverheid.dbco.user.UserInterface
 
-class FillCodeViewModel(val context: Context) : ViewModel() {
+class FillCodeViewModel(private val userRepository: UserInterface) : ViewModel() {
+
+    private val _validPairingCode = MutableLiveData<Boolean>()
+    val validPairingCode: LiveData<Boolean> = _validPairingCode
 
     fun pair(pin: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                UserRepository(context).pair(pin)
+                val response = userRepository.pair(pin)
                 // TODO notify fragment
+                if (response.caseId.isNullOrEmpty()) {
+                    _validPairingCode.postValue(false)
+                } else {
+                    _validPairingCode.postValue(true)
+                }
             }
         }
     }
