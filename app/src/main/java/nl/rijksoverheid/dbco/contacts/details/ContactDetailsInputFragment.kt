@@ -61,6 +61,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private lateinit var selectedTask: Task
     private lateinit var selectedContact: LocalContact
+    private var questionnaireResult: QuestionnaireResult? = null
     private var questionnaire: Questionnaire? = null
     private val natureOfContactQuestions = HashMap<String, Question>()
 
@@ -80,6 +81,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         selectedContact = args.selectedContact ?: LocalContact("-1", "Nieuw Contact")
         selectedTask = args.indexTask ?: Task(taskType = "contact", source = "app")
+
+        if(selectedTask.questionnaireResult != null){
+            questionnaireResult = selectedTask.questionnaireResult
+        }
 
 
         tasksViewModel.questionnaire.observe(viewLifecycleOwner) { response ->
@@ -320,6 +325,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
+        val previousAnswer = questionnaireResult?.getAnswerByUuid(question.uuid!!)
+
 
         if (task?.category != null) {
             when (task.category) {
@@ -328,7 +335,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             livedTogetherRisk,
                             answerSelectedListener,
-                            "livedTogetherRisk"
+                            "livedTogetherRisk",
+                            previousAnswer
                         )
                     )
                     natureOfContactQuestions.put("livedTogetherRisk", livedTogetherRisk)
