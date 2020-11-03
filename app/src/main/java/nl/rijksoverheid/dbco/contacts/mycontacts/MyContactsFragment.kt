@@ -155,7 +155,21 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             // If not granted send users to permission grant screen
             findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
         } else {
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerSelection(task))
+
+            if (task?.linkedContact != null) {
+                findNavController().navigate(
+                    MyContactsFragmentDirections.toContactDetails(
+                        task,
+                        task.linkedContact
+                    )
+                )
+            } else {
+                findNavController().navigate(
+                    MyContactsFragmentDirections.toContactPickerSelection(
+                        task
+                    )
+                )
+            }
         }
     }
 

@@ -9,21 +9,11 @@
 package nl.rijksoverheid.dbco.questionnaire.data.entity
 
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
 
 @Serializable
-@Parcelize
-class QuestionnaireResult(
+data class QuestionnaireResult(
     val questionnaireUuid: String,
-    var answers: ArrayList<@RawValue JsonObject>
-) : Parcelable {
-
-    override fun toString(): String {
-
-        return "QuestionnaireResult(questionnaireUuid='$questionnaireUuid', answers=${answers})"
-    }
-}
+    var answers: JsonArray
+)

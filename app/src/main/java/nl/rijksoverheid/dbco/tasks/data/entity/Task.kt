@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.tasks.data.entity
 
 import android.os.Parcelable
 import androidx.annotation.Keep
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -27,9 +28,11 @@ class Task(
     val communication: CommunicationType? = null,
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
-    var linkedContact: LocalContact? = null,
-    var questionnaireResult: QuestionnaireResult? = null
+    var linkedContact: LocalContact? = null
 ) : Parcelable {
+    @IgnoredOnParcel
+    var questionnaireResult: QuestionnaireResult? = null
+
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
     }

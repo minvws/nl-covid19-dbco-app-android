@@ -16,6 +16,9 @@ import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.BaseFragment
@@ -108,7 +111,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 R.string.contact_section_typeofcontact_header,
                 R.string.contact_section_typeofcontact_subtext,
                 1
-            ), false
+            ), true
         )
         adapter.add(classificationSection)
 
@@ -490,16 +493,26 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
         // Extract all actual answers, discard the keys since they're already in the answer
         val finalAnswers = ArrayList<JsonObject>()
-        answerCollector.entries.forEach {
-            val answerAsJson = JsonObject(it.value as Map<String, JsonElement>)
-            finalAnswers.add(answerAsJson)
+        answerCollector.entries.forEach { answerField ->
+            val answerValue = answerField.value
+            val newMap = HashMap<String, JsonElement>()
+            for ((key, value) in answerValue) {
+                if (value is Boolean) {
+                    newMap.put(key, Json.encodeToJsonElement(Boolean.serializer(), value))
+                } else if (value is String) {
+                    newMap.put(key, Json.encodeToJsonElement(String.serializer(), value))
+                }
+            }
+
+            finalAnswers.add(JsonObject(newMap))
+
         }
 
 
         selectedTask.let {
             it.linkedContact = selectedContact
             it.questionnaireResult =
-                QuestionnaireResult(questionnaire?.uuid!!, finalAnswers)
+                QuestionnaireResult(questionnaire?.uuid!!, JsonArray(finalAnswers))
             if (it.label.isNullOrEmpty()) {
                 it.label = selectedContact.displayName
             }
@@ -507,9 +520,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
 
 
-
-
-        Timber.d("Answers are $answerCollector")
+        //Timber.d("Answers are $answerCollector")
         findNavController().navigate(ContactDetailsInputFragmentDirections.toMyContactsFragment())
     }
 

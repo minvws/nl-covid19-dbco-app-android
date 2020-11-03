@@ -14,6 +14,8 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
@@ -21,7 +23,6 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
-import timber.log.Timber
 
 class UsertestTaskRepository(context: Context) : TaskInterface {
     private var previousResponse: TasksResponse? = null
@@ -60,7 +61,7 @@ class UsertestTaskRepository(context: Context) : TaskInterface {
             (previousResponse?.case?.tasks as java.util.ArrayList<Task>).add(updatedTask)
         }
 
-        Timber.w("Final result is $previousResponse")
+        //Timber.w("Final result is $previousResponse")
 
         val storeString = Json {
             isLenient = true
@@ -70,6 +71,8 @@ class UsertestTaskRepository(context: Context) : TaskInterface {
                 contextual(Int.serializer())
                 contextual(Double.serializer())
                 contextual(QuestionnaireResult.serializer())
+                contextual(JsonArray.serializer())
+                contextual(JsonElement.serializer())
             }
         }.encodeToString(previousResponse)
         encryptedSharedPreferences.edit().putString("usertasks", storeString).apply()
