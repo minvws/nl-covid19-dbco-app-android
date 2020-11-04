@@ -12,12 +12,12 @@ import android.content.Context
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 
-class UserRepository(context: Context) { // TODO move to dagger
+class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
     private val api: StubbedAPI = StubbedAPI.create(context)
     private var userKey: String? = null
 
-    suspend fun pair(pincode: String): PairingResponse {
+    override suspend fun pair(pincode: String): PairingResponse {
         val pairingResponse = api.pair()
         userKey = pairingResponse.signingKey
         return pairingResponse

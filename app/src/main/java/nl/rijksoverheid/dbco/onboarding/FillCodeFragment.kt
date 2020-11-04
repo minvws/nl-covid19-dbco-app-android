@@ -8,17 +8,20 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.alimuzaffar.lib.pin.PinEntryEditText
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.showKeyboard
 import org.jetbrains.annotations.NotNull
@@ -28,11 +31,17 @@ import org.jetbrains.annotations.NotNull
  */
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
 
+    private lateinit var pin: String
     private val viewModel by viewModels<FillCodeViewModel>()
+    private lateinit var encryptedSharedPreferences: SharedPreferences
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentFillCodeBinding.bind(view)
+        encryptedSharedPreferences =
+            LocalStorageRepository.getInstance(requireActivity()).getSharedPreferences()
+
+
 
         binding.backButton.setOnClickListener {
             it.hideKeyboard()
@@ -42,17 +51,34 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
         }
 
         binding.btnNext.setOnClickListener {
-            val pin = binding.pinEntry1.text.toString() +
+            pin = binding.pinEntry1.text.toString() +
                     binding.pinEntry2.text.toString() +
                     binding.pinEntry3.text.toString()
-            // viewModel.pair(pin)
+            viewModel.pair(pin)
             // Pairing is stubbed till we have access to the portal to create new pairings
 
-            it.hideKeyboard()
-            it.postDelayed({
-                findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
-            }, KEYBOARD_DELAY)
+
         }
+
+        viewModel.validPairingCode.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.btnNext.hideKeyboard()
+                binding.btnNext.postDelayed({
+                    findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
+                }, KEYBOARD_DELAY)
+                encryptedSharedPreferences.edit().putString("pincode", pin).apply()
+            } else {
+                Toast.makeText(
+                    context,
+                    getString(R.string.onboarding_invalid_access_code),
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.pinEntry1.setText("")
+                binding.pinEntry2.setText("")
+                binding.pinEntry3.setText("")
+                binding.pinEntry1.requestFocus()
+            }
+        })
 
         setupEntriesBehaviour(binding)
 
@@ -112,10 +138,15 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
     private fun backspaceAndFocus(pinEntry: PinEntryEditText) {
         val pinText = pinEntry.text.toString()
         // manually removing last symbol from previous entry as we intercepted backspace key
-        pinEntry.setText(pinText.substring(0, ENTRY_MAX_LENGTH - 1))
-        pinEntry.requestFocus()
-        // put cursor at the end
-        pinEntry.setSelection(ENTRY_MAX_LENGTH - 1)
+        if (pinText.isNotEmpty()) {
+            pinEntry.setText(pinText.substring(0, ENTRY_MAX_LENGTH - 1))
+            pinEntry.requestFocus()
+            // put cursor at the end
+            pinEntry.setSelection(ENTRY_MAX_LENGTH - 1)
+        } else {
+            pinEntry.requestFocus()
+            pinEntry.setSelection(0)
+        }
     }
 
     companion object {

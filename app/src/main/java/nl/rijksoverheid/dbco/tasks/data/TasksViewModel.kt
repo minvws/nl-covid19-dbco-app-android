@@ -14,15 +14,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
-import nl.rijksoverheid.dbco.tasks.TasksRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
+import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import timber.log.Timber
 
 class TasksViewModel(
-    private val tasksRepository: TasksRepository,
-    private val questionnareRepository: QuestionnareRepository
+    private val tasksRepository: TaskInterface,
+    private val questionnareRepository: QuestionnaireInterface
 ) : ViewModel() {
 
 
@@ -51,9 +51,8 @@ class TasksViewModel(
     fun retrieveQuestionnaires() {
         viewModelScope.launch {
             val questionnairesResponse = questionnareRepository.retrieveQuestionnaires()
-            if (questionnairesResponse.isSuccessful) {
-                _questionnaire.postValue(questionnairesResponse.body())
-            }
+            _questionnaire.postValue(questionnairesResponse)
+
         }
     }
 

@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.items.input
 
+import android.os.Handler
 import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
@@ -22,6 +23,9 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
     override fun isRequired() = false
     private var isValidEmail: Boolean = false
 
+    private val validationHandler: Handler = Handler()
+    private var validationRunnable: Runnable? = null
+
     override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
@@ -31,17 +35,37 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
             this.hint = this.context.getString(R.string.hint_email_address)
         }
 
-        viewBinding.inputField.editText?.doAfterTextChanged {
-            if (TextUtils.isEmpty(it) || !android.util.Patterns.EMAIL_ADDRESS.matcher(it)
-                    .matches()
-            ) {
-                viewBinding.inputField.error =
-                    viewBinding.inputField.context.getString(R.string.error_valid_email)
-                isValidEmail = false
-            } else {
-                viewBinding.inputField.error = null
-                isValidEmail = true
+        validationRunnable = Runnable {
+            if (!TextUtils.isEmpty(viewBinding.inputField.editText?.text)) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(viewBinding.inputField.editText?.text)
+                        .matches()
+                ) {
+                    viewBinding.inputField.error =
+                        viewBinding.inputField.context.getString(R.string.error_valid_email)
+                    isValidEmail = false
+                } else {
+                    viewBinding.inputField.error = null
+                    isValidEmail = true
+                    viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.ic_valid_small,
+                        0
+                    )
+                    viewBinding.inputField.setEndIconActivated(true)
+                }
             }
+        }
+        validationHandler.post(validationRunnable)
+
+        viewBinding.inputField.editText?.doAfterTextChanged {
+            viewBinding.inputField.error = null
+            if (validationRunnable != null) {
+                validationHandler.removeCallbacks(validationRunnable)
+            }
+
+            validationHandler.postDelayed(validationRunnable, 400)
+
 
             emailAddress = it.toString()
         }
