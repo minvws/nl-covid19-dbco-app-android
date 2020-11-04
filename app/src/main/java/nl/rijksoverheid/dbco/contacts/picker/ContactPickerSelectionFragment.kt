@@ -10,8 +10,6 @@ package nl.rijksoverheid.dbco.contacts.picker
 
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,10 +22,10 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.LocalContactItem
-import nl.rijksoverheid.dbco.contacts.data.entity.Task
 import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
 

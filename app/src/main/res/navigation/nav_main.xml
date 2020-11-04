@@ -77,10 +77,20 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
+            app:popUpTo="@+id/myContactsFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
+            android:id="@+id/toContactDetails"
+            app:destination="@id/contactDetailsInputFragment"
+            app:popUpTo="@+id/myContactsFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
@@ -95,10 +105,14 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactDetails"
-            app:destination="@id/contactDetailsInputFragment" />
+            app:destination="@id/contactDetailsInputFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/myContactsFragment"
@@ -114,7 +128,11 @@
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/toContactPickerSelection"
-            app:destination="@id/contactPickerSelectionFragment" />
+            app:destination="@id/contactPickerSelectionFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
 
     </fragment>
     <fragment
@@ -126,12 +144,19 @@
             android:name="indexTask"
             android:defaultValue="@null"
             app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <argument
             android:name="selectedContact"
             android:defaultValue="@null"
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.contacts.data.entity.LocalContact" />
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -154,7 +179,9 @@
         tools:layout="@layout/fragment_fill_code">
         <action
             android:id="@+id/toOnboardingAddDataFragment"
-            app:destination="@id/onboardingAddDataFragment"
+            app:destination="@+id/onboardingAddDataFragment"
+            app:popUpTo="@+id/onboardingFragmentHelp"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -168,6 +195,9 @@
         <action
             android:id="@+id/toMyContactsFragment"
             app:destination="@id/myContactsFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"

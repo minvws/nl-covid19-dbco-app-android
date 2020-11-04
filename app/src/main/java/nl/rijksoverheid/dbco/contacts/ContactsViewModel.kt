@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.contacts
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,21 +15,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.contacts.data.entity.TasksResponse
 
 
-class ContactsViewModel(val context: Context) : ViewModel() {
+class ContactsViewModel(private val repository: ContactsRepository) : ViewModel() {
 
     private val _localContactsLiveData = MutableLiveData<ArrayList<LocalContact>>()
     val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
 
-    private val repository = ContactsRepository(context)
-
     private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList<LocalContact>()
 
-    private val _indexTasks = MutableLiveData<TasksResponse>()
-    val indexTasksLivedata: LiveData<TasksResponse> = _indexTasks
 
     fun fetchLocalContacts() {
         viewModelScope.launch {
@@ -53,14 +47,6 @@ class ContactsViewModel(val context: Context) : ViewModel() {
         return fullLocalContactItems.filter {
             it.displayName.contains(firstName, true)
         } as ArrayList<LocalContact>
-    }
-
-
-    fun fetchTasksForUUID(uuid: String = "") {
-        viewModelScope.launch {
-            val taskResponse = repository.retrieveTasksForUUID()
-            _indexTasks.postValue(taskResponse)
-        }
     }
 
 

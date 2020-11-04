@@ -10,16 +10,19 @@ package nl.rijksoverheid.dbco.contacts.details
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.data.entity.*
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
+import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
@@ -28,16 +31,34 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
+import nl.rijksoverheid.dbco.questionnaire.data.entity.*
+import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.toDp
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
+    private val tasksViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            TasksViewModel::class.java
+        )
+    }
     private val answerSelectedListener: (AnswerOption) -> Unit = {
         // TODO handle
     }
+
+    private val shownQuestions: ArrayList<Question> = ArrayList()
+
+    private lateinit var selectedTask: Task
+    private lateinit var selectedContact: LocalContact
+    private var questionnaire: Questionnaire? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,28 +74,30 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        Timber.d("Found selected user ${args.selectedContact}");
+        selectedContact = args.selectedContact ?: LocalContact("-1", "Nieuw Contact")
+        selectedTask = args.indexTask ?: Task(taskType = "contact", source = "app")
 
 
-        val response: ContactDetailsResponse =
-            Json {
-                ignoreUnknownKeys = true
-            }.decodeFromString(MOCKED_OUTPUT) // TODO move to ViewModel
-
-
-        args.selectedContact?.also { contact ->
-            binding.toolbar.title = contact.displayName
-            addQuestionnarySections(contact, response)
-            addContactInformSection()
+        tasksViewModel.questionnaire.observe(viewLifecycleOwner) { response ->
+            questionnaire = response.questionnaires?.firstOrNull()
+            args.selectedContact?.also { contact ->
+                binding.toolbar.title = contact.displayName
+                addQuestionnaireSections(contact, response)
+                addContactInformSection()
+            }
+            if (args.selectedContact == null) {
+                binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
+                addQuestionnaireSections(null, response)
+                addContactInformSection()
+            }
         }
-        if (args.selectedContact == null) {
-            binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
-            addQuestionnarySections(null, response)
-            addContactInformSection()
+
+        binding.saveButton.setOnClickListener {
+            collectAnswers()
         }
     }
 
-    private fun addQuestionnarySections(
+    private fun addQuestionnaireSections(
         contactItem: LocalContact?,
         response: ContactDetailsResponse
     ) {
@@ -99,16 +122,23 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         adapter.add(contactDetailsSection)
 
         // add questions to sections, based on their "group"
-        response.questionnaires?.forEach {
+        response.questionnaires?.firstOrNull().let {
             it?.questions?.forEach { question ->
+                val questionCategory = Category(args.indexTask?.category)
+                if (!question?.relevantForCategories!!.contains(questionCategory)) {
+                    Timber.d("Skipping $question")
+                    return@forEach
+                }
+
                 val sectionToAddTo =
-                    when (question?.group) {
+                    when (question.group) {
                         Group.ContactDetails -> contactDetailsSection
                         Group.Classification -> classificationSection
                         else -> null
                     }
 
-                when (question?.questionType) {
+
+                when (question.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, sectionToAddTo)
                     }
@@ -119,9 +149,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         sectionToAddTo?.add(DateInputItem(requireContext(), question))
                     }
                     QuestionType.ContactDetails -> {
-                        addContactDetailsItems(contactItem, sectionToAddTo)
+                        addContactDetailsItems(contactItem, sectionToAddTo, question)
                     }
                 }
+
+                shownQuestions.add(question)
+
             }
         }
     }
@@ -157,7 +190,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun addContactDetailsItems(
         contactItem: LocalContact?,
-        sectionToAddTo: QuestionnaireSection?
+        sectionToAddTo: QuestionnaireSection?,
+        question: Question
     ) {
         val nameParts: List<String> =
             contactItem?.displayName?.split(" ", limit = 2) ?: listOf("", "")
@@ -182,9 +216,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         sectionToAddTo?.addAll(
             listOf(
-                ContactNameItem(firstName, lastName),
-                PhoneNumberItem(primaryPhone),
-                EmailAdressItem(primaryEmail)
+                ContactNameItem(firstName, lastName, question),
+                PhoneNumberItem(primaryPhone, question),
+                EmailAdressItem(primaryEmail, question)
             )
         )
     }
@@ -219,186 +253,113 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun collectAnswers() {
 
-        Toast.makeText(context, "Nog niet actief", Toast.LENGTH_SHORT).show()
 
-        val answers = HashMap<String, Any>()
+        val answerCollector = HashMap<String, Map<String, Any>>()
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
 
-        for (i: Int in 0 until adapter.itemCount) {
-            val item = adapter.getItem(i)
-            (item as? BaseQuestionItem<*>)?.let {
-                answers.putAll(it.getUserAnswers())
+        for (i: Int in 0 until adapter.groupCount) {
+            val item = adapter.getGroupAtAdapterPosition(i)
+            (item as? QuestionnaireSection)?.let {
+                for (i in 0 until (it.childCount + 1)) {
+                    val child = it.getGroup(i)
+                    if (child is BaseQuestionItem<*>) {
+                        val answer = HashMap<String, Any>()
+                        if (child.question != null) {
+                            answer.put("questionUuid", child.question.uuid!!)
+                            answer.put("lastModified", sdf.format(Date()))
+                            val data = child.getUserAnswers()
+                            answer.putAll(data)
+
+                            // Combine with previous entry if found
+                            if (answerCollector.containsKey(child.question.uuid)) {
+                                val prev =
+                                    answerCollector.get(child.question.uuid) as Map<String, Any>
+                                answer.putAll(prev)
+                            }
+                            answerCollector.put(child.question.uuid, answer)
+                        } else {
+                            Timber.d("Got child without question")
+                        }
+                    }
+                }
             }
+            // Extract all actual answers, discard the keys since they're already in the answer
+            val finalAnswers = ArrayList<JsonObject>()
+            answerCollector.entries.forEach {
+                val answerAsJson = JsonObject(it.value as Map<String, JsonElement>)
+                finalAnswers.add(answerAsJson)
+            }
+
+
+            selectedTask.let {
+                it.linkedContact = selectedContact
+                it.questionnaireResult = QuestionnaireResult(questionnaire?.uuid!!, finalAnswers)
+                tasksViewModel.saveChangesToTask(it)
+            }
+
         }
+
+
+//        shownQuestions.forEach { question ->
+//            val answer = HashMap<String, Any>()
+//            answer.put("questionUuid", question.uuid!!)
+//            answer.put("lastModified", sdf.format(Date()))
+//
+////            for (i: Int in 0 until adapter.groupCount) {
+////                val item = adapter.getGroupAtAdapterPosition(i)
+////                (item as? QuestionnaireSection)?.let {
+////                    for (i in 0 until (it.childCount + 1)) {
+////                        val child = it.getGroup(i)
+////                        if (child is BaseQuestionItem<*>) {
+////                                answer.putAll(child.getUserAnswers())
+////                            }
+////                        }
+////                    }
+////
+////            }
+//
+//
+////            when (question.questionType) {
+////                QuestionType.ContactDetails -> {
+////                    for (i: Int in 0 until adapter.groupCount) {
+////                        val item = adapter.getGroupAtAdapterPosition(i)
+////                        (item as? QuestionnaireSection)?.let {
+////                            for (i in 0 until (it.childCount + 1)) {
+////                                val child = it.getGroup(i)
+////                                if (child is BaseQuestionItem<*>) {
+////                                    if (child is ContactNameItem || child is PhoneNumberItem || child is EmailAdressItem) {
+////                                        answer.putAll(child.getUserAnswers())
+////                                    }
+////                                }
+////                            }
+////
+////                        }
+////                    }
+////                }
+////                else -> {
+////                    for (i: Int in 0 until adapter.groupCount) {
+////                        val item = adapter.getGroupAtAdapterPosition(i)
+////                        (item as? QuestionnaireSection)?.let {
+////                            for (i in 0 until (it.childCount + 1)) {
+////                                val child = it.getGroup(i)
+////                                if (child is BaseQuestionItem<*>) {
+////                                    answer.putAll(child.getUserAnswers())
+////                                }
+////                            }
+////
+////                        }
+////                    }
+////                }
+////            }
+//
+//
+//        }
+//
+//
+
+        Timber.d("Answers are $answerCollector")
+        findNavController().navigate(ContactDetailsInputFragmentDirections.toMyContactsFragment())
     }
 
-    companion object {
-        const val MOCKED_OUTPUT = "{\n" +
-                "    \"questionnaires\": [\n" +
-                "        {\n" +
-                "            \"uuid\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-                "            \"taskType\": \"contact\",\n" +
-                "            \"questions\": [\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368387\",\n" +
-                "                    \"group\": \"classification\",\n" +
-                "                    \"questionType\": \"classificationdetails\",\n" +
-                "                    \"label\": \"Vragen over jullie ontmoeting\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    },{\n" +
-                "                        \"category\": \"2a\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"2b\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"3\"\n" +
-                "                    }]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9772-725467368387\",\n" +
-                "                    \"group\": \"classification\",\n" +
-                "                    \"questionType\": \"date\",\n" +
-                "                    \"label\": \"Wanneer was de laatste ontmoeting?\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    },{\n" +
-                "                        \"category\": \"2a\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"2b\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"3\"\n" +
-                "                    }]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9770-725467368388\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"contactdetails\",\n" +
-                "                    \"label\": \"Contactgegevens\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    },{\n" +
-                "                        \"category\": \"2a\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"2b\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"3\"\n" +
-                "                    }]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368388\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"date\",\n" +
-                "                    \"label\": \"Geboortedatum\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    }]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368389\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"open\",\n" +
-                "                    \"label\": \"Beroep\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    }]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368391\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"multiplechoice\",\n" +
-                "                    \"label\": \"Waar ken je deze persoon van?\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"2a\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"2b\"\n" +
-                "                    }],\n" +
-                "                    \"answerOptions\": [\n" +
-                "                        {\n" +
-                "                            \"label\": \"Ouder\",\n" +
-                "                            \"value\": \"Ouder\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Kind\",\n" +
-                "                            \"value\": \"Kind\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Broer of zus\",\n" +
-                "                            \"value\": \"Broer of zus\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Partner\",\n" +
-                "                            \"value\": \"Partner\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Familielid (overig)\",\n" +
-                "                            \"value\": \"Familielid (overig)\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Huisgenoot\",\n" +
-                "                            \"value\": \"Huisgenoot\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Vriend of kennis\",\n" +
-                "                            \"value\": \"Vriend of kennis\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Medestudent of leerling\",\n" +
-                "                            \"value\": \"Medestudent of leerling\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Collega\",\n" +
-                "                            \"value\": \"Collega\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Gezondheidszorg medewerker\",\n" +
-                "                            \"value\": \"Gezondheidszorg medewerker\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Ex-partner\",\n" +
-                "                            \"value\": \"Ex-partner\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Overig\",\n" +
-                "                            \"value\": \"Overig\"\n" +
-                "                        }\n" +
-                "                    ]\n" +
-                "\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368392\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"multiplechoice\",\n" +
-                "                    \"label\": \"Is een of meerdere onderstaande zaken van toepassing voor deze persoon?\",\n" +
-                "                    \"description\": \"* Is student\\n* 70 jaar of ouder\\n* Heeft gezondheidsklachten of loopt extra gezondheidsrisico's\\n* Woont in een asielzoekerscentrum\\n* Spreekt slecht of geen Nederlands\",\n" +
-                "                    \"relevantForCategories\": [{\n" +
-                "                        \"category\": \"1\" \n" +
-                "                    },{\n" +
-                "                        \"category\": \"2a\"\n" +
-                "                    },{\n" +
-                "                        \"category\": \"2b\"\n" +
-                "                    }],\n" +
-                "                    \"answerOptions\": [\n" +
-                "                        {\n" +
-                "                            \"label\": \"Ja, één of meerdere dingen\",\n" +
-                "                            \"value\": \"Ja\",\n" +
-                "                            \"trigger\": \"communication_staff\"\n" +
-                "                        },\n" +
-                "                        {\n" +
-                "                            \"label\": \"Nee, ik denk het niet\",\n" +
-                "                            \"value\": \"Nee\",\n" +
-                "                            \"trigger\": \"communication_index\"\n" +
-                "                        }\n" +
-                "                    ]\n" +
-                "                }\n" +
-                "            ]\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}"
-    }
 
 }

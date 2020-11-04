@@ -17,8 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 
 abstract class BaseFragment @JvmOverloads constructor(
-    @LayoutRes layout: Int,
-    private val factoryProducer: (() -> ViewModelProvider.Factory)? = null
+    @LayoutRes layout: Int
 ) : Fragment(layout) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,6 +29,6 @@ abstract class BaseFragment @JvmOverloads constructor(
     }
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
-        return factoryProducer?.invoke() ?: ViewModelFactory(requireContext().applicationContext)
+        return requireActivity().defaultViewModelProviderFactory
     }
 }

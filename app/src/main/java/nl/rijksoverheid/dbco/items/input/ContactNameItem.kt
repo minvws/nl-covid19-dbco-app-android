@@ -11,9 +11,14 @@ package nl.rijksoverheid.dbco.items.input
 import androidx.core.widget.doAfterTextChanged
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
-class ContactNameItem(private var firstName: String = "", private var lastName: String = "") :
-    BaseQuestionItem<ItemContactNameBinding>() {
+class ContactNameItem(
+    private var firstName: String = "",
+    private var lastName: String = "",
+    question: Question?
+) :
+    BaseQuestionItem<ItemContactNameBinding>(question) {
 
     override fun getLayout() = R.layout.item_contact_name
 
@@ -53,7 +58,8 @@ class ContactNameItem(private var firstName: String = "", private var lastName: 
 
     override fun getUserAnswers() : Map<String, Any> {
         val answers = HashMap<String, Any>()
-        // TODO
+        answers.put("firstName", firstName)
+        answers.put("lastName", lastName)
         return answers
     }
 }

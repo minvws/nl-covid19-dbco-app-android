@@ -14,7 +14,7 @@
 
         <variable
             name="task"
-            type="nl.rijksoverheid.dbco.contacts.data.entity.Task" />
+            type="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
 
 
     </data>
@@ -62,7 +62,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="@string/cd_info_box"
-            android:src="@drawable/ic_error_yellow"
+            android:src="@{ task.questionnaireResult != null ?  @drawable/ic_completed : @drawable/ic_warning_status }"
             app:layout_constraintBottom_toBottomOf="@+id/index_contact_subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/index_contact_name" />

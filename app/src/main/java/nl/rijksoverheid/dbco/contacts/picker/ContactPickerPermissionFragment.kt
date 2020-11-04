@@ -12,7 +12,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -42,6 +41,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 )
             } else {
                 // Todo: Handle permanently denied permission. Behavior TBD
+
             }
         }
 
@@ -59,7 +59,9 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 ButtonItem(
                     R.string.mycontacts_deny_permission,
                     {
-                        // Todo: Handle denying permission Behavior TBD
+                        findNavController().navigate(
+                            ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                        )
                     }, type = ButtonType.LIGHT
                 )
             )
@@ -79,7 +81,6 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
 
     private fun requestContactAccess() {
-        Toast.makeText(context, "Clicked button", Toast.LENGTH_SHORT).show()
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS

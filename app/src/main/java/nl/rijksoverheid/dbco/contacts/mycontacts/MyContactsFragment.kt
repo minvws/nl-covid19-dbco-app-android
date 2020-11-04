@@ -15,22 +15,23 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.contacts.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.contacts.data.entity.Task
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
 /**
@@ -41,6 +42,13 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
+
+    private val tasksViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            TasksViewModel::class.java
+        )
+    }
+
     private val contentSection = Section()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +75,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             checkPermissionAndNavigate()
         }
 
-        contactsViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
+        binding.sendButton.isEnabled = false
+        binding.sendButton.setOnClickListener {
+
+        }
+
+        tasksViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
             val informPersonallySection = Section().apply {
                 setHeader(
@@ -88,7 +101,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
 
 
-            it.tasks?.forEach { task ->
+            it.case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
@@ -125,10 +138,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
 
-        // Fake loading from backend
+        // Load data from backend
         lifecycleScope.launch {
-            delay(250)
-            contactsViewModel.fetchTasksForUUID()
+            tasksViewModel.fetchTasksForUUID("1234")
+            tasksViewModel.retrieveQuestionnaires()
         }
 
 

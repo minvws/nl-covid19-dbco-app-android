@@ -10,9 +10,9 @@ package nl.rijksoverheid.dbco.items.input
 
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.MutableLiveData
-import nl.rijksoverheid.dbco.contacts.data.entity.Question
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question? = null) : BaseBindableItem<T>() {
 
