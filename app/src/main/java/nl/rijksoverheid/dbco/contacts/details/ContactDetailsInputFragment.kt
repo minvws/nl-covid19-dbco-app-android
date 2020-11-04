@@ -229,11 +229,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ""
         }
 
+        val previousAnswer = questionnaireResult?.getAnswerByUuid(question.uuid!!)
+
         sectionToAddTo?.addAll(
             listOf(
-                ContactNameItem(firstName, lastName, question),
-                PhoneNumberItem(primaryPhone, question),
-                EmailAdressItem(primaryEmail, question)
+                ContactNameItem(firstName, lastName, question, previousAnswer),
+                PhoneNumberItem(primaryPhone, question, previousAnswer),
+                EmailAdressItem(primaryEmail, question, previousAnswer)
             )
         )
     }
@@ -346,14 +348,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             livedTogetherRisk,
                             answerSelectedListener,
-                            "livedTogetherRisk"
+                            "livedTogetherRisk",
+                            previousAnswer
                         )
                     )
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             durationRisk,
                             answerSelectedListener,
-                            "durationRisk"
+                            "durationRisk",
+                            previousAnswer
                         )
                     )
                     natureOfContactQuestions["livedTogetherRisk"] = livedTogetherRisk
@@ -364,14 +368,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             livedTogetherRisk,
                             answerSelectedListener,
-                            "livedTogetherRisk"
+                            "livedTogetherRisk",
+                            previousAnswer
                         )
                     )
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             durationRisk,
                             answerSelectedListener,
-                            "durationRisk"
+                            "durationRisk",
+                            previousAnswer
                         )
                     )
 
@@ -379,7 +385,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             distanceRisk,
                             answerSelectedListener,
-                            "distanceRisk"
+                            "distanceRisk",
+                            previousAnswer
                         )
                     )
 
@@ -393,14 +400,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             livedTogetherRisk,
                             answerSelectedListener,
-                            "livedTogetherRisk"
+                            "livedTogetherRisk",
+                            previousAnswer
                         )
                     )
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             durationRisk,
                             answerSelectedListener,
-                            "durationRisk"
+                            "durationRisk",
+                            previousAnswer
                         )
                     )
 
@@ -408,14 +417,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         QuestionTwoOptionsItem(
                             distanceRisk,
                             answerSelectedListener,
-                            "distanceRisk"
+                            "distanceRisk",
+                            previousAnswer
                         )
                     )
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             otherRisk,
                             answerSelectedListener,
-                            "otherRisk"
+                            "otherRisk",
+                            previousAnswer
                         )
                     )
 
@@ -431,14 +442,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 QuestionTwoOptionsItem(
                     livedTogetherRisk,
                     answerSelectedListener,
-                    "livedTogetherRisk"
+                    "livedTogetherRisk",
+                    previousAnswer
                 )
             )
             sectionToAddTo?.add(
                 QuestionTwoOptionsItem(
                     durationRisk,
                     answerSelectedListener,
-                    "durationRisk"
+                    "durationRisk",
+                    previousAnswer
                 )
             )
 
@@ -446,14 +459,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 QuestionTwoOptionsItem(
                     distanceRisk,
                     answerSelectedListener,
-                    "distanceRisk"
+                    "distanceRisk",
+                    previousAnswer
                 )
             )
             sectionToAddTo?.add(
                 QuestionTwoOptionsItem(
                     otherRisk,
                     answerSelectedListener,
-                    "otherRisk"
+                    "otherRisk",
+                    previousAnswer
                 )
             )
 

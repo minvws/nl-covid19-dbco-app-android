@@ -13,11 +13,16 @@ import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
+import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import timber.log.Timber
 
-class EmailAdressItem(private var emailAddress: String?, question: Question?) :
+class EmailAdressItem(private var emailAddress: String?, question: Question?,
+                      private val previousAnswer: JsonObject? = null) :
     BaseQuestionItem<ItemEmailInputBinding>(question) {
     override fun getLayout() = R.layout.item_email_input
     override fun isRequired() = false
@@ -26,7 +31,10 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
     private val validationHandler: Handler = Handler()
     private var validationRunnable: Runnable? = null
 
+    private var binding: ItemEmailInputBinding? = null
+
     override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
+        binding = viewBinding
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             setText(emailAddress)
@@ -64,6 +72,7 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
                 validationHandler.removeCallbacks(validationRunnable)
             }
 
+            // Adding a small delay so users aren't shown an error instantly while typing their emailaddress
             validationHandler.postDelayed(validationRunnable, 400)
 
 
@@ -75,6 +84,10 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
                 checkCompleted()
             }
         }
+
+        fillInPreviousAnswer()
+        checkCompleted()
+
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -93,6 +106,18 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?) :
             answers.put("email", it)
         }
         return answers
+    }
+
+    private fun fillInPreviousAnswer() {
+        if (previousAnswer != null && previousAnswer.containsKey(
+                "email" )) {
+            val previousAnswerValue = previousAnswer["email"]?.jsonPrimitive?.content
+            Timber.d("Found previous value for \"email\" of $previousAnswerValue")
+            binding?.let{
+                it.inputField.editText?.setText(previousAnswerValue)
+                emailAddress = previousAnswerValue
+            }
+        }
     }
 
 }

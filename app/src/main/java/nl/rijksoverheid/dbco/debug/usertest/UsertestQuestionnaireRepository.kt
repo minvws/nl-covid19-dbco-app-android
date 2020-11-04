@@ -79,19 +79,7 @@ class UsertestQuestionnaireRepository(context: Context) : QuestionnaireInterface
                 "                            \"category\": \"3\"\n" +
                 "                        }\n" +
                 "                    ]\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368389\",\n" +
-                "                    \"group\": \"contactdetails\",\n" +
-                "                    \"questionType\": \"open\",\n" +
-                "                    \"label\": \"Beroep\",\n" +
-                "                    \"description\": null,\n" +
-                "                    \"relevantForCategories\": [\n" +
-                "                        {\n" +
-                "                            \"category\": \"1\"\n" +
-                "                        }\n" +
-                "                    ]\n" +
-                "                },\n" +
+                "                },"+
                 "                {\n" +
                 "                    \"uuid\": \"37d818ed-9499-4b9a-9771-725467368390\",\n" +
                 "                    \"group\": \"contactdetails\",\n" +

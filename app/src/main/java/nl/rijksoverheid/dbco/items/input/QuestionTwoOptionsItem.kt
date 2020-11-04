@@ -58,10 +58,10 @@ class QuestionTwoOptionsItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun isRequired(): Boolean = true
 
