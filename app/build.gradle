@@ -40,6 +40,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
+            buildConfigField "boolean", "USER_TEST", "true"
         }
 
         debug {
