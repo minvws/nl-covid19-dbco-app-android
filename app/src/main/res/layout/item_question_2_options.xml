@@ -45,6 +45,7 @@
             android:textAppearance="?attr/textAppearanceBody1" />
 
         <RadioGroup
+            android:id="@+id/answer_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

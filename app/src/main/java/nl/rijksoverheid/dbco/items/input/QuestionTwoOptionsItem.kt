@@ -8,24 +8,33 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.widget.CompoundButton
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import com.xwray.groupie.Item
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.HtmlHelper
+import timber.log.Timber
 
 class QuestionTwoOptionsItem(
     question: Question?,
     private val answerSelectedListener: (AnswerOption) -> Unit,
-    private val optionalValueLabel: String? = null
+    private val optionalValueLabel: String? = null,
+    private val previousAnswer: JsonObject? = null
 ) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_2_options
     private var selectedAnswer: AnswerOption? = null
+    private lateinit var answerGroup: RadioGroup
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
+        answerGroup = viewBinding.answerGroup
+        fillInPreviousAnswer()
 
         question?.description?.let {
             val context = viewBinding.root.context
@@ -49,10 +58,10 @@ class QuestionTwoOptionsItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun isRequired(): Boolean = true
 
@@ -72,5 +81,33 @@ class QuestionTwoOptionsItem(
             }
         }
         return answers
+    }
+
+    private fun fillInPreviousAnswer() {
+        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(
+                optionalValueLabel
+            )
+        ) {
+            val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
+            Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
+
+            if (
+                question?.answerOptions?.get(0)?.value == previousAnswerValue) {
+                (answerGroup.getChildAt(0) as RadioButton).isChecked = true
+                question?.answerOptions?.get(0)?.let{
+                    answerSelectedListener.invoke(it)
+                    selectedAnswer = it
+                    checkCompleted()
+                }
+            }else{
+                (answerGroup.getChildAt(1) as RadioButton).isChecked = true
+                question?.answerOptions?.get(1)?.let{
+                    answerSelectedListener.invoke(it)
+                    selectedAnswer = it
+                    checkCompleted()
+                }
+            }
+
+        }
     }
 }
