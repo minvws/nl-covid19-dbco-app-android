@@ -32,12 +32,10 @@ class TasksRepository(context: Context) : TaskInterface {
 
     override fun saveChangesToTask(updatedTask: Task) {
         val currentTasks = previousResponse?.case?.tasks as ArrayList
-        var i = 0
-        currentTasks.forEach { currentTask ->
+        currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
-                (previousResponse?.case?.tasks as java.util.ArrayList<Task>)[i] = updatedTask
+                currentTasks[index] = updatedTask
             }
-            i++
         }
     }
 }
