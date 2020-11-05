@@ -38,6 +38,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.toDp
+import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -70,7 +71,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val binding = FragmentContactInputBinding.bind(view)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
-            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toDp())
+            VerticalSpaceItemDecoration(verticalSpaceHeight = 32.toPx())
         )
         binding.content.addItemDecoration(
             QuestionnaireSectionDecorator(
@@ -487,11 +488,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val answerCollector = HashMap<String, Map<String, Any>>()
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
 
-        for (i: Int in 0 until adapter.groupCount) {
-            val item = adapter.getTopLevelGroup(i)
+        for (groupIndex: Int in 0 until adapter.groupCount) {
+            val item = adapter.getTopLevelGroup(groupIndex)
             (item as? QuestionnaireSection)?.let {
-                for (i in 0 until (it.childCount + 1)) {
-                    val child = it.getGroup(i)
+                for (childIndex in 0 until (it.childCount + 1)) {
+                    val child = it.getGroup(childIndex)
                     if (child is BaseQuestionItem<*>) {
                         val answer = HashMap<String, Any>()
                         if (child.question != null) {
