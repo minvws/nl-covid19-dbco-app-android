@@ -6,8 +6,9 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data
+package nl.rijksoverheid.dbco.contacts.data.entity
 
+@kotlinx.serialization.Serializable
 data class ContactAddress(
     val street: String,
     val houseNumber : Int,

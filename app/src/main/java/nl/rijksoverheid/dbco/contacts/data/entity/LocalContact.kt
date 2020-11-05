@@ -12,7 +12,6 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.ContactName
 
 @Keep
 @Serializable
