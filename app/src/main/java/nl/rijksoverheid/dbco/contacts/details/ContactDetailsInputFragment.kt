@@ -82,7 +82,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         selectedContact = args.selectedContact ?: LocalContact("-1", "Nieuw Contact")
         selectedTask = args.indexTask ?: Task(taskType = "contact", source = "app")
 
-        if(selectedTask.questionnaireResult != null){
+        if (selectedTask.questionnaireResult != null) {
             questionnaireResult = selectedTask.questionnaireResult
         }
 

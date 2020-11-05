@@ -11,6 +11,10 @@ package nl.rijksoverheid.dbco
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
@@ -24,7 +28,8 @@ class ViewModelFactory(
     private val tasksRepository: TaskInterface,
     private val contactsRepository: ContactsRepository,
     private val questionnareRepository: QuestionnaireInterface,
-    private val userRepository: UserInterface
+    private val userRepository: UserInterface,
+    private val appConfigRepository: AppConfigRepository
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -36,6 +41,13 @@ class ViewModelFactory(
                 questionnareRepository
             ) as T
             FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
+            AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
+                AppLifecycleManager(
+                    context,
+                    context.getSharedPreferences("${BuildConfig.APPLICATION_ID}.config", 0),
+                    AppUpdateManagerFactory.create(context)
+                ), appConfigRepository
+            ) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }
