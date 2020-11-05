@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data
+package nl.rijksoverheid.dbco.contacts.data.entity
 
 import java.io.Serializable
 

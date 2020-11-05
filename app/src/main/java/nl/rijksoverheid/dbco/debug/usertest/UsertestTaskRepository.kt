@@ -48,17 +48,15 @@ class UsertestTaskRepository(context: Context) : TaskInterface {
 
     override fun saveChangesToTask(updatedTask: Task) {
         val currentTasks = previousResponse?.case?.tasks as ArrayList
-        var i = 0
         var found = false
-        currentTasks.forEach { currentTask ->
+        currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
-                (previousResponse?.case?.tasks as java.util.ArrayList<Task>)[i] = updatedTask
+                currentTasks[index] = updatedTask
                 found = true
             }
-            i++
         }
         if (!found) {
-            (previousResponse?.case?.tasks as java.util.ArrayList<Task>).add(updatedTask)
+            currentTasks.add(updatedTask)
         }
 
         //Timber.w("Final result is $previousResponse")

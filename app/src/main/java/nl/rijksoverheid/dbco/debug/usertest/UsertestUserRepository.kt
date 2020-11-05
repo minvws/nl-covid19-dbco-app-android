@@ -34,7 +34,7 @@ class UsertestUserRepository(context: Context) : UserInterface { // TODO move to
                 "}"
     )
 
-    private val validCodes: List<String> = listOf(
+    private val validCodesHashes: List<String> = listOf(
         "a6f3cb251db58a4cceaaec27090241216e69bdf8b28900dbcacb0cdf1f8c9813",
         "022819c49acf699b5030995565cdb86bb183e23ed155300980e86baada1b908a"
     )
@@ -46,9 +46,9 @@ class UsertestUserRepository(context: Context) : UserInterface { // TODO move to
 
     private fun getResponse(pincode: String): PairingResponse {
         val hash = hash(pincode)
-        Timber.d("hashed pincode to ${hash.toString()}")
+        Timber.d("hashed pincode to $hash")
 
-        return if (validCodes.contains(hash.toString())) {
+        return if (validCodesHashes.contains(hash)) {
             Json {
                 ignoreUnknownKeys = true
             }.decodeFromString(mockedResponses[1])
