@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/illustration_bike_index"
+            android:src="@drawable/illustration_general_user"
             app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
