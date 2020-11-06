@@ -12,6 +12,7 @@ import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
@@ -35,6 +36,10 @@ interface StubbedAPI {
 
     @POST("/pairings")
     suspend fun pair(): PairingResponse
+
+    @GET("v1/config")
+    @Streaming
+    suspend fun getAppConfig(): Response<AppConfig>
 
 
     companion object {

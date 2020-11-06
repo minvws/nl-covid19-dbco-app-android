@@ -65,4 +65,13 @@
     <string name="header_suggested_contacts">SUGGESTIES</string>
     <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
 
+
+    <!-- Update and end of life -->
+    <string name="update_app_headline">Je hebt een verouderde versie van Oplossing 2</string>
+    <string name="update_app_description">Update de app op je telefoon om te zorgen dat Oplossing 2 goed blijft werken.</string>
+    <string name="end_of_life_action">Lees meer</string>
+    <string name="end_of_life_description">Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is.</string>
+    <string name="end_of_life_headline">CoronaMelder is gestopt</string>
+    <string name="update_google_play_services">Updaten</string>
+
 </resources>
