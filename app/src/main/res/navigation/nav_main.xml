@@ -120,6 +120,7 @@
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactDetails"
+            app:popUpTo="@id/myContactsFragment"
             app:destination="@id/contactDetailsInputFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
@@ -136,6 +137,7 @@
             app:destination="@id/contactPickerStart"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
@@ -143,6 +145,7 @@
             app:destination="@id/contactPickerSelectionFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
 
@@ -156,10 +159,10 @@
         <action
             android:id="@+id/toContactDetails"
             app:destination="@id/contactDetailsInputFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
     <fragment
@@ -177,13 +180,6 @@
             android:defaultValue="@null"
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.contacts.data.entity.LocalContact" />
-        <action
-            android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment

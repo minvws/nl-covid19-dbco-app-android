@@ -18,10 +18,8 @@ class TaskItem(
     val task: Task
 ) : BaseBindableItem<ItemTaskBinding>(), Serializable {
 
-
     override fun bind(viewBinding: ItemTaskBinding, position: Int) {
         viewBinding.task = task
-
     }
 
     override fun getLayout() = R.layout.item_task
@@ -30,6 +28,4 @@ class TaskItem(
     override fun isClickable(): Boolean {
         return true
     }
-
-
 }
