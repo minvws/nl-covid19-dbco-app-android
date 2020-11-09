@@ -42,6 +42,7 @@ import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -249,6 +250,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         // TODO message should be dynamic
         val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
+        val plainMessage = message.removeHtmlTags()
 
         adapter.add(
                 QuestionnaireSection(
@@ -267,7 +269,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                         getString(R.string.contact_section_inform_copy),
                                         {
                                             val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clip = ClipData.newPlainText("Copied Text", message)
+                                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
                                             clipboard.setPrimaryClip(clip)
                                             Toast.makeText(context, getString(R.string.contact_section_inform_copied), Toast.LENGTH_LONG).show()
                                         }
@@ -551,11 +553,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         selectedTask.let {
             it.linkedContact = selectedContact
-            it.questionnaireResult =
-                    QuestionnaireResult(questionnaire?.uuid!!, JsonArray(finalAnswers))
-            if (it.label.isNullOrEmpty()) {
-                it.label = selectedContact.displayName
-            }
+            it.questionnaireResult = QuestionnaireResult(questionnaire?.uuid!!, JsonArray(finalAnswers))
+            it.label = selectedContact.displayName
             if (it.uuid.isNullOrEmpty()) {
                 it.uuid = UUID.randomUUID().toString()
             }

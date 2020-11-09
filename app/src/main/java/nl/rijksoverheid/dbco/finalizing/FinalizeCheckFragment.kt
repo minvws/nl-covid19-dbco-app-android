@@ -48,7 +48,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         binding.content.adapter = adapter
         binding.toolbar.visibility = View.GONE
 
-        tasksViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
+        tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
             val informPersonallySection = Section().apply {
                 setHeader(
