@@ -8,8 +8,14 @@
 
 package nl.rijksoverheid.dbco.contacts.details
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -28,7 +34,6 @@ import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
-import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
 import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
@@ -37,12 +42,12 @@ import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.util.toPx
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
 
@@ -70,9 +75,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val binding = FragmentContactInputBinding.bind(view)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
-                VerticalSpaceItemDecoration(verticalSpaceHeight = 26.toPx())
-        )
-        binding.content.addItemDecoration(
                 QuestionnaireSectionDecorator(
                         requireContext(),
                         resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
@@ -92,12 +94,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             args.selectedContact?.also { contact ->
                 binding.toolbar.title = contact.displayName
                 addQuestionnaireSections(contact, response)
-                addContactInformSection()
+                addContactInformSection(contact)
             }
             if (args.selectedContact == null) {
                 binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
                 addQuestionnaireSections(null, response)
-                addContactInformSection()
+                addContactInformSection(null)
             }
         }
 
@@ -243,8 +245,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         )
     }
 
-    private fun addContactInformSection() {
+    private fun addContactInformSection(contact: LocalContact?) {
 
+        // TODO message should be dynamic
+        val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
 
         adapter.add(
                 QuestionnaireSection(
@@ -256,20 +260,30 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         ), false
                 ).apply {
                     add(
-                            Section(
-                                    listOf(
-                                            SubHeaderItem(R.string.contact_section_inform_content_header),
-                                            ParagraphItem(
-                                                    R.string.contact_section_inform_content_details,
-                                                    "9 november",
-                                                    "10"
-                                            ),
-                                            ButtonItem(
-                                                    R.string.contact_section_inform_share,
-                                                    {},
-                                            )
-                                    )
-                            )
+                            Section().apply {
+                                add(SubHeaderItem(R.string.contact_section_inform_content_header))
+                                add(ParagraphItem(message))
+                                add(ButtonItem(
+                                        getString(R.string.contact_section_inform_copy),
+                                        {
+                                            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                            val clip = ClipData.newPlainText("Copied Text", message)
+                                            clipboard.setPrimaryClip(clip)
+                                            Toast.makeText(context, getString(R.string.contact_section_inform_copied), Toast.LENGTH_LONG).show()
+                                        }
+                                ))
+
+                                // add "Call $name" button if phone is set
+                                contact?.number?.let {
+                                    add(ButtonItem(
+                                            getString(R.string.contact_section_inform_call, contact.displayName),
+                                            {
+                                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
+                                                startActivity(intent)
+                                            },
+                                    ))
+                                }
+                            }
                     )
                 }
         )

@@ -7,7 +7,6 @@
  */
 package nl.rijksoverheid.dbco.items.ui
 
-import androidx.annotation.StringRes
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
@@ -18,24 +17,20 @@ import timber.log.Timber
 
 
 class ParagraphItem(
-    @StringRes private val text: Int,
-    private vararg val formatArgs: Any,
-    private val clickable: Boolean = false
+        private val text: String?,
+        private val clickable: Boolean = false
 ) : BaseBindableItem<ItemParagraphBinding>() {
     override fun getLayout() = R.layout.item_paragraph
 
     override fun bind(viewBinding: ItemParagraphBinding, position: Int) {
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
 
-        val value = viewBinding.root.context.getString(text, *formatArgs)
-        Timber.d("Got value $value")
-        value.let {
+        Timber.d("Got value $text")
+        text?.let {
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.text = spannableBuilder
         }
-
-
     }
 
     override fun isClickable() = clickable

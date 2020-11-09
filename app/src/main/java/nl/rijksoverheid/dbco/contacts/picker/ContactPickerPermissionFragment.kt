@@ -52,12 +52,12 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
         val content = Section(
             listOf(
                 HeaderItem(R.string.contact_permission_header),
-                ParagraphItem(R.string.contact_permission_summary),
+                ParagraphItem(getString(R.string.contact_permission_summary)),
                 ButtonItem(
-                    R.string.mycontacts_grant_permission,
+                    getString(R.string.mycontacts_grant_permission),
                     { requestContactAccess() }),
                 ButtonItem(
-                    R.string.mycontacts_deny_permission,
+                    getString(R.string.mycontacts_deny_permission),
                     {
                         findNavController().navigate(
                             ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)

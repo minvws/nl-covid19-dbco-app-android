@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.about.faq
 
+import android.content.Context
 import androidx.annotation.Keep
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.R
@@ -17,13 +18,13 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 @Keep
 enum class FAQItemId { DUMMY }
 
-class FAQDetailSections {
+class FAQDetailSections(val context: Context) {
     fun getSection(faqItemId: FAQItemId) = when (faqItemId) {
         FAQItemId.DUMMY -> {
             Section(
                 listOf(
                     HeaderItem(R.string.placeholder),
-                    ParagraphItem(R.string.placeholder_long)
+                    ParagraphItem(context.getString(R.string.placeholder_long))
                 )
             )
         }
