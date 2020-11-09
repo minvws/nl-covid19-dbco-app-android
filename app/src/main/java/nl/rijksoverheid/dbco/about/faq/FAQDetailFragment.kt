@@ -23,16 +23,12 @@ class FAQDetailFragment : BaseFragment(R.layout.fragment_list) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        adapter.add(FAQDetailSections().getSection(args.faqItemId))
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentListBinding.bind(view)
+
+        adapter.add(FAQDetailSections(view.context).getSection(args.faqItemId))
 
         binding.toolbar.setTitle("Placeholder Title")
         binding.content.adapter = adapter

@@ -8,7 +8,7 @@
   -->
 
 <resources>
-    <color name="color_primary">@color/green_blue</color>
+    <color name="color_primary">@color/cyan</color>
     <color name="color_secondary">@color/gray_lighter</color>
     <color name="color_secondary_variant">@color/gray_light</color>
     <color name="color_control_highlight">#240047FF</color>
@@ -25,7 +25,7 @@
     <color name="text_color_secondary">#89000000</color>
 
     <!-- Color palette -->
-    <color name="green_blue">#55aea0</color>
+    <color name="cyan">#55aea0</color>
     <color name="light_blue">#D0F0F3</color>
     <color name="gray_lighter">#F2F2F7</color>
     <color name="gray_light">#DDDDDD</color>

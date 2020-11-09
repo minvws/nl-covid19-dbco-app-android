@@ -8,7 +8,6 @@
 package nl.rijksoverheid.dbco.items.input
 
 import androidx.annotation.Keep
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
@@ -16,23 +15,23 @@ import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 class ButtonItem(
-    @StringRes private val text: Int,
-    buttonClickListener: () -> Unit,
-    private val enabled: Boolean = true,
-    private val type: ButtonType = ButtonType.REGULAR
+        private val text: String,
+        buttonClickListener: () -> Unit,
+        private val enabled: Boolean = true,
+        private val type: ButtonType = ButtonType.REGULAR
 ) : BaseBindableItem<ItemButtonBinding>() {
     data class ViewState(
-        @StringRes val text: Int,
-        val enabled: Boolean,
-        val click: () -> Unit
+            val text: String,
+            val enabled: Boolean,
+            val click: () -> Unit
     )
 
     private val viewState =
-        ViewState(
-            text,
-            enabled,
-            buttonClickListener
-        )
+            ViewState(
+                    text,
+                    enabled,
+                    buttonClickListener
+            )
 
     override fun getLayout() = R.layout.item_button
 
@@ -42,7 +41,7 @@ class ButtonItem(
         if (type == ButtonType.LIGHT) {
             viewBinding.button.apply {
                 backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.green_blue))
+                setTextColor(context.getColor(R.color.cyan))
             }
         }
     }

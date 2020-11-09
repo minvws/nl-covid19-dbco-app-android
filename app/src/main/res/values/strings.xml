@@ -31,6 +31,7 @@
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
+    <!--    Onboarding-->
     <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
@@ -40,6 +41,7 @@
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet. Via deze app kun je die gemakkelijk delen.\n\nDe gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
 
+    <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Geef toegang tot contacten</string>
     <string name="contact_permission_summary">De app heeft zo toegang tot de contacten op je telefoon. Wil je dit niet? Dan kun je contactgegevens ook handmatig vastleggen.</string>
@@ -54,7 +56,9 @@
     <string name="contact_section_inform_subtext">Deel het handelingsperspectief</string>
     <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
     <string name="contact_section_inform_content_details"><![CDATA[Dit zijn de belangrijkste leefregels voor deze persoon:<br/><ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis - <b> tot %1$s</b> (nog %2$s dagen)</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
-    <string name="contact_section_inform_share">Leefregels delen</string>
+    <string name="contact_section_inform_copy">Kopieer leefregels</string>
+    <string name="contact_section_inform_copied">Gekopieerd</string>
+    <string name="contact_section_inform_call">Bel %s</string>
     <string name="close">Sluiten</string>
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Verstuur gegevens</string>
