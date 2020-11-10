@@ -79,7 +79,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
-        tasksViewModel.indexTasksLivedata.observe(viewLifecycleOwner, Observer {
+        tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
             val informPersonallySection = Section().apply {
                 setHeader(

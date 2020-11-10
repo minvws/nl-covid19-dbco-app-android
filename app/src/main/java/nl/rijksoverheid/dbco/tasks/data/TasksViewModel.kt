@@ -27,7 +27,7 @@ class TasksViewModel(
 
 
     private val _indexTasks = MutableLiveData<TasksResponse>()
-    val indexTasksLivedata: LiveData<TasksResponse> = _indexTasks
+    val indexTasks: LiveData<TasksResponse> = _indexTasks
 
     private val _questionnaire = MutableLiveData<ContactDetailsResponse>()
     val questionnaire: LiveData<ContactDetailsResponse> = _questionnaire

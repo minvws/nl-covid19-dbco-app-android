@@ -25,3 +25,12 @@ fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
+
+fun String.removeHtmlTags(): String{
+    return this.replace("<br/>", "\n")
+            .replace("<b>", "")
+            .replace("<ul>", "")
+            .replace("</ul>", "")
+            .replace("</li>", "")
+            .replace("<li>", "\n• ")
+}

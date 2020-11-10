@@ -8,9 +8,7 @@
 
 package nl.rijksoverheid.dbco.items.input
 
-import android.widget.RadioButton
 import androidx.core.widget.doAfterTextChanged
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
@@ -76,8 +74,7 @@ class ContactNameItem(
     }
 
     private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && previousAnswer.containsKey(
-                "firstName" )) {
+        if (previousAnswer != null && previousAnswer.containsKey("firstName" )) {
             val previousAnswerValue = previousAnswer["firstName"]?.jsonPrimitive?.content
             Timber.d("Found previous value for \"firstName\" of $previousAnswerValue")
             binding?.let{
@@ -85,8 +82,7 @@ class ContactNameItem(
             }
         }
 
-        if (previousAnswer != null && previousAnswer.containsKey(
-                "lastName" )) {
+        if (previousAnswer != null && previousAnswer.containsKey("lastName" )) {
             val previousAnswerValue = previousAnswer["lastName"]?.jsonPrimitive?.content
             Timber.d("Found previous value for \"firstName\" of $previousAnswerValue")
             binding?.let{
