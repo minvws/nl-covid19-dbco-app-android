@@ -17,12 +17,11 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
-import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import timber.log.Timber
 
-class EmailAdressItem(private var emailAddress: String?, question: Question?,
-                      private val previousAnswer: JsonObject? = null) :
+class EmailAddressItem(private var emailAddress: String?, question: Question?,
+                       private val previousAnswer: JsonObject? = null) :
     BaseQuestionItem<ItemEmailInputBinding>(question) {
     override fun getLayout() = R.layout.item_email_input
     override fun isRequired() = false
@@ -91,10 +90,10 @@ class EmailAdressItem(private var emailAddress: String?, question: Question?,
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-        other is EmailAdressItem && other.emailAddress == emailAddress
+        other is EmailAddressItem && other.emailAddress == emailAddress
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is EmailAdressItem && other.emailAddress == emailAddress
+        other is EmailAddressItem && other.emailAddress == emailAddress
 
     override fun isCompleted(): Boolean {
         return !emailAddress.isNullOrEmpty() && isValidEmail

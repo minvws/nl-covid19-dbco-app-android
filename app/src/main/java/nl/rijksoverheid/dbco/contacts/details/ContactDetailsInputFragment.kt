@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -30,7 +29,6 @@ import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
@@ -40,7 +38,7 @@ import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.*
-import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
@@ -54,9 +52,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
-    private val tasksViewModel by lazy {
+    private val viewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-                TasksViewModel::class.java
+                TasksDetailViewModel::class.java
         )
     }
     private val answerSelectedListener: (AnswerOption) -> Unit = {
@@ -68,8 +66,40 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private lateinit var selectedTask: Task
     private lateinit var selectedContact: LocalContact
     private var questionnaireResult: QuestionnaireResult? = null
-    private var questionnaire: Questionnaire? = null
     private val natureOfContactQuestions = HashMap<String, Question>()
+
+    private val classificationSection = QuestionnaireSection(
+            this,
+            QuestionnaireSectionHeader(
+                    R.string.contact_section_typeofcontact_header,
+                    R.string.contact_section_typeofcontact_subtext,
+                    1
+            ), true
+    ).apply {
+        adapter.add(this)
+    }
+
+    private val contactDetailsSection = QuestionnaireSection(
+            this,
+            QuestionnaireSectionHeader(
+                    R.string.contact_section_contactdetails_header,
+                    R.string.contact_section_contactdetails_subtext,
+                    2
+            ), false
+    ).apply {
+        adapter.add(this)
+    }
+
+    private val informSection = QuestionnaireSection(
+        this,
+        QuestionnaireSectionHeader(
+            R.string.contact_section_inform_header,
+            R.string.contact_section_inform_subtext,
+            3
+        ), false
+    ).apply {
+        adapter.add(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,20 +119,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             questionnaireResult = selectedTask.questionnaireResult
         }
 
+        binding.toolbar.title = args.selectedContact?.displayName ?: resources.getString(R.string.mycontacts_add_contact)
 
-        tasksViewModel.questionnaire.observe(viewLifecycleOwner) { response ->
-            questionnaire = response.questionnaires?.firstOrNull()
-            args.selectedContact?.also { contact ->
-                binding.toolbar.title = contact.displayName
-                addQuestionnaireSections(contact, response)
-                addContactInformSection(contact)
-            }
-            if (args.selectedContact == null) {
-                binding.toolbar.title = resources.getString(R.string.mycontacts_add_contact)
-                addQuestionnaireSections(null, response)
-                addContactInformSection(null)
-            }
-        }
+        addQuestionnaireSections(args.selectedContact)
+        addContactInformSection(args.selectedContact)
 
         binding.saveButton.setOnClickListener {
             collectAnswers()
@@ -110,32 +130,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addQuestionnaireSections(
-            contactItem: LocalContact?,
-            response: ContactDetailsResponse
+            contactItem: LocalContact?
     ) {
-        val classificationSection = QuestionnaireSection(
-                this,
-                QuestionnaireSectionHeader(
-                        R.string.contact_section_typeofcontact_header,
-                        R.string.contact_section_typeofcontact_subtext,
-                        1
-                ), true
-        )
-        adapter.add(classificationSection)
-
-        val contactDetailsSection = QuestionnaireSection(
-                this,
-                QuestionnaireSectionHeader(
-                        R.string.contact_section_contactdetails_header,
-                        R.string.contact_section_contactdetails_subtext,
-                        2
-                ), false
-        )
-        adapter.add(contactDetailsSection)
 
         // add questions to sections, based on their "group"
-        response.questionnaires?.firstOrNull().let {
-            it?.questions?.forEach { question ->
+        viewModel.questionnaire?.questions?.forEach { question ->
                 val questionCategory = Category(args.indexTask?.category)
                 if ((!questionCategory.category.isNullOrEmpty() && !question?.relevantForCategories!!.contains(
                                 questionCategory
@@ -174,7 +173,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 shownQuestions.add(question)
 
             }
-        }
+
     }
 
     private fun addMultiChoiceItem(
@@ -241,7 +240,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 listOf(
                         ContactNameItem(firstName, lastName, question, previousAnswer),
                         PhoneNumberItem(primaryPhone, question, previousAnswer),
-                        EmailAdressItem(primaryEmail, question, previousAnswer)
+                        EmailAddressItem(primaryEmail, question, previousAnswer)
                 )
         )
     }
@@ -252,43 +251,30 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
         val plainMessage = message.removeHtmlTags()
 
-        adapter.add(
-                QuestionnaireSection(
-                        this,
-                        QuestionnaireSectionHeader(
-                                R.string.contact_section_inform_header,
-                                R.string.contact_section_inform_subtext,
-                                3
-                        ), false
-                ).apply {
-                    add(
-                            Section().apply {
-                                add(SubHeaderItem(R.string.contact_section_inform_content_header))
-                                add(ParagraphItem(message))
-                                add(ButtonItem(
-                                        getString(R.string.contact_section_inform_copy),
-                                        {
-                                            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
-                                            clipboard.setPrimaryClip(clip)
-                                            Toast.makeText(context, getString(R.string.contact_section_inform_copied), Toast.LENGTH_LONG).show()
-                                        }
-                                ))
+        informSection.apply {
+            add(SubHeaderItem(R.string.contact_section_inform_content_header))
+            add(ParagraphItem(message))
+            add(ButtonItem(
+                    getString(R.string.contact_section_inform_copy),
+                    {
+                        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(context, getString(R.string.contact_section_inform_copied), Toast.LENGTH_LONG).show()
+                    }
+            ))
 
-                                // add "Call $name" button if phone is set
-                                contact?.number?.let {
-                                    add(ButtonItem(
-                                            getString(R.string.contact_section_inform_call, contact.displayName),
-                                            {
-                                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
-                                                startActivity(intent)
-                                            },
-                                    ))
-                                }
-                            }
-                    )
-                }
-        )
+            // add "Call $name" button if phone is set
+            contact?.number?.let {
+                add(ButtonItem(
+                        getString(R.string.contact_section_inform_call, contact.displayName),
+                        {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
+                            startActivity(intent)
+                        },
+                ))
+            }
+        }
     }
 
 
@@ -311,7 +297,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 null,
                 null,
                 question.uuid,
-                "Was je langer dan 15 minuten op minder dan 1,5 meter afstand?",
+                "Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?",
                 QuestionType.ClassificationDetails,
                 Group.Classification,
                 listOf(
@@ -322,7 +308,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         val distanceRisk = Question(
                 null,
-                "<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
+                "Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?<b><ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
                 question.uuid,
                 "Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?",
                 QuestionType.ClassificationDetails,
@@ -553,7 +539,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         selectedTask.let {
             it.linkedContact = selectedContact
-            it.questionnaireResult = QuestionnaireResult(questionnaire?.uuid!!, JsonArray(finalAnswers))
+            it.questionnaireResult = QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
             it.label = selectedContact.displayName
             if (it.uuid.isNullOrEmpty()) {
                 it.uuid = UUID.randomUUID().toString()
@@ -562,7 +548,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             contactType?.let { type ->
                 it.taskContext = type.toString()
             }
-            tasksViewModel.saveChangesToTask(it)
+            viewModel.saveChangesToTask(it)
         }
 
 

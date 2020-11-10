@@ -8,29 +8,29 @@
 
 package nl.rijksoverheid.dbco.tasks.data
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import timber.log.Timber
 
-class TasksViewModel(
-    private val tasksRepository: TaskInterface,
-    private val questionnareRepository: QuestionnaireInterface
+class TasksDetailViewModel(
+        private val tasksRepository: TaskInterface,
+        private val questionnareRepository: QuestionnaireInterface
 ) : ViewModel() {
 
+    val task: MutableLiveData<Task> = MutableLiveData<Task>()
 
-    private val _indexTasks = MutableLiveData<TasksResponse>()
-    val indexTasks: LiveData<TasksResponse> = _indexTasks
+    var questionnaire: Questionnaire? = null
 
-    private val _questionnaire = MutableLiveData<ContactDetailsResponse>()
-    val questionnaire: LiveData<ContactDetailsResponse> = _questionnaire
+    init {
+        retrieveQuestionnaires()
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -41,18 +41,9 @@ class TasksViewModel(
         Timber.d("Initializing tasks viewmodel")
     }
 
-    fun fetchTasksForUUID(uuid: String = "") {
+    private fun retrieveQuestionnaires() { // TODO make call once in repo and cache it there, remove suspend
         viewModelScope.launch {
-            val taskResponse = tasksRepository.retrieveTasksForUUID(uuid)
-            _indexTasks.postValue(taskResponse)
-        }
-    }
-
-    fun retrieveQuestionnaires() {
-        viewModelScope.launch {
-            val questionnairesResponse = questionnareRepository.retrieveQuestionnaires()
-            _questionnaire.postValue(questionnairesResponse)
-
+            questionnaire = questionnareRepository.retrieveQuestionnaires().questionnaires?.firstOrNull()
         }
     }
 

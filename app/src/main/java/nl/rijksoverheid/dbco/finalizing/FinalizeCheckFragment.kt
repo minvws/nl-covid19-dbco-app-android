@@ -21,7 +21,7 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFinalizingCheckBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
-import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import timber.log.Timber
 
@@ -30,7 +30,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksViewModel::class.java
+            TasksOverviewViewModel::class.java
         )
     }
     private val contentSection = Section()
