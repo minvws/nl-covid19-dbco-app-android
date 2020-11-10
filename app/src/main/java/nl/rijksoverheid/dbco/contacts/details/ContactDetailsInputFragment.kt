@@ -16,6 +16,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,6 +37,7 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
+import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -51,49 +53,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
-    private val viewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-                TasksDetailViewModel::class.java
-        )
-    }
-    private val answerSelectedListener: (AnswerOption) -> Unit = {
-
-    }
+    private val viewModel by viewModels<TasksDetailViewModel>()
 
     private val shownQuestions: ArrayList<Question> = ArrayList()
 
-    private val classificationSection = QuestionnaireSection(
-            this,
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_typeofcontact_header,
-                    R.string.contact_section_typeofcontact_subtext,
-                    1
-            ), true
-    ).apply {
-        adapter.add(this)
-    }
-
-    private val contactDetailsSection = QuestionnaireSection(
-            this,
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_contactdetails_header,
-                    R.string.contact_section_contactdetails_subtext,
-                    2
-            ), false
-    ).apply {
-        adapter.add(this)
-    }
-
-    private val informSection = QuestionnaireSection(
-            this,
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_inform_header,
-                    R.string.contact_section_inform_subtext,
-                    3
-            ), false
-    ).apply {
-        adapter.add(this)
-    }
+    private var itemsStorage:ItemsStorage? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,6 +69,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
                 )
         )
+
+        itemsStorage = ItemsStorage(viewModel, viewLifecycleOwner).apply {
+            adapter.add(classificationSection)
+            adapter.add(contactDetailsSection)
+            adapter.add(informSection)
+        }
 
         viewModel.selectedContact = args.selectedContact
         viewModel.updateTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
@@ -135,8 +105,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
             val section =
                     when (question.group) {
-                        Group.ContactDetails -> contactDetailsSection
-                        Group.Classification -> classificationSection
+                        Group.ContactDetails -> itemsStorage?.contactDetailsSection
+                        Group.Classification -> itemsStorage?.classificationSection
                         else -> null
                     }
 
@@ -176,7 +146,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             QuestionMultipleOptionsItem(
                                     requireContext(),
                                     question,
-                                    answerSelectedListener,
+                                    { },
                                     viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
                     )
@@ -185,7 +155,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     sectionToAddTo?.add(
                             QuestionTwoOptionsItem(
                                     question,
-                                    answerSelectedListener,
+                                    {},
                                     null,
                                     viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
@@ -239,7 +209,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
         val plainMessage = message.removeHtmlTags()
 
-        informSection.apply {
+        itemsStorage?.informSection?.apply {
             add(SubHeaderItem(R.string.contact_section_inform_content_header))
             add(ParagraphItem(message))
             add(ButtonItem(
@@ -265,120 +235,40 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
-    private val livedTogetherRiskItem = QuestionTwoOptionsItem(
-            Question(
-                    null,
-                    null,
-                    "",
-                    "Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?",
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(AnswerOption("Nee", null, "false"), AnswerOption("Ja", null, "true"))
-            ),
-            {
-                when (it.value) {
-                    "false" -> viewModel.livedTogetherRisk.value = false
-                    "true" -> viewModel.livedTogetherRisk.value = true
-                }
-            },
-            "livedTogetherRisk",
-    )
-
-    private val durationRiskItem = QuestionTwoOptionsItem(
-            Question(
-                    null,
-                    null,
-                    "",
-                    "Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?",
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
-                    )
-            ),
-            {
-                when (it.value) {
-                    "false" -> viewModel.durationRisk.value = false
-                    "true" -> viewModel.durationRisk.value = true
-                }
-            },
-            "durationRisk",
-    )
-
-    private val distanceRiskItem = QuestionTwoOptionsItem(
-            Question(
-                    null,
-                    "<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
-                    "",
-                    "Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?",
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
-                    )
-            ),
-            {
-                when (it.value) {
-                    "false" -> viewModel.distanceRisk.value = false
-                    "true" -> viewModel.distanceRisk.value = true
-                }
-            },
-            "distanceRisk",
-    )
-
-    private val otherRiskItem = QuestionTwoOptionsItem(
-            Question(
-                    null,
-                    null,
-                    "",
-                    "Was je langer dan 15 minuten in dezelfde ruimte?",
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
-                    )
-            ),
-            {
-                // TODO add "no risk" label
-            },
-            "otherRisk",
-    )
-
     private fun addClassificationQuestions(
             section: QuestionnaireSection?
     ) {
 
-        section?.add(livedTogetherRiskItem) // always added
+        itemsStorage?.let { itemsStorage ->
+            section?.add(itemsStorage.livedTogetherRiskItem) // always added
 
-        viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                section?.add(durationRiskItem)
-            } else {
-                section?.remove(distanceRiskItem)
-                section?.remove(durationRiskItem)
-                section?.remove(otherRiskItem)
-            }
-        })
+            viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(itemsStorage.durationRiskItem)
+                } else {
+                    section?.remove(itemsStorage.distanceRiskItem)
+                    section?.remove(itemsStorage.durationRiskItem)
+                    section?.remove(itemsStorage.otherRiskItem)
+                }
+            })
 
-        viewModel.durationRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                section?.add(distanceRiskItem)
-            } else {
-                section?.remove(distanceRiskItem)
-                section?.remove(otherRiskItem)
-            }
-        })
+            viewModel.durationRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(itemsStorage.distanceRiskItem)
+                } else {
+                    section?.remove(itemsStorage.distanceRiskItem)
+                    section?.remove(itemsStorage.otherRiskItem)
+                }
+            })
 
-        viewModel.distanceRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                section?.add(otherRiskItem)
-            } else {
-                section?.remove(otherRiskItem)
-            }
-        })
+            viewModel.distanceRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(itemsStorage.otherRiskItem)
+                } else {
+                    section?.remove(itemsStorage.otherRiskItem)
+                }
+            })
+        }
     }
 
     private fun collectAnswers() {
