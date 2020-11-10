@@ -29,7 +29,6 @@ import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.*
@@ -58,15 +57,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         )
     }
     private val answerSelectedListener: (AnswerOption) -> Unit = {
-        // TODO handle
+
     }
 
     private val shownQuestions: ArrayList<Question> = ArrayList()
-
-    private lateinit var selectedTask: Task
-    private lateinit var selectedContact: LocalContact
-    private var questionnaireResult: QuestionnaireResult? = null
-    private val natureOfContactQuestions = HashMap<String, Question>()
 
     private val classificationSection = QuestionnaireSection(
             this,
@@ -91,12 +85,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private val informSection = QuestionnaireSection(
-        this,
-        QuestionnaireSectionHeader(
-            R.string.contact_section_inform_header,
-            R.string.contact_section_inform_subtext,
-            3
-        ), false
+            this,
+            QuestionnaireSectionHeader(
+                    R.string.contact_section_inform_header,
+                    R.string.contact_section_inform_subtext,
+                    3
+            ), false
     ).apply {
         adapter.add(this)
     }
@@ -112,67 +106,62 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 )
         )
 
-        selectedContact = args.selectedContact ?: LocalContact("-1", "Nieuw Contact")
-        selectedTask = args.indexTask ?: Task(taskType = "contact", source = "app")
+        viewModel.selectedContact = args.selectedContact
+        viewModel.updateTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
 
-        if (selectedTask.questionnaireResult != null) {
-            questionnaireResult = selectedTask.questionnaireResult
-        }
+        binding.toolbar.title = args.selectedContact?.displayName
+                ?: resources.getString(R.string.mycontacts_add_contact)
 
-        binding.toolbar.title = args.selectedContact?.displayName ?: resources.getString(R.string.mycontacts_add_contact)
-
-        addQuestionnaireSections(args.selectedContact)
-        addContactInformSection(args.selectedContact)
+        addQuestionnaireSections()
+        addContactInformSection()
 
         binding.saveButton.setOnClickListener {
             collectAnswers()
         }
     }
 
-    private fun addQuestionnaireSections(
-            contactItem: LocalContact?
-    ) {
+    private fun addQuestionnaireSections() {
 
         // add questions to sections, based on their "group"
         viewModel.questionnaire?.questions?.forEach { question ->
-                val questionCategory = Category(args.indexTask?.category)
-                if ((!questionCategory.category.isNullOrEmpty() && !question?.relevantForCategories!!.contains(
-                                questionCategory
-                        )) || question == null
-                ) {
-                    Timber.d("Skipping $question")
-                    return@forEach
-                }
-
-                val sectionToAddTo =
-                        when (question.group) {
-                            Group.ContactDetails -> contactDetailsSection
-                            Group.Classification -> classificationSection
-                            else -> null
-                        }
-
-
-                when (question.questionType) {
-                    QuestionType.Multiplechoice -> {
-                        addMultiChoiceItem(question, sectionToAddTo)
-                    }
-                    QuestionType.Open -> {
-                        sectionToAddTo?.add(SingleInputItem(requireContext(), question))
-                    }
-                    QuestionType.Date -> {
-                        sectionToAddTo?.add(DateInputItem(requireContext(), question))
-                    }
-                    QuestionType.ContactDetails -> {
-                        addContactDetailsItems(contactItem, sectionToAddTo, question)
-                    }
-                    QuestionType.ClassificationDetails -> {
-                        addClassificationQuestions(question, sectionToAddTo, selectedTask)
-                    }
-                }
-
-                shownQuestions.add(question)
-
+            val questionCategory = Category(args.indexTask?.category)
+            if ((!questionCategory.category.isNullOrEmpty() && !question?.relevantForCategories!!.contains(
+                            questionCategory
+                    )) || question == null
+            ) {
+                Timber.d("Skipping $question")
+                return@forEach
             }
+
+            val section =
+                    when (question.group) {
+                        Group.ContactDetails -> contactDetailsSection
+                        Group.Classification -> classificationSection
+                        else -> null
+                    }
+
+
+            when (question.questionType) {
+                QuestionType.Multiplechoice -> {
+                    addMultiChoiceItem(question, section)
+                }
+                QuestionType.Open -> {
+                    section?.add(SingleInputItem(requireContext(), question))
+                }
+                QuestionType.Date -> {
+                    section?.add(DateInputItem(requireContext(), question))
+                }
+                QuestionType.ContactDetails -> {
+                    addContactDetailsItems(section, question)
+                }
+                QuestionType.ClassificationDetails -> {
+                    addClassificationQuestions(section)
+                }
+            }
+
+            shownQuestions.add(question)
+
+        }
 
     }
 
@@ -188,7 +177,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                     requireContext(),
                                     question,
                                     answerSelectedListener,
-                                    questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                                    viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
                     )
                 }
@@ -198,7 +187,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                     question,
                                     answerSelectedListener,
                                     null,
-                                    questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                                    viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
                     )
                 }
@@ -209,12 +198,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addContactDetailsItems(
-            contactItem: LocalContact?,
             sectionToAddTo: QuestionnaireSection?,
             question: Question
     ) {
         val nameParts: List<String> =
-                contactItem?.displayName?.split(" ", limit = 2) ?: listOf("", "")
+                viewModel.selectedContact?.displayName?.split(" ", limit = 2) ?: listOf("", "")
         val firstName = nameParts[0] ?: ""
         val lastName = if (nameParts.size > 1) {
             nameParts[1]
@@ -222,19 +210,19 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ""
         }
 
-        val primaryPhone = if (!contactItem?.number.isNullOrEmpty()) {
-            contactItem?.number
+        val primaryPhone = if (!viewModel.selectedContact?.number.isNullOrEmpty()) {
+            viewModel.selectedContact?.number
         } else {
             ""
         }
 
-        val primaryEmail = if (!contactItem?.email.isNullOrEmpty()) {
-            contactItem?.email
+        val primaryEmail = if (!viewModel.selectedContact?.email.isNullOrEmpty()) {
+            viewModel.selectedContact?.email
         } else {
             ""
         }
 
-        val previousAnswer = questionnaireResult?.getAnswerByUuid(question.uuid!!)
+        val previousAnswer = viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
 
         sectionToAddTo?.addAll(
                 listOf(
@@ -245,7 +233,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         )
     }
 
-    private fun addContactInformSection(contact: LocalContact?) {
+    private fun addContactInformSection() {
 
         // TODO message should be dynamic
         val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
@@ -265,9 +253,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             ))
 
             // add "Call $name" button if phone is set
-            contact?.number?.let {
+            viewModel.selectedContact?.number?.let {
                 add(ButtonItem(
-                        getString(R.string.contact_section_inform_call, contact.displayName),
+                        getString(R.string.contact_section_inform_call, viewModel.selectedContact?.displayName),
                         {
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
                             startActivity(intent)
@@ -277,217 +265,123 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
+    private val livedTogetherRiskItem = QuestionTwoOptionsItem(
+            Question(
+                    null,
+                    null,
+                    "",
+                    "Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?",
+                    QuestionType.ClassificationDetails,
+                    Group.Classification,
+                    listOf(AnswerOption("Nee", null, "false"), AnswerOption("Ja", null, "true"))
+            ),
+            {
+                when (it.value) {
+                    "false" -> viewModel.livedTogetherRisk.value = false
+                    "true" -> viewModel.livedTogetherRisk.value = true
+                }
+            },
+            "livedTogetherRisk",
+    )
+
+    private val durationRiskItem = QuestionTwoOptionsItem(
+            Question(
+                    null,
+                    null,
+                    "",
+                    "Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?",
+                    QuestionType.ClassificationDetails,
+                    Group.Classification,
+                    listOf(
+                            AnswerOption("Ja, denk het wel", null, "true"),
+                            AnswerOption("Nee, denk het niet", null, "false")
+                    )
+            ),
+            {
+                when (it.value) {
+                    "false" -> viewModel.durationRisk.value = false
+                    "true" -> viewModel.durationRisk.value = true
+                }
+            },
+            "durationRisk",
+    )
+
+    private val distanceRiskItem = QuestionTwoOptionsItem(
+            Question(
+                    null,
+                    "<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
+                    "",
+                    "Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?",
+                    QuestionType.ClassificationDetails,
+                    Group.Classification,
+                    listOf(
+                            AnswerOption("Ja, denk het wel", null, "true"),
+                            AnswerOption("Nee, denk het niet", null, "false")
+                    )
+            ),
+            {
+                when (it.value) {
+                    "false" -> viewModel.distanceRisk.value = false
+                    "true" -> viewModel.distanceRisk.value = true
+                }
+            },
+            "distanceRisk",
+    )
+
+    private val otherRiskItem = QuestionTwoOptionsItem(
+            Question(
+                    null,
+                    null,
+                    "",
+                    "Was je langer dan 15 minuten in dezelfde ruimte?",
+                    QuestionType.ClassificationDetails,
+                    Group.Classification,
+                    listOf(
+                            AnswerOption("Ja, denk het wel", null, "true"),
+                            AnswerOption("Nee, denk het niet", null, "false")
+                    )
+            ),
+            {
+                // TODO add "no risk" label
+            },
+            "otherRisk",
+    )
 
     private fun addClassificationQuestions(
-            question: Question,
-            sectionToAddTo: QuestionnaireSection?,
-            task: Task?
+            section: QuestionnaireSection?
     ) {
-        val livedTogetherRisk = Question(
-                null,
-                null,
-                question.uuid,
-                "Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?",
-                QuestionType.ClassificationDetails,
-                Group.Classification,
-                listOf(AnswerOption("Nee", null, "false"), AnswerOption("Ja", null, "true"))
-        )
 
-        val durationRisk = Question(
-                null,
-                null,
-                question.uuid,
-                "Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?",
-                QuestionType.ClassificationDetails,
-                Group.Classification,
-                listOf(
-                        AnswerOption("Ja, denk het wel", null, "true"),
-                        AnswerOption("Nee, denk het niet", null, "false")
-                )
-        )
+        section?.add(livedTogetherRiskItem) // always added
 
-        val distanceRisk = Question(
-                null,
-                "Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?<b><ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
-                question.uuid,
-                "Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?",
-                QuestionType.ClassificationDetails,
-                Group.Classification,
-                listOf(
-                        AnswerOption("Ja, denk het wel", null, "true"),
-                        AnswerOption("Nee, denk het niet", null, "false")
-                )
-        )
-
-        val otherRisk = Question(
-                null,
-                null,
-                question.uuid,
-                "Was je langer dan 15 minuten in dezelfde ruimte?",
-                QuestionType.ClassificationDetails,
-                Group.Classification,
-                listOf(
-                        AnswerOption("Ja, denk het wel", null, "true"),
-                        AnswerOption("Nee, denk het niet", null, "false")
-                )
-        )
-
-        val previousAnswer = questionnaireResult?.getAnswerByUuid(question.uuid!!)
-
-
-        if (task?.category != null) {
-            when (task.category) {
-                "1" -> {
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    livedTogetherRisk,
-                                    answerSelectedListener,
-                                    "livedTogetherRisk",
-                                    previousAnswer
-                            )
-                    )
-                    natureOfContactQuestions.put("livedTogetherRisk", livedTogetherRisk)
-                }
-                "2a" -> {
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    livedTogetherRisk,
-                                    answerSelectedListener,
-                                    "livedTogetherRisk",
-                                    previousAnswer
-                            )
-                    )
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    durationRisk,
-                                    answerSelectedListener,
-                                    "durationRisk",
-                                    previousAnswer
-                            )
-                    )
-                    natureOfContactQuestions["livedTogetherRisk"] = livedTogetherRisk
-                    natureOfContactQuestions["durationRisk"] = durationRisk
-                }
-                "2b" -> {
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    livedTogetherRisk,
-                                    answerSelectedListener,
-                                    "livedTogetherRisk",
-                                    previousAnswer
-                            )
-                    )
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    durationRisk,
-                                    answerSelectedListener,
-                                    "durationRisk",
-                                    previousAnswer
-                            )
-                    )
-
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    distanceRisk,
-                                    answerSelectedListener,
-                                    "distanceRisk",
-                                    previousAnswer
-                            )
-                    )
-
-                    natureOfContactQuestions["livedTogetherRisk"] = livedTogetherRisk
-                    natureOfContactQuestions["durationRisk"] = durationRisk
-                    natureOfContactQuestions["distanceRisk"] = distanceRisk
-
-                }
-                else -> {
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    livedTogetherRisk,
-                                    answerSelectedListener,
-                                    "livedTogetherRisk",
-                                    previousAnswer
-                            )
-                    )
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    durationRisk,
-                                    answerSelectedListener,
-                                    "durationRisk",
-                                    previousAnswer
-                            )
-                    )
-
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    distanceRisk,
-                                    answerSelectedListener,
-                                    "distanceRisk",
-                                    previousAnswer
-                            )
-                    )
-                    sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    otherRisk,
-                                    answerSelectedListener,
-                                    "otherRisk",
-                                    previousAnswer
-                            )
-                    )
-
-                    natureOfContactQuestions["livedTogetherRisk"] = livedTogetherRisk
-                    natureOfContactQuestions["durationRisk"] = durationRisk
-                    natureOfContactQuestions["distanceRisk"] = distanceRisk
-                    natureOfContactQuestions["otherRisk"] = otherRisk
-                }
+        viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(durationRiskItem)
+            } else {
+                section?.remove(distanceRiskItem)
+                section?.remove(durationRiskItem)
+                section?.remove(otherRiskItem)
             }
+        })
 
-        } else {
-            sectionToAddTo?.add(
-                    QuestionTwoOptionsItem(
-                            livedTogetherRisk,
-                            answerSelectedListener,
-                            "livedTogetherRisk",
-                            previousAnswer
-                    )
-            )
-            sectionToAddTo?.add(
-                    QuestionTwoOptionsItem(
-                            durationRisk,
-                            answerSelectedListener,
-                            "durationRisk",
-                            previousAnswer
-                    )
-            )
+        viewModel.durationRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(distanceRiskItem)
+            } else {
+                section?.remove(distanceRiskItem)
+                section?.remove(otherRiskItem)
+            }
+        })
 
-            sectionToAddTo?.add(
-                    QuestionTwoOptionsItem(
-                            distanceRisk,
-                            answerSelectedListener,
-                            "distanceRisk",
-                            previousAnswer
-                    )
-            )
-            sectionToAddTo?.add(
-                    QuestionTwoOptionsItem(
-                            otherRisk,
-                            answerSelectedListener,
-                            "otherRisk",
-                            previousAnswer
-                    )
-            )
-
-            natureOfContactQuestions["livedTogetherRisk"] = livedTogetherRisk
-            natureOfContactQuestions["durationRisk"] = durationRisk
-            natureOfContactQuestions["distanceRisk"] = distanceRisk
-            natureOfContactQuestions["otherRisk"] = otherRisk
-        }
-
+        viewModel.distanceRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(otherRiskItem)
+            } else {
+                section?.remove(otherRiskItem)
+            }
+        })
     }
 
-
     private fun collectAnswers() {
-
 
         val answerCollector = HashMap<String, Map<String, Any>>()
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
@@ -536,11 +430,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         }
 
-
-        selectedTask.let {
-            it.linkedContact = selectedContact
+        viewModel.task.value?.let {
+            it.linkedContact = viewModel.selectedContact
             it.questionnaireResult = QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
-            it.label = selectedContact.displayName
+            it.label = viewModel.selectedContact?.displayName
             if (it.uuid.isNullOrEmpty()) {
                 it.uuid = UUID.randomUUID().toString()
             }
