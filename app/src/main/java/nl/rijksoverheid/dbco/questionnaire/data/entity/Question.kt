@@ -11,18 +11,18 @@ package nl.rijksoverheid.dbco.questionnaire.data.entity
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.entity.Category
+import nl.rijksoverheid.dbco.contacts.data.entity.CategoryHolder
 
 @Keep
 @Serializable
 data class Question(
-    val relevantForCategories: List<Category?>? = null,
-    val description: String? = null,
-    val uuid: String? = null,
-    val label: String? = null,
-    val questionType: QuestionType? = null,
-    val group: Group? = null,
-    val answerOptions: List<AnswerOption?>? = null
+        val relevantForCategories: List<CategoryHolder?>? = null,
+        val description: String? = null,
+        val uuid: String? = null,
+        val label: String? = null,
+        val questionType: QuestionType? = null,
+        val group: Group? = null,
+        val answerOptions: List<AnswerOption?>? = null
 )
 
 @Keep

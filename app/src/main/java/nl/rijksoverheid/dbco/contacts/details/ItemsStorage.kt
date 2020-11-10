@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.contacts.details
 
-import androidx.lifecycle.LifecycleOwner
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
@@ -20,12 +19,12 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 
 /**
+ * TODO move strings to xml
  * Created by Dima Kovalenko.
  */
-class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: LifecycleOwner) {
+class ItemsStorage(viewModel: TasksDetailViewModel) {
 
     val classificationSection = QuestionnaireSection(
-            viewLifecycleOwner,
             QuestionnaireSectionHeader(
                     R.string.contact_section_typeofcontact_header,
                     R.string.contact_section_typeofcontact_subtext,
@@ -48,6 +47,7 @@ class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: Lifecycl
                     "false" -> viewModel.livedTogetherRisk.value = false
                     "true" -> viewModel.livedTogetherRisk.value = true
                 }
+                viewModel.updateCategory()
             },
             "livedTogetherRisk",
     )
@@ -70,6 +70,7 @@ class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: Lifecycl
                     "false" -> viewModel.durationRisk.value = false
                     "true" -> viewModel.durationRisk.value = true
                 }
+                viewModel.updateCategory()
             },
             "durationRisk",
     )
@@ -92,6 +93,7 @@ class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: Lifecycl
                     "false" -> viewModel.distanceRisk.value = false
                     "true" -> viewModel.distanceRisk.value = true
                 }
+                viewModel.updateCategory()
             },
             "distanceRisk",
     )
@@ -110,13 +112,16 @@ class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: Lifecycl
                     )
             ),
             {
-                // TODO add "no risk" label
+                when (it.value) {
+                    "false" -> viewModel.otherRisk.value = false
+                    "true" -> viewModel.otherRisk.value = true
+                }
+                viewModel.updateCategory()
             },
             "otherRisk",
     )
 
     val contactDetailsSection = QuestionnaireSection(
-            viewLifecycleOwner,
             QuestionnaireSectionHeader(
                     R.string.contact_section_contactdetails_header,
                     R.string.contact_section_contactdetails_subtext,
@@ -125,7 +130,6 @@ class ItemsStorage(viewModel: TasksDetailViewModel, viewLifecycleOwner: Lifecycl
     )
 
     val informSection = QuestionnaireSection(
-            viewLifecycleOwner,
             QuestionnaireSectionHeader(
                     R.string.contact_section_inform_header,
                     R.string.contact_section_inform_subtext,

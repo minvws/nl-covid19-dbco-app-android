@@ -8,9 +8,25 @@
 
 package nl.rijksoverheid.dbco.contacts.data.entity
 
-import kotlinx.serialization.Serializable
+import androidx.annotation.Keep
+import kotlinx.serialization.SerialName
 
-@Serializable
-data class Category(
-	val category: String? = null
-)
+@Keep
+@kotlinx.serialization.Serializable
+enum class Category {
+
+	@SerialName("1")
+	LIVED_TOGETHER,
+
+	@SerialName("2a")
+	DURATION,
+
+	@SerialName("2b")
+	DISTANCE,
+
+	@SerialName("3")
+	OTHER,
+
+	@SerialName("NO_RISK")
+	NO_RISK,
+}

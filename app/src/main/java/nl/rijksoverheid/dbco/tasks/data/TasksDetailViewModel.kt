@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
@@ -25,18 +26,17 @@ class TasksDetailViewModel(
         private val questionnareRepository: QuestionnaireInterface
 ) : ViewModel() {
 
-    val task: MutableLiveData<Task> = MutableLiveData<Task>()
+    var questionnaire: Questionnaire? = null
 
-    val category = MutableLiveData<String>()
+    val category = MutableLiveData<Category?>()
     val livedTogetherRisk = MutableLiveData<Boolean?>(null)
     val durationRisk = MutableLiveData<Boolean?>(null)
     val distanceRisk = MutableLiveData<Boolean?>(null)
     val otherRisk = MutableLiveData<Boolean?>(null)
 
+    val task: MutableLiveData<Task> = MutableLiveData<Task>()
     var selectedContact: LocalContact? = null
     var questionnaireResult: QuestionnaireResult? = null
-
-    var questionnaire: Questionnaire? = null
 
     init {
         retrieveQuestionnaires()
@@ -66,4 +66,14 @@ class TasksDetailViewModel(
         questionnaireResult = task.questionnaireResult
     }
 
+    fun updateCategory() {
+        category.value = when {
+            livedTogetherRisk.value == true -> Category.LIVED_TOGETHER
+            durationRisk.value == true -> Category.DURATION
+            distanceRisk.value == true -> Category.DISTANCE
+            otherRisk.value == true -> Category.OTHER
+            otherRisk.value == false -> Category.NO_RISK
+            else -> null
+        }
+    }
 }

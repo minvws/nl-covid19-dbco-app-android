@@ -17,7 +17,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
@@ -35,9 +34,7 @@ import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
-import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
-import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.questionnaire.data.entity.*
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -54,9 +51,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
     private val viewModel by viewModels<TasksDetailViewModel>()
-
-    private val shownQuestions: ArrayList<Question> = ArrayList()
-
     private var itemsStorage:ItemsStorage? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,17 +64,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 )
         )
 
-        itemsStorage = ItemsStorage(viewModel, viewLifecycleOwner).apply {
+        itemsStorage = ItemsStorage(viewModel).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
         }
 
+        viewModel.category.observe(viewLifecycleOwner, {
+            itemsStorage?.classificationSection?.setCompleted(it != null)
+            itemsStorage?.contactDetailsSection?.setEnabled(it != null && it != Category.NO_RISK)
+        })
+
         viewModel.selectedContact = args.selectedContact
         viewModel.updateTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
 
-        binding.toolbar.title = args.selectedContact?.displayName
-                ?: resources.getString(R.string.mycontacts_add_contact)
+        binding.toolbar.title = args.selectedContact?.displayName ?: resources.getString(R.string.mycontacts_add_contact)
 
         addQuestionnaireSections()
         addContactInformSection()
@@ -93,23 +91,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun addQuestionnaireSections() {
 
         // add questions to sections, based on their "group"
-        viewModel.questionnaire?.questions?.forEach { question ->
-            val questionCategory = Category(args.indexTask?.category)
-            if ((!questionCategory.category.isNullOrEmpty() && !question?.relevantForCategories!!.contains(
-                            questionCategory
-                    )) || question == null
-            ) {
-                Timber.d("Skipping $question")
-                return@forEach
-            }
-
+        viewModel.questionnaire?.questions?.filterNotNull()?.forEach { question ->
             val section =
                     when (question.group) {
                         Group.ContactDetails -> itemsStorage?.contactDetailsSection
                         Group.Classification -> itemsStorage?.classificationSection
                         else -> null
                     }
-
 
             when (question.questionType) {
                 QuestionType.Multiplechoice -> {
@@ -128,11 +116,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     addClassificationQuestions(section)
                 }
             }
-
-            shownQuestions.add(question)
-
         }
-
     }
 
     private fun addMultiChoiceItem(
@@ -146,7 +130,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             QuestionMultipleOptionsItem(
                                     requireContext(),
                                     question,
-                                    { },
+                                    {},
                                     viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
                     )
@@ -171,6 +155,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             sectionToAddTo: QuestionnaireSection?,
             question: Question
     ) {
+
         val nameParts: List<String> =
                 viewModel.selectedContact?.displayName?.split(" ", limit = 2) ?: listOf("", "")
         val firstName = nameParts[0] ?: ""
@@ -240,6 +225,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     ) {
 
         itemsStorage?.let { itemsStorage ->
+
             section?.add(itemsStorage.livedTogetherRiskItem) // always added
 
             viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
@@ -267,6 +253,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 } else {
                     section?.remove(itemsStorage.otherRiskItem)
                 }
+            })
+
+            viewModel.otherRisk.observe(viewLifecycleOwner, {
+                // TODO add "no risk" label
             })
         }
     }
