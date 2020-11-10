@@ -49,12 +49,12 @@
     <string name="contact_question_select_option">Kiezen</string>
 
     <!--    Contact details and questions-->
-    <string name="contact_section_typeofcontact_header">Aard van het contact</string>
-    <string name="contact_section_typeofcontact_subtext">Vragen over jullie ontmoeting</string>
+    <string name="contact_section_typeofcontact_header">Soort contact</string>
+    <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
-    <string name="contact_section_inform_header">Informeren</string>
-    <string name="contact_section_inform_subtext">Deel het handelingsperspectief</string>
+    <string name="contact_section_inform_header">Informatie voor dit contact</string>
+    <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
     <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
     <string name="contact_section_inform_content_details"><![CDATA[Dit zijn de belangrijkste leefregels voor deze persoon:<br/><ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis - <b> tot %1$s</b> (nog %2$s dagen)</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
