@@ -56,12 +56,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            livedTogetherRiskLabel,
+            LIVED_TOGETHER_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
                         when (viewModel.livedTogetherRisk.value) {
-                            true -> put(livedTogetherRiskLabel, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(livedTogetherRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                            true -> put(LIVED_TOGETHER_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(LIVED_TOGETHER_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
                         }
                     }
             )
@@ -87,12 +87,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            durationRiskLabel,
+            DURATION_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
                         when (viewModel.durationRisk.value) {
-                            true -> put(durationRiskLabel, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(durationRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                            true -> put(DURATION_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(DURATION_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
                         }
                     }
             )
@@ -118,12 +118,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            distanceRiskLabel,
+            DISTANCE_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
                         when (viewModel.distanceRisk.value) {
-                            true -> put(distanceRiskLabel, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(distanceRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                            true -> put(DISTANCE_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(DISTANCE_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
                         }
                     }
             )
@@ -149,12 +149,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            otherRiskLabel,
+            OTHER_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
                         when (viewModel.otherRisk.value) {
-                            true -> put(otherRiskLabel, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(otherRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                            true -> put(OTHER_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(OTHER_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
                         }
                     }
             )
@@ -177,10 +177,10 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
     )
 
     companion object {
-        const val livedTogetherRiskLabel = "livedTogetherRisk"
-        const val distanceRiskLabel = "distanceRisk"
-        const val durationRiskLabel = "durationRisk"
-        const val otherRiskLabel = "otherRisk"
+        const val LIVED_TOGETHER_RISK_LABEL = "livedTogetherRisk"
+        const val DISTANCE_RISK_LABEL = "distanceRisk"
+        const val DURATION_RISK_LABEL = "durationRisk"
+        const val OTHER_RISK_LABEL = "otherRisk"
 
         const val ANSWER_FALSE = "false"
         const val ANSWER_TRUE = "true"
