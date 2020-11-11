@@ -53,14 +53,12 @@
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option1"
                 style="@style/QuestionText.ChoiceButton"
-                android:onCheckedChanged="@{item::onCheckChanged}"
                 android:text="@{item.question.answerOptions.get(0).label }" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option2"
                 style="@style/QuestionText.ChoiceButton"
                 android:layout_marginTop="8dp"
-                android:onCheckedChanged="@{item::onCheckChanged}"
                 android:text="@{item.question.answerOptions.get(1).label}" />
 
         </RadioGroup>

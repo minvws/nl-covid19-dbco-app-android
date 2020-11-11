@@ -9,6 +9,9 @@
 package nl.rijksoverheid.dbco.contacts.details
 
 import android.content.Context
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
@@ -18,6 +21,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
+
 
 /**
  * Created by Dima Kovalenko.
@@ -41,18 +45,26 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_no), null, "false"),
-                            AnswerOption(context.getString(R.string.answer_yes), null, "true")
+                            AnswerOption(context.getString(R.string.answer_no), null, ANSWER_FALSE),
+                            AnswerOption(context.getString(R.string.answer_yes), null, ANSWER_TRUE)
                     )
             ),
             {
                 when (it.value) {
-                    "false" -> viewModel.livedTogetherRisk.value = false
-                    "true" -> viewModel.livedTogetherRisk.value = true
+                    ANSWER_FALSE -> viewModel.livedTogetherRisk.value = false
+                    ANSWER_TRUE -> viewModel.livedTogetherRisk.value = true
                 }
-                viewModel.updateCategory()
+                viewModel.updateCategoryFromRiskFlags()
             },
-            "livedTogetherRisk",
+            livedTogetherRiskLabel,
+            JsonObject(
+                    HashMap<String, JsonElement>().apply {
+                        when (viewModel.livedTogetherRisk.value) {
+                            true -> put(livedTogetherRiskLabel, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(livedTogetherRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                        }
+                    }
+            )
     )
 
     val durationRiskItem = QuestionTwoOptionsItem(
@@ -64,18 +76,26 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
                     )
             ),
             {
                 when (it.value) {
-                    "false" -> viewModel.durationRisk.value = false
-                    "true" -> viewModel.durationRisk.value = true
+                    ANSWER_FALSE -> viewModel.durationRisk.value = false
+                    ANSWER_TRUE -> viewModel.durationRisk.value = true
                 }
-                viewModel.updateCategory()
+                viewModel.updateCategoryFromRiskFlags()
             },
-            "durationRisk",
+            durationRiskLabel,
+            JsonObject(
+                    HashMap<String, JsonElement>().apply {
+                        when (viewModel.durationRisk.value) {
+                            true -> put(durationRiskLabel, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(durationRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                        }
+                    }
+            )
     )
 
     val distanceRiskItem = QuestionTwoOptionsItem(
@@ -87,18 +107,26 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
                     )
             ),
             {
                 when (it.value) {
-                    "false" -> viewModel.distanceRisk.value = false
-                    "true" -> viewModel.distanceRisk.value = true
+                    ANSWER_FALSE -> viewModel.distanceRisk.value = false
+                    ANSWER_TRUE -> viewModel.distanceRisk.value = true
                 }
-                viewModel.updateCategory()
+                viewModel.updateCategoryFromRiskFlags()
             },
-            "distanceRisk",
+            distanceRiskLabel,
+            JsonObject(
+                    HashMap<String, JsonElement>().apply {
+                        when (viewModel.distanceRisk.value) {
+                            true -> put(distanceRiskLabel, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(distanceRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                        }
+                    }
+            )
     )
 
     val otherRiskItem = QuestionTwoOptionsItem(
@@ -110,18 +138,26 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
                     )
             ),
             {
                 when (it.value) {
-                    "false" -> viewModel.otherRisk.value = false
-                    "true" -> viewModel.otherRisk.value = true
+                    ANSWER_FALSE -> viewModel.otherRisk.value = false
+                    ANSWER_TRUE -> viewModel.otherRisk.value = true
                 }
-                viewModel.updateCategory()
+                viewModel.updateCategoryFromRiskFlags()
             },
-            "otherRisk",
+            otherRiskLabel,
+            JsonObject(
+                    HashMap<String, JsonElement>().apply {
+                        when (viewModel.otherRisk.value) {
+                            true -> put(otherRiskLabel, JsonPrimitive(ANSWER_TRUE))
+                            false -> put(otherRiskLabel, JsonPrimitive(ANSWER_FALSE))
+                        }
+                    }
+            )
     )
 
     val contactDetailsSection = QuestionnaireSection(
@@ -139,4 +175,14 @@ class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
                     3
             ), false
     )
+
+    companion object {
+        const val livedTogetherRiskLabel = "livedTogetherRisk"
+        const val distanceRiskLabel = "distanceRisk"
+        const val durationRiskLabel = "durationRisk"
+        const val otherRiskLabel = "otherRisk"
+
+        const val ANSWER_FALSE = "false"
+        const val ANSWER_TRUE = "true"
+    }
 }

@@ -21,10 +21,10 @@ import nl.rijksoverheid.dbco.util.HtmlHelper
 import timber.log.Timber
 
 class QuestionTwoOptionsItem(
-    question: Question?,
-    private val answerSelectedListener: (AnswerOption) -> Unit,
-    private val optionalValueLabel: String? = null,
-    private val previousAnswer: JsonObject? = null
+        question: Question?,
+        private val answerSelectedListener: (AnswerOption) -> Unit,
+        private val optionalValueLabel: String? = null,
+        private val previousAnswer: JsonObject? = null
 ) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_2_options
@@ -36,6 +36,22 @@ class QuestionTwoOptionsItem(
         answerGroup = viewBinding.answerGroup
         fillInPreviousAnswer()
 
+        val onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+            if (isChecked) {
+                val answerOption = when (compoundButton.id) {
+                    R.id.option1 -> question?.answerOptions?.get(0)
+                    else -> question?.answerOptions?.get(1)
+                }
+                answerOption?.let {
+                    answerSelectedListener.invoke(it)
+                    selectedAnswer = it
+                    checkCompleted()
+                }
+            }
+        }
+        viewBinding.option1.setOnCheckedChangeListener(onCheckedChangeListener)
+        viewBinding.option2.setOnCheckedChangeListener(onCheckedChangeListener)
+
         question?.description?.let {
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
@@ -43,25 +59,11 @@ class QuestionTwoOptionsItem(
         }
     }
 
-    fun onCheckChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        if (isChecked) {
-            val answerOption = when (buttonView.id) {
-                R.id.option1 -> question?.answerOptions?.get(0)
-                else -> question?.answerOptions?.get(1)
-            }
-            answerOption?.let {
-                answerSelectedListener.invoke(it)
-                selectedAnswer = it
-                checkCompleted()
-            }
-        }
-    }
-
     override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
+            other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
+            other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun isRequired(): Boolean = true
 
@@ -84,27 +86,20 @@ class QuestionTwoOptionsItem(
     }
 
     private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(
-                optionalValueLabel
-            )
+        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(optionalValueLabel)
         ) {
             val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
             Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
 
-            if (
-                question?.answerOptions?.get(0)?.value == previousAnswerValue) {
+            if (question?.answerOptions?.get(0)?.value == previousAnswerValue) {
                 (answerGroup.getChildAt(0) as RadioButton).isChecked = true
-                question?.answerOptions?.get(0)?.let{
-                    answerSelectedListener.invoke(it)
+                question?.answerOptions?.get(0)?.let {
                     selectedAnswer = it
-                    checkCompleted()
                 }
-            }else{
+            } else {
                 (answerGroup.getChildAt(1) as RadioButton).isChecked = true
-                question?.answerOptions?.get(1)?.let{
-                    answerSelectedListener.invoke(it)
+                question?.answerOptions?.get(1)?.let {
                     selectedAnswer = it
-                    checkCompleted()
                 }
             }
 

@@ -56,12 +56,55 @@ class TasksDetailViewModel(
         tasksRepository.saveChangesToTask(updatedTask)
     }
 
-    fun updateTask(task: Task) {
+    fun setTask(task: Task) {
         this.task.value = task
         questionnaireResult = task.questionnaireResult
+        category.value = task.category
+        updateRiskFlagsFromCategory(task)
     }
 
-    fun updateCategory() {
+    private fun updateRiskFlagsFromCategory(task: Task) {
+        when (task.category) {
+            Category.LIVED_TOGETHER -> {
+                livedTogetherRisk.value = true
+                durationRisk.value = null
+                distanceRisk.value = null
+                otherRisk.value = null
+            }
+            Category.DURATION -> {
+                livedTogetherRisk.value = false
+                durationRisk.value = true
+                distanceRisk.value = null
+                otherRisk.value = null
+            }
+            Category.DISTANCE -> {
+                livedTogetherRisk.value = false
+                durationRisk.value = false
+                distanceRisk.value = true
+                otherRisk.value = null
+            }
+            Category.OTHER -> {
+                livedTogetherRisk.value = false
+                durationRisk.value = false
+                distanceRisk.value = false
+                otherRisk.value = true
+            }
+            Category.NO_RISK -> {
+                livedTogetherRisk.value = false
+                durationRisk.value = false
+                distanceRisk.value = false
+                otherRisk.value = false
+            }
+            null -> {
+                livedTogetherRisk.value = null
+                durationRisk.value = null
+                distanceRisk.value = null
+                otherRisk.value = null
+            }
+        }
+    }
+
+    fun updateCategoryFromRiskFlags() {
         category.value = when {
             livedTogetherRisk.value == true -> Category.LIVED_TOGETHER
             durationRisk.value == true -> Category.DURATION

@@ -14,6 +14,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 
@@ -24,7 +25,7 @@ class Task(
     var taskContext: String? = null,
     val source: String? = null,
     var label: String? = null,
-    var category: String? = null,
+    var category: Category? = null,
     val communication: CommunicationType? = null,
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
