@@ -21,21 +21,24 @@ class QuestionnaireSectionHeader(
         private var sectionNumber: Int = 1
 ) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
-    private lateinit var binding: ItemQuestionnaireSectionBinding
+    private var binding: ItemQuestionnaireSectionBinding? = null
     private var completed = false
     private var enabled = false
 
     override fun bind(viewBinding: ItemQuestionnaireSectionBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.root.setOnClickListener {
-            expandableGroup.onToggleExpanded()
-            viewBinding.sectionChevron.setImageResource(getSectionChevron())
+            if (enabled) {
+                expandableGroup.onToggleExpanded()
+                viewBinding.sectionChevron.setImageResource(getSectionChevron())
+            }
         }
 
         viewBinding.sectionHeader.setText(sectionTitle)
         viewBinding.sectionSubtext.setText(sectionSubtext)
         viewBinding.sectionChevron.setImageResource(getSectionChevron())
         viewBinding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        viewBinding.sectionStatusIcon.isEnabled = enabled
     }
 
     override fun getLayout() = R.layout.item_questionnaire_section
@@ -57,7 +60,8 @@ class QuestionnaireSectionHeader(
 
     fun setCompleted(completed: Boolean) {
         this.completed = completed
-        binding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        setEnabled(true)
     }
 
     fun setEnabled(enabled: Boolean) {
@@ -65,5 +69,6 @@ class QuestionnaireSectionHeader(
         if (!enabled && expandableGroup.isExpanded) {
             expandableGroup.onToggleExpanded()
         }
+        binding?.sectionStatusIcon?.isEnabled = enabled
     }
 }

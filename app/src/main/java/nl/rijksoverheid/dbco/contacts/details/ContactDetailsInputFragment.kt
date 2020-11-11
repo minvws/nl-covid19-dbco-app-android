@@ -64,19 +64,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 )
         )
 
+        viewModel.category.observe(viewLifecycleOwner, {
+            itemsStorage?.classificationSection?.setCompleted(it != null)
+            val categoryHasRisk = it != null && it != Category.NO_RISK
+            itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
+            itemsStorage?.informSection?.setEnabled(categoryHasRisk)
+        })
+
+        viewModel.selectedContact = args.selectedContact
+        viewModel.setTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
+
         itemsStorage = ItemsStorage(viewModel, view.context).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
         }
-
-        viewModel.category.observe(viewLifecycleOwner, {
-            itemsStorage?.classificationSection?.setCompleted(it != null)
-            itemsStorage?.contactDetailsSection?.setEnabled(it != null && it != Category.NO_RISK)
-        })
-
-        viewModel.selectedContact = args.selectedContact
-        viewModel.updateTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
 
         binding.toolbar.title = args.selectedContact?.displayName ?: resources.getString(R.string.mycontacts_add_contact)
 
@@ -310,18 +312,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         }
 
-        viewModel.task.value?.let {
-            it.linkedContact = viewModel.selectedContact
-            it.questionnaireResult = QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
-            it.label = viewModel.selectedContact?.displayName
-            if (it.uuid.isNullOrEmpty()) {
-                it.uuid = UUID.randomUUID().toString()
+        viewModel.task.value?.let { task ->
+            task.linkedContact = viewModel.selectedContact
+            task.questionnaireResult = QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
+            task.label = viewModel.selectedContact?.displayName
+            if (task.uuid.isNullOrEmpty()) {
+                task.uuid = UUID.randomUUID().toString()
             }
             val contactType = answerCollector[CONTACT_TYPE_UUID]?.get("value")
             contactType?.let { type ->
-                it.taskContext = type.toString()
+                task.taskContext = type.toString()
             }
-            viewModel.saveChangesToTask(it)
+            viewModel.category.value?.let { newCategory ->
+                task.category = newCategory
+            }
+            viewModel.saveChangesToTask(task)
         }
 
 
