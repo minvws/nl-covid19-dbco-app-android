@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.contacts.details
 
+import android.content.Context
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
@@ -19,10 +20,9 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 
 /**
- * TODO move strings to xml
  * Created by Dima Kovalenko.
  */
-class ItemsStorage(viewModel: TasksDetailViewModel) {
+class ItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
 
     val classificationSection = QuestionnaireSection(
             QuestionnaireSectionHeader(
@@ -37,10 +37,13 @@ class ItemsStorage(viewModel: TasksDetailViewModel) {
                     null,
                     null,
                     "",
-                    "Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?",
+                    context.getString(R.string.lived_together_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
-                    listOf(AnswerOption("Nee", null, "false"), AnswerOption("Ja", null, "true"))
+                    listOf(
+                            AnswerOption(context.getString(R.string.answer_no), null, "false"),
+                            AnswerOption(context.getString(R.string.answer_yes), null, "true")
+                    )
             ),
             {
                 when (it.value) {
@@ -57,12 +60,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel) {
                     null,
                     null,
                     "",
-                    "Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?",
+                    context.getString(R.string.duration_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
                     )
             ),
             {
@@ -78,14 +81,14 @@ class ItemsStorage(viewModel: TasksDetailViewModel) {
     val distanceRiskItem = QuestionTwoOptionsItem(
             Question(
                     null,
-                    "<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>",
+                    context.getString(R.string.distance_risk_description),
                     "",
-                    "Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?",
+                    context.getString(R.string.distance_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
                     )
             ),
             {
@@ -103,12 +106,12 @@ class ItemsStorage(viewModel: TasksDetailViewModel) {
                     null,
                     null,
                     "",
-                    "Was je langer dan 15 minuten in dezelfde ruimte?",
+                    context.getString(R.string.other_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption("Ja, denk het wel", null, "true"),
-                            AnswerOption("Nee, denk het niet", null, "false")
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, "true"),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, "false")
                     )
             ),
             {

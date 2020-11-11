@@ -64,7 +64,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 )
         )
 
-        itemsStorage = ItemsStorage(viewModel).apply {
+        itemsStorage = ItemsStorage(viewModel, view.context).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)

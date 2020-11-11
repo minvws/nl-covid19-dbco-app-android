@@ -42,11 +42,6 @@ class TasksDetailViewModel(
         retrieveQuestionnaires()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Timber.e("Viewmodel is being cleared")
-    }
-
     init {
         Timber.d("Initializing tasks viewmodel")
     }
