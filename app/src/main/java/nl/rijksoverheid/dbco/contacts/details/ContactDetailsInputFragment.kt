@@ -35,8 +35,12 @@ import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
-import nl.rijksoverheid.dbco.questionnaire.data.entity.*
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
+import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
@@ -51,7 +55,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
     private val viewModel by viewModels<TasksDetailViewModel>()
-    private var itemsStorage:ItemsStorage? = null
+    private var itemsStorage: ItemsStorage? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,6 +75,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
         })
 
+        viewModel.communicationType.observe(viewLifecycleOwner, {
+            checkIfInformSectionComplete()
+        })
+
         viewModel.selectedContact = args.selectedContact
         viewModel.setTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
 
@@ -80,12 +88,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             adapter.add(informSection)
         }
 
-        binding.toolbar.title = args.selectedContact?.displayName ?: resources.getString(R.string.mycontacts_add_contact)
+        binding.toolbar.title = args.selectedContact?.displayName
+                ?: resources.getString(R.string.mycontacts_add_contact)
 
         addQuestionnaireSections()
-        addContactInformSection()
+        addInformSection()
 
         binding.saveButton.setOnClickListener {
+            if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.contactIsInformedAlready == false) {
+//                showDialog()
+                return@setOnClickListener
+            }
             collectAnswers()
         }
     }
@@ -141,7 +154,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     sectionToAddTo?.add(
                             QuestionTwoOptionsItem(
                                     question,
-                                    {},
+                                    {
+                                        when (it.trigger) {
+                                            "communication_staff" -> viewModel.communicationType.value = CommunicationType.Staff
+                                            "communication_index" -> viewModel.communicationType.value = CommunicationType.Index
+                                        }
+                                    },
                                     null,
                                     viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
                             )
@@ -190,7 +208,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         )
     }
 
-    private fun addContactInformSection() {
+    private fun addInformSection() {
 
         // TODO message should be dynamic
         val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
@@ -218,6 +236,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             startActivity(intent)
                         },
                 ))
+            }
+        }
+    }
+
+    private fun checkIfInformSectionComplete() {
+        when (viewModel.communicationType.value) {
+            CommunicationType.Index -> {
+                itemsStorage?.informSection?.setCompleted(viewModel.task.value?.contactIsInformedAlready == true)
+            }
+            CommunicationType.Staff -> {
+                itemsStorage?.informSection?.setCompleted(viewModel.hasEmailOrPhone.value == true)
             }
         }
     }
@@ -309,7 +338,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
 
             finalAnswers.add(JsonObject(newMap))
-
         }
 
         viewModel.task.value?.let { task ->
@@ -323,6 +351,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             contactType?.let { type ->
                 task.taskContext = type.toString()
             }
+            task.status = calculateStatus()
             viewModel.category.value?.let { newCategory ->
                 task.category = newCategory
             }
@@ -332,6 +361,20 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         //Timber.d("Answers are $answerCollector")
         findNavController().popBackStack()
+    }
+
+    private fun calculateStatus(): Int {
+        var status = 0
+        if (itemsStorage?.classificationSection?.isCompleted() == true) {
+            status++
+        }
+        if (itemsStorage?.contactDetailsSection?.isCompleted() == true) {
+            status++
+        }
+        if (itemsStorage?.informSection?.isCompleted() == true) {
+            status++
+        }
+        return status
     }
 
     companion object {

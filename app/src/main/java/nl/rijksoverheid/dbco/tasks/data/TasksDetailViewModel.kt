@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.TaskInterface
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
@@ -33,6 +34,9 @@ class TasksDetailViewModel(
     val durationRisk = MutableLiveData<Boolean?>(null)
     val distanceRisk = MutableLiveData<Boolean?>(null)
     val otherRisk = MutableLiveData<Boolean?>(null)
+
+    val communicationType = MutableLiveData<CommunicationType?>(null)
+    val hasEmailOrPhone = MutableLiveData<Boolean>(true)
 
     val task: MutableLiveData<Task> = MutableLiveData<Task>()
     var selectedContact: LocalContact? = null

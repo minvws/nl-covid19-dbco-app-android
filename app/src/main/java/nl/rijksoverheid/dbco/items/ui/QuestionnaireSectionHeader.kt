@@ -22,8 +22,22 @@ class QuestionnaireSectionHeader(
 ) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
     private var binding: ItemQuestionnaireSectionBinding? = null
-    private var completed = false
-    private var enabled = false
+
+    var completed = false
+    set(value) {
+        field = value
+        binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        enabled = true
+    }
+
+    var enabled = false
+    set(value) {
+        field = value
+        if (!value && expandableGroup.isExpanded) {
+            expandableGroup.onToggleExpanded()
+        }
+        binding?.sectionStatusIcon?.isEnabled = value
+    }
 
     override fun bind(viewBinding: ItemQuestionnaireSectionBinding, position: Int) {
         this.binding = viewBinding
@@ -57,18 +71,4 @@ class QuestionnaireSectionHeader(
                 3 -> R.drawable.ic_section_three
                 else -> R.drawable.ic_valid
             }
-
-    fun setCompleted(completed: Boolean) {
-        this.completed = completed
-        binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
-        setEnabled(true)
-    }
-
-    fun setEnabled(enabled: Boolean) {
-        this.enabled = enabled
-        if (!enabled && expandableGroup.isExpanded) {
-            expandableGroup.onToggleExpanded()
-        }
-        binding?.sectionStatusIcon?.isEnabled = enabled
-    }
 }

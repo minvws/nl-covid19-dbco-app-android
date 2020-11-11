@@ -29,20 +29,17 @@ class Task(
     val communication: CommunicationType? = null,
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
-    var linkedContact: LocalContact? = null
+    var linkedContact: LocalContact? = null,
 ) : Parcelable {
     @IgnoredOnParcel
     var questionnaireResult: QuestionnaireResult? = null
+    var status: Int? = 0 // number from 0 to 3
+    var contactIsInformedAlready = false
 
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
     }
-
-
 }
-
-@Keep
-enum class State { PRESENT, REMOVED }
 
 @Serializable
 @Keep
