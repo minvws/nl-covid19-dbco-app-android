@@ -29,6 +29,7 @@ fun View.hideKeyboard() {
 fun String.removeHtmlTags(): String{
     return this.replace("<br/>", "\n")
             .replace("<b>", "")
+            .replace("</b>", "")
             .replace("<ul>", "")
             .replace("</ul>", "")
             .replace("</li>", "")

@@ -20,17 +20,12 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import timber.log.Timber
 
-class TasksViewModel(
-    private val tasksRepository: TaskInterface,
-    private val questionnareRepository: QuestionnaireInterface
+class TasksOverviewViewModel(
+    private val tasksRepository: TaskInterface
 ) : ViewModel() {
-
 
     private val _indexTasks = MutableLiveData<TasksResponse>()
     val indexTasks: LiveData<TasksResponse> = _indexTasks
-
-    private val _questionnaire = MutableLiveData<ContactDetailsResponse>()
-    val questionnaire: LiveData<ContactDetailsResponse> = _questionnaire
 
     override fun onCleared() {
         super.onCleared()
@@ -46,18 +41,6 @@ class TasksViewModel(
             val taskResponse = tasksRepository.retrieveTasksForUUID(uuid)
             _indexTasks.postValue(taskResponse)
         }
-    }
-
-    fun retrieveQuestionnaires() {
-        viewModelScope.launch {
-            val questionnairesResponse = questionnareRepository.retrieveQuestionnaires()
-            _questionnaire.postValue(questionnairesResponse)
-
-        }
-    }
-
-    fun saveChangesToTask(updatedTask: Task) {
-        tasksRepository.saveChangesToTask(updatedTask)
     }
 
 }

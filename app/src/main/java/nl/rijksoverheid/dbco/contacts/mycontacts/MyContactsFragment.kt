@@ -29,7 +29,7 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
-import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
@@ -45,7 +45,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksViewModel::class.java
+            TasksOverviewViewModel::class.java
         )
     }
 
@@ -139,11 +139,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         // Load data from backend
         lifecycleScope.launch {
-            tasksViewModel.fetchTasksForUUID("1234")
-            tasksViewModel.retrieveQuestionnaires()
+            tasksViewModel.fetchTasksForUUID()
         }
-
-
     }
 
     private fun checkPermissionAndNavigate(task: Task? = null) {

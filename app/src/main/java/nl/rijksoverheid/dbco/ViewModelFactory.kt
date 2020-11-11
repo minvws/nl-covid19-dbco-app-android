@@ -20,7 +20,8 @@ import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
 import nl.rijksoverheid.dbco.tasks.TaskInterface
-import nl.rijksoverheid.dbco.tasks.data.TasksViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.user.UserInterface
 
 class ViewModelFactory(
@@ -36,9 +37,12 @@ class ViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
             ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
-            TasksViewModel::class.java -> TasksViewModel(
-                tasksRepository,
-                questionnareRepository
+            TasksOverviewViewModel::class.java -> TasksOverviewViewModel(
+                tasksRepository
+            ) as T
+            TasksDetailViewModel::class.java -> TasksDetailViewModel(
+                    tasksRepository,
+                    questionnareRepository
             ) as T
             FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(

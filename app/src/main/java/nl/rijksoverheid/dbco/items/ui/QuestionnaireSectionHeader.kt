@@ -16,13 +16,15 @@ import nl.rijksoverheid.dbco.databinding.ItemQuestionnaireSectionBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 class QuestionnaireSectionHeader(
-    @StringRes val sectionTitle: Int,
-    @StringRes val sectionSubtext: Int,
-    private var sectionNumber: Int = 1
-) :
-    BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
+        @StringRes val sectionTitle: Int,
+        @StringRes val sectionSubtext: Int,
+        private var sectionNumber: Int = 1
+) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
     private lateinit var binding: ItemQuestionnaireSectionBinding
+    private var completed = false
+    private var enabled = false
+
     override fun bind(viewBinding: ItemQuestionnaireSectionBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.root.setOnClickListener {
@@ -33,7 +35,7 @@ class QuestionnaireSectionHeader(
         viewBinding.sectionHeader.setText(sectionTitle)
         viewBinding.sectionSubtext.setText(sectionSubtext)
         viewBinding.sectionChevron.setImageResource(getSectionChevron())
-        viewBinding.sectionStatusIcon.setImageResource(getSectionIcon())
+        viewBinding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
     }
 
     override fun getLayout() = R.layout.item_questionnaire_section
@@ -43,23 +45,25 @@ class QuestionnaireSectionHeader(
     }
 
     private fun getSectionChevron() =
-        if (expandableGroup.isExpanded) R.drawable.ic_chevron_up_round else R.drawable.ic_chevron_down_round
+            if (expandableGroup.isExpanded) R.drawable.ic_chevron_up_round else R.drawable.ic_chevron_down_round
 
     private fun getSectionIcon() =
-        when (sectionNumber) {
-            1 -> R.drawable.ic_section_one
-            2 -> R.drawable.ic_section_two
-            3 -> R.drawable.ic_section_three
-            else -> R.drawable.ic_valid
-        }
+            when (sectionNumber) {
+                1 -> R.drawable.ic_section_one
+                2 -> R.drawable.ic_section_two
+                3 -> R.drawable.ic_section_three
+                else -> R.drawable.ic_valid
+            }
 
-
-    fun setSectionDone(sectionDone: Boolean) {
-        if (sectionDone) {
-            binding.sectionStatusIcon.setImageResource(R.drawable.ic_valid)
-        } else {
-            binding.sectionStatusIcon.setImageResource(getSectionIcon())
-        }
+    fun setCompleted(completed: Boolean) {
+        this.completed = completed
+        binding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
     }
 
+    fun setEnabled(enabled: Boolean) {
+        this.enabled = enabled
+        if (!enabled && expandableGroup.isExpanded) {
+            expandableGroup.onToggleExpanded()
+        }
+    }
 }

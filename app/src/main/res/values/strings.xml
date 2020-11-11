@@ -48,17 +48,32 @@
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
 
-    <string name="contact_section_typeofcontact_header">Aard van het contact</string>
-    <string name="contact_section_typeofcontact_subtext">Vragen over jullie ontmoeting</string>
+    <!--    Contact details and questions-->
+
+    <!--    Classification questions-->
+    <string name="lived_together_risk_label">Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?</string>
+    <string name="duration_risk_label">Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?</string>
+    <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>]]></string>
+    <string name="distance_risk_label">Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
+    <string name="other_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
+    <string name="contact_section_typeofcontact_header">Soort contact</string>
+    <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
-    <string name="contact_section_inform_header">Informeren</string>
-    <string name="contact_section_inform_subtext">Deel het handelingsperspectief</string>
+
+    <string name="answer_no">Nee</string>
+    <string name="answer_yes">Ja</string>
+    <string name="answer_think_yes">Ja, denk het wel</string>
+    <string name="answer_think_no">Nee, denk het niet</string>
+
+    <string name="contact_section_inform_header">Informatie voor dit contact</string>
+    <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
     <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
     <string name="contact_section_inform_content_details"><![CDATA[Dit zijn de belangrijkste leefregels voor deze persoon:<br/><ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis - <b> tot %1$s</b> (nog %2$s dagen)</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
+
     <string name="close">Sluiten</string>
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Verstuur gegevens</string>
@@ -69,6 +84,9 @@
     <string name="header_suggested_contacts">SUGGESTIES</string>
     <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
 
+    <!--    Classification questions-->
+    <string name="other_category_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
+    <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
 
     <!-- Update and end of life -->
     <string name="update_app_headline">Je hebt een verouderde versie van Oplossing 2</string>
