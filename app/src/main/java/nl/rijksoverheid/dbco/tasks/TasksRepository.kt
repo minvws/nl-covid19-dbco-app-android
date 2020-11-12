@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.tasks
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
@@ -37,5 +38,9 @@ class TasksRepository(context: Context) : TaskInterface {
                 currentTasks[index] = updatedTask
             }
         }
+    }
+
+    override fun getCase(): Case? {
+        return previousResponse?.case
     }
 }

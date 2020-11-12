@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
@@ -20,6 +21,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import org.joda.time.LocalDate
 import timber.log.Timber
 
 class TasksDetailViewModel(
@@ -37,6 +39,7 @@ class TasksDetailViewModel(
 
     val communicationType = MutableLiveData<CommunicationType?>(null)
     val hasEmailOrPhone = MutableLiveData<Boolean>(true)
+    val dateOfLastExposure = MutableLiveData<String>(null)
 
     val task: MutableLiveData<Task> = MutableLiveData<Task>()
     var selectedContact: LocalContact? = null
@@ -65,6 +68,13 @@ class TasksDetailViewModel(
         questionnaireResult = task.questionnaireResult
         category.value = task.category
         updateRiskFlagsFromCategory(task)
+    }
+
+    fun getDateOfSymptomOnset(): LocalDate? {
+        tasksRepository.getCase()?.dateOfSymptomOnset?.let {
+            return LocalDate.parse(it, DateFormats.exposureData )
+        }
+        return null
     }
 
     private fun updateRiskFlagsFromCategory(task: Task) {

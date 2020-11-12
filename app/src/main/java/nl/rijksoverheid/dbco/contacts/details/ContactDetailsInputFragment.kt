@@ -56,7 +56,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
     private val viewModel by viewModels<TasksDetailViewModel>()
-    private var itemsStorage: ItemsStorage? = null
+    private var itemsStorage: TaskDetailItemsStorage? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,21 +69,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 )
         )
 
-        viewModel.category.observe(viewLifecycleOwner, {
-            itemsStorage?.classificationSection?.setCompleted(it != null)
-            val categoryHasRisk = it != null && it != Category.NO_RISK
-            itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
-            itemsStorage?.informSection?.setEnabled(categoryHasRisk)
-        })
-
-        viewModel.communicationType.observe(viewLifecycleOwner, {
-            checkIfInformSectionComplete()
-        })
-
         viewModel.selectedContact = args.selectedContact
         viewModel.setTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
 
-        itemsStorage = ItemsStorage(viewModel, view.context).apply {
+        itemsStorage = TaskDetailItemsStorage(viewModel, view.context).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
@@ -91,6 +80,35 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         binding.toolbar.title = args.selectedContact?.displayName
                 ?: resources.getString(R.string.mycontacts_add_contact)
+
+        viewModel.category.observe(viewLifecycleOwner, {
+            val hasCategory = it != null
+            itemsStorage?.classificationSection?.setCompleted(hasCategory)
+            if (hasCategory) {
+                if (itemsStorage?.classificationSection?.isExpanded == true) {
+                    itemsStorage?.classificationSection?.onToggleExpanded()
+                }
+                if (itemsStorage?.contactDetailsSection?.isExpanded == false) {
+                    itemsStorage?.contactDetailsSection?.onToggleExpanded()
+                }
+            }
+
+            val categoryHasRisk = hasCategory && it != Category.NO_RISK
+            itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
+            itemsStorage?.informSection?.setEnabled(categoryHasRisk)
+        })
+
+        viewModel.communicationType.observe(viewLifecycleOwner, {
+            checkIfInformSectionComplete()
+            checkIfContactDetailsSectionComplete()
+        })
+
+        viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {
+            checkIfContactDetailsSectionComplete()
+        })
+        viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
+            checkIfContactDetailsSectionComplete()
+        })
 
         addQuestionnaireSections()
         addInformSection()
@@ -106,7 +124,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun showDidYouInformDialog(view: View) {
         val builder = AlertDialog.Builder(view.context)
-        val string = getString(R.string.contact_inform_prompt_title, viewModel.selectedContact?.displayName?:"")
+        val string = getString(R.string.contact_inform_prompt_title, viewModel.selectedContact?.displayName
+                ?: "")
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
@@ -128,15 +147,25 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addQuestionnaireSections() {
+        var communicationTypeQuestionFound = false
 
         // add questions to sections, based on their "group"
-        viewModel.questionnaire?.questions?.filterNotNull()?.forEach { question ->
+        val questions = viewModel.questionnaire?.questions?.filterNotNull()
+        questions?.forEach { question ->
             val section =
                     when (question.group) {
                         Group.ContactDetails -> itemsStorage?.contactDetailsSection
                         Group.Classification -> itemsStorage?.classificationSection
                         else -> null
                     }
+
+            // add hardcoded "date of last exposure" question before communication type question
+            if (isCommunicationTypeQuestion(question)) {
+                itemsStorage?.let {
+                    it.contactDetailsSection.add(it.dateOfLastExposureItem)
+                    communicationTypeQuestionFound = true
+                }
+            }
 
             when (question.questionType) {
                 QuestionType.Multiplechoice -> {
@@ -154,6 +183,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 QuestionType.ClassificationDetails -> {
                     addClassificationQuestions(section)
                 }
+            }
+        }
+        if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
+            itemsStorage?.let {
+                itemsStorage?.contactDetailsSection?.add(it.dateOfLastExposureItem)
             }
         }
     }
@@ -180,8 +214,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                     question,
                                     {
                                         when (it.trigger) {
-                                            "communication_staff" -> viewModel.communicationType.value = CommunicationType.Staff
-                                            "communication_index" -> viewModel.communicationType.value = CommunicationType.Index
+                                            COMMUNICATION_STUFF -> viewModel.communicationType.value = CommunicationType.Staff
+                                            COMMUNICATION_INDEX -> viewModel.communicationType.value = CommunicationType.Index
                                         }
                                     },
                                     null,
@@ -266,11 +300,19 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun checkIfInformSectionComplete() {
         itemsStorage?.informSection?.setCompleted(
-            when (viewModel.communicationType.value) {
-                CommunicationType.Index -> viewModel.task.value?.contactIsInformedAlready == true
-                CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
-                else -> false
-            }
+                when (viewModel.communicationType.value) {
+                    CommunicationType.Index -> viewModel.task.value?.contactIsInformedAlready == true
+                    CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
+                    else -> false
+                }
+        )
+    }
+
+    private fun checkIfContactDetailsSectionComplete() {
+        itemsStorage?.contactDetailsSection?.setCompleted(
+                viewModel.hasEmailOrPhone.value == true &&
+                        viewModel.communicationType.value != null &&
+                        viewModel.dateOfLastExposure.value != null
         )
     }
 
@@ -386,6 +428,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         findNavController().popBackStack()
     }
 
+    private fun isCommunicationTypeQuestion(question: Question): Boolean {
+        var foundTrigger = false
+        question.answerOptions?.forEach {
+            if (it?.trigger == COMMUNICATION_STUFF || it?.trigger == COMMUNICATION_INDEX) {
+                foundTrigger = true
+            }
+        }
+        return foundTrigger
+    }
+
     private fun calculateStatus(): Int {
         var status = 0
         if (itemsStorage?.classificationSection?.isCompleted() == true) {
@@ -400,8 +452,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         return status
     }
 
-    companion object {
+    companion object { // TODO not use UUID's in future, they might change!
         const val CONTACT_TYPE_UUID = "37d818ed-9499-4b9a-9771-725467368390"
+        const val COMMUNICATION_STUFF = "communication_staff"
+        const val COMMUNICATION_INDEX = "communication_index"
     }
 
 }
