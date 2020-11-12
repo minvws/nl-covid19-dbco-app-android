@@ -19,18 +19,15 @@ import java.security.MessageDigest
 
 class UsertestUserRepository(context: Context) : UserInterface { // TODO move to dagger
 
-    private val api: StubbedAPI = StubbedAPI.create(context)
-    private var userKey: String? = null
-
     private var mockedResponses: List<String> = listOf(
         "{\n" +
                 "  \"caseId\": \"\",\n" +
                 "  \"caseExpiresAt\": \"2020-12-11T00:00:00.000Z\",\n" +
-                "  \"signingKey\": \"string\"\n" +
+                "  \"sealedHealthAuthorityPublicKey\": \"string\"\n" +
                 "}", "{\n" +
                 "  \"caseId\": \"123e4567-e89b-12d3-a456-789014172000\",\n" +
                 "  \"caseExpiresAt\": \"2020-12-11T00:00:00.000Z\",\n" +
-                "  \"signingKey\": \"string\"\n" +
+                "  \"sealedHealthAuthorityPublicKey\": \"string\"\n" +
                 "}"
     )
 

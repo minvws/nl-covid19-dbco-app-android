@@ -49,7 +49,7 @@
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Geef toegang tot contacten</string>
-    <string name="contact_permission_summary">De app heeft zo toegang tot de contacten op je telefoon. Wil je dit niet? Dan kun je contactgegevens ook handmatig vastleggen.</string>
+    <string name="contact_permission_summary">De app heeft zo toegang tot de contacten op je telefoon. Wil je dit niet? Dan kun je contactgegevens ook handmatig toevoegen.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
 
@@ -59,7 +59,7 @@
     <string name="lived_together_risk_label">Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?</string>
     <string name="duration_risk_label">Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?</string>
     <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>]]></string>
-    <string name="distance_risk_label">Heb je een of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
+    <string name="distance_risk_label">Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
     <string name="other_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
     <string name="contact_section_typeofcontact_header">Soort contact</string>
     <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>

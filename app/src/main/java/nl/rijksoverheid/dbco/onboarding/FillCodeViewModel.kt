@@ -27,7 +27,7 @@ class FillCodeViewModel(private val userRepository: UserInterface) : ViewModel()
             withContext(Dispatchers.IO) {
                 val response = userRepository.pair(pin)
                 // TODO notify fragment
-                if (response.caseId.isNullOrEmpty()) {
+                if (response.sealedHealthAuthorityPublicKey.isNullOrEmpty()) {
                     _validPairingCode.postValue(false)
                 } else {
                     _validPairingCode.postValue(true)

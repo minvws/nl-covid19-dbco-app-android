@@ -15,11 +15,13 @@ import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Streaming
@@ -35,7 +37,7 @@ interface StubbedAPI {
     suspend fun getTasksForUUID(): Response<TasksResponse>
 
     @POST("/pairings")
-    suspend fun pair(): PairingResponse
+    suspend fun pair(@Body body: PairingRequestBody): PairingResponse
 
     @GET("v1/config")
     @Streaming

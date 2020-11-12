@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.user.data.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PairingBody(
-    val pairingCode: String? = null
+data class PairingRequestBody(
+    val pairingCode: String,
+    val sealedClientPublicKey: String
 )
