@@ -29,10 +29,8 @@ android {
 
         buildConfigField "boolean", "FEATURE_LOGGING", "false"
         buildConfigField "String", "STUBBED_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
-        buildConfigField "boolean", "USER_TEST", "false"
 
         manifestPlaceholders = [appLabel: "@string/app_name"]
-
     }
 
     buildTypes {
@@ -40,7 +38,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
-            buildConfigField "boolean", "USER_TEST", "true"
         }
 
         debug {
@@ -48,7 +45,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GIT_VERSION", "\"dev\""
-            buildConfigField "boolean", "USER_TEST", "true"
         }
     }
 
@@ -66,11 +62,17 @@ android {
     productFlavors {
         dev {
             dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            applicationIdSuffix '.dev'
             manifestPlaceholders = [appLabel: "@string/app_name_develop"]
+            signingConfig signingConfigs.acc
         }
 
         acc {
             dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "true"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.acc
         }
@@ -128,6 +130,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
 
+    implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.1'
 
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
