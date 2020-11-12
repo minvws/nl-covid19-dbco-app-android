@@ -18,6 +18,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TaskInterface
@@ -74,7 +75,10 @@ class UsertestTaskRepository(context: Context) : TaskInterface {
             }
         }.encodeToString(previousResponse)
         encryptedSharedPreferences.edit().putString("usertasks", storeString).apply()
+    }
 
+    override fun getCase(): Case? {
+        return previousResponse?.case
     }
 
     companion object {

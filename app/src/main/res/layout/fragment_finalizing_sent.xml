@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:textSize="@dimen/onboarding_title_textsize"
-            android:text="Bedankt voor het delen van de gegevens met de GGD"
+            android:text="@string/finalize_sent_title"
             app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:textSize="@dimen/onboarding_subtext_textsize"
-            android:text="Je kunt nog contactgegevens aanpassen, contacten toevoegen of een andere aanpassing doorgeven."
+            android:text="@string/finalize_sent_subtitle"
             app:layout_constraintBottom_toTopOf="@+id/btn_next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

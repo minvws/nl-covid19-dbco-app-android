@@ -9,26 +9,32 @@
 <resources>
     <string name="app_name">Oplossing 2</string>
     <string name="app_name_develop">[DEV] Oplossing 2</string>
+
+    <!--    Common words-->
+    <string name="save">Opslaan</string>
+    <string name="next">Volgende</string>
+    <string name="ready">Klaar</string>
+    <string name="previous">Vorige</string>
+    <string name="begin">Beginnen</string>
     <string name="cd_back">Terug</string>
     <string name="cd_error_box">Waarschuwing</string>
     <string name="cd_info_box">Belangrijk</string>
+    <string name="close">Sluiten</string>
 
+    <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef Toestemming</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
-    <string name="hint_phone_number">Telefoonnummer</string>
-    <string name="hint_email_address">E-mailadres</string>
+    <string name="mycontacts_uninformed_header">Vul contactgegevens aan</string>
+    <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
+    <string name="mycontacts_informed_header">Behandelde contacten</string>
+    <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
+
     <string name="header_all_contacts">ALLE CONTACTEN</string>
-    <string name="hint_first_name">Voornaam</string>
-    <string name="hint_last_name">Achternaam</string>
-    <string name="save">Opslaan</string>
-    <string name="next">Volgende</string>
-    <string name="ready">Klaar</string>
-    <string name="previous">Vorige</string>
-    <string name="begin">Beginnen</string>
+
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
@@ -36,9 +42,7 @@
     <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
-
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
-
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet. Via deze app kun je die gemakkelijk delen.\n\nDe gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
 
@@ -67,6 +71,15 @@
     <string name="answer_think_yes">Ja, denk het wel</string>
     <string name="answer_think_no">Nee, denk het niet</string>
 
+    <!--    Fields-->
+    <string name="hint_phone_number">Telefoonnummer</string>
+    <string name="hint_email_address">E-mailadres</string>
+    <string name="hint_first_name">Voornaam</string>
+    <string name="hint_last_name">Achternaam</string>
+    <string name="contact_information_last_exposure_label">Wanneer was de laatste ontmoeting?</string>
+    <string name="contact_information_last_exposure_earlier">Eerder</string>
+
+    <!--    Inform section-->
     <string name="contact_section_inform_header">Informatie voor dit contact</string>
     <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
     <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
@@ -81,19 +94,16 @@
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
     <string name="contact_inform_action_inform_now">Nee, nu informeren</string>
 
-    <string name="close">Sluiten</string>
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="add_contact">Contact toevoegen</string>
-    <string name="mycontacts_uninformed_header">Vul contactgegevens aan</string>
-    <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
-    <string name="mycontacts_informed_header">Behandelde contacten</string>
-    <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
 
     <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
     <string name="finalize_uninformed_subtext">Vul contactgegevens aan</string>
     <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>
     <string name="finalize_no_phone_or_email_subtext">De GGD zal deze contacten informeren</string>
+    <string name="finalize_sent_title">Bedankt voor het delen van de gegevens met de GGD</string>
+    <string name="finalize_sent_subtitle">Je kunt nog contactgegevens aanpassen, contacten toevoegen of een andere aanpassing doorgeven.</string>
 
     <string name="header_suggested_contacts">SUGGESTIES</string>
     <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
@@ -102,7 +112,7 @@
     <string name="other_category_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
     <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
 
-    <!-- Update and end of life -->
+    <!--    Update and end of life -->
     <string name="update_app_headline">Je hebt een verouderde versie van Oplossing 2</string>
     <string name="update_app_description">Update de app op je telefoon om te zorgen dat Oplossing 2 goed blijft werken.</string>
     <string name="end_of_life_action">Lees meer</string>
