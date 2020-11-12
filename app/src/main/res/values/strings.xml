@@ -26,6 +26,7 @@
     <string name="hint_last_name">Achternaam</string>
     <string name="save">Opslaan</string>
     <string name="next">Volgende</string>
+    <string name="ready">Klaar</string>
     <string name="previous">Vorige</string>
     <string name="begin">Beginnen</string>
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
@@ -84,9 +85,16 @@
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="add_contact">Contact toevoegen</string>
-    <string name="mycontacts_inform_personally_header">Jij informeert deze contacten</string>
-    <string name="mycontacts_inform_ggd_header">De GGD informeert deze contacten</string>
-    <string name="mycontacts_inform_subtext">Vul zo veel mogelijk gegevens aan</string>
+    <string name="mycontacts_uninformed_header">Vul contactgegevens aan</string>
+    <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
+    <string name="mycontacts_informed_header">Behandelde contacten</string>
+    <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
+
+    <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
+    <string name="finalize_uninformed_subtext">Vul contactgegevens aan</string>
+    <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>
+    <string name="finalize_no_phone_or_email_subtext">De GGD zal deze contacten informeren</string>
+
     <string name="header_suggested_contacts">SUGGESTIES</string>
     <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
 

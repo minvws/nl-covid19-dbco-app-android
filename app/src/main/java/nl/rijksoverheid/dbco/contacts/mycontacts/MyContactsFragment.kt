@@ -81,20 +81,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
             contentSection.clear()
-            val informPersonallySection = Section().apply {
+            val uninformedSection = Section().apply {
                 setHeader(
                     DuoHeaderItem(
-                        R.string.mycontacts_inform_personally_header,
-                        R.string.mycontacts_inform_subtext
+                        R.string.mycontacts_uninformed_header,
+                        R.string.mycontacts_uninformed_subtext
                     )
                 )
             }
-            val informGgdSection = Section()
+            val informedSection = Section()
                 .apply {
                     setHeader(
                         DuoHeaderItem(
-                            R.string.mycontacts_inform_ggd_header,
-                            R.string.mycontacts_inform_subtext
+                            R.string.mycontacts_informed_header,
+                            R.string.mycontacts_informed_subtext
                         )
                     )
                 }
@@ -104,31 +104,27 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
-                        when (task.communication) {
-                            CommunicationType.Index -> {
-                                informPersonallySection.add(TaskItem(task))
-                            }
-                            CommunicationType.Staff -> {
-                                informGgdSection.add(TaskItem(task))
-                            }
-                            else -> {
-                                informPersonallySection.add(TaskItem(task))
-                            }
+                        val informed = when (task.communication) {
+                            CommunicationType.Index -> task.contactIsInformedAlready
+                            CommunicationType.Staff -> task.linkedContact?.hasEmailOrPhone() == true
+                            else -> false
                         }
-
+                        if (informed) {
+                            informedSection.add(TaskItem(task))
+                        } else {
+                            uninformedSection.add(TaskItem(task))
+                        }
                     }
                 }
             }
 
-            if (informPersonallySection.groupCount > 1) {
-                contentSection.add(informPersonallySection)
+            if (uninformedSection.groupCount > 1) {
+                contentSection.add(uninformedSection)
             }
 
-            if (informGgdSection.groupCount > 1) {
-                contentSection.add(informGgdSection)
+            if (informedSection.groupCount > 1) {
+                contentSection.add(informedSection)
             }
-
-
         })
 
         adapter.setOnItemClickListener { item, view ->

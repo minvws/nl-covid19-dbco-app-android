@@ -26,7 +26,7 @@ class Task(
     val source: String? = null,
     var label: String? = null,
     var category: Category? = null,
-    val communication: CommunicationType? = null,
+    var communication: CommunicationType? = null,
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
     var linkedContact: LocalContact? = null,
