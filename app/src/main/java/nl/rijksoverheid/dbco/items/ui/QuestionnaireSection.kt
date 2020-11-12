@@ -16,10 +16,14 @@ class QuestionnaireSection(
 ) : ExpandableGroup(headerItem, expandedByDefault) {
 
     fun setCompleted(completed: Boolean) {
-        headerItem.setCompleted(completed)
+        headerItem.completed = completed
     }
 
+    fun isCompleted() = headerItem.completed
+
     fun setEnabled(enabled: Boolean) {
-        headerItem.setEnabled(enabled)
+        headerItem.enabled = enabled
     }
+
+    fun isEnabled() = headerItem.enabled
 }

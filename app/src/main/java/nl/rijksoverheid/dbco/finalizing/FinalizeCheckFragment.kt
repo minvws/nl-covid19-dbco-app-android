@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.finalizing
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
@@ -30,7 +29,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksOverviewViewModel::class.java
+                TasksOverviewViewModel::class.java
         )
     }
     private val contentSection = Section()
@@ -48,58 +47,58 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         binding.content.adapter = adapter
         binding.toolbar.visibility = View.GONE
 
-        tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
+        tasksViewModel.indexTasks.observe(viewLifecycleOwner, {
             contentSection.clear()
-            val informPersonallySection = Section().apply {
+            val uninformedSection = Section().apply {
                 setHeader(
-                    DuoHeaderItem(
-                        R.string.mycontacts_inform_personally_header,
-                        R.string.mycontacts_inform_subtext
-                    )
+                        DuoHeaderItem(
+                                R.string.finalize_uninformed_header,
+                                R.string.finalize_uninformed_subtext
+                        )
                 )
             }
-            val informGgdSection = Section()
-                .apply {
-                    setHeader(
-                        DuoHeaderItem(
-                            R.string.mycontacts_inform_ggd_header,
-                            R.string.mycontacts_inform_subtext
+            val noPhoneOrEmailSection = Section()
+                    .apply {
+                        setHeader(
+                                DuoHeaderItem(
+                                        R.string.finalize_no_phone_or_email_header,
+                                        R.string.finalize_no_phone_or_email_subtext
+                                )
                         )
-                    )
-                }
+                    }
 
 
             it.case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
-                if (task.questionnaireResult == null) {
-                    when (task.taskType) {
-                        "contact" -> {
-                            when (task.communication) {
-                                CommunicationType.Index -> {
-                                    informPersonallySection.add(TaskItem(task))
-                                }
-                                CommunicationType.Staff -> {
-                                    informGgdSection.add(TaskItem(task))
-                                }
-                                else -> {
-                                    informPersonallySection.add(TaskItem(task))
-                                }
-                            }
+                when (task.taskType) {
+                    "contact" -> {
+                        val hasEmailOrPhone = task.linkedContact?.hasEmailOrPhone() == true
 
+                        val informed = when (task.communication) {
+                            CommunicationType.Index -> task.contactIsInformedAlready
+                            CommunicationType.Staff -> hasEmailOrPhone
+                            else -> false
                         }
+
+                        if (!informed) {
+                            if (hasEmailOrPhone) {
+                                uninformedSection.add(TaskItem(task))
+                            } else {
+                                noPhoneOrEmailSection.add(TaskItem(task))
+                            }
+                        }
+
                     }
                 }
             }
 
-            if (informPersonallySection.groupCount > 1) {
-                contentSection.add(informPersonallySection)
+            if (uninformedSection.groupCount > 1) {
+                contentSection.add(uninformedSection)
             }
 
-            if (informGgdSection.groupCount > 1) {
-                contentSection.add(informGgdSection)
+            if (noPhoneOrEmailSection.groupCount > 1) {
+                contentSection.add(noPhoneOrEmailSection)
             }
-
-
         })
 
         binding.sendButton.setOnClickListener {

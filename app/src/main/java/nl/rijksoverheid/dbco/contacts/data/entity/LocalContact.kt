@@ -22,4 +22,8 @@ data class LocalContact(
     var number: String? = null,
     var email: String? = null,
     var name: ContactName = ContactName("", "")
-) : Parcelable
+) : Parcelable {
+    fun hasEmailOrPhone(): Boolean {
+        return !number.isNullOrEmpty() || !email.isNullOrEmpty()
+    }
+}
