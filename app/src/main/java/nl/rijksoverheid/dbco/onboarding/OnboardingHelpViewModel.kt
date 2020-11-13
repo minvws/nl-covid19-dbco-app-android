@@ -9,9 +9,9 @@
 package nl.rijksoverheid.dbco.onboarding
 
 import androidx.lifecycle.ViewModel
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
 
-class OnboardingHelpViewModel(userRepository: UserInterface) : ViewModel() {
+class OnboardingHelpViewModel(userRepository: IUserRepository) : ViewModel() {
 
     val skipOnboarding = userRepository.getToken() != null
 

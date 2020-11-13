@@ -9,7 +9,7 @@ package nl.rijksoverheid.dbco.questionnaire
 
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 
-interface QuestionnaireInterface {
+interface IQuestionnaireRepository {
     suspend fun retrieveQuestionnaires(): ContactDetailsResponse
 
 }

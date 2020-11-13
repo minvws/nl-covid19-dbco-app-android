@@ -22,11 +22,11 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.tasks.TaskInterface
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
 
-class UsertestTaskRepository(context: Context, userInterface: UserInterface) : TaskInterface {
+class UsertestTaskRepository(context: Context, userInterface: IUserRepository) : ITaskRepository {
     private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
@@ -61,18 +61,7 @@ class UsertestTaskRepository(context: Context, userInterface: UserInterface) : T
 
         //Timber.w("Final result is $previousResponse")
 
-        val storeString = Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            serializersModule = SerializersModule {
-                contextual(String.serializer())
-                contextual(Int.serializer())
-                contextual(Double.serializer())
-                contextual(QuestionnaireResult.serializer())
-                contextual(JsonArray.serializer())
-                contextual(JsonElement.serializer())
-            }
-        }.encodeToString(CaseBody(cachedCase))
+        val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(CaseBody(cachedCase))
         encryptedSharedPreferences.edit().putString(CASE_BODY_KEY, storeString).apply()
     }
 

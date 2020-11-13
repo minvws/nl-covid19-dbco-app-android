@@ -15,11 +15,11 @@ import android.util.Base64
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.BASE64_FLAGS
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_CLIENT_SECRET_KEY
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_RX
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TOKEN
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TX
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.BASE64_FLAGS
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_CLIENT_SECRET_KEY
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_RX
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TOKEN
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TX
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.util.Obfuscator
 import nl.rijksoverheid.dbco.util.toHexString
@@ -32,7 +32,7 @@ import timber.log.Timber
  * HA stands for Health Authority (in our case GGD)
  * Documentation: https://github.com/minvws/nl-covid19-dbco-app-coordination-private/blob/main/architecture/api/apispec-app.yaml
  */
-class UserRepository(context: Context) : UserInterface { // TODO move to dagger
+class UserRepository(context: Context) : IUserRepository { // TODO move to dagger
 
     private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
 

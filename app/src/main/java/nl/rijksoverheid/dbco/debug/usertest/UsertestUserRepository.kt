@@ -12,12 +12,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.user.UserInterface
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_RX
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TOKEN
+import nl.rijksoverheid.dbco.user.IUserRepository
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_RX
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TOKEN
 import java.security.MessageDigest
 
-class UsertestUserRepository(context: Context) : UserInterface { // TODO move to dagger
+class UsertestUserRepository(context: Context) : IUserRepository { // TODO move to dagger
 
     private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
 

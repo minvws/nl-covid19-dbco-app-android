@@ -12,9 +12,9 @@ import android.content.Context
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
+import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 
-class UsertestQuestionnaireRepository(context: Context) : QuestionnaireInterface {
+class UsertestQuestionnaireRepository(context: Context) : IQuestionnaireRepository {
 
     private var questionnaireToUse: ContactDetailsResponse? = null
 

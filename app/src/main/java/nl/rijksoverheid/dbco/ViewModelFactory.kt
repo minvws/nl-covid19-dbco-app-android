@@ -19,18 +19,18 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
-import nl.rijksoverheid.dbco.tasks.TaskInterface
+import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
 
 class ViewModelFactory(
     private val context: Context,
-    private val tasksRepository: TaskInterface,
+    private val tasksRepository: ITaskRepository,
     private val contactsRepository: ContactsRepository,
-    private val questionnareRepository: QuestionnaireInterface,
-    private val userRepository: UserInterface,
+    private val questionnareRepository: IQuestionnaireRepository,
+    private val userRepository: IUserRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModelProvider.Factory {
 

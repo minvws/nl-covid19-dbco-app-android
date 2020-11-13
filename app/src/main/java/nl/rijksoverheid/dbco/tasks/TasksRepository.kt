@@ -9,14 +9,20 @@
 package nl.rijksoverheid.dbco.tasks
 
 import android.content.Context
+import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
+import org.libsodium.jni.Sodium
+import kotlin.collections.ArrayList
 
-class TasksRepository(context: Context, val userRepository: UserInterface) : TaskInterface {
+class TasksRepository(context: Context, private val userRepository: IUserRepository) : ITaskRepository {
     private val api = StubbedAPI.create(context)
     private var cachedCase: Case? = null
 
@@ -24,9 +30,14 @@ class TasksRepository(context: Context, val userRepository: UserInterface) : Tas
         if (cachedCase == null) {
             userRepository.getToken()?.let {
                 val data = withContext(Dispatchers.IO) { api.getCase(it) }
-                val sealedCase = data.body()?.sealedCase
-                // decrypt
-                cachedCase = Case()
+                val sealedCaseBodyString = data.body()?.sealedCase
+                val sealedCaseBodyBytes = Base64.decode(sealedCaseBodyString, IUserRepository.BASE64_FLAGS)
+                val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
+                val caseBodyBytes = ByteArray(sealedCaseBodyBytes.size) // TODO check if size is the same???
+                Sodium.crypto_secretbox_open_easy(caseBodyBytes, sealedCaseBodyBytes, sealedCaseBodyBytes.size, ByteArray(0), rxBytes)
+                val caseBodyString = Base64.encodeToString(caseBodyBytes, IUserRepository.BASE64_FLAGS)
+                val caseBody: CaseBody = Json.decodeFromString(caseBodyString)
+                cachedCase = caseBody.case
             }
         }
         return cachedCase

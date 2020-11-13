@@ -14,11 +14,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
-import nl.rijksoverheid.dbco.tasks.TaskInterface
-import timber.log.Timber
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 
 class TasksOverviewViewModel(
-    private val tasksRepository: TaskInterface
+    private val tasksRepository: ITaskRepository
 ) : ViewModel() {
 
     private val _case = MutableLiveData<Case?>()
@@ -26,6 +25,7 @@ class TasksOverviewViewModel(
 
     fun fetchTasks() {
         viewModelScope.launch {
+
             _case.postValue(tasksRepository.retrieveCase())
         }
     }
