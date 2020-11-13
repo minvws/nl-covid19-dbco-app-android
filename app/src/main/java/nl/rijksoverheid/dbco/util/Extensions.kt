@@ -35,3 +35,6 @@ fun String.removeHtmlTags(): String{
             .replace("</li>", "")
             .replace("<li>", "\n• ")
 }
+
+@ExperimentalUnsignedTypes
+fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }

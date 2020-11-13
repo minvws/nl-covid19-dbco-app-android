@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
+import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
 import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
@@ -45,6 +46,7 @@ class ViewModelFactory(
                     questionnareRepository
             ) as T
             FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
+            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,

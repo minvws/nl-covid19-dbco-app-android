@@ -15,13 +15,19 @@ import android.util.Base64
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.BASE64_FLAGS
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_CLIENT_SECRET_KEY
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_RX
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TOKEN
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TX
+import nl.rijksoverheid.dbco.user.UserInterface.Companion.HEX_ARRAY
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
-import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import nl.rijksoverheid.dbco.util.Obfuscator
+import nl.rijksoverheid.dbco.util.toHexString
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import org.libsodium.jni.crypto.Util
-import kotlin.experimental.and
+import timber.log.Timber
 
 /**
  * HA stands for Health Authority (in our case GGD)
@@ -29,9 +35,7 @@ import kotlin.experimental.and
  */
 class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
-    private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(
-        context
-    ).getSharedPreferences()
+    private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     private val api: StubbedAPI = StubbedAPI.create(context)
 
@@ -48,8 +52,9 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         }
     }
 
+    @ExperimentalUnsignedTypes
     @SuppressLint("ApplySharedPref")
-    override suspend fun pair(pincode: String): PairingResponse {
+    override suspend fun pair(pincode: String) {
 
         val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
         val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
@@ -85,6 +90,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
             clientPublicKeyBytes,
             clientSecretKeyBytes
         )
+        Timber.d("cryptoBoxSealOpenResult = $cryptoBoxSealOpenResult")
 
         val rxBytes = Util.zeros(SodiumConstants.SESSIONKEYBYTES)
         val txBytes = Util.zeros(SodiumConstants.SESSIONKEYBYTES)
@@ -105,7 +111,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
         tx = Base64.encodeToString(txBytes, BASE64_FLAGS)
         rx = Base64.encodeToString(rxBytes, BASE64_FLAGS)
-        token = bytesToHex(tokenBytes)
+        token = tokenBytes.toHexString()
 
         val clienSecretKey = Base64.encodeToString(clientSecretKeyBytes, BASE64_FLAGS)
         encryptedSharedPreferences.edit()
@@ -114,8 +120,6 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
             .putString(KEY_TOKEN, token)
             .putString(KEY_CLIENT_SECRET_KEY, clienSecretKey)
             .commit()
-
-        return pairingResponse
     }
 
     override fun getRx(): String? {
@@ -124,27 +128,5 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
     override fun getToken(): String? {
         return token
-    }
-
-    private fun bytesToHex(bytes: ByteArray): String {
-        val hexChars = CharArray(bytes.size * 2)
-        for (j in bytes.indices) {
-            val v = (bytes[j] and 0xFF.toByte()).toInt()
-
-            hexChars[j * 2] = HEX_ARRAY[v ushr 4]
-            hexChars[j * 2 + 1] = HEX_ARRAY[v and 0x0F]
-        }
-        return String(hexChars)
-    }
-
-    companion object {
-        const val BASE64_FLAGS: Int = Base64.NO_WRAP
-
-        private val HEX_ARRAY = "0123456789ABCDEF".toCharArray()
-
-        const val KEY_TX = "KEY_TX"
-        const val KEY_RX = "KEY_RX"
-        const val KEY_TOKEN = "KEY_TOKEN"
-        const val KEY_CLIENT_SECRET_KEY = "KEY_CLIENT_SECRET_KEY"
     }
 }
