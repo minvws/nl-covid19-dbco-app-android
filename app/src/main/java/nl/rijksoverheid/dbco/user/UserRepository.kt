@@ -18,10 +18,10 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import nl.rijksoverheid.dbco.util.Obfuscator
-import org.libsodium.jni.NaCl
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import org.libsodium.jni.crypto.Util
+import kotlin.experimental.and
 
 /**
  * HA stands for Health Authority (in our case GGD)
@@ -36,6 +36,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
     private val api: StubbedAPI = StubbedAPI.create(context)
 
     private var rx: String? = null
+    private var tx: String? = null
     private var token: String? = null
 
     init {
@@ -49,11 +50,10 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
     @SuppressLint("ApplySharedPref")
     override suspend fun pair(pincode: String): PairingResponse {
-        NaCl.sodium() // init
 
-        val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
-        val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
-        Sodium.crypto_box_keypair(clientSecretKeyBytes, clientPublicKeyBytes)
+        val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
+        val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
+        Sodium.crypto_box_keypair(clientPublicKeyBytes, clientSecretKeyBytes)
 
         val haPubKey = Obfuscator.deObfuscate(BuildConfig.GGD_PUBLIC_KEY)
         val haPubKeyBytes = Base64.decode(haPubKey, BASE64_FLAGS)
@@ -99,14 +99,20 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
         val rxPlusTx = Util.merge(rxBytes, txBytes)
 
-        val token = Util.zeros(Sodium.crypto_generichash_bytes())
+        val tokenBytes = Util.zeros(Sodium.crypto_generichash_bytes())
 
-        Sodium.crypto_generichash(token, token.size, rxPlusTx, rxPlusTx.size, Util.zeros(0), 0)
+        Sodium.crypto_generichash(tokenBytes, tokenBytes.size, rxPlusTx, rxPlusTx.size, Util.zeros(0), 0)
 
+        tx = Base64.encodeToString(txBytes, BASE64_FLAGS)
+        rx = Base64.encodeToString(rxBytes, BASE64_FLAGS)
+        token = bytesToHex(tokenBytes)
+
+        val clienSecretKey = Base64.encodeToString(clientSecretKeyBytes, BASE64_FLAGS)
         encryptedSharedPreferences.edit()
-            .putString(KEY_TX, Base64.encodeToString(txBytes, BASE64_FLAGS))
-            .putString(KEY_RX, Base64.encodeToString(rxBytes, BASE64_FLAGS))
-            .putString(KEY_TOKEN, Base64.encodeToString(token, BASE64_FLAGS))
+            .putString(KEY_TX, tx)
+            .putString(KEY_RX, rx)
+            .putString(KEY_TOKEN, token)
+            .putString(KEY_CLIENT_SECRET_KEY, clienSecretKey)
             .commit()
 
         return pairingResponse
@@ -120,11 +126,25 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         return token
     }
 
+    private fun bytesToHex(bytes: ByteArray): String {
+        val hexChars = CharArray(bytes.size * 2)
+        for (j in bytes.indices) {
+            val v = (bytes[j] and 0xFF.toByte()).toInt()
+
+            hexChars[j * 2] = HEX_ARRAY[v ushr 4]
+            hexChars[j * 2 + 1] = HEX_ARRAY[v and 0x0F]
+        }
+        return String(hexChars)
+    }
+
     companion object {
         const val BASE64_FLAGS: Int = Base64.NO_WRAP
+
+        private val HEX_ARRAY = "0123456789ABCDEF".toCharArray()
 
         const val KEY_TX = "KEY_TX"
         const val KEY_RX = "KEY_RX"
         const val KEY_TOKEN = "KEY_TOKEN"
+        const val KEY_CLIENT_SECRET_KEY = "KEY_CLIENT_SECRET_KEY"
     }
 }
