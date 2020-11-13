@@ -29,7 +29,9 @@ import org.libsodium.jni.crypto.Util
  */
 class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
-    private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
+    private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(
+        context
+    ).getSharedPreferences()
 
     private val api: StubbedAPI = StubbedAPI.create(context)
 
@@ -49,15 +51,15 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
     override suspend fun pair(pincode: String): PairingResponse {
         NaCl.sodium() // init
 
-        val clientSecretKeyBytes = Util.zeros(SodiumConstants.SECRETKEY_BYTES)
-        val clientPublicKeyBytes = Util.zeros(SodiumConstants.PUBLICKEY_BYTES)
-        Sodium.crypto_kx_keypair(clientSecretKeyBytes, clientPublicKeyBytes)
+        val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
+        val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
+        Sodium.crypto_box_keypair(clientSecretKeyBytes, clientPublicKeyBytes)
 
         val haPubKey = Obfuscator.deObfuscate(BuildConfig.GGD_PUBLIC_KEY)
         val haPubKeyBytes = Base64.decode(haPubKey, BASE64_FLAGS)
 
         val cipherTextLength = 48  + clientPublicKeyBytes.size
-        val sealedClientPublicKeyBytes = Util.zeros(cipherTextLength)
+        val sealedClientPublicKeyBytes = ByteArray(cipherTextLength)
         Sodium.crypto_box_seal(
             sealedClientPublicKeyBytes,
             clientPublicKeyBytes,
@@ -70,9 +72,13 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey)
         val pairingResponse = api.pair(pairingBody)
 
-        val sealedHaPublicKeyBytes = Base64.decode(pairingResponse.sealedHealthAuthorityPublicKey, BASE64_FLAGS)
-        val haSpecificPublicKeyBytes = Util.zeros(1000) // TODO measure
-        Sodium.crypto_box_seal_open(
+        val sealedHaPublicKeyBytes = Base64.decode(
+            pairingResponse.sealedHealthAuthorityPublicKey,
+            BASE64_FLAGS
+        )
+        val haSpecificPublicKeyBytes = Util.zeros(SodiumConstants.ZERO_BYTES)
+
+        val cryptoBoxSealOpenResult = Sodium.crypto_box_seal_open(
             haSpecificPublicKeyBytes,
             sealedHaPublicKeyBytes,
             sealedHaPublicKeyBytes.size,
@@ -95,7 +101,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
         val token = Util.zeros(Sodium.crypto_generichash_bytes())
 
-        Sodium.crypto_generichash(token, token.size, rxPlusTx, rxPlusTx.size, null, 0 )
+        Sodium.crypto_generichash(token, token.size, rxPlusTx, rxPlusTx.size, Util.zeros(0), 0)
 
         encryptedSharedPreferences.edit()
             .putString(KEY_TX, Base64.encodeToString(txBytes, BASE64_FLAGS))

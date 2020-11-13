@@ -10,11 +10,12 @@ package nl.rijksoverheid.dbco.contacts.data
 
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import java.util.*
 
 /**
  * Created by Dima Kovalenko.
  */
 object DateFormats {
     val exposureData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
-    val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy")
+    val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy").withLocale(Locale("nl"))
 }

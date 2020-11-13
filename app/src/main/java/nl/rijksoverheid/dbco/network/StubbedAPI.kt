@@ -33,7 +33,7 @@ interface StubbedAPI {
     @Streaming
     suspend fun getTasks(@Path("token") token: String): Response<TasksResponse>
 
-    @POST("/pairings")
+    @POST("v1/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse
 
     @GET("v1/config")
