@@ -83,22 +83,24 @@ class MainActivity : AppCompatActivity() {
         if (factory != null) {
             return factory as ViewModelFactory
         }
-        if (!BuildConfig.USER_TEST) {
+        if (BuildConfig.USER_TEST) {
+            val userRepository = UsertestUserRepository(this)
             factory = ViewModelFactory(
                 baseContext,
-                TasksRepository(this),
+                UsertestTaskRepository(this, userRepository),
                 ContactsRepository(this),
-                QuestionnareRepository(this),
-                UserRepository(this),
+                UsertestQuestionnaireRepository(this),
+                userRepository,
                 AppConfigRepository(this)
             )
         } else {
+            val userRepository = UserRepository(this)
             factory = ViewModelFactory(
                 baseContext,
-                UsertestTaskRepository(this),
+                TasksRepository(this, userRepository),
                 ContactsRepository(this),
-                UsertestQuestionnaireRepository(this),
-                UsertestUserRepository(this),
+                QuestionnareRepository(this),
+                userRepository,
                 AppConfigRepository(this)
             )
         }

@@ -13,5 +13,6 @@ import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 interface UserInterface {
 
     suspend fun pair(pincode: String): PairingResponse
-
+    fun getRx(): String?
+    fun getToken(): String?
 }

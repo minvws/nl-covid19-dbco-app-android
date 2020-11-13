@@ -14,7 +14,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 
 interface TaskInterface {
 
-    suspend fun retrieveTasksForUUID(uuid: String = ""): TasksResponse
+    suspend fun retrieveTasks(): TasksResponse
     fun saveChangesToTask(updatedTask: Task)
     fun getCase(): Case?
 }

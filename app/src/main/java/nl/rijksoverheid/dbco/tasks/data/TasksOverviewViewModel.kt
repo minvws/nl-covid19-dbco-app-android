@@ -13,10 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
 import nl.rijksoverheid.dbco.tasks.TaskInterface
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import timber.log.Timber
 
@@ -36,9 +33,9 @@ class TasksOverviewViewModel(
         Timber.d("Initializing tasks viewmodel")
     }
 
-    fun fetchTasksForUUID(uuid: String = "") {
+    fun fetchTasks() {
         viewModelScope.launch {
-            val taskResponse = tasksRepository.retrieveTasksForUUID(uuid)
+            val taskResponse = tasksRepository.retrieveTasks()
             _indexTasks.postValue(taskResponse)
         }
     }

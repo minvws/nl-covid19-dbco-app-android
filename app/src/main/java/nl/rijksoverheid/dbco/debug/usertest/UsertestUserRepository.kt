@@ -63,4 +63,12 @@ class UsertestUserRepository(context: Context) : UserInterface { // TODO move to
         val digest = md.digest(bytes)
         return digest.fold("", { str, it -> str + "%02x".format(it) })
     }
+
+    override fun getRx(): String? {
+        return ""
+    }
+
+    override fun getToken(): String? {
+        return ""
+    }
 }

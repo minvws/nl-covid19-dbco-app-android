@@ -15,17 +15,19 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.user.UserInterface
 
-class TasksRepository(context: Context) : TaskInterface {
+class TasksRepository(context: Context, val userRepository: UserInterface) : TaskInterface {
     private val api = StubbedAPI.create(context)
     private var previousResponse: TasksResponse? = null
 
-    override suspend fun retrieveTasksForUUID(uuid: String): TasksResponse {
+    override suspend fun retrieveTasks(): TasksResponse {
         return if (previousResponse == null) {
-            val data = withContext(Dispatchers.IO) { api.getTasksForUUID() }
-            previousResponse = data.body()
-            data.body()!!
-
+            userRepository.getToken()?.let {
+                val data = withContext(Dispatchers.IO) { api.getTasks(it) }
+                previousResponse = data.body()
+                data.body()!!
+            } ?: previousResponse!!
         } else {
             previousResponse!!
         }
