@@ -13,8 +13,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
+import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,7 +31,7 @@ interface StubbedAPI {
 
     @GET("v1/cases/{token}")
     @Streaming
-    suspend fun getTasks(@Path("token") token: String): Response<TasksResponse>
+    suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
 
     @POST("v1/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse

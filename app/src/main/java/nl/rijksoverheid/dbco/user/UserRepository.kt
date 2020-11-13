@@ -20,7 +20,6 @@ import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_CLIENT_SECRET_KEY
 import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_RX
 import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TOKEN
 import nl.rijksoverheid.dbco.user.UserInterface.Companion.KEY_TX
-import nl.rijksoverheid.dbco.user.UserInterface.Companion.HEX_ARRAY
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.util.Obfuscator
 import nl.rijksoverheid.dbco.util.toHexString
@@ -55,7 +54,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
     @ExperimentalUnsignedTypes
     @SuppressLint("ApplySharedPref")
     override suspend fun pair(pincode: String) {
-
+        // generating local keys
         val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
         val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
         Sodium.crypto_box_keypair(clientPublicKeyBytes, clientSecretKeyBytes)
@@ -63,6 +62,7 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         val haPubKey = Obfuscator.deObfuscate(BuildConfig.GGD_PUBLIC_KEY)
         val haPubKeyBytes = Base64.decode(haPubKey, BASE64_FLAGS)
 
+        // encrypting local public key with given GGD key
         val cipherTextLength = 48  + clientPublicKeyBytes.size
         val sealedClientPublicKeyBytes = ByteArray(cipherTextLength)
         Sodium.crypto_box_seal(
@@ -73,16 +73,16 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         )
         val sealedClientPublicKey = Base64.encodeToString(sealedClientPublicKeyBytes, BASE64_FLAGS)
 
-        // get response from HA server
+        // call to GGD server
         val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey)
         val pairingResponse = api.pair(pairingBody)
 
+        // decrypting response
         val sealedHaPublicKeyBytes = Base64.decode(
             pairingResponse.sealedHealthAuthorityPublicKey,
             BASE64_FLAGS
         )
         val haSpecificPublicKeyBytes = Util.zeros(SodiumConstants.ZERO_BYTES)
-
         val cryptoBoxSealOpenResult = Sodium.crypto_box_seal_open(
             haSpecificPublicKeyBytes,
             sealedHaPublicKeyBytes,
@@ -92,9 +92,9 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
         )
         Timber.d("cryptoBoxSealOpenResult = $cryptoBoxSealOpenResult")
 
+        // generating rx and tx
         val rxBytes = Util.zeros(SodiumConstants.SESSIONKEYBYTES)
         val txBytes = Util.zeros(SodiumConstants.SESSIONKEYBYTES)
-
         Sodium.crypto_kx_client_session_keys(
             rxBytes,
             txBytes,
@@ -103,22 +103,21 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
             haSpecificPublicKeyBytes
         )
 
+        // generate token that will be used for user identification
         val rxPlusTx = Util.merge(rxBytes, txBytes)
-
         val tokenBytes = Util.zeros(Sodium.crypto_generichash_bytes())
-
         Sodium.crypto_generichash(tokenBytes, tokenBytes.size, rxPlusTx, rxPlusTx.size, Util.zeros(0), 0)
 
+        // save result
         tx = Base64.encodeToString(txBytes, BASE64_FLAGS)
         rx = Base64.encodeToString(rxBytes, BASE64_FLAGS)
         token = tokenBytes.toHexString()
-
-        val clienSecretKey = Base64.encodeToString(clientSecretKeyBytes, BASE64_FLAGS)
+        val clientSecretKey = Base64.encodeToString(clientSecretKeyBytes, BASE64_FLAGS)
         encryptedSharedPreferences.edit()
             .putString(KEY_TX, tx)
             .putString(KEY_RX, rx)
             .putString(KEY_TOKEN, token)
-            .putString(KEY_CLIENT_SECRET_KEY, clienSecretKey)
+            .putString(KEY_CLIENT_SECRET_KEY, clientSecretKey)
             .commit()
     }
 

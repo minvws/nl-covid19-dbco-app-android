@@ -6,10 +6,9 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks.data.entity
+package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
 
 @Serializable
-data class TasksResponse(val case: Case? = null)
+data class CaseResponse(val sealedCase: String? = null) // sealed representation of CaseBody

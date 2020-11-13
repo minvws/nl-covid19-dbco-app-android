@@ -41,18 +41,4 @@ class Task(
     }
 }
 
-@Serializable
-@Keep
-enum class CommunicationType {
-    @SerialName("index")
-    Index,
-
-    @SerialName("staff")
-    Staff,
-
-    @SerialName("none")
-    None
-}
-
-
 

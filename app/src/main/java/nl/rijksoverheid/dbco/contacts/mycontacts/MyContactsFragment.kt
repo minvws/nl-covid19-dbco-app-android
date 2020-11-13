@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -79,7 +78,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
-        tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
+        tasksViewModel.case.observe(viewLifecycleOwner, { case ->
             contentSection.clear()
             val uninformedSection = Section().apply {
                 setHeader(
@@ -100,7 +99,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
 
 
-            it.case?.tasks?.forEach { task ->
+            case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
@@ -134,9 +133,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         // Load data from backend
-        lifecycleScope.launch {
-            tasksViewModel.fetchTasks()
-        }
+        tasksViewModel.fetchTasks()
     }
 
     private fun checkPermissionAndNavigate(task: Task? = null) {

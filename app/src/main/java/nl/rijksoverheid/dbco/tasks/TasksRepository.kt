@@ -14,27 +14,26 @@ import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 import nl.rijksoverheid.dbco.user.UserInterface
 
 class TasksRepository(context: Context, val userRepository: UserInterface) : TaskInterface {
     private val api = StubbedAPI.create(context)
-    private var previousResponse: TasksResponse? = null
+    private var cachedCase: Case? = null
 
-    override suspend fun retrieveTasks(): TasksResponse {
-        return if (previousResponse == null) {
+    override suspend fun retrieveCase(): Case? {
+        if (cachedCase == null) {
             userRepository.getToken()?.let {
-                val data = withContext(Dispatchers.IO) { api.getTasks(it) }
-                previousResponse = data.body()
-                data.body()!!
-            } ?: previousResponse!!
-        } else {
-            previousResponse!!
+                val data = withContext(Dispatchers.IO) { api.getCase(it) }
+                val sealedCase = data.body()?.sealedCase
+                // decrypt
+                cachedCase = Case()
+            }
         }
+        return cachedCase
     }
 
     override fun saveChangesToTask(updatedTask: Task) {
-        val currentTasks = previousResponse?.case?.tasks as ArrayList
+        val currentTasks = cachedCase?.tasks as ArrayList
         currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
                 currentTasks[index] = updatedTask
@@ -43,6 +42,6 @@ class TasksRepository(context: Context, val userRepository: UserInterface) : Tas
     }
 
     override fun getCase(): Case? {
-        return previousResponse?.case
+        return cachedCase
     }
 }

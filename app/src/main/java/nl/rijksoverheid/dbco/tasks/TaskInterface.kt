@@ -10,11 +10,10 @@ package nl.rijksoverheid.dbco.tasks
 
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
 
 interface TaskInterface {
 
-    suspend fun retrieveTasks(): TasksResponse
+    suspend fun retrieveCase(): Case?
     fun saveChangesToTask(updatedTask: Task)
     fun getCase(): Case?
 }
