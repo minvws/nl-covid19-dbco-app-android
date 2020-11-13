@@ -21,10 +21,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Streaming
+import retrofit2.http.*
 
 interface StubbedAPI {
 
@@ -32,9 +29,9 @@ interface StubbedAPI {
     @Streaming
     suspend fun getQuestionnaires(): Response<ContactDetailsResponse>
 
-    @GET("v1/cases/tasks")
+    @GET("v1/cases/{token}")
     @Streaming
-    suspend fun getTasksForUUID(): Response<TasksResponse>
+    suspend fun getTasks(@Path("token") token: String): Response<TasksResponse>
 
     @POST("/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse

@@ -24,8 +24,9 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TaskInterface
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.user.UserInterface
 
-class UsertestTaskRepository(context: Context) : TaskInterface {
+class UsertestTaskRepository(context: Context, userInterface: UserInterface) : TaskInterface {
     private var previousResponse: TasksResponse? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
@@ -33,7 +34,7 @@ class UsertestTaskRepository(context: Context) : TaskInterface {
     /**
      * Either get the previously stored task from local storage, or return the mocked response instead
      */
-    override suspend fun retrieveTasksForUUID(uuid: String): TasksResponse {
+    override suspend fun retrieveTasks(): TasksResponse {
         return if (previousResponse == null) {
             val storedResponse: String = encryptedSharedPreferences.getString(
                 "usertasks",
