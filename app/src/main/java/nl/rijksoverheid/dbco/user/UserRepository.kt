@@ -31,8 +31,6 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
 
     private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
 
-    private val BASE64_FLAGS: Int = Base64.NO_PADDING or Base64.NO_WRAP
-
     private val api: StubbedAPI = StubbedAPI.create(context)
 
     private var rx: String? = null
@@ -117,6 +115,8 @@ class UserRepository(context: Context) : UserInterface { // TODO move to dagger
     }
 
     companion object {
+        const val BASE64_FLAGS: Int = Base64.NO_WRAP
+
         const val KEY_TX = "KEY_TX"
         const val KEY_RX = "KEY_RX"
         const val KEY_TOKEN = "KEY_TOKEN"
