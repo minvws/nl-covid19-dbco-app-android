@@ -120,4 +120,12 @@
     <string name="end_of_life_headline">CoronaMelder is gestopt</string>
     <string name="update_google_play_services">Updaten</string>
 
+    <!--    Permissions-->
+    <string name="permissions_title">Rechten</string>
+    <string name="permissions_no">Nee</string>
+    <string name="permissions_go_to_settings">Ga naar de Instellingen</string>
+    <string name="permissions_grant_permissions">Ja, geef rechten</string>
+    <string name="permissions_some_permissions_denied">U hebt enkele rechten voor de app geweigerd. Sta alle machtigingen toe op het [Instellingen] > [Rechten] scherm</string>
+    <string name="permissions_app_needs_read_contacts_permission">Deze app heeft "Contactpersonen lezen" rechten nodig</string>
+
 </resources>

@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import timber.log.Timber
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository
@@ -25,8 +26,11 @@ class TasksOverviewViewModel(
 
     fun fetchTasks() {
         viewModelScope.launch {
-
-            _case.postValue(tasksRepository.retrieveCase())
+            try {
+                _case.postValue(tasksRepository.retrieveCase())
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error while retrieving case")
+            }
         }
     }
 

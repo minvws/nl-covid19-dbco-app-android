@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.play.core.install.model.AppUpdateType
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
