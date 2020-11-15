@@ -125,7 +125,7 @@
     <string name="permissions_no">Nee</string>
     <string name="permissions_go_to_settings">Ga naar de Instellingen</string>
     <string name="permissions_grant_permissions">Ja, geef rechten</string>
-    <string name="permissions_some_permissions_denied">U hebt enkele rechten voor de app geweigerd. Sta alle machtigingen toe op het [Instellingen] > [Rechten] scherm</string>
+    <string name="permissions_some_permissions_denied">U hebt enkele rechten voor de app geweigerd. Sta alle rechten toe op het [Instellingen] > [Rechten] scherm</string>
     <string name="permissions_app_needs_read_contacts_permission">Deze app heeft "Contactpersonen lezen" rechten nodig</string>
 
 </resources>
