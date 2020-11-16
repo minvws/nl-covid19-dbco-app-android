@@ -63,7 +63,7 @@ class UsertestUserRepository(context: Context) : IUserRepository { // TODO move 
     }
 
     override fun getTx(): String? {
-        return rx
+        return tx
     }
 
     override fun getToken(): String? {
