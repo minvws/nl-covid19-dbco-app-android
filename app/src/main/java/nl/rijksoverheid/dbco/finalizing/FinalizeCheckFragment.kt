@@ -47,7 +47,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         binding.content.adapter = adapter
         binding.toolbar.visibility = View.GONE
 
-        tasksViewModel.case.observe(viewLifecycleOwner, { case ->
+        tasksViewModel.cachedCase.let { case ->
             contentSection.clear()
             val uninformedSection = Section().apply {
                 setHeader(
@@ -99,7 +99,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
             if (noPhoneOrEmailSection.groupCount > 1) {
                 contentSection.add(noPhoneOrEmailSection)
             }
-        })
+        }
 
         binding.sendButton.setOnClickListener {
             findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
