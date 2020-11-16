@@ -9,24 +9,18 @@
 package nl.rijksoverheid.dbco.questionnaire
 
 import android.content.Context
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 class QuestionnareRepository(context: Context) : IQuestionnaireRepository {
 
     private val api = StubbedAPI.create(context)
-    private var questionnaireToUse: ContactDetailsResponse? = null
+    private var cachedQuestionnaire: Questionnaire? = null
 
-    override suspend fun retrieveQuestionnaires(): ContactDetailsResponse {
-        return if (questionnaireToUse == null) {
-            val data = withContext(Dispatchers.IO) { api.getQuestionnaires() }
-            questionnaireToUse = data.body()
-            data.body()!!
-
-        } else {
-            questionnaireToUse!!
-        }
+    override suspend fun syncQuestionnaires() {
+        cachedQuestionnaire = api.getQuestionnaires().questionnaires?.firstOrNull() // TODO cache in shared prefs
     }
+
+    override fun getCachedQuestionnaire() = cachedQuestionnaire
+
 }

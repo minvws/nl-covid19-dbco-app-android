@@ -11,24 +11,24 @@ package nl.rijksoverheid.dbco.debug.usertest
 import android.content.Context
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 class UsertestQuestionnaireRepository(context: Context) : IQuestionnaireRepository {
 
-    private var questionnaireToUse: ContactDetailsResponse? = null
+    private var cachedQuestionnaire: Questionnaire? = null
 
-    override suspend fun retrieveQuestionnaires(): ContactDetailsResponse {
-        return if (questionnaireToUse == null) {
-            val response: ContactDetailsResponse = Json.decodeFromString(
+    override suspend fun syncQuestionnaires() {
+        if (cachedQuestionnaire == null) {
+            val response: QuestionnairyResponse = Json.decodeFromString(
                 MOCK_QUESTIONNAIRE
             )
-            questionnaireToUse = response
-            response
-        } else {
-            questionnaireToUse!!
+            cachedQuestionnaire = response.questionnaires?.firstOrNull()
         }
     }
+
+    override fun getCachedQuestionnaire() = cachedQuestionnaire
 
     companion object {
         const val MOCK_QUESTIONNAIRE =

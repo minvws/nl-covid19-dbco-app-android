@@ -16,20 +16,20 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
-import timber.log.Timber
 
 class TasksDetailViewModel(
     private val tasksRepository: ITaskRepository,
     private val questionnareRepository: IQuestionnaireRepository
 ) : ViewModel() {
 
-    var questionnaire: Questionnaire? = null
+    var questionnaire: Questionnaire? = questionnareRepository.getCachedQuestionnaire()
 
     val category = MutableLiveData<Category?>()
     val livedTogetherRisk = MutableLiveData<Boolean?>(null)
@@ -44,20 +44,6 @@ class TasksDetailViewModel(
     val task: MutableLiveData<Task> = MutableLiveData<Task>()
     var selectedContact: LocalContact? = null
     var questionnaireResult: QuestionnaireResult? = null
-
-    init {
-        retrieveQuestionnaires()
-    }
-
-    init {
-        Timber.d("Initializing tasks viewmodel")
-    }
-
-    private fun retrieveQuestionnaires() { // TODO make call once in repo and cache it there, remove suspend
-        viewModelScope.launch {
-            questionnaire = questionnareRepository.retrieveQuestionnaires().questionnaires?.firstOrNull()
-        }
-    }
 
     fun saveChangesToTask(updatedTask: Task) {
         tasksRepository.saveChangesToTask(updatedTask)
