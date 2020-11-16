@@ -20,9 +20,9 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 interface ITaskRepository {
 
-    suspend fun retrieveCase(): Case?
+    suspend fun fetchCase(): Case?
     fun saveChangesToTask(updatedTask: Task)
-    fun getCase(): Case?
+    fun getCachedCase(): Case?
 
     companion object {
         val JSON_SERIALIZER = Json {

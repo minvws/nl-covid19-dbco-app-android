@@ -128,4 +128,10 @@
     <string name="permissions_some_permissions_denied">U heeft enkele rechten voor de app geweigerd. Sta alle rechten toe op het [Instellingen] > [Rechten] scherm</string>
     <string name="permissions_app_needs_read_contacts_permission">Deze app heeft "Contactpersonen lezen" rechten nodig</string>
 
+    <!--  Errors-->
+    <string name="error">Fout</string>
+    <string name="error_try_again">Probeer het opnieuw</string>
+    <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
+    <string name="error_while_pairing">Fout tijdens het koppelen:</string>
+
 </resources>

@@ -34,7 +34,7 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
     /**
      * Either get the previously stored task from local storage, or return the mocked response instead
      */
-    override suspend fun retrieveCase(): Case? {
+    override suspend fun fetchCase(): Case? {
         if (cachedCase == null) {
             val storedResponse: String = encryptedSharedPreferences.getString(
                 CASE_BODY_KEY,
@@ -65,7 +65,7 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         encryptedSharedPreferences.edit().putString(CASE_BODY_KEY, storeString).apply()
     }
 
-    override fun getCase(): Case? {
+    override fun getCachedCase(): Case? {
         return cachedCase
     }
 

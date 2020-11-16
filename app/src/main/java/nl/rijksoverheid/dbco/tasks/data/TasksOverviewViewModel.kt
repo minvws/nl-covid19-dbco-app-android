@@ -15,23 +15,27 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.util.Resource
 import timber.log.Timber
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository
 ) : ViewModel() {
 
-    private val _case = MutableLiveData<Case?>()
-    val case: LiveData<Case?> = _case
+    private val _callResult = MutableLiveData<Resource<Case?>>()
+    val callResult: LiveData<Resource<Case?>> = _callResult
+
+    var cachedCase = tasksRepository.getCachedCase()
 
     fun fetchTasks() {
         viewModelScope.launch {
             try {
-                _case.postValue(tasksRepository.retrieveCase())
+                val case = tasksRepository.fetchCase()
+                _callResult.postValue(Resource.success(case))
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
+                _callResult.postValue(Resource.failure(ex))
             }
         }
     }
-
 }

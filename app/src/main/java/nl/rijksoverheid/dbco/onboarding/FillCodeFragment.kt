@@ -21,6 +21,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
 import nl.rijksoverheid.dbco.util.hideKeyboard
+import nl.rijksoverheid.dbco.util.resolve
 import nl.rijksoverheid.dbco.util.showKeyboard
 import org.jetbrains.annotations.NotNull
 
@@ -48,23 +49,21 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
             // Pairing is stubbed till we have access to the portal to create new pairings
         }
 
-        viewModel.validPairingCode.observe(viewLifecycleOwner, {
-            if (it) {
+        viewModel.pairingResult.observe(viewLifecycleOwner, {
+
+            it?.resolve(onError = {
+                showErrorDialog(getString(R.string.error_while_pairing), {
+                    binding.pinEntry1.setText("")
+                    binding.pinEntry2.setText("")
+                    binding.pinEntry3.setText("")
+                    binding.pinEntry1.requestFocus()
+                }, it)
+            }, onSuccess = {
                 binding.btnNext.hideKeyboard()
                 binding.btnNext.postDelayed({
                     findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
                 }, KEYBOARD_DELAY)
-            } else {
-                Toast.makeText(
-                    context,
-                    getString(R.string.onboarding_invalid_access_code),
-                    Toast.LENGTH_SHORT
-                ).show()
-                binding.pinEntry1.setText("")
-                binding.pinEntry2.setText("")
-                binding.pinEntry3.setText("")
-                binding.pinEntry1.requestFocus()
-            }
+            })
         })
 
         setupEntriesBehaviour(binding)

@@ -71,7 +71,7 @@ class TasksDetailViewModel(
     }
 
     fun getDateOfSymptomOnset(): LocalDate? {
-        tasksRepository.getCase()?.dateOfSymptomOnset?.let {
+        tasksRepository.getCachedCase()?.dateOfSymptomOnset?.let {
             return LocalDate.parse(it, DateFormats.exposureData )
         }
         return null

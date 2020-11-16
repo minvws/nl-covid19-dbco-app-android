@@ -27,6 +27,7 @@ import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
 
 /**
@@ -73,52 +74,59 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
-        tasksViewModel.case.observe(viewLifecycleOwner, { case ->
-            contentSection.clear()
-            val uninformedSection = Section().apply {
-                setHeader(
-                    DuoHeaderItem(
-                        R.string.mycontacts_uninformed_header,
-                        R.string.mycontacts_uninformed_subtext
-                    )
-                )
-            }
-            val informedSection = Section()
-                .apply {
+        tasksViewModel.callResult.observe(viewLifecycleOwner, { resource ->
+            resource.resolve(onError = {
+                showErrorDialog(getString(R.string.error_while_fetching_case), {
+                    tasksViewModel.fetchTasks()
+                }, it)
+            }, onSuccess = {case ->
+                contentSection.clear()
+                val uninformedSection = Section().apply {
                     setHeader(
                         DuoHeaderItem(
-                            R.string.mycontacts_informed_header,
-                            R.string.mycontacts_informed_subtext
+                            R.string.mycontacts_uninformed_header,
+                            R.string.mycontacts_uninformed_subtext
                         )
                     )
                 }
+                val informedSection = Section()
+                    .apply {
+                        setHeader(
+                            DuoHeaderItem(
+                                R.string.mycontacts_informed_header,
+                                R.string.mycontacts_informed_subtext
+                            )
+                        )
+                    }
 
 
-            case?.tasks?.forEach { task ->
-                Timber.d("Found task $task")
-                when (task.taskType) {
-                    "contact" -> {
-                        val informed = when (task.communication) {
-                            CommunicationType.Index -> task.contactIsInformedAlready
-                            CommunicationType.Staff -> task.linkedContact?.hasEmailOrPhone() == true
-                            else -> false
-                        }
-                        if (informed) {
-                            informedSection.add(TaskItem(task))
-                        } else {
-                            uninformedSection.add(TaskItem(task))
+                case?.tasks?.forEach { task ->
+                    Timber.d("Found task $task")
+                    when (task.taskType) {
+                        "contact" -> {
+                            val informed = when (task.communication) {
+                                CommunicationType.Index -> task.contactIsInformedAlready
+                                CommunicationType.Staff -> task.linkedContact?.hasEmailOrPhone() == true
+                                else -> false
+                            }
+                            if (informed) {
+                                informedSection.add(TaskItem(task))
+                            } else {
+                                uninformedSection.add(TaskItem(task))
+                            }
                         }
                     }
                 }
-            }
 
-            if (uninformedSection.groupCount > 1) {
-                contentSection.add(uninformedSection)
-            }
+                if (uninformedSection.groupCount > 1) {
+                    contentSection.add(uninformedSection)
+                }
 
-            if (informedSection.groupCount > 1) {
-                contentSection.add(informedSection)
-            }
+                if (informedSection.groupCount > 1) {
+                    contentSection.add(informedSection)
+                }
+            })
+
         })
 
         adapter.setOnItemClickListener { item, view ->

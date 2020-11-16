@@ -26,7 +26,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     private val api = StubbedAPI.create(context)
     private var cachedCase: Case? = null
 
-    override suspend fun retrieveCase(): Case? {
+    override suspend fun fetchCase(): Case? {
         if (cachedCase == null) {
             userRepository.getToken()?.let {
                 val data = withContext(Dispatchers.IO) { api.getCase(it) }
@@ -53,7 +53,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         }
     }
 
-    override fun getCase(): Case? {
+    override fun getCachedCase(): Case? {
         return cachedCase
     }
 }
