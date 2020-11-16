@@ -20,9 +20,10 @@ import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 import org.libsodium.jni.Sodium
-import kotlin.collections.ArrayList
 
-class TasksRepository(context: Context, private val userRepository: IUserRepository) : ITaskRepository {
+
+class TasksRepository(context: Context, private val userRepository: IUserRepository) :
+    ITaskRepository {
     private val api = StubbedAPI.create(context)
     private var cachedCase: Case? = null
 
@@ -31,12 +32,20 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             userRepository.getToken()?.let {
                 val data = withContext(Dispatchers.IO) { api.getCase(it) }
                 val sealedCase = data.body()?.sealedCase
-                val cipherBytes = Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
+                val cipherBytes =
+                    Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
                 val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
                 val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
                 val caseBodyBytes = ByteArray(cipherBytes.size)
-                Sodium.crypto_secretbox_open_easy(caseBodyBytes, cipherBytes, cipherBytes.size, nonceBytes, rxBytes)
-                val caseBodyString = Base64.encodeToString(caseBodyBytes, IUserRepository.BASE64_FLAGS)
+                Sodium.crypto_secretbox_open_easy(
+                    caseBodyBytes,
+                    cipherBytes,
+                    cipherBytes.size,
+                    nonceBytes,
+                    rxBytes
+                )
+                val caseBodyString =
+                    Base64.encodeToString(caseBodyBytes, IUserRepository.BASE64_FLAGS)
                 val caseBody: CaseBody = Json.decodeFromString(caseBodyString)
                 cachedCase = caseBody.case
             }
