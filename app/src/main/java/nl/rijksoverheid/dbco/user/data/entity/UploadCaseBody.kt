@@ -6,9 +6,11 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.user.data.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SealedData(val ciphertext: String? = null, val nonce: String?)
+data class UploadCaseBody(
+    val sealedCase: SealedData,
+)

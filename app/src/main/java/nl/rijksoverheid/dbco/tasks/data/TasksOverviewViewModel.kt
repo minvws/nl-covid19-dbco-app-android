@@ -22,8 +22,8 @@ class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository
 ) : ViewModel() {
 
-    private val _callResult = MutableLiveData<Resource<Case?>>()
-    val callResult: LiveData<Resource<Case?>> = _callResult
+    private val _fetchCase = MutableLiveData<Resource<Case?>>()
+    val fetchCase: LiveData<Resource<Case?>> = _fetchCase
 
     var cachedCase = tasksRepository.getCachedCase()
 
@@ -31,11 +31,17 @@ class TasksOverviewViewModel(
         viewModelScope.launch {
             try {
                 val case = tasksRepository.fetchCase()
-                _callResult.postValue(Resource.success(case))
+                _fetchCase.postValue(Resource.success(case))
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
-                _callResult.postValue(Resource.failure(ex))
+                _fetchCase.postValue(Resource.failure(ex))
             }
+        }
+    }
+
+    fun sendCurrentCase() {
+        viewModelScope.launch {
+            tasksRepository.uploadCase()
         }
     }
 }

@@ -23,6 +23,7 @@ interface ITaskRepository {
     suspend fun fetchCase(): Case?
     fun saveChangesToTask(updatedTask: Task)
     fun getCachedCase(): Case?
+    suspend fun uploadCase()
 
     companion object {
         val JSON_SERIALIZER = Json {

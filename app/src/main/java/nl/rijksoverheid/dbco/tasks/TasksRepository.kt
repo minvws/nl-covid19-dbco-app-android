@@ -13,13 +13,16 @@ import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
-import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
+import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
+import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import org.libsodium.jni.Sodium
+import org.libsodium.jni.SodiumConstants
 
 
 class TasksRepository(context: Context, private val userRepository: IUserRepository) :
@@ -62,5 +65,30 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
 
     override fun getCachedCase(): Case? {
         return cachedCase
+    }
+
+    override suspend fun uploadCase() {
+        cachedCase?.let { case ->
+            val caseString = ITaskRepository.JSON_SERIALIZER.encodeToString(case)
+            userRepository.getToken()?.let { token ->
+                val caseBytes = caseString.toByteArray()
+                val txBytes = Base64.decode(userRepository.getTx(), IUserRepository.BASE64_FLAGS)
+                val nonceBytes = ByteArray(SodiumConstants.NONCE_BYTES)
+                Sodium.randombytes(nonceBytes, nonceBytes.size)
+                val cipherBytes = ByteArray(caseBytes.size + Sodium.crypto_secretbox_macbytes())
+                Sodium.crypto_secretbox_easy(
+                    cipherBytes,
+                    caseBytes,
+                    caseBytes.size,
+                    nonceBytes,
+                    txBytes
+                )
+                val cipherText = Base64.encodeToString(cipherBytes, IUserRepository.BASE64_FLAGS)
+                val nonceText = Base64.encodeToString(nonceBytes, IUserRepository.BASE64_FLAGS)
+                val sealedCase = SealedData(cipherText, nonceText)
+                val requestBody = UploadCaseBody(sealedCase)
+                withContext(Dispatchers.IO) { api.uploadCase(token, requestBody) }
+            }
+        }
     }
 }

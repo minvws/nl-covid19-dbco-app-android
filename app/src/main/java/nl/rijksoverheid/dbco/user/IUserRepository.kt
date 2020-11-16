@@ -14,6 +14,7 @@ interface IUserRepository {
 
     suspend fun pair(pincode: String)
     fun getRx(): String?
+    fun getTx(): String?
     fun getToken(): String?
 
     companion object {
