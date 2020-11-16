@@ -58,10 +58,15 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
 
     override fun saveChangesToTask(updatedTask: Task) {
         val currentTasks = cachedCase?.tasks as ArrayList
+        var found = false
         currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
                 currentTasks[index] = updatedTask
+                found = true
             }
+        }
+        if (!found) {
+            currentTasks.add(updatedTask)
         }
     }
 

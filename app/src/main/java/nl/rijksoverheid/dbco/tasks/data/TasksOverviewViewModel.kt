@@ -28,7 +28,7 @@ class TasksOverviewViewModel(
     private val _fetchCase = MutableLiveData<Resource<Case?>>()
     val fetchCase: LiveData<Resource<Case?>> = _fetchCase
 
-    var cachedCase = tasksRepository.getCachedCase()
+    fun getCachedCase() = tasksRepository.getCachedCase()
 
     fun fetchTasks() {
         viewModelScope.launch {
