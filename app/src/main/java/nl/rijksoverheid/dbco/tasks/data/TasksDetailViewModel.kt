@@ -41,13 +41,11 @@ class TasksDetailViewModel(
     val hasEmailOrPhone = MutableLiveData<Boolean>(true)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
+    val caseChanged = MutableLiveData<Boolean>(false)
+
     val task: MutableLiveData<Task> = MutableLiveData<Task>()
     var selectedContact: LocalContact? = null
     var questionnaireResult: QuestionnaireResult? = null
-
-    fun saveChangesToTask(updatedTask: Task) {
-        tasksRepository.saveChangesToTask(updatedTask)
-    }
 
     fun setTask(task: Task) {
         this.task.value = task
@@ -61,6 +59,11 @@ class TasksDetailViewModel(
             return LocalDate.parse(it, DateFormats.exposureData )
         }
         return null
+    }
+
+    fun saveChangesToTask(updatedTask: Task) {
+        tasksRepository.saveChangesToTask(updatedTask)
+        caseChanged.postValue(true)
     }
 
     private fun updateRiskFlagsFromCategory(task: Task) {

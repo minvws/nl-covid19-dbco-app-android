@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.tasks
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,10 +18,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
-import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
+import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 
@@ -29,29 +31,59 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     ITaskRepository {
     private val api = StubbedAPI.create(context)
     private var cachedCase: Case? = null
+    private var encryptedSharedPreferences: SharedPreferences =
+        LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     override suspend fun fetchCase(): Case? {
-        if (cachedCase == null) {
-            userRepository.getToken()?.let {
-                val data = withContext(Dispatchers.IO) { api.getCase(it) }
-                val sealedCase = data.body()?.sealedCase
-                val cipherBytes =
-                    Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
-                val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
-                val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
-                val caseBodyBytes = ByteArray(cipherBytes.size - Sodium.crypto_secretbox_macbytes())
-                Sodium.crypto_secretbox_open_easy(
-                    caseBodyBytes,
-                    cipherBytes,
-                    cipherBytes.size,
-                    nonceBytes,
-                    rxBytes
-                )
-                val caseString = String(caseBodyBytes)
-                cachedCase = Json {
-                    ignoreUnknownKeys = true
-                }.decodeFromString(caseString)
+        // restore saved case
+        encryptedSharedPreferences.getString(
+            ITaskRepository.CASE_KEY,
+            null
+        )?.apply {
+            cachedCase = Json { ignoreUnknownKeys = true }.decodeFromString(this)
+        }
+
+        userRepository.getToken()?.let {
+            val data = withContext(Dispatchers.IO) { api.getCase(it) }
+            val sealedCase = data.body()?.sealedCase
+            val cipherBytes =
+                Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
+            val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
+            val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
+            val caseBodyBytes = ByteArray(cipherBytes.size - Sodium.crypto_secretbox_macbytes())
+            Sodium.crypto_secretbox_open_easy(
+                caseBodyBytes,
+                cipherBytes,
+                cipherBytes.size,
+                nonceBytes,
+                rxBytes
+            )
+            val caseString = String(caseBodyBytes)
+            val remoteCase: Case = Json {
+                ignoreUnknownKeys = true
+            }.decodeFromString(caseString)
+
+            if (cachedCase == null) {
+                // it is first time we fetch case, save it in cache
+                cachedCase = remoteCase
+            } else {
+                // case was already fetched and stored, we just need to check for new tasks (by uuid)
+                remoteCase.tasks?.forEach { remoteTask ->
+                    var found = false
+                    cachedCase?.tasks?.forEach { currentTask ->
+                        if (remoteTask.uuid == currentTask.uuid) {
+                            found = true
+                        }
+                    }
+                    if (!found) {
+                        cachedCase?.tasks?.add(remoteTask)
+                    }
+                }
             }
+
+            val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(remoteCase)
+            encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString)
+                .apply()
         }
         return cachedCase
     }
@@ -68,6 +100,9 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         if (!found) {
             currentTasks.add(updatedTask)
         }
+        // save whole task in prefs
+        val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(cachedCase)
+        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
     }
 
     override fun getCachedCase(): Case? {
