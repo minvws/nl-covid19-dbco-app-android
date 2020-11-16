@@ -13,30 +13,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import nl.rijksoverheid.dbco.tasks.TaskInterface
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import timber.log.Timber
 
 class TasksOverviewViewModel(
-    private val tasksRepository: TaskInterface
+    private val tasksRepository: ITaskRepository
 ) : ViewModel() {
 
-    private val _indexTasks = MutableLiveData<TasksResponse>()
-    val indexTasks: LiveData<TasksResponse> = _indexTasks
-
-    override fun onCleared() {
-        super.onCleared()
-        Timber.e("Viewmodel is being cleared")
-    }
-
-    init {
-        Timber.d("Initializing tasks viewmodel")
-    }
+    private val _case = MutableLiveData<Case?>()
+    val case: LiveData<Case?> = _case
 
     fun fetchTasks() {
         viewModelScope.launch {
-            val taskResponse = tasksRepository.retrieveTasks()
-            _indexTasks.postValue(taskResponse)
+            try {
+                _case.postValue(tasksRepository.retrieveCase())
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error while retrieving case")
+            }
         }
     }
 

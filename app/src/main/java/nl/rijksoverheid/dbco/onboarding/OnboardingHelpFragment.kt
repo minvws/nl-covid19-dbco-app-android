@@ -8,18 +8,17 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingHelpBinding
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class OnboardingHelpFragment : BaseFragment(R.layout.fragment_onboarding_help) {
 
-    private lateinit var encryptedSharedPreferences: SharedPreferences
+    private val viewModel by viewModels<OnboardingHelpViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,13 +27,8 @@ class OnboardingHelpFragment : BaseFragment(R.layout.fragment_onboarding_help) {
             findNavController().navigate(OnboardingHelpFragmentDirections.toFillCodeFragment())
         }
 
-        encryptedSharedPreferences =
-            LocalStorageRepository.getInstance(requireActivity()).getSharedPreferences()
-
-        val savedPin = encryptedSharedPreferences.getString("pincode", null)
-        if (savedPin != null) {
+        if (viewModel.skipOnboarding) {
             findNavController().navigate(OnboardingHelpFragmentDirections.toMyContacts())
         }
     }
-
 }

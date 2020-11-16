@@ -15,18 +15,18 @@ import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireInterface
+import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
-import nl.rijksoverheid.dbco.tasks.TaskInterface
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
 import timber.log.Timber
 
 class TasksDetailViewModel(
-        private val tasksRepository: TaskInterface,
-        private val questionnareRepository: QuestionnaireInterface
+    private val tasksRepository: ITaskRepository,
+    private val questionnareRepository: IQuestionnaireRepository
 ) : ViewModel() {
 
     var questionnaire: Questionnaire? = null

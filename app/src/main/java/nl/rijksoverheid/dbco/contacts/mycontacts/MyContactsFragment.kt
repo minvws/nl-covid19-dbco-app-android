@@ -13,19 +13,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
@@ -41,7 +36,6 @@ import timber.log.Timber
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
 
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
@@ -79,7 +73,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
-        tasksViewModel.indexTasks.observe(viewLifecycleOwner, Observer {
+        tasksViewModel.case.observe(viewLifecycleOwner, { case ->
             contentSection.clear()
             val uninformedSection = Section().apply {
                 setHeader(
@@ -100,7 +94,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
 
 
-            it.case?.tasks?.forEach { task ->
+            case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
@@ -134,9 +128,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         // Load data from backend
-        lifecycleScope.launch {
-            tasksViewModel.fetchTasks()
-        }
+        tasksViewModel.fetchTasks()
     }
 
     private fun checkPermissionAndNavigate(task: Task? = null) {

@@ -23,6 +23,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.util.capitalizeWords
 import org.joda.time.Days
 import org.joda.time.LocalDate
 
@@ -194,7 +195,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                             val interval = Days.daysBetween(twoDaysBeforeSymptoms, LocalDate.now()).days
                             for (i in 0 .. interval) {
                                 val date = twoDaysBeforeSymptoms.plusDays(i)
-                                val label = date.toString(DateFormats.exposureUI)
+                                val label = date.toString(DateFormats.exposureUI).capitalizeWords()
                                 val value = date.toString(DateFormats.exposureData)
                                 add(AnswerOption(label, null, value))
                             }

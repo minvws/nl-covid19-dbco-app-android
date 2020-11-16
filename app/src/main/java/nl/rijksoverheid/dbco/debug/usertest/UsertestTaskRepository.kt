@@ -19,37 +19,35 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.tasks.TaskInterface
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
 
-class UsertestTaskRepository(context: Context, userInterface: UserInterface) : TaskInterface {
-    private var previousResponse: TasksResponse? = null
+class UsertestTaskRepository(context: Context, userInterface: IUserRepository) : ITaskRepository {
+    private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     /**
      * Either get the previously stored task from local storage, or return the mocked response instead
      */
-    override suspend fun retrieveTasks(): TasksResponse {
-        return if (previousResponse == null) {
+    override suspend fun retrieveCase(): Case? {
+        if (cachedCase == null) {
             val storedResponse: String = encryptedSharedPreferences.getString(
-                "usertasks",
-                MOCK_TASKS
-            ) ?: MOCK_TASKS
-            val taskResponse: TasksResponse = Json.decodeFromString(storedResponse)
-            previousResponse = taskResponse
-            taskResponse
-        } else {
-            previousResponse!!
+                CASE_BODY_KEY,
+                null
+            ) ?: MOCKED_CASE_BODY
+            val caseBody: CaseBody = Json.decodeFromString(storedResponse)
+            cachedCase = caseBody.case
         }
+        return cachedCase
     }
 
     override fun saveChangesToTask(updatedTask: Task) {
-        val currentTasks = previousResponse?.case?.tasks as ArrayList
+        val currentTasks = cachedCase?.tasks as ArrayList
         var found = false
         currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
@@ -63,27 +61,17 @@ class UsertestTaskRepository(context: Context, userInterface: UserInterface) : T
 
         //Timber.w("Final result is $previousResponse")
 
-        val storeString = Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            serializersModule = SerializersModule {
-                contextual(String.serializer())
-                contextual(Int.serializer())
-                contextual(Double.serializer())
-                contextual(QuestionnaireResult.serializer())
-                contextual(JsonArray.serializer())
-                contextual(JsonElement.serializer())
-            }
-        }.encodeToString(previousResponse)
-        encryptedSharedPreferences.edit().putString("usertasks", storeString).apply()
+        val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(CaseBody(cachedCase))
+        encryptedSharedPreferences.edit().putString(CASE_BODY_KEY, storeString).apply()
     }
 
     override fun getCase(): Case? {
-        return previousResponse?.case
+        return cachedCase
     }
 
     companion object {
-        const val MOCK_TASKS = "{\n" +
+        const val CASE_BODY_KEY = "caseBody"
+        const val MOCKED_CASE_BODY = "{\n" +
                 "  \"case\": {\n" +
                 "      \"dateOfSymptomOnset\": \"2020-10-29\",\n" +
                 "      \"tasks\": [\n" +

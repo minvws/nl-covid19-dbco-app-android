@@ -34,6 +34,9 @@ class QuestionTwoOptionsItem(
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
         answerGroup = viewBinding.answerGroup
+
+        viewBinding.option1.setOnCheckedChangeListener(null)
+        viewBinding.option2.setOnCheckedChangeListener(null)
         fillInPreviousAnswer()
 
         val onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->

@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,27 +20,18 @@ import com.alimuzaffar.lib.pin.PinEntryEditText
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.showKeyboard
 import org.jetbrains.annotations.NotNull
 
-/**
- * TODO add ViewModel with API call
- */
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
 
     private lateinit var pin: String
     private val viewModel by viewModels<FillCodeViewModel>()
-    private lateinit var encryptedSharedPreferences: SharedPreferences
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentFillCodeBinding.bind(view)
-        encryptedSharedPreferences =
-            LocalStorageRepository.getInstance(requireActivity()).getSharedPreferences()
-
-
 
         binding.backButton.setOnClickListener {
             it.hideKeyboard()
@@ -56,8 +46,6 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                     binding.pinEntry3.text.toString()
             viewModel.pair(pin)
             // Pairing is stubbed till we have access to the portal to create new pairings
-
-
         }
 
         viewModel.validPairingCode.observe(viewLifecycleOwner, {
@@ -66,7 +54,6 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                 binding.btnNext.postDelayed({
                     findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
                 }, KEYBOARD_DELAY)
-                encryptedSharedPreferences.edit().putString("pincode", pin).apply()
             } else {
                 Toast.makeText(
                     context,

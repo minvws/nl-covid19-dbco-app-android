@@ -15,9 +15,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.user.UserInterface
+import nl.rijksoverheid.dbco.user.IUserRepository
 
-class FillCodeViewModel(private val userRepository: UserInterface) : ViewModel() {
+class FillCodeViewModel(private val userRepository: IUserRepository) : ViewModel() {
 
     private val _validPairingCode = MutableLiveData<Boolean>()
     val validPairingCode: LiveData<Boolean> = _validPairingCode
@@ -25,9 +25,8 @@ class FillCodeViewModel(private val userRepository: UserInterface) : ViewModel()
     fun pair(pin: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val response = userRepository.pair(pin)
-                // TODO notify fragment
-                if (response.sealedHealthAuthorityPublicKey.isNullOrEmpty()) {
+                userRepository.pair(pin)
+                if (userRepository.getToken() == null) {
                     _validPairingCode.postValue(false)
                 } else {
                     _validPairingCode.postValue(true)

@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.network.StubbedAPI
 
-class QuestionnareRepository(context: Context) : QuestionnaireInterface {
+class QuestionnareRepository(context: Context) : IQuestionnaireRepository {
 
     private val api = StubbedAPI.create(context)
     private var questionnaireToUse: ContactDetailsResponse? = null

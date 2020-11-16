@@ -47,7 +47,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         binding.content.adapter = adapter
         binding.toolbar.visibility = View.GONE
 
-        tasksViewModel.indexTasks.observe(viewLifecycleOwner, {
+        tasksViewModel.case.observe(viewLifecycleOwner, { case ->
             contentSection.clear()
             val uninformedSection = Section().apply {
                 setHeader(
@@ -68,7 +68,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                     }
 
 
-            it.case?.tasks?.forEach { task ->
+            case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {

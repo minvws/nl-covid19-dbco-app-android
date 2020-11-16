@@ -35,3 +35,8 @@ fun String.removeHtmlTags(): String{
             .replace("</li>", "")
             .replace("<li>", "\n• ")
 }
+
+fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+
+@ExperimentalUnsignedTypes
+fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
