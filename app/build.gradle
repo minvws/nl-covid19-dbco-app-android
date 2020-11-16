@@ -60,21 +60,19 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        dev {
+        acc {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
-            applicationIdSuffix '.dev'
-            manifestPlaceholders = [appLabel: "@string/app_name_develop"]
-            signingConfig signingConfigs.acc
-        }
-
-        acc {
-            dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "true"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.acc
+        }
+        prod {
+            dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            // TODO sort out signing
         }
     }
 

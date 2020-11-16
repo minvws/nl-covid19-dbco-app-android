@@ -132,5 +132,6 @@
     <string name="error">Fout</string>
     <string name="error_try_again">Probeer het opnieuw</string>
     <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
+    <string name="error_while_pairing">Fout tijdens het koppelen:</string>
 
 </resources>

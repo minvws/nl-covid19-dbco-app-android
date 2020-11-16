@@ -38,8 +38,7 @@ abstract class BaseFragment @JvmOverloads constructor(
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(R.string.error)
         builder.setCancelable(false)
-        var finalMessage = message
-        finalMessage = finalMessage + "\n" + throwable?.message
+        val finalMessage = message + "\n" + throwable?.message
         builder.setMessage(finalMessage)
         builder.setPositiveButton(
             R.string.error_try_again
