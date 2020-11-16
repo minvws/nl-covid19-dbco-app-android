@@ -11,4 +11,4 @@ package nl.rijksoverheid.dbco.contacts.data.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CaseResponse(val sealedCase: String? = null, val nonce: String?) // sealed representation of CaseBody
+data class CaseResponse(val sealedCase: SealedData)

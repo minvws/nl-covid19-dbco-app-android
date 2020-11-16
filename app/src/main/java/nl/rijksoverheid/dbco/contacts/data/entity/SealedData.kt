@@ -6,11 +6,9 @@
  *
  */
 
-package nl.rijksoverheid.dbco.user.data.entity
+package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PairingResponse(
-    val sealedHealthAuthorityPublicKey: String?
-)
+data class SealedData(val ciphertext: String? = null, val nonce: String?)

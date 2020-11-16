@@ -30,12 +30,12 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         if (cachedCase == null) {
             userRepository.getToken()?.let {
                 val data = withContext(Dispatchers.IO) { api.getCase(it) }
-                val sealedCaseBodyString = data.body()?.sealedCase
-                val sealedCaseBodyBytes = Base64.decode(sealedCaseBodyString, IUserRepository.BASE64_FLAGS)
-                val nonceBytes = Base64.decode(data.body()?.nonce, IUserRepository.BASE64_FLAGS)
+                val sealedCase = data.body()?.sealedCase
+                val cipherBytes = Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
+                val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
                 val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
-                val caseBodyBytes = ByteArray(Sodium.crypto_box_macbytes() + sealedCaseBodyBytes.size)
-                Sodium.crypto_secretbox_open_easy(caseBodyBytes, sealedCaseBodyBytes, sealedCaseBodyBytes.size, nonceBytes, rxBytes)
+                val caseBodyBytes = ByteArray(cipherBytes.size)
+                Sodium.crypto_secretbox_open_easy(caseBodyBytes, cipherBytes, cipherBytes.size, nonceBytes, rxBytes)
                 val caseBodyString = Base64.encodeToString(caseBodyBytes, IUserRepository.BASE64_FLAGS)
                 val caseBody: CaseBody = Json.decodeFromString(caseBodyString)
                 cachedCase = caseBody.case

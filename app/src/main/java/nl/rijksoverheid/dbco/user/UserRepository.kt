@@ -78,6 +78,11 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
         val pairingResponse = api.pair(pairingBody)
 
         // decrypting response
+        if (pairingResponse.sealedHealthAuthorityPublicKey == null) {
+            throw IllegalStateException("sealedHealthAuthorityPublicKey is null")
+        } else if (pairingResponse.sealedHealthAuthorityPublicKey == "") {
+            throw IllegalStateException("sealedHealthAuthorityPublicKey is empty")
+        }
         val sealedHaPublicKeyBytes = Base64.decode(
             pairingResponse.sealedHealthAuthorityPublicKey,
             BASE64_FLAGS
