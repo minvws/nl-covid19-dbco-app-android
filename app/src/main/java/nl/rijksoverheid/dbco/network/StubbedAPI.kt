@@ -35,7 +35,7 @@ interface StubbedAPI {
     suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
 
     @PUT("v1/cases/{token}")
-    suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody)
+    suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody): Response<Unit>
 
     @POST("v1/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse
