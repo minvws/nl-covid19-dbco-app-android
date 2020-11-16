@@ -44,10 +44,8 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                     nonceBytes,
                     rxBytes
                 )
-                val caseBodyString =
-                    Base64.encodeToString(caseBodyBytes, IUserRepository.BASE64_FLAGS)
-                val caseBody: CaseBody = Json.decodeFromString(caseBodyString)
-                cachedCase = caseBody.case
+                val caseString = String(caseBodyBytes)
+                cachedCase = Json.decodeFromString(caseString)
             }
         }
         return cachedCase
