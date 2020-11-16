@@ -48,7 +48,9 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                     rxBytes
                 )
                 val caseString = String(caseBodyBytes)
-                cachedCase = Json.decodeFromString(caseString)
+                cachedCase = Json {
+                    ignoreUnknownKeys = true
+                }.decodeFromString(caseString)
             }
         }
         return cachedCase
