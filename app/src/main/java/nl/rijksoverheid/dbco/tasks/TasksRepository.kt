@@ -36,7 +36,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                     Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
                 val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
                 val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
-                val caseBodyBytes = ByteArray(cipherBytes.size)
+                val caseBodyBytes = ByteArray(cipherBytes.size - Sodium.crypto_secretbox_macbytes())
                 Sodium.crypto_secretbox_open_easy(
                     caseBodyBytes,
                     cipherBytes,
