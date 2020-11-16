@@ -30,7 +30,7 @@ class TasksOverviewViewModel(
 
     fun getCachedCase() = tasksRepository.getCachedCase()
 
-    fun fetchTasks() {
+    fun syncTasks() {
         viewModelScope.launch {
             try {
                 val case = tasksRepository.fetchCase()
