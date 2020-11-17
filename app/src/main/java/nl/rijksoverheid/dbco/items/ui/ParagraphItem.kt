@@ -7,45 +7,29 @@
  */
 package nl.rijksoverheid.dbco.items.ui
 
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.TextAppearanceSpan
-import android.text.style.URLSpan
-import androidx.annotation.StringRes
-import androidx.core.text.HtmlCompat
-import androidx.core.text.getSpans
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.util.HtmlHelper
+import timber.log.Timber
 
 
 class ParagraphItem(
-    @StringRes private val text: Int,
-    private vararg val formatArgs: Any,
-    private val clickable: Boolean = false
+        private val text: String?,
+        private val clickable: Boolean = false
 ) : BaseBindableItem<ItemParagraphBinding>() {
     override fun getLayout() = R.layout.item_paragraph
 
     override fun bind(viewBinding: ItemParagraphBinding, position: Int) {
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
-        viewBinding.text = SpannableString(
-            HtmlCompat.fromHtml(
-                viewBinding.root.context.getString(text, *formatArgs),
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-        ).apply {
-            getSpans<URLSpan>().forEach {
-                val start = getSpanStart(it)
-                val end = getSpanEnd(it)
-                setSpan(
-                    TextAppearanceSpan(viewBinding.root.context, R.style.TextAppearance_App_Link),
-                    start,
-                    end,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+
+        Timber.d("Got value $text")
+        text?.let {
+            val context = viewBinding.root.context
+            val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
+            viewBinding.text = spannableBuilder
         }
     }
 

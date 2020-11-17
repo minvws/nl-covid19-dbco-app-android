@@ -12,29 +12,37 @@ import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BuildConfig
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
-import nl.rijksoverheid.dbco.tasks.data.entity.TasksResponse
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
+import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
+import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
+import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Streaming
+import retrofit2.http.*
 
 interface StubbedAPI {
 
     @GET("v1/questionnaires")
     @Streaming
-    suspend fun getQuestionnaires(): Response<ContactDetailsResponse>
+    suspend fun getQuestionnaires(): QuestionnairyResponse
 
-    @GET("v1/cases/tasks")
+    @GET("v1/cases/{token}")
     @Streaming
-    suspend fun getTasksForUUID(): Response<TasksResponse>
+    suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
 
-    @POST("/pairings")
-    suspend fun pair(): PairingResponse
+    @PUT("v1/cases/{token}")
+    suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody): Response<Unit>
+
+    @POST("v1/pairings")
+    suspend fun pair(@Body body: PairingRequestBody): PairingResponse
+
+    @GET("v1/config")
+    @Streaming
+    suspend fun getAppConfig(): Response<AppConfig>
 
 
     companion object {
@@ -46,7 +54,7 @@ interface StubbedAPI {
             val contentType = "application/json".toMediaType()
             return Retrofit.Builder()
                 .client(client)
-                .addConverterFactory(Json.asConverterFactory(contentType))
+                .addConverterFactory(Json {ignoreUnknownKeys = true}.asConverterFactory(contentType))
                 .baseUrl(baseUrl)
                 .build().create(StubbedAPI::class.java)
         }

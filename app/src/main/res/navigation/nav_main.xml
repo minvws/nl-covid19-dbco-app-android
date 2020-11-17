@@ -12,6 +12,18 @@
     android:id="@+id/nav_main"
     app:startDestination="@id/onboardingFragmentHelp">
 
+    <action
+        android:id="@+id/action_end_of_life"
+        app:destination="@id/nav_end_of_life"
+        app:popUpTo="@id/nav_main"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_app_update_required"
+        app:destination="@id/nav_app_update_required"
+        app:popUpTo="@id/nav_main"
+        app:popUpToInclusive="true" />
+
 
     <fragment
         android:id="@+id/placeholderFragment"
@@ -108,6 +120,7 @@
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
         <action
             android:id="@+id/toContactDetails"
+            app:popUpTo="@id/myContactsFragment"
             app:destination="@id/contactDetailsInputFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
@@ -124,6 +137,7 @@
             app:destination="@id/contactPickerStart"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
@@ -131,8 +145,24 @@
             app:destination="@id/contactPickerSelectionFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
+            android:id="@+id/toFinalizeCheck"
+            app:destination="@id/finalizeCheckFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/toContactDetails"
+            app:destination="@id/contactDetailsInputFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
     <fragment
@@ -150,13 +180,6 @@
             android:defaultValue="@null"
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.contacts.data.entity.LocalContact" />
-        <action
-            android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -171,6 +194,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/toMyContacts"
+            app:destination="@id/myContactsFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
@@ -202,6 +231,55 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/finalizeCheckFragment"
+        tools:layout="@layout/fragment_finalizing_check"
+        android:name="nl.rijksoverheid.dbco.finalizing.FinalizeCheckFragment"
+        android:label="FinalizeCheckFragment">
+        <action
+            android:id="@+id/toFinalizeSentFragment"
+            app:destination="@id/finalizeSentFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/finalizeSentFragment"
+        android:name="nl.rijksoverheid.dbco.finalizing.FinalizeSentFragment"
+        android:label="FinalizeSentFragment">
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_end_of_life"
+        android:name="nl.rijksoverheid.dbco.applifecycle.EndOfLifeFragment"
+        tools:layout="@layout/fragment_end_of_life" />
+
+    <fragment
+        android:id="@+id/nav_app_update_required"
+        android:name="nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragment"
+        tools:layout="@layout/fragment_app_update_required">
+        <argument
+            android:name="app_store_package"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 

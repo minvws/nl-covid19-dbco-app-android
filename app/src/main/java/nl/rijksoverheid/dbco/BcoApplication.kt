@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco
 import android.annotation.SuppressLint
 import android.app.Application
 import net.danlew.android.joda.JodaTimeAndroid
+import org.libsodium.jni.NaCl
 import timber.log.Timber
 
 class BcoApplication : Application() {
@@ -19,6 +20,7 @@ class BcoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this)
+        NaCl.sodium()
 
         if (BuildConfig.FEATURE_LOGGING) {
             Timber.plant(Timber.DebugTree())

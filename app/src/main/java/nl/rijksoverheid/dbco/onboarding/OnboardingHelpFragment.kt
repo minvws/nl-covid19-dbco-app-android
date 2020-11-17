@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -17,12 +18,17 @@ import nl.rijksoverheid.dbco.databinding.FragmentOnboardingHelpBinding
 
 class OnboardingHelpFragment : BaseFragment(R.layout.fragment_onboarding_help) {
 
+    private val viewModel by viewModels<OnboardingHelpViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingHelpBinding.bind(view)
         binding.btnNext.setOnClickListener {
             findNavController().navigate(OnboardingHelpFragmentDirections.toFillCodeFragment())
         }
-    }
 
+        if (viewModel.skipOnboarding) {
+            findNavController().navigate(OnboardingHelpFragmentDirections.toMyContacts())
+        }
+    }
 }

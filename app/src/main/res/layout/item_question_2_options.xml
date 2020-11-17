@@ -22,6 +22,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="24dp"
         android:paddingHorizontal="@dimen/activity_horizontal_margin">
 
         <TextView
@@ -45,20 +46,19 @@
             android:textAppearance="?attr/textAppearanceBody1" />
 
         <RadioGroup
+            android:id="@+id/answer_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option1"
                 style="@style/QuestionText.ChoiceButton"
-                android:onCheckedChanged="@{item::onCheckChanged}"
                 android:text="@{item.question.answerOptions.get(0).label }" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option2"
                 style="@style/QuestionText.ChoiceButton"
                 android:layout_marginTop="8dp"
-                android:onCheckedChanged="@{item::onCheckChanged}"
                 android:text="@{item.question.answerOptions.get(1).label}" />
 
         </RadioGroup>

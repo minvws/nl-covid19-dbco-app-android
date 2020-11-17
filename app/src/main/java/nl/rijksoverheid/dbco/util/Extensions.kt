@@ -25,3 +25,18 @@ fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
+
+fun String.removeHtmlTags(): String{
+    return this.replace("<br/>", "\n")
+            .replace("<b>", "")
+            .replace("</b>", "")
+            .replace("<ul>", "")
+            .replace("</ul>", "")
+            .replace("</li>", "")
+            .replace("<li>", "\n• ")
+}
+
+fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+
+@ExperimentalUnsignedTypes
+fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }

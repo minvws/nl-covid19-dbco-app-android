@@ -6,10 +6,12 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks.data.entity
+package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 @Serializable
-data class TasksResponse(val case: Case? = null)
+data class QuestionnairyResponse(
+	val questionnaires: List<Questionnaire?>? = null
+)

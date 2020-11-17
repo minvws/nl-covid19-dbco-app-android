@@ -9,9 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
+import nl.rijksoverheid.dbco.user.data.entity.SealedData
 
 @Serializable
-data class ContactDetailsResponse(
-	val questionnaires: List<Questionnaire?>? = null
-)
+data class CaseResponse(val sealedCase: SealedData?)
