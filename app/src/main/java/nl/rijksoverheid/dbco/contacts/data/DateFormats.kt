@@ -17,5 +17,5 @@ import java.util.*
  */
 object DateFormats {
     val exposureData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
-    val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy").withLocale(Locale("nl"))
+    val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy").withLocale(Locale("nl"))
 }

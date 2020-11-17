@@ -45,7 +45,6 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
         val binding = FragmentFinalizingCheckBinding.bind(view)
         binding.content.adapter = adapter
-        binding.toolbar.visibility = View.GONE
 
         tasksViewModel.getCachedCase().let { case ->
             contentSection.clear()

@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.tasks
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
@@ -33,6 +34,8 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
+
+    private var caseChanged = false
 
     override suspend fun fetchCase(): Case? {
         // restore saved case
@@ -89,6 +92,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     }
 
     override fun saveChangesToTask(updatedTask: Task) {
+        caseChanged = true
         val currentTasks = cachedCase?.tasks as ArrayList
         var found = false
         currentTasks.forEachIndexed { index, currentTask ->
@@ -129,8 +133,13 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 val nonceText = Base64.encodeToString(nonceBytes, IUserRepository.BASE64_FLAGS)
                 val sealedCase = SealedData(cipherText, nonceText)
                 val requestBody = UploadCaseBody(sealedCase)
-                withContext(Dispatchers.IO) { api.uploadCase(token, requestBody) }
+                withContext(Dispatchers.IO) {
+                    api.uploadCase(token, requestBody)
+                    caseChanged = false
+                }
             }
         }
     }
+
+    override fun ifCaseWasChanged(): Boolean = caseChanged
 }

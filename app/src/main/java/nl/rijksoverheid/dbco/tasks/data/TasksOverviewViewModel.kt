@@ -50,4 +50,6 @@ class TasksOverviewViewModel(
             tasksRepository.uploadCase()
         }
     }
+
+    fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 }

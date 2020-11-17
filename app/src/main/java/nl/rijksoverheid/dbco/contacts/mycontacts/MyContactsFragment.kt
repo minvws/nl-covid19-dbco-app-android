@@ -128,6 +128,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 if (informedSection.groupCount > 1) {
                     contentSection.add(informedSection)
                 }
+
+                binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
             })
 
         })

@@ -68,6 +68,8 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         TODO("Not yet implemented")
     }
 
+    override fun ifCaseWasChanged(): Boolean = true
+
     companion object {
         const val MOCKED_CASE_BODY = "{\n" +
                 "  \"case\": {\n" +

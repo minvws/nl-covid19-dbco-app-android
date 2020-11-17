@@ -23,6 +23,7 @@ interface ITaskRepository {
     suspend fun fetchCase(): Case?
     fun saveChangesToTask(updatedTask: Task)
     fun getCachedCase(): Case?
+    fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
 
     companion object {

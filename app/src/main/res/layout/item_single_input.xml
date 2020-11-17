@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_height"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:minLines="4"
             android:inputType="textNoSuggestions"
             android:background="@drawable/choice_button_background_unchecked" />
 

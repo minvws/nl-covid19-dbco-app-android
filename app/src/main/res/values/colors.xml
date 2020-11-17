@@ -26,6 +26,8 @@
     <color name="color_disabled">#8A898D</color>
 
     <!-- Color palette -->
+    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/black</color>
     <color name="cyan">#55aea0</color>
     <color name="light_blue">#D0F0F3</color>
     <color name="gray_lighter">#F2F2F7</color>
