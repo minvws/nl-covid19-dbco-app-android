@@ -12,7 +12,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PairingResponse(
-    val caseId: String? = null,
-    val caseExpiresAt: String? = null,
-    val signingKey: String? = null
+    val sealedHealthAuthorityPublicKey: String?
 )

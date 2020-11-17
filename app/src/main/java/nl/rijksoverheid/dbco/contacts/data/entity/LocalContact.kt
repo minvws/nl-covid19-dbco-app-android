@@ -12,7 +12,6 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.ContactName
 
 @Keep
 @Serializable
@@ -23,4 +22,8 @@ data class LocalContact(
     var number: String? = null,
     var email: String? = null,
     var name: ContactName = ContactName("", "")
-) : Parcelable
+) : Parcelable {
+    fun hasEmailOrPhone(): Boolean {
+        return !number.isNullOrEmpty() || !email.isNullOrEmpty()
+    }
+}

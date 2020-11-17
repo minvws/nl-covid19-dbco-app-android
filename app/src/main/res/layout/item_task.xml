@@ -12,6 +12,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="task"
             type="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
@@ -22,27 +24,24 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp">
+        android:paddingLeft="32dp">
 
         <ImageView
             android:id="@+id/chevron"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginTop="22dp"
             android:layout_marginRight="16dp"
             android:contentDescription="@string/cd_info_box"
             android:src="@drawable/ic_chevron_right"
-            app:layout_constraintBottom_toBottomOf="@+id/index_contact_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/index_contact_name"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="#D0D0DB" />
 
         <TextView
@@ -52,39 +51,45 @@
             android:layout_marginStart="16dp"
             android:text="@{task.label}"
             android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/index_contact_subtitle"
             app:layout_constraintStart_toEndOf="@+id/index_contact_state"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="Aziz F" />
+
+        <TextView
+            android:id="@+id/index_contact_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{task.taskContext}"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="@{task.taskContext==null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/index_contact_name"
+            app:layout_constraintTop_toBottomOf="@id/index_contact_name"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/indexcontact_subtitle" />
 
         <ImageView
             android:id="@+id/index_contact_state"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="@string/cd_info_box"
-            android:src="@{ task.questionnaireResult != null ?  @drawable/ic_completed : @drawable/ic_warning_status }"
-            app:layout_constraintBottom_toBottomOf="@+id/index_contact_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/index_contact_name" />
-
-        <TextView
-            android:id="@+id/index_contact_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@{task.taskContext}"
-            android:textAppearance="?attr/textAppearanceCaption"
-            tools:text="@string/indexcontact_subtitle"
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintStart_toStartOf="@id/index_contact_name" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
+            android:id="@+id/divider"
+            android:layout_width="0dp"
             android:layout_height="1dp"
+            android:layout_marginTop="22dp"
             android:background="@color/gray_lighter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/index_contact_name"
+            app:layout_constraintTop_toBottomOf="@id/chevron" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

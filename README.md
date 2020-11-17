@@ -11,7 +11,7 @@ This repository contains the Android implementation of the Dutch COVID-19 DBCO a
 
 ## Local development setup
 
-Instructions for local development
+- Install NDK (In your Android Studio, Go to File -> Project Structure -> SDK Location -> Under "Android NDK Location", click on "Download" Android NDK)
 
 ## Development & Contribution process
 

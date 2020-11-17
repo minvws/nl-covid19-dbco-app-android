@@ -29,5 +29,6 @@ internal fun createOkHttpClient(context: Context): OkHttpClient {
                     }
                 }).setLevel(HttpLoggingInterceptor.Level.BODY))
             }
+            addInterceptor(UserAgentInterceptor())
         }.build().also { okHttpClient = it }
 }

@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/gray_lighter"
-        android:textColor="@color/dark_blue"
+        android:textColor="@color/cyan"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="16dp"
         android:enabled="@{viewState.enabled}"

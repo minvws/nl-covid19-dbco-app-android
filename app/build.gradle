@@ -31,7 +31,6 @@ android {
         buildConfigField "String", "STUBBED_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
 
         manifestPlaceholders = [appLabel: "@string/app_name"]
-
     }
 
     buildTypes {
@@ -43,7 +42,6 @@ android {
 
         debug {
             minifyEnabled false
-            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GIT_VERSION", "\"dev\""
@@ -62,15 +60,19 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        dev {
-            dimension "environment"
-            manifestPlaceholders = [appLabel: "@string/app_name_develop"]
-        }
-
         acc {
             dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.acc
+        }
+        prod {
+            dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            // TODO sort out signing
         }
     }
 
@@ -126,6 +128,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
 
+    implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni-aar:2.0.1'
 
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
@@ -143,5 +146,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_espresso_version"
     androidTestImplementation 'com.microsoft.appcenter:espresso-test-extension:1.4'
+
+    implementation "androidx.security:security-crypto:1.0.0-rc03"
 
 }

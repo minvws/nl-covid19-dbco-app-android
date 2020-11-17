@@ -11,10 +11,12 @@ package nl.rijksoverheid.dbco
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.airbnb.lottie.BuildConfig
 
 abstract class BaseFragment @JvmOverloads constructor(
     @LayoutRes layout: Int
@@ -30,5 +32,21 @@ abstract class BaseFragment @JvmOverloads constructor(
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         return requireActivity().defaultViewModelProviderFactory
+    }
+
+    fun showErrorDialog(message: String, tryAgainAction: () -> Unit, throwable: Throwable? = null) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(R.string.error)
+        builder.setCancelable(false)
+        val finalMessage = message + "\n" + throwable?.message
+        builder.setMessage(finalMessage)
+        builder.setPositiveButton(
+            R.string.error_try_again
+        ) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            tryAgainAction.invoke()
+        }
+        val alert: AlertDialog = builder.create()
+        alert.show()
     }
 }

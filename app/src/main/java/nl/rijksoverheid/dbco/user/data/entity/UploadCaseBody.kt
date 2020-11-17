@@ -6,9 +6,11 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data
+package nl.rijksoverheid.dbco.user.data.entity
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
-data class ContactName(val firstName: String, val lastName: String) : Serializable
+@Serializable
+data class UploadCaseBody(
+    val sealedCase: SealedData,
+)

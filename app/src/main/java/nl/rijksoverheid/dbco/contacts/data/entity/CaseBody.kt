@@ -6,11 +6,9 @@
  *
  */
 
-package nl.rijksoverheid.dbco.user.data.entity
+package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PairingBody(
-    val pairingCode: String? = null
-)
+data class CaseBody(val case: Case? = null)

@@ -8,21 +8,33 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.user.UserRepository
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.user.IUserRepository
+import nl.rijksoverheid.dbco.util.Resource
+import timber.log.Timber
 
-class FillCodeViewModel(val context: Context) : ViewModel() {
+class FillCodeViewModel(private val userRepository: IUserRepository) : ViewModel() {
+
+    private val _pairingResult = MutableLiveData<Resource<Boolean?>>()
+    val pairingResult: LiveData<Resource<Boolean?>> = _pairingResult
 
     fun pair(pin: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                UserRepository(context).pair(pin)
-                // TODO notify fragment
+                try {
+                    userRepository.pair(pin)
+                    _pairingResult.postValue(Resource.success(true))
+                } catch (ex: Throwable) {
+                    Timber.e(ex, "Error while retrieving case")
+                    _pairingResult.postValue(Resource.failure(ex))
+                }
             }
         }
     }

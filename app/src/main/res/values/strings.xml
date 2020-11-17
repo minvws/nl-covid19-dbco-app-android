@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
   ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
   ~
@@ -7,64 +7,132 @@
   -->
 
 <resources>
-    <string name="app_name">Digital Support BCO</string>
-    <string name="app_name_develop">[DEV] Digital Support BCO</string>
-    <string name="cd_back">Back</string>
-    <string name="cd_error_box">Warning</string>
-    <string name="cd_info_box">Important</string>
+    <string name="app_name">Oplossing 2</string>
+    <string name="app_name_develop">[DEV] Oplossing 2</string>
 
-    <string name="about_app_title">About the app</string>
-    <string name="header_all_contacts">ALL CONTACTS</string>
-    <string name="header_suggested_contacts">SUGGESTIONS</string>
-    <string name="mycontacts_header">My contacts</string>
-    <string name="mycontacts_summary">Fill in the contact details of the contacts you\'ve identified with the GGD. Fill these in as soon as possible.</string>
-    <string name="mycontacts_add_contact">Add contact</string>
-    <string name="hint_phone_number">Phone Number</string>
-    <string name="hint_email_address">Email Address</string>
-    <string name="mycontacts_grant_permission">Grant permission to contacts</string>
-    <string name="mycontacts_deny_permission">I\'ll do it by hand</string>
-    <string name="hint_first_name">First name</string>
-    <string name="hint_last_name">Last Name</string>
-    <string name="save">Save</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="begin">Begin</string>
-    <string name="error_valid_email">Please fill in a valid email address</string>
-    <string name="indexcontact_subtitle">Add additional information</string>
+    <!--    Common words-->
+    <string name="save">Opslaan</string>
+    <string name="next">Volgende</string>
+    <string name="ready">Klaar</string>
+    <string name="previous">Vorige</string>
+    <string name="begin">Beginnen</string>
+    <string name="cd_back">Terug</string>
+    <string name="cd_error_box">Waarschuwing</string>
+    <string name="cd_info_box">Belangrijk</string>
+    <string name="close">Sluiten</string>
 
-    <string name="onboarding_help_title">Help the GGD with the contact investigation and inform your environment</string>
-    <string name="onboarding_help_subtext">You can share data from your contacts with the GGD via this app. This way you ensure that the contact investigation goes faster.</string>
-    <string name="status_app_version">Version %1$s build %2$s</string>
+    <!--    My contacts-->
+    <string name="about_app_title">Over de app</string>
+    <string name="mycontacts_header">Mijn contacten</string>
+    <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
+    <string name="mycontacts_add_contact">Contact toevoegen</string>
+    <string name="mycontacts_grant_permission">Geef Toestemming</string>
+    <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
+    <string name="mycontacts_uninformed_header">Vul contactgegevens aan</string>
+    <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
+    <string name="mycontacts_informed_header">Behandelde contacten</string>
+    <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
 
-    <string name="fill_code_title">Enter the code you received from the GGD employee</string>
+    <string name="header_all_contacts">ALLE CONTACTEN</string>
 
-    <string name="onboarding_add_data_title">Add the details of your contacts</string>
-    <string name="onboarding_add_data_subtext">The GGD needs contact details of people you have met. You can easily share it via this app.\n\nThe data will only be shared when you are completely ready.</string>
+    <string name="error_valid_email">Vul een geldig e-mailadres in</string>
+    <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
-    <string name="contacts_picker_title">Select contact</string>
-    <string name="contact_picker_search_hint">Search for a contact</string>
-    <string name="contact_permission_header">Sharing contacts is faster if we have permission</string>
-    <string name="contact_permission_summary">You can decide which information to share with the GGD yourself.</string>
+    <!--    Onboarding-->
+    <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
+    <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Dit doe je als je corona hebt of denkt te hebben. Zo zorg je dat het contactonderzoek sneller gaat.</string>
+    <string name="status_app_version">Versie %1$s build %2$s</string>
+    <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
+    <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
+    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
-    <string name="contact_section_typeofcontact_header">Nature of contact</string>
-    <string name="contact_section_typeofcontact_subtext">Questions about your meeting</string>
+    <!--    Contacts Picker-->
+    <string name="contacts_picker_title">Selecteer contact</string>
+    <string name="contact_permission_header">Geef toegang tot contacten</string>
+    <string name="contact_permission_summary">De app heeft zo toegang tot de contacten op je telefoon. Wil je dit niet? Dan kun je contactgegevens ook handmatig toevoegen.</string>
+    <string name="contact_picker_search_hint">Zoek een contact</string>
+    <string name="contact_question_select_option">Kiezen</string>
 
-    <string name="contact_section_contactdetails_header">Contact details</string>
-    <string name="contact_section_contactdetails_subtext">Add as many details as possible</string>
+    <!--    Contact details and questions-->
 
-    <string name="contact_section_inform_header">Inform</string>
-    <string name="contact_section_inform_subtext">Share the action perspective</string>
-    <string name="contact_section_inform_content_header">You are responsible for telling this person that he or she might be infected</string>
-    <string name="contact_section_inform_content_details">You have been in close contact. Therefore it is important that this person goes into selfquarantaine is quickly as possible. You can share the instructions using the button below.</string>
-    <string name="contact_section_inform_share">Share instructions</string>
-    <string name="close">Close</string>
-    <string name="contact_question_select_option">Choose</string>
-    <string name="add_manually">Add manually</string>
-    <string name="send_data">Send data</string>
-    <string name="add_contact">Add contact</string>
+    <!--    Classification questions-->
+    <string name="lived_together_risk_label">Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?</string>
+    <string name="duration_risk_label">Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?</string>
+    <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>]]></string>
+    <string name="distance_risk_label">Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
+    <string name="other_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
+    <string name="contact_section_typeofcontact_header">Soort contact</string>
+    <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>
+    <string name="contact_section_contactdetails_header">Contactgegevens</string>
+    <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
 
-    <string name="mycontacts_inform_personally_header">You inform these contacts</string>
-    <string name="mycontacts_inform_ggd_header">The GGD informs these contacts</string>
-    <string name="mycontacts_inform_subtext">Add as many details as possible</string>
+    <string name="answer_no">Nee</string>
+    <string name="answer_yes">Ja</string>
+    <string name="answer_think_yes">Ja, denk het wel</string>
+    <string name="answer_think_no">Nee, denk het niet</string>
+
+    <!--    Fields-->
+    <string name="hint_phone_number">Telefoonnummer</string>
+    <string name="hint_email_address">E-mailadres</string>
+    <string name="hint_first_name">Voornaam</string>
+    <string name="hint_last_name">Achternaam</string>
+    <string name="contact_information_last_exposure_label">Wanneer was de laatste ontmoeting?</string>
+    <string name="contact_information_last_exposure_earlier">Eerder</string>
+
+    <!--    Inform section-->
+    <string name="contact_section_inform_header">Informatie voor dit contact</string>
+    <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
+    <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
+    <string name="contact_section_inform_content_details"><![CDATA[Dit zijn de belangrijkste leefregels voor deze persoon:<br/><ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis - <b> tot %1$s</b> (nog %2$s dagen)</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
+    <string name="contact_section_inform_copy">Kopieer leefregels</string>
+    <string name="contact_section_inform_copied">Gekopieerd</string>
+    <string name="contact_section_inform_call">Bel %s</string>
+
+    <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string>
+    <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
+    <string name="contact_inform_option_done">Ja</string>
+    <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
+    <string name="contact_inform_action_inform_now">Nee, nu informeren</string>
+
+    <string name="add_manually">Handmatig toevoegen</string>
+    <string name="send_data">Deel gegevens met GGD</string>
+    <string name="add_contact">Contact toevoegen</string>
+
+    <string name="finalize_appbar_title">Bijna klaar</string>
+    <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
+    <string name="finalize_uninformed_subtext">Vul contactgegevens aan</string>
+    <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>
+    <string name="finalize_no_phone_or_email_subtext">De GGD zal deze contacten informeren</string>
+    <string name="finalize_sent_title">Bedankt voor het delen van de gegevens met de GGD</string>
+    <string name="finalize_sent_subtitle">Je kunt nog contactgegevens aanpassen, contacten toevoegen of een andere aanpassing doorgeven.</string>
+
+    <string name="header_suggested_contacts">SUGGESTIES</string>
+    <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
+
+    <!--    Classification questions-->
+    <string name="other_category_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
+    <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
+
+    <!--    Update and end of life -->
+    <string name="update_app_headline">Je hebt een verouderde versie van Oplossing 2</string>
+    <string name="update_app_description">Update de app op je telefoon om te zorgen dat Oplossing 2 goed blijft werken.</string>
+    <string name="end_of_life_action">Lees meer</string>
+    <string name="end_of_life_description">Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is.</string>
+    <string name="end_of_life_headline">CoronaMelder is gestopt</string>
+    <string name="update_google_play_services">Updaten</string>
+
+    <!--    Permissions-->
+    <string name="permissions_title">Rechten</string>
+    <string name="permissions_no">Nee</string>
+    <string name="permissions_go_to_settings">Ga naar de Instellingen</string>
+    <string name="permissions_grant_permissions">Ja, geef rechten</string>
+    <string name="permissions_some_permissions_denied">U heeft enkele rechten voor de app geweigerd. Sta alle rechten toe op het [Instellingen] > [Rechten] scherm</string>
+    <string name="permissions_app_needs_read_contacts_permission">Deze app heeft "Contactpersonen lezen" rechten nodig</string>
+
+    <!--  Errors-->
+    <string name="error">Fout</string>
+    <string name="error_try_again">Probeer het opnieuw</string>
+    <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
+    <string name="error_while_pairing">Fout tijdens het koppelen:</string>
 
 </resources>
