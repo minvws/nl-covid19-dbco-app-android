@@ -37,7 +37,7 @@ class ContactsViewModel(private val repository: ContactsRepository) : ViewModel(
 
     fun filterLocalContactsOnName(name: String) {
         val filteredList = fullLocalContactItems.filter {
-            it.displayName.contains(name, true)
+            it.getDisplayName().contains(name, true)
         } as ArrayList<LocalContact>
         _localContactsLiveData.postValue(filteredList)
     }
@@ -45,7 +45,7 @@ class ContactsViewModel(private val repository: ContactsRepository) : ViewModel(
     fun filterSuggestedContacts(name: String): ArrayList<LocalContact> {
         val firstName = name.split(" ")[0]
         return fullLocalContactItems.filter {
-            it.displayName.contains(firstName, true)
+            it.getDisplayName().contains(firstName, true)
         } as ArrayList<LocalContact>
     }
 

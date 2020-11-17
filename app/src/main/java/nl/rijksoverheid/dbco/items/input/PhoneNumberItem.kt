@@ -21,8 +21,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import timber.log.Timber
 import java.util.*
 
-class PhoneNumberItem(private var phoneNumber: String?, question: Question?,
-                      private val previousAnswer: JsonObject? = null) :
+class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val editedistener: (String) -> Unit) :
     BaseQuestionItem<ItemPhoneInputBinding>(question) {
     override fun getLayout() = R.layout.item_phone_input
     override fun isRequired() = true
@@ -43,6 +42,7 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?,
 
         viewBinding.inputField.editText?.doAfterTextChanged {
             phoneNumber = it.toString()
+            editedistener.invoke(it.toString())
         }
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
@@ -51,7 +51,6 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?,
             }
         }
 
-        fillInPreviousAnswer()
         checkCompleted()
     }
 
@@ -71,17 +70,5 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?,
             answers.put("phoneNumber", it)
         }
         return answers
-    }
-
-    private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && previousAnswer.containsKey(
-                "phoneNumber" )) {
-            val previousAnswerValue = previousAnswer["phoneNumber"]?.jsonPrimitive?.content
-            Timber.d("Found previous value for \"phoneNumber\" of $previousAnswerValue")
-            binding?.let{
-                it.inputField.editText?.setText(previousAnswerValue)
-                phoneNumber = previousAnswerValue
-            }
-        }
     }
 }

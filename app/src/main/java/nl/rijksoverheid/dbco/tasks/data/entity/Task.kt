@@ -24,7 +24,7 @@ class Task(
     val taskType: String? = null,
     var taskContext: String? = null,
     val source: String? = null,
-    var label: String? = null,
+    var label: String? = null, // this field comes from API, we show it only if $linkedContact.displayName is empty
     var category: Category? = null,
     var communication: CommunicationType? = null,
     var uuid: String? = null,

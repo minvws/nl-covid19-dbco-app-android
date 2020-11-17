@@ -13,15 +13,11 @@ import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import timber.log.Timber
 
-class EmailAddressItem(private var emailAddress: String?, question: Question?,
-                       private val previousAnswer: JsonObject? = null) :
+class EmailAddressItem(private var emailAddress: String?, question: Question?, private val editedistener: (String) -> Unit) :
     BaseQuestionItem<ItemEmailInputBinding>(question) {
     override fun getLayout() = R.layout.item_email_input
     override fun isRequired() = false
@@ -43,8 +39,9 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?,
         }
 
         validationRunnable = Runnable {
-            if (!TextUtils.isEmpty(viewBinding.inputField.editText?.text)) {
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(viewBinding.inputField.editText?.text)
+            val input = viewBinding.inputField.editText?.text.toString()
+            if (!TextUtils.isEmpty(input)) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(input)
                         .matches()
                 ) {
                     viewBinding.inputField.error =
@@ -60,6 +57,7 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?,
                         0
                     )
                     viewBinding.inputField.setEndIconActivated(true)
+                    editedistener.invoke(input)
                 }
             }
         }
@@ -83,10 +81,7 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?,
                 checkCompleted()
             }
         }
-
-        fillInPreviousAnswer()
         checkCompleted()
-
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -106,17 +101,4 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?,
         }
         return answers
     }
-
-    private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && previousAnswer.containsKey(
-                "email" )) {
-            val previousAnswerValue = previousAnswer["email"]?.jsonPrimitive?.content
-            Timber.d("Found previous value for \"email\" of $previousAnswerValue")
-            binding?.let{
-                it.inputField.editText?.setText(previousAnswerValue)
-                emailAddress = previousAnswerValue
-            }
-        }
-    }
-
 }

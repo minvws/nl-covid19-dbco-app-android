@@ -16,11 +16,14 @@ import nl.rijksoverheid.dbco.util.PieProgressDrawable
 import java.io.Serializable
 
 class TaskItem(
-        val task: Task
+    val task: Task
 ) : BaseBindableItem<ItemTaskBinding>(), Serializable {
 
     override fun bind(viewBinding: ItemTaskBinding, position: Int) {
         viewBinding.task = task
+
+        val displayName = task.linkedContact?.getDisplayName()
+        viewBinding.indexContactName.text = if (displayName.isNullOrEmpty()) task.label else displayName
 
         // completeness indicator
         when (task.status) {

@@ -61,7 +61,7 @@ class ContactsRepository(val context: Context) {
                 val id = contactsCursor.getString(idIndex)
                 val displayName = contactsCursor.getString(nameIndex)
                 if (displayName != null) {
-                    contactsList.add(LocalContact(id, displayName))
+                    contactsList.add(LocalContact.fromLabel(displayName, id))
                 }
             }
             contactsCursor.close()
