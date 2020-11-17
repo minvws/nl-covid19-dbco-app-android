@@ -23,9 +23,12 @@ interface ITaskRepository {
     suspend fun fetchCase(): Case?
     fun saveChangesToTask(updatedTask: Task)
     fun getCachedCase(): Case?
+    fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
 
     companion object {
+        const val CASE_KEY = "case"
+
         val JSON_SERIALIZER = Json {
             isLenient = true
             ignoreUnknownKeys = true

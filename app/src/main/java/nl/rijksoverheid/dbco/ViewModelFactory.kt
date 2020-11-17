@@ -39,7 +39,8 @@ class ViewModelFactory(
         return when (modelClass) {
             ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
             TasksOverviewViewModel::class.java -> TasksOverviewViewModel(
-                tasksRepository
+                tasksRepository,
+                questionnareRepository
             ) as T
             TasksDetailViewModel::class.java -> TasksDetailViewModel(
                     tasksRepository,

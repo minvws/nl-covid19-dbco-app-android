@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
@@ -28,7 +28,7 @@ interface StubbedAPI {
 
     @GET("v1/questionnaires")
     @Streaming
-    suspend fun getQuestionnaires(): Response<ContactDetailsResponse>
+    suspend fun getQuestionnaires(): QuestionnairyResponse
 
     @GET("v1/cases/{token}")
     @Streaming
@@ -54,7 +54,7 @@ interface StubbedAPI {
             val contentType = "application/json".toMediaType()
             return Retrofit.Builder()
                 .client(client)
-                .addConverterFactory(Json.asConverterFactory(contentType))
+                .addConverterFactory(Json {ignoreUnknownKeys = true}.asConverterFactory(contentType))
                 .baseUrl(baseUrl)
                 .build().create(StubbedAPI::class.java)
         }

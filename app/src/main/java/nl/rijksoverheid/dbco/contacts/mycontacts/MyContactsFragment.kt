@@ -50,6 +50,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         super.onCreate(savedInstanceState)
         contentSection.setHideWhenEmpty(true)
         adapter.add(contentSection)
+
+        // Load data from backend
+        tasksViewModel.syncTasks()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +80,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
             resource.resolve(onError = {
                 showErrorDialog(getString(R.string.error_while_fetching_case), {
-                    tasksViewModel.fetchTasks()
+                    tasksViewModel.syncTasks()
                 }, it)
             }, onSuccess = {case ->
                 contentSection.clear()
@@ -125,6 +128,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 if (informedSection.groupCount > 1) {
                     contentSection.add(informedSection)
                 }
+
+                binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
             })
 
         })
@@ -134,9 +139,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 checkPermissionAndNavigate(item.task)
             }
         }
-
-        // Load data from backend
-        tasksViewModel.fetchTasks()
     }
 
     private fun checkPermissionAndNavigate(task: Task? = null) {

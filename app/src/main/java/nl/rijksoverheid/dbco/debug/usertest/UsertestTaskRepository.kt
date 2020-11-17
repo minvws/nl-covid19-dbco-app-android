@@ -10,19 +10,14 @@ package nl.rijksoverheid.dbco.debug.usertest
 
 import android.content.Context
 import android.content.SharedPreferences
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
-import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ITaskRepository.Companion.CASE_KEY
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 
@@ -37,7 +32,7 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
     override suspend fun fetchCase(): Case? {
         if (cachedCase == null) {
             val storedResponse: String = encryptedSharedPreferences.getString(
-                CASE_BODY_KEY,
+                CASE_KEY,
                 null
             ) ?: MOCKED_CASE_BODY
             val caseBody: CaseBody = Json.decodeFromString(storedResponse)
@@ -62,7 +57,7 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         //Timber.w("Final result is $previousResponse")
 
         val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(CaseBody(cachedCase))
-        encryptedSharedPreferences.edit().putString(CASE_BODY_KEY, storeString).apply()
+        encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 
     override fun getCachedCase(): Case? {
@@ -73,8 +68,9 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         TODO("Not yet implemented")
     }
 
+    override fun ifCaseWasChanged(): Boolean = true
+
     companion object {
-        const val CASE_BODY_KEY = "caseBody"
         const val MOCKED_CASE_BODY = "{\n" +
                 "  \"case\": {\n" +
                 "      \"dateOfSymptomOnset\": \"2020-10-29\",\n" +

@@ -14,20 +14,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
+import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.util.Resource
 import timber.log.Timber
 
 class TasksOverviewViewModel(
-    private val tasksRepository: ITaskRepository
+    private val tasksRepository: ITaskRepository,
+    private val questionnairyResponse: IQuestionnaireRepository
 ) : ViewModel() {
 
     private val _fetchCase = MutableLiveData<Resource<Case?>>()
     val fetchCase: LiveData<Resource<Case?>> = _fetchCase
 
-    var cachedCase = tasksRepository.getCachedCase()
+    fun getCachedCase() = tasksRepository.getCachedCase()
 
-    fun fetchTasks() {
+    fun syncTasks() {
         viewModelScope.launch {
             try {
                 val case = tasksRepository.fetchCase()
@@ -37,6 +40,9 @@ class TasksOverviewViewModel(
                 _fetchCase.postValue(Resource.failure(ex))
             }
         }
+        viewModelScope.launch {
+            questionnairyResponse.syncQuestionnaires()
+        }
     }
 
     fun sendCurrentCase() {
@@ -44,4 +50,6 @@ class TasksOverviewViewModel(
             tasksRepository.uploadCase()
         }
     }
+
+    fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 }

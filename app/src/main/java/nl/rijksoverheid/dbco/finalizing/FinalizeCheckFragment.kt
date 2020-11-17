@@ -45,9 +45,8 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
         val binding = FragmentFinalizingCheckBinding.bind(view)
         binding.content.adapter = adapter
-        binding.toolbar.visibility = View.GONE
 
-        tasksViewModel.cachedCase.let { case ->
+        tasksViewModel.getCachedCase().let { case ->
             contentSection.clear()
             val uninformedSection = Section().apply {
                 setHeader(
@@ -87,7 +86,6 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                                 noPhoneOrEmailSection.add(TaskItem(task))
                             }
                         }
-
                     }
                 }
             }

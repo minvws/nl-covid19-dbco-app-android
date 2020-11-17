@@ -40,11 +40,11 @@
 
     <!--    Onboarding-->
     <string name="onboarding_help_title">Help de GGD bij het contactonderzoek en breng je omgeving op de hoogte</string>
-    <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Zo zorg je dat het contactonderzoek sneller gaat.</string>
+    <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Dit doe je als je corona hebt of denkt te hebben. Zo zorg je dat het contactonderzoek sneller gaat.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
-    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet. Via deze app kun je die gemakkelijk delen.\n\nDe gegevens worden alleen gedeeld wanneer je helemaal klaar bent.</string>
+    <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je   gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -98,6 +98,7 @@
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="add_contact">Contact toevoegen</string>
 
+    <string name="finalize_appbar_title">Bijna klaar</string>
     <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
     <string name="finalize_uninformed_subtext">Vul contactgegevens aan</string>
     <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>

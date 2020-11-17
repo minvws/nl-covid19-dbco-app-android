@@ -7,9 +7,10 @@
  */
 package nl.rijksoverheid.dbco.questionnaire
 
-import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 interface IQuestionnaireRepository {
-    suspend fun retrieveQuestionnaires(): ContactDetailsResponse
+    suspend fun syncQuestionnaires()
+    fun getCachedQuestionnaire(): Questionnaire?
 
 }

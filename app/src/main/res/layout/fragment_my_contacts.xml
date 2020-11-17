@@ -111,6 +111,8 @@
                     android:id="@+id/send_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white_enabled_cyan_default"
+                    android:backgroundTint="@color/cyan_enabled_grey_lighter_default"
                     android:layout_margin="16dp"
                     android:text="@string/send_data" />
             </FrameLayout>
