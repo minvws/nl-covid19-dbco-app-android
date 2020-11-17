@@ -30,6 +30,7 @@ import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.*
@@ -63,14 +64,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val binding = FragmentContactInputBinding.bind(view)
         binding.content.adapter = adapter
         binding.content.addItemDecoration(
-                QuestionnaireSectionDecorator(
-                        requireContext(),
-                        resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
-                )
+            QuestionnaireSectionDecorator(
+                requireContext(),
+                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
+            )
         )
 
-        viewModel.selectedContact = args.selectedContact
-        viewModel.setTask(args.indexTask ?: Task(taskType = "contact", source = "app"))
+        val task = args.indexTask ?: Task(taskType = "contact", source = "app")
+        viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(viewModel, view.context).apply {
             adapter.add(classificationSection)
@@ -78,8 +79,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             adapter.add(informSection)
         }
 
-        binding.toolbar.title = args.selectedContact?.displayName
-                ?: resources.getString(R.string.mycontacts_add_contact)
+        if (viewModel.selectedContact == null) {
+            viewModel.selectedContact = args.selectedContact ?: LocalContact.fromLabel(task.label)
+        }
+
+        binding.toolbar.title = args.selectedContact?.getDisplayName()
+            ?: resources.getString(R.string.mycontacts_add_contact)
 
         viewModel.category.observe(viewLifecycleOwner, {
             val hasCategory = it != null
@@ -124,8 +129,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun showDidYouInformDialog(view: View) {
         val builder = AlertDialog.Builder(view.context)
-        val string = getString(R.string.contact_inform_prompt_title, viewModel.selectedContact?.displayName
-                ?: "")
+        val string = getString(
+            R.string.contact_inform_prompt_title, viewModel.selectedContact?.getDisplayName()
+                ?: ""
+        )
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
@@ -153,11 +160,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             val section =
-                    when (question.group) {
-                        Group.ContactDetails -> itemsStorage?.contactDetailsSection
-                        Group.Classification -> itemsStorage?.classificationSection
-                        else -> null
-                    }
+                when (question.group) {
+                    Group.ContactDetails -> itemsStorage?.contactDetailsSection
+                    Group.Classification -> itemsStorage?.classificationSection
+                    else -> null
+                }
 
             // add hardcoded "date of last exposure" question before communication type question
             if (isCommunicationTypeQuestion(question)) {
@@ -193,34 +200,36 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addMultiChoiceItem(
-            question: Question,
-            sectionToAddTo: QuestionnaireSection?
+        question: Question,
+        sectionToAddTo: QuestionnaireSection?
     ) {
         question.answerOptions?.size?.let { size ->
             when {
                 size > 2 -> {
                     sectionToAddTo?.add(
-                            QuestionMultipleOptionsItem(
-                                    requireContext(),
-                                    question,
-                                    {},
-                                    viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
-                            )
+                        QuestionMultipleOptionsItem(
+                            requireContext(),
+                            question,
+                            {},
+                            viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                        )
                     )
                 }
                 size == 2 -> {
                     sectionToAddTo?.add(
-                            QuestionTwoOptionsItem(
-                                    question,
-                                    {
-                                        when (it.trigger) {
-                                            COMMUNICATION_STUFF -> viewModel.communicationType.value = CommunicationType.Staff
-                                            COMMUNICATION_INDEX -> viewModel.communicationType.value = CommunicationType.Index
-                                        }
-                                    },
-                                    null,
-                                    viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
-                            )
+                        QuestionTwoOptionsItem(
+                            question,
+                            {
+                                when (it.trigger) {
+                                    COMMUNICATION_STUFF -> viewModel.communicationType.value =
+                                        CommunicationType.Staff
+                                    COMMUNICATION_INDEX -> viewModel.communicationType.value =
+                                        CommunicationType.Index
+                                }
+                            },
+                            null,
+                            viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                        )
                     )
                 }
                 else -> {
@@ -230,39 +239,26 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addContactDetailsItems(
-            sectionToAddTo: QuestionnaireSection?,
-            question: Question
+        sectionToAddTo: QuestionnaireSection?,
+        question: Question
     ) {
-
-        val nameParts: List<String> =
-                viewModel.selectedContact?.displayName?.split(" ", limit = 2) ?: listOf("", "")
-        val firstName = nameParts[0] ?: ""
-        val lastName = if (nameParts.size > 1) {
-            nameParts[1]
-        } else {
-            ""
-        }
-
-        val primaryPhone = if (!viewModel.selectedContact?.number.isNullOrEmpty()) {
-            viewModel.selectedContact?.number
-        } else {
-            ""
-        }
-
-        val primaryEmail = if (!viewModel.selectedContact?.email.isNullOrEmpty()) {
-            viewModel.selectedContact?.email
-        } else {
-            ""
-        }
-
-        val previousAnswer = viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
-
         sectionToAddTo?.addAll(
-                listOf(
-                        ContactNameItem(firstName, lastName, question, previousAnswer),
-                        PhoneNumberItem(primaryPhone, question, previousAnswer),
-                        EmailAddressItem(primaryEmail, question, previousAnswer)
-                )
+            listOf(
+                ContactNameItem(
+                    viewModel.selectedContact?.firstName,
+                    viewModel.selectedContact?.lastName,
+                    question
+                ) { newFirstName, newLastName ->
+                    viewModel.selectedContact?.firstName = newFirstName
+                    viewModel.selectedContact?.lastName = newLastName
+                },
+                PhoneNumberItem(viewModel.selectedContact?.number, question) {
+                    viewModel.selectedContact?.number = it
+                },
+                EmailAddressItem(viewModel.selectedContact?.email, question) {
+                    viewModel.selectedContact?.email = it
+                }
+            )
         )
     }
 
@@ -276,48 +272,58 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             add(SubHeaderItem(R.string.contact_section_inform_content_header))
             add(ParagraphItem(message))
             add(ButtonItem(
-                    getString(R.string.contact_section_inform_copy),
-                    {
-                        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
-                        clipboard.setPrimaryClip(clip)
-                        Toast.makeText(context, getString(R.string.contact_section_inform_copied), Toast.LENGTH_LONG).show()
-                    }
+                getString(R.string.contact_section_inform_copy),
+                {
+                    val clipboard =
+                        context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(
+                        context,
+                        getString(R.string.contact_section_inform_copied),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             ))
 
             // add "Call $name" button if phone is set
             viewModel.selectedContact?.number?.let {
-                add(ButtonItem(
-                        getString(R.string.contact_section_inform_call, viewModel.selectedContact?.displayName),
+                add(
+                    ButtonItem(
+                        getString(
+                            R.string.contact_section_inform_call,
+                            viewModel.selectedContact?.firstName
+                        ),
                         {
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
                             startActivity(intent)
                         },
-                ))
+                    )
+                )
             }
         }
     }
 
     private fun checkIfInformSectionComplete() {
         itemsStorage?.informSection?.setCompleted(
-                when (viewModel.communicationType.value) {
-                    CommunicationType.Index -> viewModel.task.value?.contactIsInformedAlready == true
-                    CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
-                    else -> false
-                }
+            when (viewModel.communicationType.value) {
+                CommunicationType.Index -> viewModel.task.value?.contactIsInformedAlready == true
+                CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
+                else -> false
+            }
         )
     }
 
     private fun checkIfContactDetailsSectionComplete() {
         itemsStorage?.contactDetailsSection?.setCompleted(
-                viewModel.hasEmailOrPhone.value == true &&
-                        viewModel.communicationType.value != null &&
-                        viewModel.dateOfLastExposure.value != null
+            viewModel.hasEmailOrPhone.value == true &&
+                    viewModel.communicationType.value != null &&
+                    viewModel.dateOfLastExposure.value != null
         )
     }
 
     private fun addClassificationQuestions(
-            section: QuestionnaireSection?
+        section: QuestionnaireSection?
     ) {
 
         itemsStorage?.let { itemsStorage ->
@@ -378,7 +384,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             // Combine with previous entry if found
                             if (answerCollector.containsKey(child.question.uuid)) {
                                 val prev =
-                                        answerCollector.get(child.question.uuid) as Map<String, Any>
+                                    answerCollector.get(child.question.uuid) as Map<String, Any>
                                 answer.putAll(prev)
                             }
                             answerCollector.put(child.question.uuid, answer)
@@ -407,8 +413,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         viewModel.task.value?.let { task ->
             task.linkedContact = viewModel.selectedContact
-            task.questionnaireResult = QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
-            task.label = viewModel.selectedContact?.displayName
+            task.questionnaireResult =
+                QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
             if (task.uuid.isNullOrEmpty()) {
                 task.uuid = UUID.randomUUID().toString()
             }
