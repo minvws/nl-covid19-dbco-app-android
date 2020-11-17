@@ -28,6 +28,7 @@ class UsertestUserRepository(context: Context) : IUserRepository { // TODO move 
 
     private var token: String? = null
     private var rx: String? = null
+    private var tx: String? = null
 
     init {
         encryptedSharedPreferences.getString(KEY_RX, null)?.let {
@@ -59,6 +60,10 @@ class UsertestUserRepository(context: Context) : IUserRepository { // TODO move 
 
     override fun getRx(): String? {
         return rx
+    }
+
+    override fun getTx(): String? {
+        return tx
     }
 
     override fun getToken(): String? {

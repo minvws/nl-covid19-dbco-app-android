@@ -12,4 +12,6 @@ import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
-data class Case(val dateOfSymptomOnset: String? = null, val tasks: MutableList<Task>? = null)
+data class Case(val dateOfSymptomOnset: String? = null,
+                val windowExpiresAt: String? = null,
+                val tasks: MutableList<Task>? = null)

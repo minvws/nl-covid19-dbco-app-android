@@ -17,6 +17,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.ContactDetailsResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
+import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -32,6 +33,9 @@ interface StubbedAPI {
     @GET("v1/cases/{token}")
     @Streaming
     suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
+
+    @PUT("v1/cases/{token}")
+    suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody): Response<Unit>
 
     @POST("v1/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse

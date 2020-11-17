@@ -74,7 +74,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
-        tasksViewModel.callResult.observe(viewLifecycleOwner, { resource ->
+        tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
             resource.resolve(onError = {
                 showErrorDialog(getString(R.string.error_while_fetching_case), {
                     tasksViewModel.fetchTasks()

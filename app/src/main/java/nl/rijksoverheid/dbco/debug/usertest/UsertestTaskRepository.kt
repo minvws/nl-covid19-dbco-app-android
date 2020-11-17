@@ -69,6 +69,10 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         return cachedCase
     }
 
+    override suspend fun uploadCase() {
+        TODO("Not yet implemented")
+    }
+
     companion object {
         const val CASE_BODY_KEY = "caseBody"
         const val MOCKED_CASE_BODY = "{\n" +

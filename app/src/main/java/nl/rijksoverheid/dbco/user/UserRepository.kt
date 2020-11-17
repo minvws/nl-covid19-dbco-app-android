@@ -46,6 +46,9 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
         encryptedSharedPreferences.getString(KEY_RX, null)?.let {
             rx = it
         }
+        encryptedSharedPreferences.getString(KEY_TX, null)?.let {
+            tx = it
+        }
         encryptedSharedPreferences.getString(KEY_TOKEN, null)?.let {
             token = it
         }
@@ -78,6 +81,11 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
         val pairingResponse = api.pair(pairingBody)
 
         // decrypting response
+        if (pairingResponse.sealedHealthAuthorityPublicKey == null) {
+            throw IllegalStateException("sealedHealthAuthorityPublicKey is null")
+        } else if (pairingResponse.sealedHealthAuthorityPublicKey == "") {
+            throw IllegalStateException("sealedHealthAuthorityPublicKey is empty")
+        }
         val sealedHaPublicKeyBytes = Base64.decode(
             pairingResponse.sealedHealthAuthorityPublicKey,
             BASE64_FLAGS
@@ -123,6 +131,9 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
 
     override fun getRx(): String? {
         return rx
+    }
+    override fun getTx(): String? {
+        return tx
     }
 
     override fun getToken(): String? {

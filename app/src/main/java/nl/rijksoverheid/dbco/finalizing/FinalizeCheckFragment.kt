@@ -102,6 +102,9 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         }
 
         binding.sendButton.setOnClickListener {
+
+            tasksViewModel.sendCurrentCase()
+
             findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
         }
     }
