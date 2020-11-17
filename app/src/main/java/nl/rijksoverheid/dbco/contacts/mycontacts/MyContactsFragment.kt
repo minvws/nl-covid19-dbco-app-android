@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -20,7 +21,10 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.Constants
+import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
@@ -37,6 +41,7 @@ import timber.log.Timber
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
 
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
@@ -147,10 +152,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // If not granted send users to permission grant screen
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
+            if (userPrefs?.getBoolean(USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, false) == true){
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
+                )
+            } else {
+                // If not granted permission - send users to permission grant screen (if he didn't see it before)
+                findNavController().navigate(MyContactsFragmentDirections.toContactPickerPermission(task))
+            }
         } else {
-
             if (task?.linkedContact != null) {
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactDetails(
@@ -167,5 +177,4 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
     }
-
 }
