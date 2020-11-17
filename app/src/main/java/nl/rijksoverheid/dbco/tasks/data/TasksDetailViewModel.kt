@@ -10,13 +10,10 @@ package nl.rijksoverheid.dbco.tasks.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
-import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
@@ -38,7 +35,7 @@ class TasksDetailViewModel(
     val otherRisk = MutableLiveData<Boolean?>(null)
 
     val communicationType = MutableLiveData<CommunicationType?>(null)
-    val hasEmailOrPhone = MutableLiveData<Boolean>(true)
+    val hasEmailOrPhone = MutableLiveData<Boolean>(null)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
     val task: MutableLiveData<Task> = MutableLiveData<Task>()
@@ -47,6 +44,8 @@ class TasksDetailViewModel(
 
     fun setTask(task: Task) {
         this.task.value = task
+        selectedContact = task.linkedContact
+        hasEmailOrPhone.value = selectedContact?.hasValidEmailOrPhone()
         questionnaireResult = task.questionnaireResult
         category.value = task.category
         updateRiskFlagsFromCategory(task)

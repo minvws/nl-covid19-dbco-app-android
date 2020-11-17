@@ -12,20 +12,14 @@ import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.InputType
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import timber.log.Timber
 import java.util.*
 
-class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val editedistener: (String) -> Unit) :
+class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val changeListener: (String) -> Unit) :
     BaseQuestionItem<ItemPhoneInputBinding>(question) {
     override fun getLayout() = R.layout.item_phone_input
-    override fun isRequired() = true
-
     private var binding: ItemPhoneInputBinding? = null
 
     override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
@@ -42,7 +36,7 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
 
         viewBinding.inputField.editText?.doAfterTextChanged {
             phoneNumber = it.toString()
-            editedistener.invoke(it.toString())
+            changeListener.invoke(it.toString())
         }
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
@@ -54,15 +48,15 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
         checkCompleted()
     }
 
+    private fun checkCompleted() {
+
+    }
+
     override fun isSameAs(other: Item<*>): Boolean =
         other is PhoneNumberItem && other.phoneNumber == phoneNumber
 
     override fun hasSameContentAs(other: Item<*>) =
         other is PhoneNumberItem && other.phoneNumber == phoneNumber
-
-    override fun isCompleted(): Boolean {
-        return !phoneNumber.isNullOrEmpty()
-    }
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()

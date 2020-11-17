@@ -44,6 +44,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -254,9 +255,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 },
                 PhoneNumberItem(viewModel.selectedContact?.number, question) {
                     viewModel.selectedContact?.number = it
+                    viewModel.hasEmailOrPhone.value = viewModel.selectedContact?.hasValidEmailOrPhone()
                 },
                 EmailAddressItem(viewModel.selectedContact?.email, question) {
                     viewModel.selectedContact?.email = it
+                    viewModel.hasEmailOrPhone.value = viewModel.selectedContact?.hasValidEmailOrPhone()
                 }
             )
         )
@@ -431,7 +434,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
 
         //Timber.d("Answers are $answerCollector")
-        findNavController().popBackStack()
+        view?.hideKeyboard()
+        view?.postDelayed({
+            findNavController().popBackStack()
+        }, 400)
     }
 
     private fun isCommunicationTypeQuestion(question: Question): Boolean {

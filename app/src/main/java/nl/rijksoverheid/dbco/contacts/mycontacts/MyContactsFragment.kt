@@ -114,7 +114,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                         "contact" -> {
                             val informed = when (task.communication) {
                                 CommunicationType.Index -> task.contactIsInformedAlready
-                                CommunicationType.Staff -> task.linkedContact?.hasEmailOrPhone() == true
+                                CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
                                 else -> false
                             }
                             if (informed) {

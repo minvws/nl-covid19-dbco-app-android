@@ -60,14 +60,12 @@ class QuestionMultipleOptionsItem(
                         selectedAnswer = it
                         viewBinding.inputEditText.setText(it.label)
                         Timber.d("Selected option $it")
-                        checkCompleted()
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     selectedAnswer = null
                     viewBinding.inputEditText.setText("")
-                    checkCompleted()
                 }
             }
         }
@@ -78,12 +76,6 @@ class QuestionMultipleOptionsItem(
 
     override fun hasSameContentAs(other: Item<*>) =
             other is QuestionMultipleOptionsItem && other.question?.uuid == question?.uuid
-
-    override fun isRequired(): Boolean = true
-
-    override fun isCompleted(): Boolean {
-        return (selectedAnswer != null)
-    }
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
@@ -102,7 +94,6 @@ class QuestionMultipleOptionsItem(
                 if (option?.label?.equals(previousAnswerLabel) == true) {
                     answerSelectedListener.invoke(option)
                     selectedAnswer = option
-                    checkCompleted()
                     viewBinding.inputEditText.setText(previousAnswerLabel)
                     viewBinding.optionsSpinner.setSelection(index, false)
                     return

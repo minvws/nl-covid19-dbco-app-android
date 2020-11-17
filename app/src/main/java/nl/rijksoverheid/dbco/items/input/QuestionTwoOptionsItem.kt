@@ -48,7 +48,6 @@ class QuestionTwoOptionsItem(
                 answerOption?.let {
                     answerSelectedListener.invoke(it)
                     selectedAnswer = it
-                    checkCompleted()
                 }
             }
         }
@@ -67,12 +66,6 @@ class QuestionTwoOptionsItem(
 
     override fun hasSameContentAs(other: Item<*>) =
             other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
-
-    override fun isRequired(): Boolean = true
-
-    override fun isCompleted(): Boolean {
-        return (selectedAnswer != null)
-    }
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()

@@ -57,7 +57,6 @@ class DateInputItem(
         date = LocalDate(year, month, dayOfMonth).apply {
             binding?.dateLabel?.text = this.toString(FORMAT)
         }
-        checkCompleted()
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -68,14 +67,6 @@ class DateInputItem(
 
     companion object {
         val FORMAT: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy")
-    }
-
-    override fun isRequired(): Boolean {
-        return true
-    }
-
-    override fun isCompleted(): Boolean {
-        return date != null
     }
 
     override fun getUserAnswers(): Map<String, Any> {
