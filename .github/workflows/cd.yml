@@ -52,7 +52,7 @@ jobs:
     - name: install firebase tool
       run: |
         yarn global add firebase-tools
-        echo "::add-path::$(yarn global bin)"
+        echo "$(yarn global bin)" >> $GITHUB_PATH
 
     # Generate app bundles...
     - name: Run install fastlane and generate android builds
