@@ -16,24 +16,8 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question? = null) : BaseBindableItem<T>() {
 
-    val currentViewState: MutableLiveData<QuestionnaireItemViewState> = MutableLiveData()
-
-    init {
-        currentViewState.value = QuestionnaireItemViewState()
-    }
-
     open fun getUserAnswers(): Map<String, Any> {
         return HashMap()
     }
-
-    fun checkCompleted(isCompleted: Boolean? = null) {
-        val finalCompleted = isCompleted ?: isCompleted()
-        currentViewState.value?.let {
-            currentViewState.value = it.copy(isCompleted = finalCompleted)
-        }
-    }
-
-    abstract fun isRequired(): Boolean
-    abstract fun isCompleted(): Boolean
 
 }

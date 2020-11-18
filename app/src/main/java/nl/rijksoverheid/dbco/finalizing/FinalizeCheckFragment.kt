@@ -71,7 +71,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
-                        val hasEmailOrPhone = task.linkedContact?.hasEmailOrPhone() == true
+                        val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
 
                         val informed = when (task.communication) {
                             CommunicationType.Index -> task.contactIsInformedAlready

@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.items.input
 
-import android.os.Handler
 import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
@@ -17,15 +16,14 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
-class EmailAddressItem(private var emailAddress: String?, question: Question?, private val editedistener: (String) -> Unit) :
+class EmailAddressItem(
+    private var emailAddress: String?,
+    question: Question?,
+    private val changeListener: (String) -> Unit
+) :
     BaseQuestionItem<ItemEmailInputBinding>(question) {
     override fun getLayout() = R.layout.item_email_input
-    override fun isRequired() = false
     private var isValidEmail: Boolean = false
-
-    private val validationHandler: Handler = Handler()
-    private var validationRunnable: Runnable? = null
-
     private var binding: ItemEmailInputBinding? = null
 
     override fun bind(viewBinding: ItemEmailInputBinding, position: Int) {
@@ -38,50 +36,42 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?, p
             this.hint = this.context.getString(R.string.hint_email_address)
         }
 
-        validationRunnable = Runnable {
-            val input = viewBinding.inputField.editText?.text.toString()
-            if (!TextUtils.isEmpty(input)) {
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(input)
-                        .matches()
-                ) {
-                    viewBinding.inputField.error =
-                        viewBinding.inputField.context.getString(R.string.error_valid_email)
-                    isValidEmail = false
-                } else {
-                    viewBinding.inputField.error = null
-                    isValidEmail = true
-                    viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        0,
-                        R.drawable.ic_valid_small,
-                        0
-                    )
-                    viewBinding.inputField.setEndIconActivated(true)
-                    editedistener.invoke(input)
-                }
+        viewBinding.inputField.editText?.setOnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                checkCompleted(viewBinding)
             }
         }
-        validationHandler.post(validationRunnable)
 
         viewBinding.inputField.editText?.doAfterTextChanged {
-            viewBinding.inputField.error = null
-            if (validationRunnable != null) {
-                validationHandler.removeCallbacks(validationRunnable)
-            }
-
-            // Adding a small delay so users aren't shown an error instantly while typing their emailaddress
-            validationHandler.postDelayed(validationRunnable, 400)
-
-
             emailAddress = it.toString()
+            changeListener.invoke(it.toString())
         }
 
-        viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                checkCompleted()
+        checkCompleted(viewBinding)
+    }
+
+    private fun checkCompleted(viewBinding: ItemEmailInputBinding) {
+        val input = viewBinding.inputField.editText?.text.toString()
+        if (!TextUtils.isEmpty(input)) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(input)
+                    .matches()
+            ) {
+                viewBinding.inputField.error =
+                    viewBinding.inputField.context.getString(R.string.error_valid_email)
+                isValidEmail = false
+            } else {
+                viewBinding.inputField.error = null
+                isValidEmail = true
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_valid_small,
+                    0
+                )
+                viewBinding.inputField.setEndIconActivated(true)
+                changeListener.invoke(input)
             }
         }
-        checkCompleted()
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -89,10 +79,6 @@ class EmailAddressItem(private var emailAddress: String?, question: Question?, p
 
     override fun hasSameContentAs(other: Item<*>) =
         other is EmailAddressItem && other.emailAddress == emailAddress
-
-    override fun isCompleted(): Boolean {
-        return !emailAddress.isNullOrEmpty() && isValidEmail
-    }
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()

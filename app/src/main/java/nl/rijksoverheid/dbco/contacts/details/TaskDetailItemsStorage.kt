@@ -14,6 +14,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import nl.rijksoverheid.dbco.items.input.NoRiskItem
 import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
@@ -165,6 +166,8 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     }
             )
     )
+
+    val noRiskItem = NoRiskItem()
 
     // Contact details
 

@@ -81,10 +81,10 @@
             app:argType="nl.rijksoverheid.dbco.about.faq.FAQItemId" />
     </fragment>
     <fragment
-        android:id="@+id/contactPickerStart"
+        android:id="@+id/contactPickerPermission"
         tools:layout="@layout/fragment_list"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
-        android:label="ContactPickerAboutFragment">
+        android:label="ContactPickerPermissionFragment">
         <argument
             android:name="indexTask"
             android:defaultValue="@null"
@@ -133,8 +133,8 @@
         tools:layout="@layout/fragment_my_contacts"
         android:label="MyContactsFragment">
         <action
-            android:id="@+id/toContactPickerAbout"
-            app:destination="@id/contactPickerStart"
+            android:id="@+id/toContactPickerPermission"
+            app:destination="@id/contactPickerPermission"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popUpTo="@id/myContactsFragment"

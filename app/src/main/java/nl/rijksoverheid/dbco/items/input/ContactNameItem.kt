@@ -17,47 +17,28 @@ class ContactNameItem(
     private var firstName: String?,
     private var lastName: String?,
     question: Question?,
-    private val nameEditedistener: (String?, String?) -> Unit
+    private val changeListener: (String?, String?) -> Unit
 ) : BaseQuestionItem<ItemContactNameBinding>(question) {
 
     override fun getLayout() = R.layout.item_contact_name
-
-    override fun isRequired() = true
-
-    override fun isCompleted(): Boolean {
-        return (firstName?.isNotEmpty() == true && lastName?.isNotEmpty() == true)
-    }
 
     private var binding: ItemContactNameBinding? = null
 
     override fun bind(viewBinding: ItemContactNameBinding, position: Int) {
         this.binding = viewBinding
-        viewBinding.firstName.editText?.doAfterTextChanged {
-            firstName = it.toString()
-            nameEditedistener.invoke(firstName, lastName)
-        }
-
-        viewBinding.lastName.editText?.doAfterTextChanged {
-            lastName = it.toString()
-            nameEditedistener.invoke(firstName, lastName)
-        }
-
-        viewBinding.firstName.editText?.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                checkCompleted()
-            }
-        }
-
-        viewBinding.lastName.editText?.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                checkCompleted()
-            }
-        }
 
         viewBinding.firstName.editText?.setText(firstName)
         viewBinding.lastName.editText?.setText(lastName)
 
-        checkCompleted()
+        viewBinding.firstName.editText?.doAfterTextChanged {
+            firstName = it.toString()
+            changeListener.invoke(firstName, lastName)
+        }
+
+        viewBinding.lastName.editText?.doAfterTextChanged {
+            lastName = it.toString()
+            changeListener.invoke(firstName, lastName)
+        }
     }
 
     override fun getUserAnswers(): Map<String, Any> {

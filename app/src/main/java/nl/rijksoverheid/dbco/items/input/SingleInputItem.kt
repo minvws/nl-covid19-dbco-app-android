@@ -20,7 +20,6 @@ class SingleInputItem(val context: Context, question: Question) :
 
     private var input: String? = null
     override fun getLayout() = R.layout.item_single_input
-    override fun isRequired() = true
 
     override fun bind(viewBinding: ItemSingleInputBinding, position: Int) {
 
@@ -31,12 +30,6 @@ class SingleInputItem(val context: Context, question: Question) :
         viewBinding.editText.doAfterTextChanged {
             input = it.toString()
         }
-
-        viewBinding.editText.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                checkCompleted()
-            }
-        }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
@@ -44,10 +37,6 @@ class SingleInputItem(val context: Context, question: Question) :
 
     override fun hasSameContentAs(other: Item<*>) =
         other is SingleInputItem && other.input == input
-
-    override fun isCompleted(): Boolean {
-        return !input.isNullOrEmpty()
-    }
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
