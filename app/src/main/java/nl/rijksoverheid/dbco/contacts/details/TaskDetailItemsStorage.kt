@@ -209,7 +209,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
             },
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        put(LAST_EXPOSURE, JsonPrimitive(viewModel.dateOfLastExposure.value))
+                        put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
                     }
             )
     )

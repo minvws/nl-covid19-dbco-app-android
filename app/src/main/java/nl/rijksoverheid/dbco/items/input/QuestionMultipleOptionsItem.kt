@@ -82,8 +82,8 @@ class QuestionMultipleOptionsItem(
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
         selectedAnswer?.let {
-            it.value?.let {
-                answers.put("value", it)
+            it.value?.let {value ->
+                answers.put("value", value)
             }
         }
         return answers
@@ -91,12 +91,12 @@ class QuestionMultipleOptionsItem(
 
     private fun fillInPreviousAnswer(viewBinding: ItemQuestionMultipleOptionsBinding) {
         previousAnswer?.let {
-            val previousAnswerLabel = it["value"]?.jsonPrimitive?.jsonPrimitive?.content
+            val previousAnswerValue = it["value"]?.jsonPrimitive?.jsonPrimitive?.content
             question?.answerOptions?.forEachIndexed { index, option ->
-                if (option?.label?.equals(previousAnswerLabel) == true) {
+                if (option?.value?.equals(previousAnswerValue) == true) {
                     answerSelectedListener.invoke(option)
                     selectedAnswer = option
-                    viewBinding.inputEditText.setText(previousAnswerLabel)
+                    viewBinding.inputEditText.setText(option.label)
                     viewBinding.optionsSpinner.setSelection(index, false)
                     return
                 }

@@ -23,10 +23,7 @@ import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.*
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -230,6 +227,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     )
                 }
                 size == 2 -> {
+
+                    var previousAnswer = viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                    if (isCommunicationTypeQuestion(question)){
+                        // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
+                        previousAnswer = JsonObject(
+                            HashMap<String, JsonElement>().apply {
+                                put("value", JsonPrimitive(viewModel.communicationType.value?.name))
+                            }
+                        )
+                    }
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             question,
@@ -242,7 +249,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                 }
                             },
                             null,
-                            viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                            previousAnswer
                         )
                     )
                 }
@@ -449,6 +456,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
             task.status = calculateStatus()
             task.communication = viewModel.communicationType.value
+            viewModel.dateOfLastExposure.value?.let {
+                task.dateOfLastExposure = it
+            }
             viewModel.category.value?.let { newCategory ->
                 task.category = newCategory
             }

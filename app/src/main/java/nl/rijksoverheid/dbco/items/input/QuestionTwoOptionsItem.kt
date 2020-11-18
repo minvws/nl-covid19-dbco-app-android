@@ -38,6 +38,11 @@ class QuestionTwoOptionsItem(
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
 
+        // default state
+        (answerGroup.getChildAt(0) as RadioButton).isChecked = false
+        (answerGroup.getChildAt(1) as RadioButton).isChecked = false
+
+        // try restore state
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
         } else {
