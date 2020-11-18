@@ -233,7 +233,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
                         previousAnswer = JsonObject(
                             HashMap<String, JsonElement>().apply {
-                                put("value", JsonPrimitive(viewModel.communicationType.value?.name))
+                                val trigger = when(viewModel.communicationType.value) {
+                                    CommunicationType.Index -> COMMUNICATION_INDEX
+                                    CommunicationType.Staff -> COMMUNICATION_STUFF
+                                    else -> null
+                                }
+                                trigger?.let {
+                                    put("trigger", JsonPrimitive(it))
+                                }
                             }
                         )
                     }
@@ -248,7 +255,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                         CommunicationType.Index
                                 }
                             },
-                            null,
                             previousAnswer
                         )
                     )

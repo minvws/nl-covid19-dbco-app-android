@@ -18,12 +18,10 @@ import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.HtmlHelper
-import timber.log.Timber
 
 class QuestionTwoOptionsItem(
     question: Question?,
     private val answerSelectedListener: (AnswerOption) -> Unit,
-    private val optionalValueLabel: String? = null,
     private val previousAnswer: JsonObject? = null
 ) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
@@ -38,17 +36,21 @@ class QuestionTwoOptionsItem(
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
 
-        // default state
-        (answerGroup.getChildAt(0) as RadioButton).isChecked = false
-        (answerGroup.getChildAt(1) as RadioButton).isChecked = false
-
         // try restore state
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
-        } else {
-            val indexOfSelectedAnswer = question?.answerOptions?.indexOf(selectedAnswer)
-            if (indexOfSelectedAnswer == 0 || indexOfSelectedAnswer == 1) {
-                (answerGroup.getChildAt(indexOfSelectedAnswer) as RadioButton).isChecked = true
+        }
+
+        // if there is no previous answer - reset clear selection
+        if (selectedAnswer == null) {
+            viewBinding.option1.isChecked = false
+            viewBinding.option2.isChecked = false
+        }
+
+        question?.answerOptions?.indexOf(selectedAnswer)?.let {index ->
+            when (index) {
+                0 -> viewBinding.option1.isChecked = true
+                1 -> viewBinding.option2.isChecked = true
             }
         }
 
@@ -60,8 +62,8 @@ class QuestionTwoOptionsItem(
                         else -> question?.answerOptions?.get(1)
                     }
                     answerOption?.let {
-                        answerSelectedListener.invoke(it)
                         selectedAnswer = it
+                        answerSelectedListener.invoke(it)
                     }
                 }
             }
@@ -84,31 +86,33 @@ class QuestionTwoOptionsItem(
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
         selectedAnswer?.let {
-            it.value?.let {
-                if (optionalValueLabel != null) {
-                    answers.put(optionalValueLabel, it)
-                } else {
-                    answers.put("value", it)
-                }
+            it.value?.let {value ->
+                answers.put("value", value)
             }
         }
         return answers
     }
 
     private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(optionalValueLabel)) {
-            val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
-            Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
-
-            if (question?.answerOptions?.get(0)?.value == previousAnswerValue) {
-                (answerGroup.getChildAt(0) as RadioButton).isChecked = true
-                question?.answerOptions?.get(0)?.let {
-                    selectedAnswer = it
+        previousAnswer?.let { prevAnswer ->
+            prevAnswer["value"]?.let { value ->
+                when (value.jsonPrimitive.jsonPrimitive.content) {
+                    question?.answerOptions?.get(0)?.value -> {
+                        selectedAnswer = question.answerOptions[0]
+                    }
+                    question?.answerOptions?.get(1)?.value -> {
+                        selectedAnswer = question.answerOptions[1]
+                    }
+                    else -> {
+                    }
                 }
-            } else {
-                (answerGroup.getChildAt(1) as RadioButton).isChecked = true
-                question?.answerOptions?.get(1)?.let {
-                    selectedAnswer = it
+            } ?: run {
+                prevAnswer["trigger"]?.let { trigger ->
+                    question?.answerOptions?.forEach { option ->
+                        if (option?.trigger == trigger.jsonPrimitive.jsonPrimitive.content) {
+                            selectedAnswer = option
+                        }
+                    }
                 }
             }
 
