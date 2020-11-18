@@ -20,6 +20,8 @@
     <string name="cd_error_box">Waarschuwing</string>
     <string name="cd_info_box">Belangrijk</string>
     <string name="close">Sluiten</string>
+    <string name="cancel">Annuleren</string>
+    <string name="delete">Verwijderen</string>
 
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>

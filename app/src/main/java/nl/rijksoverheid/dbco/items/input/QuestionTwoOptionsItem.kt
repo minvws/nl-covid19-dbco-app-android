@@ -91,10 +91,7 @@ class QuestionTwoOptionsItem(
     }
 
     private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(
-                optionalValueLabel
-            )
-        ) {
+        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(optionalValueLabel)) {
             val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
             Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
 

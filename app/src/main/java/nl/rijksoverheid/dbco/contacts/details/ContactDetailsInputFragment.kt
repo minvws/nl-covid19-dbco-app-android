@@ -89,20 +89,27 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         viewModel.category.observe(viewLifecycleOwner, {
             val hasCategory = it != null
+            val categoryHasRisk = it != null && it != Category.NO_RISK
+
             itemsStorage?.classificationSection?.setEnabled(true)
             itemsStorage?.classificationSection?.setCompleted(hasCategory)
-            if (hasCategory) {
+            if (categoryHasRisk) {
                 if (itemsStorage?.classificationSection?.isExpanded == true) {
                     itemsStorage?.classificationSection?.onToggleExpanded()
                 }
+            }
+
+            if (hasCategory) {
                 if (itemsStorage?.contactDetailsSection?.isExpanded == false) {
                     itemsStorage?.contactDetailsSection?.onToggleExpanded()
                 }
             }
 
-            val categoryHasRisk = it != null && it != Category.NO_RISK
             itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
+
+            binding.saveButton.text =
+                if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.close)
         })
 
         viewModel.communicationType.observe(viewLifecycleOwner, {
@@ -121,6 +128,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         addInformSection()
 
         binding.saveButton.setOnClickListener {
+            if (viewModel.category.value == Category.NO_RISK) {
+                findNavController().popBackStack()
+                return@setOnClickListener
+            }
+
             if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.contactIsInformedAlready == false) {
                 showDidYouInformDialog(view)
                 return@setOnClickListener
@@ -256,11 +268,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 },
                 PhoneNumberItem(viewModel.selectedContact?.number, question) {
                     viewModel.selectedContact?.number = it
-                    viewModel.hasEmailOrPhone.value = viewModel.selectedContact?.hasValidEmailOrPhone()
+                    viewModel.hasEmailOrPhone.value =
+                        viewModel.selectedContact?.hasValidEmailOrPhone()
                 },
                 EmailAddressItem(viewModel.selectedContact?.email, question) {
                     viewModel.selectedContact?.email = it
-                    viewModel.hasEmailOrPhone.value = viewModel.selectedContact?.hasValidEmailOrPhone()
+                    viewModel.hasEmailOrPhone.value =
+                        viewModel.selectedContact?.hasValidEmailOrPhone()
                 }
             )
         )
@@ -341,6 +355,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     section?.remove(itemsStorage.distanceRiskItem)
                     section?.remove(itemsStorage.durationRiskItem)
                     section?.remove(itemsStorage.otherRiskItem)
+                    section?.remove(itemsStorage.noRiskItem)
                 }
             })
 
@@ -350,6 +365,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 } else {
                     section?.remove(itemsStorage.distanceRiskItem)
                     section?.remove(itemsStorage.otherRiskItem)
+                    section?.remove(itemsStorage.noRiskItem)
                 }
             })
 
@@ -358,11 +374,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     section?.add(itemsStorage.otherRiskItem)
                 } else {
                     section?.remove(itemsStorage.otherRiskItem)
+                    section?.remove(itemsStorage.noRiskItem)
                 }
             })
 
             viewModel.otherRisk.observe(viewLifecycleOwner, {
-                // TODO add "no risk" label
+                if (it == false) {
+                    section?.add(itemsStorage.noRiskItem)
+                } else {
+                    section?.remove(itemsStorage.noRiskItem)
+                }
             })
         }
     }
