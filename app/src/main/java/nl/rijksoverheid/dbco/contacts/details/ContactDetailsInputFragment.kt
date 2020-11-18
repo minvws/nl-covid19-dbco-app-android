@@ -89,6 +89,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         viewModel.category.observe(viewLifecycleOwner, {
             val hasCategory = it != null
+            itemsStorage?.classificationSection?.setEnabled(true)
             itemsStorage?.classificationSection?.setCompleted(hasCategory)
             if (hasCategory) {
                 if (itemsStorage?.classificationSection?.isExpanded == true) {
@@ -99,7 +100,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 }
             }
 
-            val categoryHasRisk = hasCategory && it != Category.NO_RISK
+            val categoryHasRisk = it != null && it != Category.NO_RISK
             itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
         })

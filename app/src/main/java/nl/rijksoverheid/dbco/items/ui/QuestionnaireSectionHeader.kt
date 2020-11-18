@@ -27,7 +27,9 @@ class QuestionnaireSectionHeader(
     set(value) {
         field = value
         binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
-        enabled = true
+        if (value) {
+            enabled = true
+        }
     }
 
     var enabled = false
