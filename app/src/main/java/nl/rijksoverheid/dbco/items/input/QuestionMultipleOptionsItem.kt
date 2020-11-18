@@ -44,7 +44,12 @@ class QuestionMultipleOptionsItem(
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        fillInPreviousAnswer(viewBinding)
+        if (selectedAnswer == null) {
+            fillInPreviousAnswer()
+        }
+
+        viewBinding.inputEditText.setText(selectedAnswer?.label?:"")
+
         viewBinding.optionsSpinner.apply {
             this.adapter = adapter
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -82,22 +87,19 @@ class QuestionMultipleOptionsItem(
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
         selectedAnswer?.let {
-            it.value?.let {value ->
+            it.value?.let { value ->
                 answers.put("value", value)
             }
         }
         return answers
     }
 
-    private fun fillInPreviousAnswer(viewBinding: ItemQuestionMultipleOptionsBinding) {
+    private fun fillInPreviousAnswer() {
         previousAnswer?.let {
             val previousAnswerValue = it["value"]?.jsonPrimitive?.jsonPrimitive?.content
-            question?.answerOptions?.forEachIndexed { index, option ->
+            question?.answerOptions?.forEach { option ->
                 if (option?.value?.equals(previousAnswerValue) == true) {
-                    answerSelectedListener.invoke(option)
                     selectedAnswer = option
-                    viewBinding.inputEditText.setText(option.label)
-                    viewBinding.optionsSpinner.setSelection(index, false)
                     return
                 }
             }
