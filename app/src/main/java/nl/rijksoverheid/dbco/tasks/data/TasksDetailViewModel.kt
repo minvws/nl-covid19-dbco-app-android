@@ -20,6 +20,7 @@ import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
+import timber.log.Timber
 
 class TasksDetailViewModel(
     private val tasksRepository: ITaskRepository,
@@ -101,6 +102,7 @@ class TasksDetailViewModel(
                 otherRisk.value = null
             }
         }
+        Timber.d("updateRiskFlagsFromCategory: category=${category.value}, livedTogetherRisk=${livedTogetherRisk.value}, durationRisk=${durationRisk.value}, distanceRisk=${distanceRisk.value}, otherRisk=${otherRisk.value}")
     }
 
     fun updateCategoryFromRiskFlags() {
@@ -112,5 +114,6 @@ class TasksDetailViewModel(
             otherRisk.value == false -> Category.NO_RISK
             else -> null
         }
+        Timber.d("updateCategoryFromRiskFlags: category=${category.value}, livedTogetherRisk=${livedTogetherRisk.value}, durationRisk=${durationRisk.value}, distanceRisk=${distanceRisk.value}, otherRisk=${otherRisk.value}")
     }
 }

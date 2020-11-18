@@ -21,10 +21,10 @@ import nl.rijksoverheid.dbco.util.HtmlHelper
 import timber.log.Timber
 
 class QuestionTwoOptionsItem(
-        question: Question?,
-        private val answerSelectedListener: (AnswerOption) -> Unit,
-        private val optionalValueLabel: String? = null,
-        private val previousAnswer: JsonObject? = null
+    question: Question?,
+    private val answerSelectedListener: (AnswerOption) -> Unit,
+    private val optionalValueLabel: String? = null,
+    private val previousAnswer: JsonObject? = null
 ) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
 
     override fun getLayout() = R.layout.item_question_2_options
@@ -37,20 +37,29 @@ class QuestionTwoOptionsItem(
 
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
-        fillInPreviousAnswer()
 
-        val onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
-            if (isChecked) {
-                val answerOption = when (compoundButton.id) {
-                    R.id.option1 -> question?.answerOptions?.get(0)
-                    else -> question?.answerOptions?.get(1)
-                }
-                answerOption?.let {
-                    answerSelectedListener.invoke(it)
-                    selectedAnswer = it
-                }
+        if (selectedAnswer == null) {
+            fillInPreviousAnswer()
+        } else {
+            val indexOfSelectedAnswer = question?.answerOptions?.indexOf(selectedAnswer)
+            if (indexOfSelectedAnswer == 0 || indexOfSelectedAnswer == 1) {
+                (answerGroup.getChildAt(indexOfSelectedAnswer) as RadioButton).isChecked = true
             }
         }
+
+        val onCheckedChangeListener =
+            CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+                if (isChecked) {
+                    val answerOption = when (compoundButton.id) {
+                        R.id.option1 -> question?.answerOptions?.get(0)
+                        else -> question?.answerOptions?.get(1)
+                    }
+                    answerOption?.let {
+                        answerSelectedListener.invoke(it)
+                        selectedAnswer = it
+                    }
+                }
+            }
         viewBinding.option1.setOnCheckedChangeListener(onCheckedChangeListener)
         viewBinding.option2.setOnCheckedChangeListener(onCheckedChangeListener)
 
@@ -62,10 +71,10 @@ class QuestionTwoOptionsItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-            other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun hasSameContentAs(other: Item<*>) =
-            other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
 
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
@@ -82,7 +91,9 @@ class QuestionTwoOptionsItem(
     }
 
     private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(optionalValueLabel)
+        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(
+                optionalValueLabel
+            )
         ) {
             val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
             Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
