@@ -38,7 +38,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Spinner
+        <nl.rijksoverheid.dbco.util.AlwaysFireSpinner
             android:id="@+id/options_spinner"
             style="@style/QuestionText"
             android:alpha="0"
