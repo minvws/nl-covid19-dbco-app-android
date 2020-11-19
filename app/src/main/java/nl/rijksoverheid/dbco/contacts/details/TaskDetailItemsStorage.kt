@@ -34,10 +34,11 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.util.removeAllItems
+import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
+import kotlin.math.absoluteValue
 
 
 /**
@@ -226,6 +227,9 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
 
     fun refreshInformSection() {
 
+        val hasRisk = !(viewModel.category.value == Category.NO_RISK || viewModel.category.value == null)
+        val isEnabled = hasRisk && viewModel.communicationType.value != null // in those cases inform section is disabled and thus hidden
+
         val header = when(viewModel.communicationType.value) {
             CommunicationType.Index -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
             CommunicationType.Staff -> context.getString(R.string.inform_contact_title_staff, viewModel.selectedContact?.firstName)
@@ -244,7 +248,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                     val untilDate = date.plusDays(10)
                     val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelines))
 
-                    val daysRemaining = Days.daysBetween(untilDate, LocalDate.now()).days
+                    val daysRemaining = Days.daysBetween(LocalDate.now(), untilDate).days.absoluteValue
 
                     val daysRemainingString = when (daysRemaining) {
                         1 -> context.getString(R.string.inform_contact_guidelines_category2_day_remaining)
@@ -263,10 +267,11 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
         val plainMessage = message.removeHtmlTags()
 
         informSection.apply {
-            removeAllItems()
+            removeAllChildren()
 
-            if (viewModel.category.value == Category.NO_RISK || viewModel.category.value == null || viewModel.communicationType.value == null) {
-                return // in those cases inform section is disabled and thus hidden
+            setEnabled(isEnabled)
+            if (!isEnabled) {
+                return
             }
 
             add(SubHeaderItem(header))
@@ -300,6 +305,10 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                         },
                     )
                 )
+            }
+
+            if (!isExpanded) {
+                onToggleExpanded()
             }
         }
     }

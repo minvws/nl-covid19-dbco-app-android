@@ -42,12 +42,13 @@ fun String.removeHtmlTags(): String{
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
 
-fun ExpandableGroup.removeAllItems() {
-    val allItems = mutableListOf<Item<GroupieViewHolder>>()
-    for (i in 0 .. this.childCount) {
-        allItems.add(this.getItem(i))
+fun ExpandableGroup.removeAllChildren() {
+    if (childCount <= 1) {
+        return
     }
-    this.removeAll(allItems)
+    for (i in childCount downTo  1) { // 0 is a header, keep it
+        remove(getItem(i))
+    }
 }
 
 @ExperimentalUnsignedTypes

@@ -11,13 +11,16 @@ import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSubHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 
 class SubHeaderItem(private val text: String) : BaseBindableItem<ItemSubHeaderBinding>() {
     override fun getLayout() = R.layout.item_sub_header
 
     override fun bind(viewBinding: ItemSubHeaderBinding, position: Int) {
-        viewBinding.text = text
+        val context = viewBinding.root.context
+        val spannableBuilder = HtmlHelper.buildSpannableFromHtml(text, context)
+        viewBinding.content.text = spannableBuilder
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is SubHeaderItem && other.text == text
