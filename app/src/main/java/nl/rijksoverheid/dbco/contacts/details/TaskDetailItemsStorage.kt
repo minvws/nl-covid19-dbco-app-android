@@ -8,22 +8,34 @@
 
 package nl.rijksoverheid.dbco.contacts.details
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
+import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.NoRiskItem
 import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
+import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.util.removeAllItems
+import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
 
@@ -31,7 +43,7 @@ import org.joda.time.LocalDate
 /**
  * Created by Dima Kovalenko.
  */
-class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) {
+class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: Context) {
 
     // Classification
 
@@ -211,6 +223,86 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     3
             ), false
     )
+
+    fun refreshInformSection() {
+
+        val header = when(viewModel.communicationType.value) {
+            CommunicationType.Index -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
+            CommunicationType.Staff -> context.getString(R.string.inform_contact_title_staff, viewModel.selectedContact?.firstName)
+            else -> ""
+        }
+
+        val message = when (viewModel.category.value) {
+            Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_guidelines_category1)
+            Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
+            Category.DURATION, Category.DISTANCE -> {
+                val dateLastExposure = viewModel.dateOfLastExposure.value
+                if (dateLastExposure == null) {
+                    context.getString(R.string.inform_contact_guidelines_category2, "", "")
+                } else {
+                    val date = LocalDate.parse(dateLastExposure, DateFormats.exposureData)
+                    val untilDate = date.plusDays(10)
+                    val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelines))
+
+                    val daysRemaining = Days.daysBetween(untilDate, LocalDate.now()).days
+
+                    val daysRemainingString = when (daysRemaining) {
+                        1 -> context.getString(R.string.inform_contact_guidelines_category2_day_remaining)
+                        else -> context.getString(R.string.inform_contact_guidelines_category2_days_remaining, daysRemaining.toString())
+                    }
+
+                    context.getString(
+                        R.string.inform_contact_guidelines_category2,
+                        untilDateString,
+                        daysRemainingString
+                    )
+                }
+            }
+            else -> ""
+        }
+        val plainMessage = message.removeHtmlTags()
+
+        informSection.apply {
+            removeAllItems()
+
+            if (viewModel.category.value == Category.NO_RISK || viewModel.category.value == null || viewModel.communicationType.value == null) {
+                return // in those cases inform section is disabled and thus hidden
+            }
+
+            add(SubHeaderItem(header))
+            add(ParagraphItem(message))
+            add(ButtonItem(
+                context.getString(R.string.contact_section_inform_copy),
+                {
+                    val clipboard =
+                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.contact_section_inform_copied),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            ))
+
+            // add "Call $name" button if phone is set
+            viewModel.selectedContact?.number?.let {
+                add(
+                    ButtonItem(
+                        context.getString(
+                            R.string.contact_section_inform_call,
+                            viewModel.selectedContact?.firstName
+                        ),
+                        {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
+                            context.startActivity(intent)
+                        },
+                    )
+                )
+            }
+        }
+    }
 
     companion object {
         const val ANSWER_EARLIER = "earlier"

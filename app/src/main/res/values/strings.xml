@@ -84,11 +84,24 @@
     <!--    Inform section-->
     <string name="contact_section_inform_header">Informatie voor dit contact</string>
     <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
-    <string name="contact_section_inform_content_header">Vertel dat je besmet bent en deel de leefregels van het RIVM</string>
-    <string name="contact_section_inform_content_details"><![CDATA[Dit zijn de belangrijkste leefregels voor deze persoon:<br/><ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis - <b> tot %1$s</b> (nog %2$s dagen)</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
+
+    <string name="inform_contact_title_index">De GGD neemt <u>geen</u> contact op met %s. Deel jij deze leefregels?</string>
+    <string name="inform_contact_title_staff">De GGD neemt contact op met %s. Dit zijn de leefregels voor deze persoon.</string>
+
+    <string name="inform_contact_guidelines_category1"><![CDATA[<ul><li>Blijf thuis tot <b>10 dagen</b> na het laatste contact met de besmette persoon en ontvang geen bezoek</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
+    <string name="inform_contact_guidelines_category2"><![CDATA[<ul><li>Blijf thuis, ontvang geen bezoek - alle huisgenoten blijven thuis%1$s%2$s</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
+    <string name="inform_contact_guidelines_category2_until_date"> - <b>tot %s</b></string>
+    <string name="inform_contact_guidelines_category2_day_remaining"> (nog 1 dag)</string>
+    <string name="inform_contact_guidelines_category2_days_remaining"> (nog %s dagen)</string>
+    <string name="inform_contact_guidelines_category3"><![CDATA[<ul><li>Houd 1,5 meter afstand en vermijd bezoek aan drukke plekken</li><li>Let op gezondheidsklachten die bij corona passen</li><li>Zorg voor goede hygiëne</li></ul>]]></string>
+
+    <string name="inform_contact_link_category1"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-huisgenoten\">lci.rivm.nl/covid-19-huisgenoten</a>]]></string>
+    <string name="inform_contact_link_category2a"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-nauwe-contacten\">lci.rivm.nl/covid-19-nauwe-contacten</a>]]></string>
+    <string name="inform_contact_link_category2b"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-nauwe-contacten\">lci.rivm.nl/covid-19-nauwe-contacten</a>]]></string>
+    <string name="inform_contact_link_category3"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-overige-contacten\">lci.rivm.nl/covid-19-overige-contacten</a>]]></string>
 
     <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string>
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>

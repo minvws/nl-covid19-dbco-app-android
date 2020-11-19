@@ -12,6 +12,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.Group
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 
 fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
 fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -37,6 +41,14 @@ fun String.removeHtmlTags(): String{
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+
+fun ExpandableGroup.removeAllItems() {
+    val allItems = mutableListOf<Item<GroupieViewHolder>>()
+    for (i in 0 .. this.childCount) {
+        allItems.add(this.getItem(i))
+    }
+    this.removeAll(allItems)
+}
 
 @ExperimentalUnsignedTypes
 fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }

@@ -7,14 +7,13 @@
  */
 package nl.rijksoverheid.dbco.items.ui
 
-import androidx.annotation.StringRes
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSubHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 
-class SubHeaderItem(@StringRes private val text: Int) : BaseBindableItem<ItemSubHeaderBinding>() {
+class SubHeaderItem(private val text: String) : BaseBindableItem<ItemSubHeaderBinding>() {
     override fun getLayout() = R.layout.item_sub_header
 
     override fun bind(viewBinding: ItemSubHeaderBinding, position: Int) {

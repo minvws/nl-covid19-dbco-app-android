@@ -36,7 +36,7 @@ abstract class BaseFragment @JvmOverloads constructor(
     fun showErrorDialog(message: String, tryAgainAction: () -> Unit, throwable: Throwable? = null) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(R.string.error)
-        builder.setCancelable(false)
+        builder.setCancelable(true)
         var finalMessage = message
         throwable?.let {
             finalMessage += "\n" + it.message
