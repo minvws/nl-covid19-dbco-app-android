@@ -40,11 +40,11 @@ fun String.removeHtmlTags(): String{
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
 
 fun ExpandableGroup.removeAllChildren() {
-    val count = childCount
-    if (count <= 1) {
+    if (itemCount <= 1) {
         return
     }
-    for (i in count downTo 1) { // 0 is a header, keep it
+    val start = itemCount - 1
+    for (i in start downTo 1) { // 0 is a header, keep it
         remove(getItem(i))
     }
 }
