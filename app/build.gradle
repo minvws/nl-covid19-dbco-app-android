@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "boolean", "FEATURE_LOGGING", "false"
-        buildConfigField "String", "STUBBED_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
+        buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
 
         manifestPlaceholders = [appLabel: "@string/app_name"]
     }
@@ -65,6 +65,8 @@ android {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.acc
         }
@@ -72,6 +74,8 @@ android {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\"" // TODO change to prod URL
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\"" // TODO change to prod pin
             manifestPlaceholders = [appLabel: "@string/app_name"]
             // TODO sort out signing
         }

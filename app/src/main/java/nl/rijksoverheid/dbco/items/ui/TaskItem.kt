@@ -23,7 +23,11 @@ class TaskItem(
         viewBinding.task = task
 
         val displayName = task.linkedContact?.getDisplayName()
-        viewBinding.indexContactName.text = if (displayName.isNullOrEmpty()) task.label else displayName
+        viewBinding.indexContactName.text = when {
+            displayName?.isNotEmpty() == true -> displayName
+            task.label?.isNotEmpty() == true -> task.label
+            else -> viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
+        }
 
         // completeness indicator
         when (task.status) {
