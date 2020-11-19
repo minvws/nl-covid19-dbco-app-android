@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.airbnb.lottie.BuildConfig
 
 abstract class BaseFragment @JvmOverloads constructor(
     @LayoutRes layout: Int
@@ -38,7 +37,11 @@ abstract class BaseFragment @JvmOverloads constructor(
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(R.string.error)
         builder.setCancelable(false)
-        val finalMessage = message + "\n" + throwable?.message
+        var finalMessage = message
+        throwable?.let {
+            finalMessage += "\n" + it.message
+        }
+
         builder.setMessage(finalMessage)
         builder.setPositiveButton(
             R.string.error_try_again
