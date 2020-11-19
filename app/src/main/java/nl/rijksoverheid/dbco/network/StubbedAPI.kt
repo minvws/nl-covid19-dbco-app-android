@@ -49,7 +49,7 @@ interface StubbedAPI {
         fun create(
             context: Context,
             client: OkHttpClient = createOkHttpClient(context),
-            baseUrl: String = BuildConfig.STUBBED_API_URL
+            baseUrl: String = BuildConfig.BASE_API_URL
         ): StubbedAPI {
             val contentType = "application/json".toMediaType()
             return Retrofit.Builder()

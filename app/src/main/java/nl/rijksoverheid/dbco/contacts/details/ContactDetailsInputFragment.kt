@@ -34,7 +34,15 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
-import nl.rijksoverheid.dbco.items.input.*
+import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
+import nl.rijksoverheid.dbco.items.input.ButtonItem
+import nl.rijksoverheid.dbco.items.input.ContactNameItem
+import nl.rijksoverheid.dbco.items.input.DateInputItem
+import nl.rijksoverheid.dbco.items.input.EmailAddressItem
+import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
+import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
+import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
+import nl.rijksoverheid.dbco.items.input.SingleInputItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
@@ -49,7 +57,9 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.UUID
+import java.util.Date
+import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -232,12 +242,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 }
                 size == 2 -> {
 
-                    var previousAnswer = viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
-                    if (isCommunicationTypeQuestion(question)){
+                    var previousAnswer =
+                        viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                    if (isCommunicationTypeQuestion(question)) {
                         // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
                         previousAnswer = JsonObject(
                             HashMap<String, JsonElement>().apply {
-                                val trigger = when(viewModel.communicationType.value) {
+                                val trigger = when (viewModel.communicationType.value) {
                                     CommunicationType.Index -> COMMUNICATION_INDEX
                                     CommunicationType.Staff -> COMMUNICATION_STUFF
                                     else -> null
