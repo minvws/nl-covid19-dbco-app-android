@@ -7,6 +7,7 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
+import android.content.Context
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -18,17 +19,15 @@ import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.HtmlHelper
-import timber.log.Timber
 
 class QuestionTwoOptionsItem(
+    context: Context,
     question: Question?,
-    private val answerSelectedListener: (AnswerOption) -> Unit,
-    private val optionalValueLabel: String? = null,
-    private val previousAnswer: JsonObject? = null
-) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
+    answerSelectedListener: (AnswerOption) -> Unit,
+    previousAnswer: JsonObject? = null
+) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_2_options
-    private var selectedAnswer: AnswerOption? = null
     private lateinit var answerGroup: RadioGroup
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
@@ -38,12 +37,21 @@ class QuestionTwoOptionsItem(
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
 
+        // try restore state
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
-        } else {
-            val indexOfSelectedAnswer = question?.answerOptions?.indexOf(selectedAnswer)
-            if (indexOfSelectedAnswer == 0 || indexOfSelectedAnswer == 1) {
-                (answerGroup.getChildAt(indexOfSelectedAnswer) as RadioButton).isChecked = true
+        }
+
+        // if there is no previous answer - reset clear selection
+        if (selectedAnswer == null) {
+            viewBinding.option1.isChecked = false
+            viewBinding.option2.isChecked = false
+        }
+
+        question?.answerOptions?.indexOf(selectedAnswer)?.let {index ->
+            when (index) {
+                0 -> viewBinding.option1.isChecked = true
+                1 -> viewBinding.option2.isChecked = true
             }
         }
 
@@ -55,8 +63,8 @@ class QuestionTwoOptionsItem(
                         else -> question?.answerOptions?.get(1)
                     }
                     answerOption?.let {
-                        answerSelectedListener.invoke(it)
                         selectedAnswer = it
+                        answerSelectedListener.invoke(it)
                     }
                 }
             }
@@ -67,46 +75,6 @@ class QuestionTwoOptionsItem(
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.questionDescription.text = spannableBuilder
-        }
-    }
-
-    override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
-
-    override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
-
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
-        selectedAnswer?.let {
-            it.value?.let {
-                if (optionalValueLabel != null) {
-                    answers.put(optionalValueLabel, it)
-                } else {
-                    answers.put("value", it)
-                }
-            }
-        }
-        return answers
-    }
-
-    private fun fillInPreviousAnswer() {
-        if (previousAnswer != null && optionalValueLabel != null && previousAnswer.containsKey(optionalValueLabel)) {
-            val previousAnswerValue = previousAnswer[optionalValueLabel]?.jsonPrimitive?.content
-            Timber.d("Found previous value for $optionalValueLabel of $previousAnswerValue")
-
-            if (question?.answerOptions?.get(0)?.value == previousAnswerValue) {
-                (answerGroup.getChildAt(0) as RadioButton).isChecked = true
-                question?.answerOptions?.get(0)?.let {
-                    selectedAnswer = it
-                }
-            } else {
-                (answerGroup.getChildAt(1) as RadioButton).isChecked = true
-                question?.answerOptions?.get(1)?.let {
-                    selectedAnswer = it
-                }
-            }
-
         }
     }
 }

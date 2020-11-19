@@ -44,6 +44,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     val livedTogetherRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,
@@ -52,29 +53,26 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_no), null, ANSWER_FALSE),
-                            AnswerOption(context.getString(R.string.answer_yes), null, ANSWER_TRUE)
+                            AnswerOption(context.getString(R.string.answer_no), null, false.toString()),
+                            AnswerOption(context.getString(R.string.answer_yes), null, true.toString())
                     )
             ),
             {
                 when (it.value) {
-                    ANSWER_FALSE -> viewModel.livedTogetherRisk.value = false
-                    ANSWER_TRUE -> viewModel.livedTogetherRisk.value = true
+                    false.toString() -> viewModel.livedTogetherRisk.value = false
+                    true.toString() -> viewModel.livedTogetherRisk.value = true
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            LIVED_TOGETHER_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        when (viewModel.livedTogetherRisk.value) {
-                            true -> put(LIVED_TOGETHER_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(LIVED_TOGETHER_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
-                        }
+                        put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
                     }
             )
     )
 
     val durationRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,
@@ -83,29 +81,26 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
                     )
             ),
             {
                 when (it.value) {
-                    ANSWER_FALSE -> viewModel.durationRisk.value = false
-                    ANSWER_TRUE -> viewModel.durationRisk.value = true
+                    false.toString() -> viewModel.durationRisk.value = false
+                    true.toString() -> viewModel.durationRisk.value = true
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            DURATION_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        when (viewModel.durationRisk.value) {
-                            true -> put(DURATION_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(DURATION_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
-                        }
+                        put("value", JsonPrimitive(viewModel.durationRisk.value))
                     }
             )
     )
 
     val distanceRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     context.getString(R.string.distance_risk_description),
@@ -114,29 +109,26 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
                     )
             ),
             {
                 when (it.value) {
-                    ANSWER_FALSE -> viewModel.distanceRisk.value = false
-                    ANSWER_TRUE -> viewModel.distanceRisk.value = true
+                    false.toString() -> viewModel.distanceRisk.value = false
+                    true.toString() -> viewModel.distanceRisk.value = true
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            DISTANCE_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        when (viewModel.distanceRisk.value) {
-                            true -> put(DISTANCE_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(DISTANCE_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
-                        }
+                        put("value", JsonPrimitive(viewModel.distanceRisk.value))
                     }
             )
     )
 
     val otherRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,
@@ -145,24 +137,20 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
                     QuestionType.ClassificationDetails,
                     Group.Classification,
                     listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, ANSWER_TRUE),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, ANSWER_FALSE)
+                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
                     )
             ),
             {
                 when (it.value) {
-                    ANSWER_FALSE -> viewModel.otherRisk.value = false
-                    ANSWER_TRUE -> viewModel.otherRisk.value = true
+                    false.toString() -> viewModel.otherRisk.value = false
+                    true.toString() -> viewModel.otherRisk.value = true
                 }
                 viewModel.updateCategoryFromRiskFlags()
             },
-            OTHER_RISK_LABEL,
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        when (viewModel.otherRisk.value) {
-                            true -> put(OTHER_RISK_LABEL, JsonPrimitive(ANSWER_TRUE))
-                            false -> put(OTHER_RISK_LABEL, JsonPrimitive(ANSWER_FALSE))
-                        }
+                        put("value", JsonPrimitive(viewModel.otherRisk.value))
                     }
             )
     )
@@ -209,7 +197,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
             },
             JsonObject(
                     HashMap<String, JsonElement>().apply {
-                        put(LAST_EXPOSURE, JsonPrimitive(viewModel.dateOfLastExposure.value))
+                        put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
                     }
             )
     )
@@ -225,18 +213,6 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     companion object {
-        //        Classification
-        const val LIVED_TOGETHER_RISK_LABEL = "livedTogetherRisk"
-        const val DISTANCE_RISK_LABEL = "distanceRisk"
-        const val DURATION_RISK_LABEL = "durationRisk"
-        const val OTHER_RISK_LABEL = "otherRisk"
-
-        const val ANSWER_FALSE = "false"
-        const val ANSWER_TRUE = "true"
-
-        //        Contact details
-        const val LAST_EXPOSURE = "lastExposure"
-
         const val ANSWER_EARLIER = "earlier"
     }
 }

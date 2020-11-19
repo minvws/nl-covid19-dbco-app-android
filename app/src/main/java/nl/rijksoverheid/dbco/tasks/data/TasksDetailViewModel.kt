@@ -46,8 +46,10 @@ class TasksDetailViewModel(
     fun setTask(task: Task) {
         this.task.value = task
         selectedContact = task.linkedContact
-        hasEmailOrPhone.value = selectedContact?.hasValidEmailOrPhone()
         questionnaireResult = task.questionnaireResult
+        hasEmailOrPhone.value = selectedContact?.hasValidEmailOrPhone()
+        communicationType.value = task.communication
+        dateOfLastExposure.value = task.dateOfLastExposure
         category.value = task.category
         updateRiskFlagsFromCategory(task)
     }

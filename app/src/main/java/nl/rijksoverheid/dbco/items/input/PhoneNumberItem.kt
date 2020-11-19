@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.items.input
 
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.InputType
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
@@ -26,7 +25,6 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
         binding = viewBinding
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_CLASS_PHONE
-            addTextChangedListener(PhoneNumberFormattingTextWatcher(Locale.getDefault().country))
             setText(phoneNumber)
         }
 
@@ -49,7 +47,7 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
     }
 
     private fun checkCompleted() {
-
+        // TODO check phone
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
