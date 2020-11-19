@@ -34,6 +34,7 @@
     <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
     <string name="mycontacts_informed_header">Behandelde contacten</string>
     <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
+    <string name="mycontacts_name_unknown">Geen naam bekend</string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 

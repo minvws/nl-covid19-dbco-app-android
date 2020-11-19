@@ -120,7 +120,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
 
             binding.saveButton.text =
-                if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.close)
+                if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.save)
         })
 
         viewModel.communicationType.observe(viewLifecycleOwner, {
