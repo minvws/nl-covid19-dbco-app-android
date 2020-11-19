@@ -21,14 +21,13 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import timber.log.Timber
 
 class QuestionMultipleOptionsItem(
-    val context: Context,
+    context: Context,
     question: Question?,
-    val answerSelectedListener: (AnswerOption) -> Unit,
-    private val previousAnswer: JsonObject? = null
-) : BaseQuestionItem<ItemQuestionMultipleOptionsBinding>(question) {
+    answerSelectedListener: (AnswerOption) -> Unit,
+    previousAnswer: JsonObject? = null
+) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
-    private var selectedAnswer: AnswerOption? = null
 
     override fun bind(viewBinding: ItemQuestionMultipleOptionsBinding, position: Int) {
         viewBinding.item = this
@@ -73,34 +72,6 @@ class QuestionMultipleOptionsItem(
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     selectedAnswer = null
                     viewBinding.inputEditText.setText("")
-                }
-            }
-        }
-    }
-
-    override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionMultipleOptionsItem && other.question?.uuid == question?.uuid
-
-    override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionMultipleOptionsItem && other.question?.uuid == question?.uuid
-
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
-        selectedAnswer?.let {
-            it.value?.let { value ->
-                answers.put("value", value)
-            }
-        }
-        return answers
-    }
-
-    private fun fillInPreviousAnswer() {
-        previousAnswer?.let {
-            val previousAnswerValue = it["value"]?.jsonPrimitive?.jsonPrimitive?.content
-            question?.answerOptions?.forEach { option ->
-                if (option?.value?.equals(previousAnswerValue) == true) {
-                    selectedAnswer = option
-                    return
                 }
             }
         }

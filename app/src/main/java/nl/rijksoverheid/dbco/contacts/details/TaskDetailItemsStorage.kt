@@ -44,6 +44,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     val livedTogetherRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,
@@ -71,6 +72,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     val durationRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,
@@ -98,6 +100,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     val distanceRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     context.getString(R.string.distance_risk_description),
@@ -125,6 +128,7 @@ class TaskDetailItemsStorage(viewModel: TasksDetailViewModel, context: Context) 
     )
 
     val otherRiskItem = QuestionTwoOptionsItem(
+            context,
             Question(
                     null,
                     null,

@@ -246,6 +246,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     }
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
+                            requireContext(),
                             question,
                             {
                                 when (it.trigger) {

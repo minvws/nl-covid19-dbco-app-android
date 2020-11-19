@@ -7,6 +7,7 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
+import android.content.Context
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -20,13 +21,13 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class QuestionTwoOptionsItem(
+    context: Context,
     question: Question?,
-    private val answerSelectedListener: (AnswerOption) -> Unit,
-    private val previousAnswer: JsonObject? = null
-) : BaseQuestionItem<ItemQuestion2OptionsBinding>(question) {
+    answerSelectedListener: (AnswerOption) -> Unit,
+    previousAnswer: JsonObject? = null
+) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_2_options
-    private var selectedAnswer: AnswerOption? = null
     private lateinit var answerGroup: RadioGroup
 
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
@@ -74,48 +75,6 @@ class QuestionTwoOptionsItem(
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.questionDescription.text = spannableBuilder
-        }
-    }
-
-    override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
-
-    override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid && other.question?.label == question?.label
-
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
-        selectedAnswer?.let {
-            it.value?.let {value ->
-                answers.put("value", value)
-            }
-        }
-        return answers
-    }
-
-    private fun fillInPreviousAnswer() {
-        previousAnswer?.let { prevAnswer ->
-            prevAnswer["value"]?.let { value ->
-                when (value.jsonPrimitive.jsonPrimitive.content) {
-                    question?.answerOptions?.get(0)?.value -> {
-                        selectedAnswer = question.answerOptions[0]
-                    }
-                    question?.answerOptions?.get(1)?.value -> {
-                        selectedAnswer = question.answerOptions[1]
-                    }
-                    else -> {
-                    }
-                }
-            } ?: run {
-                prevAnswer["trigger"]?.let { trigger ->
-                    question?.answerOptions?.forEach { option ->
-                        if (option?.trigger == trigger.jsonPrimitive.jsonPrimitive.content) {
-                            selectedAnswer = option
-                        }
-                    }
-                }
-            }
-
         }
     }
 }
