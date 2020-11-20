@@ -45,6 +45,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
+import nl.rijksoverheid.dbco.util.removeAllChildren
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -113,6 +114,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
 
             itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
+            refreshContactDetailsSection()
+
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
             itemsStorage?.refreshInformSection()
 
@@ -133,7 +136,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             checkIfContactDetailsSectionComplete()
         })
 
-        addQuestionnaireSections()
+        refreshClassificationSection()
 
         binding.saveButton.setOnClickListener {
             if (viewModel.category.value == Category.NO_RISK) {
@@ -189,42 +192,52 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.create().show()
     }
 
-    private fun addQuestionnaireSections() {
-        var communicationTypeQuestionFound = false
-
-        // add questions to sections, based on their "group"
+    private fun refreshClassificationSection() {
+        itemsStorage?.classificationSection?.removeAllChildren()
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
-            val section =
-                when (question.group) {
-                    Group.ContactDetails -> itemsStorage?.contactDetailsSection
-                    Group.Classification -> itemsStorage?.classificationSection
-                    else -> null
-                }
-
-            // add hardcoded "date of last exposure" question before communication type question
-            if (isCommunicationTypeQuestion(question)) {
-                itemsStorage?.let {
-                    it.contactDetailsSection.add(it.dateOfLastExposureItem)
-                    communicationTypeQuestionFound = true
-                }
+            if (question.group == Group.Classification) {
+                addClassificationQuestions(itemsStorage?.classificationSection)
             }
+        }
+    }
 
-            when (question.questionType) {
-                QuestionType.Multiplechoice -> {
-                    addMultiChoiceItem(question, section)
+    private fun refreshContactDetailsSection() {
+        itemsStorage?.contactDetailsSection?.removeAllChildren()
+        var communicationTypeQuestionFound = false
+        val questions = viewModel.questionnaire?.questions?.filterNotNull()
+        questions?.forEach { question ->
+            if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
+                // add hardcoded "date of last exposure" question before communication type question
+                if (isCommunicationTypeQuestion(question)) {
+                    itemsStorage?.let {
+                        it.contactDetailsSection.add(it.dateOfLastExposureItem)
+                        communicationTypeQuestionFound = true
+                    }
                 }
-                QuestionType.Open -> {
-                    section?.add(SingleInputItem(requireContext(), question))
-                }
-                QuestionType.Date -> {
-                    section?.add(DateInputItem(requireContext(), question))
-                }
-                QuestionType.ContactDetails -> {
-                    addContactDetailsItems(section, question)
-                }
-                QuestionType.ClassificationDetails -> {
-                    addClassificationQuestions(section)
+                when (question.questionType) {
+                    QuestionType.Multiplechoice -> {
+                        addMultiChoiceItem(question, itemsStorage?.contactDetailsSection)
+                    }
+                    QuestionType.Open -> {
+                        itemsStorage?.contactDetailsSection?.add(
+                            SingleInputItem(
+                                requireContext(),
+                                question
+                            )
+                        )
+                    }
+                    QuestionType.Date -> {
+                        itemsStorage?.contactDetailsSection?.add(
+                            DateInputItem(
+                                requireContext(),
+                                question
+                            )
+                        )
+                    }
+                    QuestionType.ContactDetails -> {
+                        addContactDetailsItems(itemsStorage?.contactDetailsSection, question)
+                    }
                 }
             }
         }
