@@ -11,7 +11,6 @@ package nl.rijksoverheid.dbco.tasks
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
@@ -107,6 +106,20 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         // save whole task in prefs
         val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(cachedCase)
         encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
+    }
+
+    override fun deleteTask(taskToDelete: Task) {
+        caseChanged = true
+        val currentTasks = cachedCase?.tasks as ArrayList
+        var indexToDelete = -1
+        currentTasks.forEachIndexed { index, task ->
+            if (task.uuid == taskToDelete.uuid) {
+                indexToDelete = index
+            }
+        }
+        if (indexToDelete!=-1) {
+            currentTasks.removeAt(indexToDelete)
+        }
     }
 
     override fun getCachedCase(): Case? {
