@@ -15,32 +15,34 @@
             type="nl.rijksoverheid.dbco.items.input.DateInputItem" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/activity_horizontal_margin">
 
-        <TextView
-            android:id="@+id/question_label"
-            style="@style/QuestionText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:text="@{item.question.label}"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:hint="@{item.question.label}"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/date_label"
-            style="@style/QuestionText"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_height"
-            android:paddingHorizontal="@dimen/activity_horizontal_margin"
-            android:gravity="center_vertical"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/date_label"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--        click interceptor-->
+        <View
             android:onClick="@{item.onDateClicked}"
-            android:background="@drawable/choice_button_background_unchecked"
-            android:text="@string/contact_question_select_option"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:layout_width="match_parent"
+            android:layout_height="54dp" />
 
-    </LinearLayout>
+    </FrameLayout>
 </layout>

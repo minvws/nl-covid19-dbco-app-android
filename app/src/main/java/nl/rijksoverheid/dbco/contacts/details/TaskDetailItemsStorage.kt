@@ -246,7 +246,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                 } else {
                     val date = LocalDate.parse(dateLastExposure, DateFormats.exposureData)
                     val untilDate = date.plusDays(10)
-                    val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelines))
+                    val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelinesUI))
 
                     val daysRemaining = Days.daysBetween(LocalDate.now(), untilDate).days.absoluteValue
 
@@ -308,7 +308,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                     ButtonItem(
                         context.getString(
                             R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName?: ""
+                            viewModel.selectedContact?.firstName?: "contact"
                         ),
                         {
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
