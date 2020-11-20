@@ -35,7 +35,7 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
 
     open fun fillInPreviousAnswer() {
         previousAnswer?.let { prevAnswer ->
-            prevAnswer["value"]?.jsonPrimitive?.jsonPrimitive?.content.let { value ->
+            prevAnswer["value"]?.jsonPrimitive?.jsonPrimitive?.content?.let { value ->
                 question?.answerOptions?.forEach { option ->
                     if (option?.value == value) {
                         selectedAnswer = option
@@ -43,7 +43,7 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
                     }
                 }
             }
-            prevAnswer["trigger"]?.jsonPrimitive?.jsonPrimitive?.content.let { trigger ->
+            prevAnswer["trigger"]?.jsonPrimitive?.jsonPrimitive?.content?.let { trigger ->
                 question?.answerOptions?.forEach { option ->
                     if (option?.trigger == trigger) {
                         selectedAnswer = option

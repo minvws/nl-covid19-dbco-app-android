@@ -43,9 +43,7 @@ import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
 import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.input.SingleInputItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
-import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
@@ -54,7 +52,6 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
-import nl.rijksoverheid.dbco.util.removeHtmlTags
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.UUID
@@ -118,6 +115,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
             itemsStorage?.contactDetailsSection?.setEnabled(categoryHasRisk)
             itemsStorage?.informSection?.setEnabled(categoryHasRisk)
+            itemsStorage?.refreshInformSection()
 
             binding.saveButton.text =
                 if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.save)
@@ -126,6 +124,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.communicationType.observe(viewLifecycleOwner, {
             checkIfInformSectionComplete()
             checkIfContactDetailsSectionComplete()
+            itemsStorage?.refreshInformSection()
         })
 
         viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {
@@ -136,7 +135,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         })
 
         addQuestionnaireSections()
-        addInformSection()
 
         binding.saveButton.setOnClickListener {
             if (viewModel.category.value == Category.NO_RISK) {
@@ -307,48 +305,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 }
             )
         )
-    }
-
-    private fun addInformSection() {
-
-        // TODO message should be dynamic
-        val message = getString(R.string.contact_section_inform_content_details, "9 november", "10")
-        val plainMessage = message.removeHtmlTags()
-
-        itemsStorage?.informSection?.apply {
-            add(SubHeaderItem(R.string.contact_section_inform_content_header))
-            add(ParagraphItem(message))
-            add(ButtonItem(
-                getString(R.string.contact_section_inform_copy),
-                {
-                    val clipboard =
-                        context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
-                    clipboard.setPrimaryClip(clip)
-                    Toast.makeText(
-                        context,
-                        getString(R.string.contact_section_inform_copied),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            ))
-
-            // add "Call $name" button if phone is set
-            viewModel.selectedContact?.number?.let {
-                add(
-                    ButtonItem(
-                        getString(
-                            R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName
-                        ),
-                        {
-                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
-                            startActivity(intent)
-                        },
-                    )
-                )
-            }
-        }
     }
 
     private fun checkIfInformSectionComplete() {

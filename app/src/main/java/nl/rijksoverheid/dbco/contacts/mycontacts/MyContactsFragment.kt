@@ -75,7 +75,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.toolbar.visibility = View.GONE
 
         binding.manualEntryButton.setOnClickListener {
-            checkPermissionAndNavigate()
+            checkPermissionGoToTaskDetails()
         }
 
         binding.sendButton.setOnClickListener {
@@ -141,12 +141,17 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         adapter.setOnItemClickListener { item, view ->
             if (item is TaskItem) {
-                checkPermissionAndNavigate(item.task)
+                checkPermissionGoToTaskDetails(item.task)
             }
         }
     }
 
-    private fun checkPermissionAndNavigate(task: Task? = null) {
+    private fun checkPermissionGoToTaskDetails(task: Task? = null) {
+        if (tasksViewModel.getCachedQuestionnaire() == null) {
+            // questionare is null, this could happen in questionary call failed
+            showErrorDialog(getString(R.string.error_questionarre_is_empty), {})
+            return
+        }
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS
