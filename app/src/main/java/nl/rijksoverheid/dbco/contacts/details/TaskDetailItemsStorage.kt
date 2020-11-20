@@ -236,7 +236,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             else -> ""
         }
 
-        val message = when (viewModel.category.value) {
+        var message = when (viewModel.category.value) {
             Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_guidelines_category1)
             Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
             Category.DURATION, Category.DISTANCE -> {
@@ -264,6 +264,17 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             }
             else -> ""
         }
+
+        val link = when (viewModel.category.value) {
+            Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_link_category1)
+            Category.DURATION -> context.getString(R.string.inform_contact_link_category2a)
+            Category.DISTANCE -> context.getString(R.string.inform_contact_link_category2b)
+            Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
+            else -> ""
+        }
+
+        message += "<br/>$link"
+
         val plainMessage = message.removeHtmlTags()
 
         informSection.apply {

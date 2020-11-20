@@ -35,6 +35,8 @@ fun String.removeHtmlTags(): String{
             .replace("</ul>", "")
             .replace("</li>", "")
             .replace("<li>", "\n• ")
+            .replace("<a href=\"", "")
+            .replace(Regex("\">(.*)</a>"), "")
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
