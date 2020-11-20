@@ -241,7 +241,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
             Category.DURATION, Category.DISTANCE -> {
                 val dateLastExposure = viewModel.dateOfLastExposure.value
-                if (dateLastExposure == null) {
+                if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
                     context.getString(R.string.inform_contact_guidelines_category2, "", "")
                 } else {
                     val date = LocalDate.parse(dateLastExposure, DateFormats.exposureData)
@@ -308,7 +308,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                     ButtonItem(
                         context.getString(
                             R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName
+                            viewModel.selectedContact?.firstName?: ""
                         ),
                         {
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))

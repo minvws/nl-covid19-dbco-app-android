@@ -117,7 +117,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 indexToDelete = index
             }
         }
-        if (indexToDelete!=-1) {
+        if (indexToDelete != -1) {
             currentTasks.removeAt(indexToDelete)
         }
     }
