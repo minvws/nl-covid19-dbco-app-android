@@ -199,7 +199,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                             for (i in 0 .. interval) {
                                 val date = twoDaysBeforeSymptoms.plusDays(i)
                                 val label = date.toString(DateFormats.exposureUI)
-                                val value = date.toString(DateFormats.exposureData)
+                                val value = date.toString(DateFormats.data)
                                 add(AnswerOption(label, null, value))
                             }
                         }
@@ -244,7 +244,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                 if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
                     context.getString(R.string.inform_contact_guidelines_category2, "", "")
                 } else {
-                    val date = LocalDate.parse(dateLastExposure, DateFormats.exposureData)
+                    val date = LocalDate.parse(dateLastExposure, DateFormats.data)
                     val untilDate = date.plusDays(10)
                     val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelinesUI))
 

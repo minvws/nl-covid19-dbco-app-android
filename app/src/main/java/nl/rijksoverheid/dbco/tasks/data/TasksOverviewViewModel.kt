@@ -44,7 +44,7 @@ class TasksOverviewViewModel(
         }
     }
 
-    fun sendCurrentCase() {
+    fun uploadCurrentCase() {
         viewModelScope.launch {
             tasksRepository.uploadCase()
         }
