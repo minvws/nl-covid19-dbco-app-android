@@ -68,6 +68,8 @@
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
 
+    <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
+
     <string name="answer_no">Nee</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_think_yes">Ja, denk het wel</string>

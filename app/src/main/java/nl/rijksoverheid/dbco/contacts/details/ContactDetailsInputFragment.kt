@@ -9,14 +9,8 @@
 package nl.rijksoverheid.dbco.contacts.details
 
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -35,7 +29,6 @@ import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
-import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.DateInputItem
 import nl.rijksoverheid.dbco.items.input.EmailAddressItem
@@ -54,9 +47,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.UUID
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -94,6 +85,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         binding.toolbar.title = args.selectedContact?.getDisplayName()
             ?: resources.getString(R.string.mycontacts_add_contact)
+
+        binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.delete_contact_item -> showDeleteItemDialog(view)
+            }
+            true
+        }
 
         viewModel.category.observe(viewLifecycleOwner, {
             val hasCategory = it != null
@@ -148,6 +147,20 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
             collectAnswers()
         }
+    }
+
+    private fun showDeleteItemDialog(view: View) {
+        val builder = AlertDialog.Builder(view.context)
+        builder.setMessage(R.string.delete_contact_message)
+        builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
+            viewModel.deleteCurrentTask()
+            dialog.dismiss()
+            findNavController().popBackStack()
+        }
+        builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
     private fun showDidYouInformDialog(view: View) {

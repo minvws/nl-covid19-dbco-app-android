@@ -65,6 +65,12 @@ class TasksDetailViewModel(
         tasksRepository.saveChangesToTask(updatedTask)
     }
 
+    fun deleteCurrentTask() {
+        task.value?.let {
+            tasksRepository.deleteTask(it)
+        }
+    }
+
     private fun updateRiskFlagsFromCategory(task: Task) {
         when (task.category) {
             Category.LIVED_TOGETHER -> {

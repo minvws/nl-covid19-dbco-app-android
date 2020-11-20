@@ -60,6 +60,10 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 
+    override fun deleteTask(taskToDelete: Task) {
+        TODO("Not yet implemented")
+    }
+
     override fun getCachedCase(): Case? {
         return cachedCase
     }
