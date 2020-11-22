@@ -67,7 +67,7 @@ class DateInputItem(
     override fun getUserAnswers(): Map<String, Any> {
         val answers = HashMap<String, Any>()
         date?.let {
-            answers.put("value", it.toString(DateFormats.data))
+            answers.put("value", it.toString(DateFormats.dateInputData))
         }
         return answers
     }

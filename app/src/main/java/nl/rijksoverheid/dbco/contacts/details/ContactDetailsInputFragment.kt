@@ -24,6 +24,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
@@ -46,8 +47,8 @@ import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
+import org.joda.time.LocalDate
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -197,7 +198,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.Classification) {
-                addClassificationQuestions(itemsStorage?.classificationSection)
+                addClassificationQuestions(question, itemsStorage?.classificationSection)
             }
         }
     }
@@ -352,6 +353,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addClassificationQuestions(
+        question: Question,
         section: QuestionnaireSection?
     ) {
 
@@ -396,13 +398,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     section?.remove(itemsStorage.noRiskItem)
                 }
             })
+
+            listOf(
+                itemsStorage.livedTogetherRiskItem,
+                itemsStorage.distanceRiskItem,
+                itemsStorage.durationRiskItem,
+                itemsStorage.otherRiskItem
+            ).forEach {
+                it.question?.uuid = question.uuid
+            }
         }
     }
 
     private fun collectAnswers() {
 
         val answerCollector = HashMap<String, Map<String, Any>>()
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
 
         for (groupIndex: Int in 0 until adapter.groupCount) {
             val item = adapter.getTopLevelGroup(groupIndex)
@@ -413,17 +423,18 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         val answer = HashMap<String, Any>()
                         if (child.question != null) {
                             answer.put("questionUuid", child.question.uuid!!)
-                            answer.put("lastModified", sdf.format(Date()))
+                            answer.put("lastModified", LocalDate.now().toString(DateFormats.questionData))
                             val data = child.getUserAnswers()
                             answer.putAll(data)
 
                             // Combine with previous entry if found
                             if (answerCollector.containsKey(child.question.uuid)) {
-                                val prev =
-                                    answerCollector.get(child.question.uuid) as Map<String, Any>
+                                val prev = answerCollector.get(child.question.uuid) as Map<String, Any>
                                 answer.putAll(prev)
                             }
-                            answerCollector.put(child.question.uuid, answer)
+                            child.question.uuid?.let { uuid ->
+                                answerCollector.put(uuid, answer)
+                            }
                         } else {
                             Timber.d("Got child without question")
                         }
