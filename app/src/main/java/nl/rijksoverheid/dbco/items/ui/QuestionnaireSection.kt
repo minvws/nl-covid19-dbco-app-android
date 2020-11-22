@@ -26,4 +26,9 @@ class QuestionnaireSection(
     }
 
     fun isEnabled() = headerItem.enabled
+
+    fun setBlocked(blocked: Boolean) {
+        headerItem.blocked = blocked
+    }
+
 }

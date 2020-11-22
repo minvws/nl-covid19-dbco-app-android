@@ -44,6 +44,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
@@ -72,7 +73,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        val task = args.indexTask ?: Task(taskType = "contact", source = "app")
+        val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
         viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(viewModel, view.context).apply {
@@ -88,12 +89,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         binding.toolbar.title = args.selectedContact?.getDisplayName()
             ?: resources.getString(R.string.mycontacts_add_contact)
 
-        binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.delete_contact_item -> showDeleteItemDialog(view)
+        if (task.source == Source.App) {
+            binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
+            binding.toolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.delete_contact_item -> showDeleteItemDialog(view)
+                }
+                true
             }
-            true
         }
 
         viewModel.category.observe(viewLifecycleOwner, {
@@ -105,6 +108,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if (categoryHasRisk) {
                 if (itemsStorage?.classificationSection?.isExpanded == true) {
                     itemsStorage?.classificationSection?.onToggleExpanded()
+                }
+                if (task.source == Source.Portal) {
+                    itemsStorage?.classificationSection?.setBlocked(true)
                 }
             }
 

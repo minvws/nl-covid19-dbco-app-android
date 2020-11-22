@@ -41,10 +41,12 @@ class QuestionnaireSectionHeader(
         binding?.sectionStatusIcon?.isEnabled = value
     }
 
+    var blocked = false
+
     override fun bind(viewBinding: ItemQuestionnaireSectionBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.root.setOnClickListener {
-            if (enabled) {
+            if (enabled && !blocked) {
                 expandableGroup.onToggleExpanded()
                 viewBinding.sectionChevron.setImageResource(getSectionChevron())
             }
