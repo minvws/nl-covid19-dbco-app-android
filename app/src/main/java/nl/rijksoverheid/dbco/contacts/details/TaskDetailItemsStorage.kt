@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -21,9 +22,14 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.ButtonItem
+import nl.rijksoverheid.dbco.items.input.ContactNameItem
+import nl.rijksoverheid.dbco.items.input.DateInputItem
+import nl.rijksoverheid.dbco.items.input.EmailAddressItem
 import nl.rijksoverheid.dbco.items.input.NoRiskItem
+import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
 import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
+import nl.rijksoverheid.dbco.items.input.SingleInputItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
@@ -44,7 +50,13 @@ import kotlin.math.absoluteValue
 /**
  * Created by Dima Kovalenko.
  */
-class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: Context) {
+class TaskDetailItemsStorage(
+    val viewModel: TasksDetailViewModel,
+    val context: Context,
+    private val viewLifecycleOwner: LifecycleOwner
+) {
+
+    var classificationQuestion: Question? = null
 
     // Classification
 
@@ -56,7 +68,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             ), true
     )
 
-    val livedTogetherRiskItem = QuestionTwoOptionsItem(
+    private val livedTogetherRiskItem = QuestionTwoOptionsItem(
             context,
             Question(
                     null,
@@ -82,7 +94,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             )
     )
 
-    val durationRiskItem = QuestionTwoOptionsItem(
+    private val durationRiskItem = QuestionTwoOptionsItem(
             context,
             Question(
                     null,
@@ -108,7 +120,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             )
     )
 
-    val distanceRiskItem = QuestionTwoOptionsItem(
+    private val distanceRiskItem = QuestionTwoOptionsItem(
             context,
             Question(
                     context.getString(R.string.distance_risk_description),
@@ -134,7 +146,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             )
     )
 
-    val otherRiskItem = QuestionTwoOptionsItem(
+    private val otherRiskItem = QuestionTwoOptionsItem(
             context,
             Question(
                     null,
@@ -160,7 +172,71 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             )
     )
 
-    val noRiskItem = NoRiskItem()
+    private val noRiskItem = NoRiskItem()
+
+    fun addClassificationQuestions(
+        question: Question,
+        section: QuestionnaireSection?
+    ) {
+            classificationQuestion = question
+            section?.add(livedTogetherRiskItem) // always added
+
+            viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(durationRiskItem)
+                } else {
+                    section?.remove(distanceRiskItem)
+                    section?.remove(durationRiskItem)
+                    section?.remove(otherRiskItem)
+                    section?.remove(noRiskItem)
+                }
+            })
+
+            viewModel.durationRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(distanceRiskItem)
+                } else {
+                    section?.remove(distanceRiskItem)
+                    section?.remove(otherRiskItem)
+                    section?.remove(noRiskItem)
+                }
+            })
+
+            viewModel.distanceRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(otherRiskItem)
+                } else {
+                    section?.remove(otherRiskItem)
+                    section?.remove(noRiskItem)
+                }
+            })
+
+            viewModel.otherRisk.observe(viewLifecycleOwner, {
+                if (it == false) {
+                    section?.add(noRiskItem)
+                } else {
+                    section?.remove(noRiskItem)
+                }
+            })
+
+            listOf(
+                livedTogetherRiskItem,
+                distanceRiskItem,
+                durationRiskItem,
+                otherRiskItem
+            ).forEach {
+                it.question?.uuid = question.uuid
+            }
+    }
+
+    fun getClassificationAnswerValue(): JsonObject {
+        val map = HashMap<String, JsonElement> ()
+        map["category1Risk"] = JsonPrimitive(viewModel.livedTogetherRisk.value ?: false)
+        map["category2ARisk"] = JsonPrimitive(viewModel.durationRisk.value ?: false)
+        map["category2BRisk"] = JsonPrimitive(viewModel.distanceRisk.value ?: false)
+        map["category3Risk"] = JsonPrimitive(viewModel.otherRisk.value ?: false)
+        return JsonObject(map)
+    }
 
     // Contact details
 
@@ -172,7 +248,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             ), false
     )
 
-    val dateOfLastExposureItem = QuestionMultipleOptionsItem(
+    private val dateOfLastExposureItem = QuestionMultipleOptionsItem(
             context,
             Question(
                     null,
@@ -204,6 +280,138 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                     }
             )
     )
+
+    fun refreshContactDetailsSection() {
+        contactDetailsSection.removeAllChildren()
+        var communicationTypeQuestionFound = false
+        val questions = viewModel.questionnaire?.questions?.filterNotNull()
+        questions?.forEach { question ->
+            if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
+                // add hardcoded "date of last exposure" question before communication type question
+                if (isCommunicationTypeQuestion(question)) {
+                    let {
+                        it.contactDetailsSection.add(it.dateOfLastExposureItem)
+                        communicationTypeQuestionFound = true
+                    }
+                }
+                when (question.questionType) {
+                    QuestionType.Multiplechoice -> {
+                        addMultiChoiceItem(question, contactDetailsSection)
+                    }
+                    QuestionType.Open -> {
+                        contactDetailsSection.add(
+                            SingleInputItem(
+                                context,
+                                question,
+                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                            )
+                        )
+                    }
+                    QuestionType.Date -> {
+                        contactDetailsSection.add(
+                            DateInputItem(
+                                context,
+                                question,
+                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                            )
+                        )
+                    }
+                    QuestionType.ContactDetails -> {
+                        addContactDetailsItems(contactDetailsSection, question)
+                    }
+                }
+            }
+        }
+        if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
+            let {
+                contactDetailsSection?.add(it.dateOfLastExposureItem)
+            }
+        }
+    }
+
+    private fun addMultiChoiceItem(
+        question: Question,
+        sectionToAddTo: QuestionnaireSection?
+    ) {
+        question.answerOptions?.size?.let { size ->
+            when {
+                size > 2 -> {
+                    sectionToAddTo?.add(
+                        QuestionMultipleOptionsItem(
+                            context,
+                            question,
+                            {},
+                            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                        )
+                    )
+                }
+                size == 2 -> {
+                    var previousAnswerValue =
+                        viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                    if (isCommunicationTypeQuestion(question)) {
+                        // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
+                        previousAnswerValue = JsonObject(
+                            HashMap<String, JsonElement>().apply {
+                                val trigger = when (viewModel.communicationType.value) {
+                                    CommunicationType.Index -> ContactDetailsInputFragment.COMMUNICATION_INDEX
+                                    CommunicationType.Staff -> ContactDetailsInputFragment.COMMUNICATION_STUFF
+                                    else -> null
+                                }
+                                trigger?.let {
+                                    put("trigger", JsonPrimitive(it))
+                                }
+                            }
+                        )
+                    }
+                    sectionToAddTo?.add(
+                        QuestionTwoOptionsItem(
+                            context,
+                            question,
+                            {
+                                when (it.trigger) {
+                                    ContactDetailsInputFragment.COMMUNICATION_STUFF -> viewModel.communicationType.value =
+                                        CommunicationType.Staff
+                                    ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
+                                        CommunicationType.Index
+                                }
+                            },
+                            previousAnswerValue
+                        )
+                    )
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun addContactDetailsItems(
+        sectionToAddTo: QuestionnaireSection?,
+        question: Question
+    ) {
+        sectionToAddTo?.addAll(
+            listOf(
+                ContactNameItem(
+                    viewModel.selectedContact?.firstName,
+                    viewModel.selectedContact?.lastName,
+                    question
+                ) { newFirstName, newLastName ->
+                    viewModel.selectedContact?.firstName = newFirstName
+                    viewModel.selectedContact?.lastName = newLastName
+                },
+                PhoneNumberItem(viewModel.selectedContact?.number, question) {
+                    viewModel.selectedContact?.number = it
+                    viewModel.hasEmailOrPhone.value =
+                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                },
+                EmailAddressItem(viewModel.selectedContact?.email, question) {
+                    viewModel.selectedContact?.email = it
+                    viewModel.hasEmailOrPhone.value =
+                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                }
+            )
+        )
+    }
 
     // Inform
 
@@ -315,6 +523,32 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                 )
             }
         }
+    }
+
+    // Misc
+
+    private fun isCommunicationTypeQuestion(question: Question): Boolean {
+        var foundTrigger = false
+        question.answerOptions?.forEach {
+            if (it?.trigger == ContactDetailsInputFragment.COMMUNICATION_STUFF || it?.trigger == ContactDetailsInputFragment.COMMUNICATION_INDEX) {
+                foundTrigger = true
+            }
+        }
+        return foundTrigger
+    }
+
+    fun calculateStatus(): Int {
+        var status = 0
+        if (classificationSection.isCompleted()) {
+            status++
+        }
+        if (contactDetailsSection.isCompleted()) {
+            status++
+        }
+        if (informSection.isCompleted()) {
+            status++
+        }
+        return status
     }
 
     companion object {
