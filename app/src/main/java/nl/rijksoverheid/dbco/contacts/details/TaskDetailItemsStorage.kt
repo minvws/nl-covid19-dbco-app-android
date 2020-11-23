@@ -270,6 +270,11 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
         val plainMessage = message.removeHtmlTags()
 
         informSection.apply {
+
+            if (!isExpanded) {
+                onToggleExpanded()
+            }
+
             removeAllChildren()
 
             setEnabled(isEnabled)
@@ -308,10 +313,6 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                         },
                     )
                 )
-            }
-
-            if (!isExpanded) {
-                onToggleExpanded()
             }
         }
     }

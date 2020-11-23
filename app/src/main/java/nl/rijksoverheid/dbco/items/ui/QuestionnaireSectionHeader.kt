@@ -26,7 +26,6 @@ class QuestionnaireSectionHeader(
     var completed = false
     set(value) {
         field = value
-        binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
         if (value) {
             enabled = true
         }
@@ -39,6 +38,7 @@ class QuestionnaireSectionHeader(
             expandableGroup.onToggleExpanded()
         }
         binding?.sectionStatusIcon?.isEnabled = value
+        binding?.sectionStatusIcon?.setImageResource(if (completed && enabled) R.drawable.ic_valid else getSectionIcon())
     }
 
     var blocked = false
@@ -55,7 +55,7 @@ class QuestionnaireSectionHeader(
         viewBinding.sectionHeader.setText(sectionTitle)
         viewBinding.sectionSubtext.setText(sectionSubtext)
         viewBinding.sectionChevron.setImageResource(getSectionChevron())
-        viewBinding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        viewBinding.sectionStatusIcon.setImageResource(if (completed && enabled) R.drawable.ic_valid else getSectionIcon())
         viewBinding.sectionStatusIcon.isEnabled = enabled
     }
 
