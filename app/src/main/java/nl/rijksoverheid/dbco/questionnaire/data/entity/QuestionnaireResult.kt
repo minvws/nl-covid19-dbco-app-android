@@ -10,26 +10,21 @@ package nl.rijksoverheid.dbco.questionnaire.data.entity
 
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
 
 @Serializable
 class QuestionnaireResult(
     val questionnaireUuid: String,
-    var answers: JsonArray
+    var answers: List<Answer>?
 ) {
 
-    fun getAnswerByUuid(uuid: String): JsonObject? {
-        if (answers.isNotEmpty()) {
-            answers.forEach {
-                val value = it.jsonObject
-                if (value.containsKey("questionUuid")) {
-                    val retrieved = value.getValue("questionUuid")
-                    if (retrieved.jsonPrimitive.isString && retrieved.jsonPrimitive.content == uuid) {
-                        return value
-                    }
-                }
-            }
+    fun getAnswerByQuestionUuid(questionUuid: String?): Answer? {
+        if (questionUuid == null) {
             return null
+        }
+        answers?.forEach {
+            if (it.questionUuid == questionUuid) {
+                return it
+            }
         }
         return null
     }

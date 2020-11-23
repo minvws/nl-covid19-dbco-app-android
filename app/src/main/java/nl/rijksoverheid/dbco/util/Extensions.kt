@@ -13,6 +13,7 @@ import android.content.res.Resources
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.xwray.groupie.ExpandableGroup
+import kotlinx.serialization.json.JsonPrimitive
 
 fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
 fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -40,6 +41,8 @@ fun String.removeHtmlTags(): String{
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
+
+fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
 
 fun ExpandableGroup.removeAllChildren() {
     if (itemCount <= 1) {

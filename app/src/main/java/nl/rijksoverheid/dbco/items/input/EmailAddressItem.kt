@@ -12,9 +12,11 @@ import android.text.InputType
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
+import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.toJsonPrimitive
 
 class EmailAddressItem(
     private var emailAddress: String?,
@@ -80,10 +82,10 @@ class EmailAddressItem(
     override fun hasSameContentAs(other: Item<*>) =
         other is EmailAddressItem && other.emailAddress == emailAddress
 
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
+    override fun getUserAnswers(): Map<String, JsonElement> {
+        val answers = HashMap<String, JsonElement>()
         emailAddress?.let {
-            answers.put("email", it)
+            answers.put("email", it.toJsonPrimitive())
         }
         return answers
     }

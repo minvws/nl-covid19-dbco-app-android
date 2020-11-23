@@ -9,14 +9,13 @@
 package nl.rijksoverheid.dbco.items.input
 
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.MutableLiveData
+import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.QuestionnaireItemViewState
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 abstract class BaseQuestionItem<T : ViewDataBinding>(val question: Question? = null) : BaseBindableItem<T>() {
 
-    open fun getUserAnswers(): Map<String, Any> {
+    open fun getUserAnswers(): Map<String, JsonElement> {
         return HashMap()
     }
 

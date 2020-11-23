@@ -9,9 +9,11 @@
 package nl.rijksoverheid.dbco.items.input
 
 import androidx.core.widget.doAfterTextChanged
+import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactNameBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.toJsonPrimitive
 
 class ContactNameItem(
     private var firstName: String?,
@@ -41,10 +43,10 @@ class ContactNameItem(
         }
     }
 
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
-        answers.put("firstName", firstName ?: "")
-        answers.put("lastName", lastName ?: "")
+    override fun getUserAnswers(): Map<String, JsonElement> {
+        val answers = HashMap<String, JsonElement>()
+        answers.put("firstName", (firstName ?: "").toJsonPrimitive())
+        answers.put("lastName", (lastName ?: "").toJsonPrimitive())
         return answers
     }
 }

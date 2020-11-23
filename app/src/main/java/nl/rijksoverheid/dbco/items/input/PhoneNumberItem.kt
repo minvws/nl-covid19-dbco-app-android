@@ -11,9 +11,11 @@ package nl.rijksoverheid.dbco.items.input
 import android.text.InputType
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
+import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import java.util.*
 
 class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val changeListener: (String) -> Unit) :
@@ -56,10 +58,10 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
     override fun hasSameContentAs(other: Item<*>) =
         other is PhoneNumberItem && other.phoneNumber == phoneNumber
 
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
+    override fun getUserAnswers(): Map<String, JsonElement> {
+        val answers = HashMap<String, JsonElement>()
         phoneNumber?.let {
-            answers.put("phoneNumber", it)
+            answers.put("phoneNumber", it.toJsonPrimitive())
         }
         return answers
     }
