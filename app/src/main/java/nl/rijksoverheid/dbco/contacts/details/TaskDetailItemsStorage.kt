@@ -217,13 +217,15 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
 
     fun refreshInformSection() {
 
-        val hasRisk = !(viewModel.category.value == Category.NO_RISK || viewModel.category.value == null)
-        val isEnabled = hasRisk && viewModel.communicationType.value != null // in those cases inform section is disabled and thus hidden
+        val isEnabled = when (viewModel.category.value) {
+            Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE -> viewModel.communicationType.value != null
+            Category.OTHER -> true
+            else -> false  // in those cases inform section is disabled and thus hidden
+        }
 
         val header = when(viewModel.communicationType.value) {
-            CommunicationType.Index -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
             CommunicationType.Staff -> context.getString(R.string.inform_contact_title_staff, viewModel.selectedContact?.firstName)
-            else -> ""
+            else -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
         }
 
         var message = when (viewModel.category.value) {
@@ -259,7 +261,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_link_category1)
             Category.DURATION -> context.getString(R.string.inform_contact_link_category2a)
             Category.DISTANCE -> context.getString(R.string.inform_contact_link_category2b)
-            Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
+            Category.OTHER -> context.getString(R.string.inform_contact_link_category3)
             else -> ""
         }
 
