@@ -36,7 +36,7 @@ class Task(
     var status: Int? = 0 // number from 0 to 3
 
     @IgnoredOnParcel
-    var contactIsInformedAlready = false
+    var didInform = false
 
     @IgnoredOnParcel
     var linkedContact: LocalContact? = null

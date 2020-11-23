@@ -37,7 +37,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
-import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 import java.util.*
 
 
@@ -137,7 +137,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 return@setOnClickListener
             }
 
-            if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.contactIsInformedAlready == false) {
+            if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.didInform == false) {
                 showDidYouInformDialog(view)
                 return@setOnClickListener
             }
@@ -168,7 +168,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
-            viewModel.task.value?.contactIsInformedAlready = true
+            viewModel.task.value?.didInform = true
             dialog.dismiss()
             checkIfInformSectionComplete()
         }
@@ -206,7 +206,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun checkIfInformSectionComplete() {
         itemsStorage?.informSection?.setCompleted(
             when (viewModel.communicationType.value) {
-                CommunicationType.Index -> viewModel.task.value?.contactIsInformedAlready == true
+                CommunicationType.Index -> viewModel.task.value?.didInform == true
                 CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
                 else -> false
             }
@@ -229,7 +229,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         }
                         val answer = Answer(
                             UUID.randomUUID().toString(),
-                            LocalDate.now().toString(DateFormats.questionData),
+                            LocalDateTime.now().toString(DateFormats.questionData),
                             question.uuid,
                             value
                         )
