@@ -9,11 +9,8 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import android.widget.CompoundButton
-import android.widget.RadioButton
 import android.widget.RadioGroup
-import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -24,8 +21,8 @@ class QuestionTwoOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswer: JsonObject? = null
-) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
+    previousAnswerValue: JsonObject? = null
+) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswerValue) {
 
     override fun getLayout() = R.layout.item_question_2_options
     private lateinit var answerGroup: RadioGroup

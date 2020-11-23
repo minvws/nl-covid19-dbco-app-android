@@ -16,14 +16,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
@@ -37,19 +36,19 @@ import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
 import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
 import nl.rijksoverheid.dbco.items.input.SingleInputItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
-import timber.log.Timber
-import java.text.SimpleDateFormat
+import org.joda.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -71,7 +70,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        val task = args.indexTask ?: Task(taskType = "contact", source = "app")
+        val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
         viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(viewModel, view.context).apply {
@@ -87,12 +86,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         binding.toolbar.title = args.selectedContact?.getDisplayName()
             ?: resources.getString(R.string.mycontacts_add_contact)
 
-        binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.delete_contact_item -> showDeleteItemDialog(view)
+        if (task.source == Source.App) {
+            binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
+            binding.toolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.delete_contact_item -> showDeleteItemDialog(view)
+                }
+                true
             }
-            true
         }
 
         viewModel.category.observe(viewLifecycleOwner, {
@@ -104,6 +105,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if (categoryHasRisk) {
                 if (itemsStorage?.classificationSection?.isExpanded == true) {
                     itemsStorage?.classificationSection?.onToggleExpanded()
+                }
+                if (task.source == Source.Portal) {
+                    itemsStorage?.classificationSection?.setBlocked(true)
                 }
             }
 
@@ -197,7 +201,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.Classification) {
-                addClassificationQuestions(itemsStorage?.classificationSection)
+                addClassificationQuestions(question, itemsStorage?.classificationSection)
             }
         }
     }
@@ -223,7 +227,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         itemsStorage?.contactDetailsSection?.add(
                             SingleInputItem(
                                 requireContext(),
-                                question
+                                question,
+                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
                             )
                         )
                     }
@@ -231,7 +236,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         itemsStorage?.contactDetailsSection?.add(
                             DateInputItem(
                                 requireContext(),
-                                question
+                                question,
+                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
                             )
                         )
                     }
@@ -260,17 +266,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             requireContext(),
                             question,
                             {},
-                            viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
                         )
                     )
                 }
                 size == 2 -> {
-
-                    var previousAnswer =
-                        viewModel.questionnaireResult?.getAnswerByUuid(question.uuid!!)
+                    var previousAnswerValue =
+                        viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
                     if (isCommunicationTypeQuestion(question)) {
                         // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
-                        previousAnswer = JsonObject(
+                        previousAnswerValue = JsonObject(
                             HashMap<String, JsonElement>().apply {
                                 val trigger = when (viewModel.communicationType.value) {
                                     CommunicationType.Index -> COMMUNICATION_INDEX
@@ -295,7 +300,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                                         CommunicationType.Index
                                 }
                             },
-                            previousAnswer
+                            previousAnswerValue
                         )
                     )
                 }
@@ -352,6 +357,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun addClassificationQuestions(
+        question: Question,
         section: QuestionnaireSection?
     ) {
 
@@ -396,67 +402,56 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     section?.remove(itemsStorage.noRiskItem)
                 }
             })
+
+            listOf(
+                itemsStorage.livedTogetherRiskItem,
+                itemsStorage.distanceRiskItem,
+                itemsStorage.durationRiskItem,
+                itemsStorage.otherRiskItem
+            ).forEach {
+                it.question?.uuid = question.uuid
+            }
         }
     }
 
     private fun collectAnswers() {
-
-        val answerCollector = HashMap<String, Map<String, Any>>()
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
-
+        val answers = mutableListOf<Answer>()
         for (groupIndex: Int in 0 until adapter.groupCount) {
             val item = adapter.getTopLevelGroup(groupIndex)
             (item as? QuestionnaireSection)?.let {
                 for (childIndex in 0 until (it.childCount + 1)) {
                     val child = it.getGroup(childIndex)
-                    if (child is BaseQuestionItem<*>) {
-                        val answer = HashMap<String, Any>()
-                        if (child.question != null) {
-                            answer.put("questionUuid", child.question.uuid!!)
-                            answer.put("lastModified", sdf.format(Date()))
-                            val data = child.getUserAnswers()
-                            answer.putAll(data)
-
-                            // Combine with previous entry if found
-                            if (answerCollector.containsKey(child.question.uuid)) {
-                                val prev =
-                                    answerCollector.get(child.question.uuid) as Map<String, Any>
-                                answer.putAll(prev)
-                            }
-                            answerCollector.put(child.question.uuid, answer)
+                    if (child is BaseQuestionItem<*> && child.question != null) {
+                        val value = JsonObject(child.getUserAnswers())
+                        val answer = Answer(
+                            UUID.randomUUID().toString(),
+                            LocalDate.now().toString(DateFormats.questionData),
+                            child.question.uuid,
+                            value
+                        )
+                        val answersOnSameQuestion = answers.filter { predicate -> predicate.questionUuid == child.question.uuid }
+                        if (answersOnSameQuestion.isEmpty()) {
+                            answers.add(answer)
                         } else {
-                            Timber.d("Got child without question")
+                            val newValue = answersOnSameQuestion.firstOrNull()?.value?.plus(value)
+                            newValue?.let {
+                                answersOnSameQuestion.firstOrNull()?.value = JsonObject(it)
+                            }
                         }
                     }
                 }
             }
         }
-        // Extract all actual answers, discard the keys since they're already in the answer
-        val finalAnswers = ArrayList<JsonObject>()
-        answerCollector.entries.forEach { answerField ->
-            val answerValue = answerField.value
-            val newMap = HashMap<String, JsonElement>()
-            for ((key, value) in answerValue) {
-                if (value is Boolean) {
-                    newMap.put(key, Json.encodeToJsonElement(Boolean.serializer(), value))
-                } else if (value is String) {
-                    newMap.put(key, Json.encodeToJsonElement(String.serializer(), value))
-                }
-            }
-
-            finalAnswers.add(JsonObject(newMap))
-        }
 
         viewModel.task.value?.let { task ->
             task.linkedContact = viewModel.selectedContact
             task.questionnaireResult =
-                QuestionnaireResult(viewModel.questionnaire?.uuid!!, JsonArray(finalAnswers))
+                QuestionnaireResult(viewModel.questionnaire?.uuid ?: "", answers)
             if (task.uuid.isNullOrEmpty()) {
                 task.uuid = UUID.randomUUID().toString()
             }
-            val contactType = answerCollector[CONTACT_TYPE_UUID]?.get("value")
-            contactType?.let { type ->
-                task.taskContext = type.toString()
+            answers.firstOrNull { it.questionUuid == CONTACT_TYPE_UUID }?.value?.get("value")?.jsonPrimitive?.content.let {
+                task.taskContext = it
             }
             task.status = calculateStatus()
             task.communication = viewModel.communicationType.value
@@ -469,7 +464,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewModel.saveChangesToTask(task)
         }
 
-        //Timber.d("Answers are $answerCollector")
         view?.hideKeyboard()
         view?.postDelayed({
             findNavController().popBackStack()

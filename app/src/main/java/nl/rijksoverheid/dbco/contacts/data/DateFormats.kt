@@ -16,7 +16,8 @@ import java.util.*
  * Created by Dima Kovalenko.
  */
 object DateFormats {
-    val exposureData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val dateInputData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val questionData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
     val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy").withLocale(Locale("nl"))
     val informContactGuidelinesUI: DateTimeFormatter = DateTimeFormat.forPattern("d MMMM").withLocale(Locale("nl"))
     val dateInputUI: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy").withLocale(Locale("nl"))

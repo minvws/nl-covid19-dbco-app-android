@@ -60,8 +60,6 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             context,
             Question(
                     null,
-                    null,
-                    "",
                     context.getString(R.string.lived_together_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
@@ -88,8 +86,6 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             context,
             Question(
                     null,
-                    null,
-                    "",
                     context.getString(R.string.duration_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
@@ -115,9 +111,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
     val distanceRiskItem = QuestionTwoOptionsItem(
             context,
             Question(
-                    null,
                     context.getString(R.string.distance_risk_description),
-                    "",
                     context.getString(R.string.distance_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
@@ -144,8 +138,6 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             context,
             Question(
                     null,
-                    null,
-                    "",
                     context.getString(R.string.other_risk_label),
                     QuestionType.ClassificationDetails,
                     Group.Classification,
@@ -184,8 +176,6 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             context,
             Question(
                     null,
-                    null,
-                    "",
                     context.getString(R.string.contact_information_last_exposure_label),
                     QuestionType.Multiplechoice,
                     Group.ContactDetails,
@@ -199,7 +189,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                             for (i in 0 .. interval) {
                                 val date = twoDaysBeforeSymptoms.plusDays(i)
                                 val label = date.toString(DateFormats.exposureUI)
-                                val value = date.toString(DateFormats.exposureData)
+                                val value = date.toString(DateFormats.dateInputData)
                                 add(AnswerOption(label, null, value))
                             }
                         }
@@ -227,13 +217,15 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
 
     fun refreshInformSection() {
 
-        val hasRisk = !(viewModel.category.value == Category.NO_RISK || viewModel.category.value == null)
-        val isEnabled = hasRisk && viewModel.communicationType.value != null // in those cases inform section is disabled and thus hidden
+        val isEnabled = when (viewModel.category.value) {
+            Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE -> viewModel.communicationType.value != null
+            Category.OTHER -> true
+            else -> false  // in those cases inform section is disabled and thus hidden
+        }
 
         val header = when(viewModel.communicationType.value) {
-            CommunicationType.Index -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
             CommunicationType.Staff -> context.getString(R.string.inform_contact_title_staff, viewModel.selectedContact?.firstName)
-            else -> ""
+            else -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
         }
 
         var message = when (viewModel.category.value) {
@@ -244,7 +236,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
                 if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
                     context.getString(R.string.inform_contact_guidelines_category2, "", "")
                 } else {
-                    val date = LocalDate.parse(dateLastExposure, DateFormats.exposureData)
+                    val date = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
                     val untilDate = date.plusDays(10)
                     val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelinesUI))
 
@@ -269,7 +261,7 @@ class TaskDetailItemsStorage(val viewModel: TasksDetailViewModel, val context: C
             Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_link_category1)
             Category.DURATION -> context.getString(R.string.inform_contact_link_category2a)
             Category.DISTANCE -> context.getString(R.string.inform_contact_link_category2b)
-            Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
+            Category.OTHER -> context.getString(R.string.inform_contact_link_category3)
             else -> ""
         }
 

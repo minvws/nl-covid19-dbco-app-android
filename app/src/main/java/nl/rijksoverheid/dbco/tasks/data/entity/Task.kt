@@ -9,10 +9,8 @@
 package nl.rijksoverheid.dbco.tasks.data.entity
 
 import android.os.Parcelable
-import androidx.annotation.Keep
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -23,7 +21,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 class Task(
     val taskType: String? = null,
     var taskContext: String? = null,
-    val source: String? = null,
+    val source: Source? = null,
     var label: String? = null, // this field comes from API, we show it only if $linkedContact.displayName is empty
     var category: Category? = null,
     var communication: CommunicationType? = null,

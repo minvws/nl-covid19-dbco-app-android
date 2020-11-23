@@ -12,19 +12,22 @@ import android.content.Context
 import android.view.View
 import android.widget.DatePicker
 import com.xwray.groupie.Item
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.DateFormats.dateInputUI
 import nl.rijksoverheid.dbco.databinding.ItemQuestionDateBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import org.joda.time.LocalDate
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.HashMap
 
 
 class DateInputItem(
     val context: Context,
-    question: Question?
+    question: Question?,
+    private val previousAnswerValue: JsonObject? = null
 ) :
     BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
 
@@ -36,6 +39,10 @@ class DateInputItem(
     override fun bind(viewBinding: ItemQuestionDateBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.item = this
+
+        if (date == null) {
+            fillInPreviousAnswer()
+        }
 
         date?.let {
             viewBinding.dateLabel.setText(it.toString(dateInputUI))
@@ -66,12 +73,19 @@ class DateInputItem(
     override fun hasSameContentAs(other: Item<*>) =
         other is DateInputItem && other.question?.uuid == question?.uuid
 
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
+    override fun getUserAnswers(): Map<String, JsonElement> {
+        val answers = HashMap<String, JsonElement>()
         date?.let {
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            answers.put("value", sdf.format(it))
+            answers.put("value", it.toString(DateFormats.dateInputData).toJsonPrimitive())
         }
         return answers
+    }
+
+    private fun fillInPreviousAnswer() {
+        previousAnswerValue?.let { prevAnswer ->
+            prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
+                date = LocalDate.parse(value, DateFormats.dateInputData )
+            }
+        }
     }
 }

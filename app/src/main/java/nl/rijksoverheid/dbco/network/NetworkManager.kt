@@ -34,7 +34,7 @@ internal fun createOkHttpClient(context: Context): OkHttpClient {
                     }
                 }).setLevel(HttpLoggingInterceptor.Level.BODY))
             }
-            addInterceptor(UserAgentInterceptor())
+            addInterceptor(UserAgentInterceptor(context))
             if (BuildConfig.FEATURE_SSL_PINNING) {
                 connectionSpecs(
                     listOf(

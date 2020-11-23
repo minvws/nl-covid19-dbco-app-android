@@ -17,14 +17,16 @@ import nl.rijksoverheid.dbco.contacts.data.entity.CategoryHolder
 @Keep
 @Serializable
 data class Question(
-    val relevantForCategories: List<CategoryHolder?>? = null,
     val description: String? = null,
-    val uuid: String? = null,
     val label: String? = null,
     val questionType: QuestionType? = null,
     val group: Group? = null,
     val answerOptions: List<AnswerOption?>? = null
 ) {
+
+    private val relevantForCategories: List<CategoryHolder?>? = null
+    var uuid: String? = null
+
     fun isRelevantForCategory(category: Category?): Boolean {
         if (category == null || category == Category.NO_RISK) {
             return false

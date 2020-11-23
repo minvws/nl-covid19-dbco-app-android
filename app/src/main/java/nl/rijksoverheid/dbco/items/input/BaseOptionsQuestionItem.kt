@@ -9,33 +9,35 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import androidx.databinding.ViewDataBinding
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.toJsonPrimitive
 
 abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
     val context: Context,
     question: Question?,
     val answerSelectedListener: (AnswerOption) -> Unit,
-    private val previousAnswer: JsonObject? = null
+    private val previousAnswerValue: JsonObject? = null
 ) : BaseQuestionItem<T>(question) {
 
     var selectedAnswer: AnswerOption? = null
 
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
+    override fun getUserAnswers(): Map<String, JsonElement> {
+        val answers = HashMap<String, JsonElement>()
         selectedAnswer?.let {
             it.value?.let { value ->
-                answers.put("value", value)
+                answers.put("value", value.toJsonPrimitive())
             }
         }
         return answers
     }
 
     open fun fillInPreviousAnswer() {
-        previousAnswer?.let { prevAnswer ->
-            prevAnswer["value"]?.jsonPrimitive?.jsonPrimitive?.content?.let { value ->
+        previousAnswerValue?.let { prevAnswer ->
+            prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
                 question?.answerOptions?.forEach { option ->
                     if (option?.value == value) {
                         selectedAnswer = option
@@ -43,7 +45,7 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
                     }
                 }
             }
-            prevAnswer["trigger"]?.jsonPrimitive?.jsonPrimitive?.content?.let { trigger ->
+            prevAnswer["trigger"]?.jsonPrimitive?.content?.let { trigger ->
                 question?.answerOptions?.forEach { option ->
                     if (option?.trigger == trigger) {
                         selectedAnswer = option
