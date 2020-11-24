@@ -82,12 +82,18 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
+        binding.swipeRefresh.setOnRefreshListener {
+            tasksViewModel.syncTasks()
+        }
+
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
             resource.resolve(onError = {
+                binding.swipeRefresh.isRefreshing = false
                 showErrorDialog(getString(R.string.error_while_fetching_case), {
                     tasksViewModel.syncTasks()
                 }, it)
             }, onSuccess = {case ->
+                binding.swipeRefresh.isRefreshing = false
                 contentSection.clear()
                 val uninformedSection = Section().apply {
                     setHeader(
