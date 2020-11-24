@@ -257,7 +257,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             answers.firstOrNull { it.questionUuid == CONTACT_TYPE_UUID }?.value?.get("value")?.jsonPrimitive?.content.let {
                 task.taskContext = it
             }
-            task.status = itemsStorage?.calculateStatus()
             task.communication = viewModel.communicationType.value
             viewModel.dateOfLastExposure.value?.let {
                 task.dateOfLastExposure = it

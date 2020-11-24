@@ -34,14 +34,37 @@ class Task(
     var questionnaireResult: QuestionnaireResult? = null
 
     @IgnoredOnParcel
-    var status: Int? = 0 // number from 0 to 3
-
-    @IgnoredOnParcel
     var didInform = false
 
     @IgnoredOnParcel
     @Contextual
     var linkedContact: LocalContact? = null
+
+    fun getStatus(): Int {  // number from 0 to 3
+        var status = 0
+        if (category != null && category != Category.NO_RISK) {
+            status++
+        }
+
+        val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
+
+        if (hasEmailOrPhone &&
+            communication != null &&
+            dateOfLastExposure != null) {
+            status++
+        }
+
+        val informSectionCompleted = when (communication) {
+            CommunicationType.Index -> didInform
+            CommunicationType.Staff -> hasEmailOrPhone
+            else -> false
+        }
+        if (informSectionCompleted) {
+            status++
+        }
+
+        return status
+    }
 
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
