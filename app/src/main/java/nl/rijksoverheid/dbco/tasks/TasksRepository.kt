@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -42,7 +43,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             ITaskRepository.CASE_KEY,
             null
         )?.apply {
-            cachedCase = Json { ignoreUnknownKeys = true }.decodeFromString(this)
+            cachedCase = Defaults.json.decodeFromString(this)
         }
 
         userRepository.getToken()?.let {
@@ -61,9 +62,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 rxBytes
             )
             val caseString = String(caseBodyBytes)
-            val remoteCase: Case = Json {
-                ignoreUnknownKeys = true
-            }.decodeFromString(caseString)
+            val remoteCase: Case =  Defaults.json.decodeFromString(caseString)
 
             if (cachedCase == null) {
                 // it is first time we fetch case, save it in cache
@@ -83,7 +82,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 }
             }
 
-            val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(remoteCase)
+            val storeString =  Defaults.json.encodeToString(remoteCase)
             encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString)
                 .apply()
         }
@@ -104,7 +103,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             currentTasks.add(updatedTask)
         }
         // save whole task in prefs
-        val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(cachedCase)
+        val storeString =  Defaults.json.encodeToString(cachedCase)
         encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
     }
 
@@ -128,7 +127,9 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
 
     override suspend fun uploadCase() {
         cachedCase?.let { case ->
-            val caseString = ITaskRepository.JSON_SERIALIZER.encodeToString(case)
+            val caseString = Json {
+
+            }.encodeToString(case)
             userRepository.getToken()?.let { token ->
                 val caseBytes = caseString.toByteArray()
                 val txBytes = Base64.decode(userRepository.getTx(), IUserRepository.BASE64_FLAGS)
