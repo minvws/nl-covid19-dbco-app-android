@@ -115,6 +115,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
     implementation "androidx.core:core-ktx:$androidx_core_version"
 
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version"
@@ -142,6 +143,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
 
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
 
     implementation 'net.danlew:android.joda:2.10.6.2'
 
