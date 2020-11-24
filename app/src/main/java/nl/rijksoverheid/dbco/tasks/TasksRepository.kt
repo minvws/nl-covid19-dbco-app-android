@@ -56,7 +56,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         }
     }
 
-    override suspend fun fetchCase(): Case? {
+    init {
         // restore saved case
         encryptedSharedPreferences.getString(
             ITaskRepository.CASE_KEY,
@@ -64,7 +64,9 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         )?.apply {
             cachedCase = Defaults.json.decodeFromString(this)
         }
+    }
 
+    override suspend fun fetchCase(): Case? {
         userRepository.getToken()?.let {
             val data = withContext(Dispatchers.IO) { api.getCase(it) }
             val sealedCase = data.body()?.sealedCase
