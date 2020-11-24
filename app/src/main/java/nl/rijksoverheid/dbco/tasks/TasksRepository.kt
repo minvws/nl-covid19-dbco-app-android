@@ -13,11 +13,17 @@ import android.content.SharedPreferences
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -36,6 +42,19 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     private var caseChanged = false
+
+    private val nullLocalContactSerializer = object : KSerializer<LocalContact> {
+        override val descriptor: SerialDescriptor
+            get() = LocalContact.serializer().descriptor
+
+        override fun deserialize(decoder: Decoder): LocalContact {
+            return LocalContact.serializer().deserialize(decoder)
+        }
+
+        override fun serialize(encoder: Encoder, value: LocalContact) {
+            encoder.encodeNull()
+        }
+    }
 
     override suspend fun fetchCase(): Case? {
         // restore saved case
@@ -62,7 +81,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 rxBytes
             )
             val caseString = String(caseBodyBytes)
-            val remoteCase: Case =  Defaults.json.decodeFromString(caseString)
+            val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
             if (cachedCase == null) {
                 // it is first time we fetch case, save it in cache
@@ -82,7 +101,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 }
             }
 
-            val storeString =  Defaults.json.encodeToString(remoteCase)
+            val storeString = Defaults.json.encodeToString(remoteCase)
             encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString)
                 .apply()
         }
@@ -103,7 +122,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             currentTasks.add(updatedTask)
         }
         // save whole task in prefs
-        val storeString =  Defaults.json.encodeToString(cachedCase)
+        val storeString = Defaults.json.encodeToString(cachedCase)
         encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
     }
 
@@ -128,7 +147,11 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     override suspend fun uploadCase() {
         cachedCase?.let { case ->
             val caseString = Json {
-
+                encodeDefaults = false
+                serializersModule = SerializersModule {
+                    // we don't want to send LocalContact to server, so we nullify it. TODO would be perfect to remove key as well
+                    contextual(LocalContact::class, nullLocalContactSerializer)
+                }
             }.encodeToString(case)
             userRepository.getToken()?.let { token ->
                 val caseBytes = caseString.toByteArray()

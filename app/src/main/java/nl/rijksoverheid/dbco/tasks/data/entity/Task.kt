@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.tasks.data.entity
 import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -39,6 +40,7 @@ class Task(
     var didInform = false
 
     @IgnoredOnParcel
+    @Contextual
     var linkedContact: LocalContact? = null
 
     override fun toString(): String {
