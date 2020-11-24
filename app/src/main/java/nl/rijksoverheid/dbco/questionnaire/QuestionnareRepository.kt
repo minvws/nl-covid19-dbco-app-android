@@ -11,7 +11,7 @@ package nl.rijksoverheid.dbco.questionnaire
 import android.content.Context
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import timber.log.Timber
@@ -31,18 +31,14 @@ class QuestionnareRepository(context: Context) : IQuestionnaireRepository {
         if (storedQuestionnaire == null) {
             try {
                 cachedQuestionnaire = api.getQuestionnaires().questionnaires?.firstOrNull()
-                val questionnaireString = Json {
-                    ignoreUnknownKeys = true
-                }.encodeToString(cachedQuestionnaire)
+                val questionnaireString =  Defaults.json.encodeToString(cachedQuestionnaire)
                 sharedPrefs.edit().putString(KEY_QUESTIONNAIRE, questionnaireString)
                     .apply()
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while fetching or parsing questionnary")
             }
         } else {
-            cachedQuestionnaire = Json {
-                ignoreUnknownKeys = true
-            }.decodeFromString(storedQuestionnaire)
+            cachedQuestionnaire =  Defaults.json.decodeFromString(storedQuestionnaire)
         }
     }
 

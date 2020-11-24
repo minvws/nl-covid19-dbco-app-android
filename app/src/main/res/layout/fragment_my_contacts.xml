@@ -42,10 +42,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                app:layout_constraintTop_toTopOf="parent"
                 android:paddingTop="10dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"
                 android:textSize="10sp"
-                android:textAppearance="?attr/textAppearanceSubtitle2" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/my_contacts_header"
@@ -78,19 +78,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/my_contacts_header" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/content"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="16dp"
-                android:clipToPadding="false"
-
-                android:paddingBottom="32dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/send_button_holder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/manual_entry_button" />
+                app:layout_constraintTop_toBottomOf="@id/manual_entry_button">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="32dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <FrameLayout
                 android:id="@+id/send_button_holder"
@@ -104,17 +110,17 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gray_lighter"
-                    android:layout_gravity="top" />
+                    android:layout_gravity="top"
+                    android:background="@color/gray_lighter" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/send_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white_enabled_cyan_default"
-                    android:backgroundTint="@color/cyan_enabled_grey_lighter_default"
                     android:layout_margin="16dp"
-                    android:text="@string/send_data" />
+                    android:backgroundTint="@color/cyan_enabled_grey_lighter_default"
+                    android:text="@string/send_data"
+                    android:textColor="@color/white_enabled_cyan_default" />
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
