@@ -132,7 +132,7 @@
     <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
 
     <!--    Update and end of life -->
-    <string name="update_app_headline">Je hebt een verouderde versie van GGD Contact</string>
+    <string name="update_app_headline">De app heeft een update nodig</string>
     <string name="update_app_description">Update de app op je telefoon om te zorgen dat GGD Contact goed blijft werken.</string>
     <string name="end_of_life_action">Lees meer</string>
     <string name="end_of_life_description">Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is.</string>

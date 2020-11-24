@@ -41,6 +41,10 @@ class AppLifecycleViewModel(
         }
     }
 
+    fun getUpdateMessage() : String {
+        return appConfigRepository.getUpdateMessage()
+    }
+
 
     sealed class AppLifecycleStatus {
         data class Update(val update: AppLifecycleManager.UpdateState) :
