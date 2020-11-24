@@ -29,7 +29,7 @@ class PhoneNumberItem(
     override fun getLayout() = R.layout.item_phone_input
     private var binding: ItemPhoneInputBinding? = null
 
-    private val phoneNumberPattern = Pattern.compile("[\\+]?[0-9]{10,13}$")
+    private val phoneNumberPattern = Pattern.compile("[+]?[0-9]{10,13}$")
 
     override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
         binding = viewBinding
