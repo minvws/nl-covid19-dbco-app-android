@@ -18,4 +18,5 @@ object Constants {
 
     // Pref keys
     const val USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY = "userChoseAddContactsManuallyAfterPairing"
+    const val USER_SAW_ROOTED_WARNING_KEY = "userSawRootedWarning"
 }

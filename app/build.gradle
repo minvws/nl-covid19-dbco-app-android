@@ -142,6 +142,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
 
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
 
     implementation 'net.danlew:android.joda:2.10.6.2'
 

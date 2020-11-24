@@ -152,5 +152,6 @@
     <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
     <string name="error_while_pairing">Fout tijdens het koppelen:</string>
     <string name="error_questionarre_is_empty">Vragenlijst is leeg. Probeer het later nog eens</string>
+    <string name="rooted_device_warning">Je telefoon lijkt jailbroken of rooted. Dit betekent dat het besturingssysteem gekraakt is. Hierdoor is je telefoon mogelijk minder goed beveiligd.</string>
 
 </resources>

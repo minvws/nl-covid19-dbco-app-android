@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.play.core.install.model.AppUpdateType
+import com.scottyab.rootbeer.RootBeer
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragmentDirections
@@ -29,13 +31,19 @@ import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 
+
 private const val RC_UPDATE_APP = 1
 
 class MainActivity : AppCompatActivity() {
 
     private var factory: ViewModelFactory? = null
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
-
+    private val userPrefs by lazy {
+        getSharedPreferences(
+            Constants.USER_PREFS,
+            Context.MODE_PRIVATE
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -73,6 +81,28 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+
+        checkIfRooted()
+    }
+
+    private fun checkIfRooted() {
+        if (userPrefs.getBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, false)) {
+            return
+        }
+
+        if (RootBeer(this).isRooted) {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setCancelable(true)
+            builder.setMessage(getString(R.string.rooted_device_warning))
+            builder.setPositiveButton(
+                R.string.close
+            ) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                userPrefs.edit().putBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, true).apply()
+            }
+            val alert: AlertDialog = builder.create()
+            alert.show()
+        }
     }
 
     override fun onResume() {
