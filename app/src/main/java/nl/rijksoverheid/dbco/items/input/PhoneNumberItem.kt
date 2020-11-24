@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
+import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
@@ -41,15 +42,39 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                checkCompleted()
+                checkCompleted(viewBinding)
             }
         }
 
-        checkCompleted()
+        checkCompleted(viewBinding)
     }
 
-    private fun checkCompleted() {
-        // TODO check phone
+    private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
+        val input = viewBinding.inputField.editText?.text.toString()
+        if (!TextUtils.isEmpty(input)) {
+            if (!android.util.Patterns.PHONE.matcher(input)
+                    .matches()
+                || input.length != 10) {
+                viewBinding.inputField.error =
+                    viewBinding.inputField.context.getString(R.string.error_valid_email)
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            } else {
+                viewBinding.inputField.error = null
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_valid_small,
+                    0
+                )
+                viewBinding.inputField.setEndIconActivated(true)
+                changeListener.invoke(input)
+            }
+        }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
