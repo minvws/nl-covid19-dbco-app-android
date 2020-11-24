@@ -221,6 +221,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 for (childIndex in 0 until (section.childCount + 1)) {
                     val child = section.getGroup(childIndex)
                     if (child is BaseQuestionItem<*> && child.question != null) {
+                        if (child == itemsStorage?.dateOfLastExposureItem) {
+                            continue // skip date of last exposure item, it shouldn't be sent to server
+                        }
                         val question: Question = child.question
                         var value: JsonObject? = JsonObject(child.getUserAnswers())
                         // override logic for classification questions

@@ -45,7 +45,7 @@ class TasksDetailViewModel(
 
     fun setTask(task: Task) {
         this.task.value = task
-        selectedContact = task.linkedContact
+        selectedContact = task.linkedContact?.copy()
         questionnaireResult = task.questionnaireResult
         hasEmailOrPhone.value = selectedContact?.hasValidEmailOrPhone()
         communicationType.value = task.communication

@@ -50,6 +50,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
+    private var clicksBlocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,7 +153,16 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        clicksBlocked = false
+    }
+
     private fun checkPermissionGoToTaskDetails(task: Task? = null) {
+        if (clicksBlocked) { // prevents from double click
+            return
+        }
+        clicksBlocked = true
         if (tasksViewModel.getCachedQuestionnaire() == null) {
             // questionare is null, this could happen in questionary call failed
             showErrorDialog(getString(R.string.error_questionarre_is_empty), {})
