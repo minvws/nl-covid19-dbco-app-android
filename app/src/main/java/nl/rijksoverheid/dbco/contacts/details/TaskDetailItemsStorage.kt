@@ -537,20 +537,6 @@ class TaskDetailItemsStorage(
         return foundTrigger
     }
 
-    fun calculateStatus(): Int {
-        var status = 0
-        if (classificationSection.isCompleted()) {
-            status++
-        }
-        if (contactDetailsSection.isCompleted()) {
-            status++
-        }
-        if (informSection.isCompleted()) {
-            status++
-        }
-        return status
-    }
-
     companion object {
         const val ANSWER_EARLIER = "earlier"
     }

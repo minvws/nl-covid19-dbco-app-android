@@ -13,6 +13,7 @@ import android.content.SharedPreferences
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -56,7 +57,7 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
 
         //Timber.w("Final result is $previousResponse")
 
-        val storeString = ITaskRepository.JSON_SERIALIZER.encodeToString(CaseBody(cachedCase))
+        val storeString =  Defaults.json.encodeToString(CaseBody(cachedCase))
         encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 

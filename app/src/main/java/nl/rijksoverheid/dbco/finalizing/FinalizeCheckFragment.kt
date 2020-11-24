@@ -74,7 +74,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                         val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
 
                         val informed = when (task.communication) {
-                            CommunicationType.Index -> task.contactIsInformedAlready
+                            CommunicationType.Index -> task.didInform
                             CommunicationType.Staff -> hasEmailOrPhone
                             else -> false
                         }
