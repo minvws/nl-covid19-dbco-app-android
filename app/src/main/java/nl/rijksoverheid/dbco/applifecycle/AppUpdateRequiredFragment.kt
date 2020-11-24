@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
@@ -23,10 +24,14 @@ private const val APP_GALLERY_PACKAGE = "com.huawei.appmarket"
 
 class AppUpdateRequiredFragment : BaseFragment(R.layout.fragment_app_update_required) {
     private val args: AppUpdateRequiredFragmentArgs by navArgs()
+    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentAppUpdateRequiredBinding.bind(view)
+
+        val updateMessage = appLifecycleViewModel.getUpdateMessage()
+        binding.text = updateMessage
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireActivity().finish()
