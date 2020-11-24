@@ -8,7 +8,7 @@
 
 package nl.rijksoverheid.dbco
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +28,7 @@ import nl.rijksoverheid.dbco.debug.usertest.UsertestTaskRepository
 import nl.rijksoverheid.dbco.debug.usertest.UsertestUserRepository
 import nl.rijksoverheid.dbco.lifecycle.EventObserver
 import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 
@@ -38,18 +39,14 @@ class MainActivity : AppCompatActivity() {
 
     private var factory: ViewModelFactory? = null
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
-    private val userPrefs by lazy {
-        getSharedPreferences(
-            Constants.USER_PREFS,
-            Context.MODE_PRIVATE
-        )
-    }
+    private var userPrefs: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        userPrefs = LocalStorageRepository.getInstance(this).getSharedPreferences()
 
         appLifecycleViewModel.updateEvent.observe(
             this,
@@ -86,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIfRooted() {
-        if (userPrefs.getBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, false)) {
+        if (userPrefs?.getBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, false) == true) {
             return
         }
 
@@ -98,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 R.string.close
             ) { dialogInterface, _ ->
                 dialogInterface.dismiss()
-                userPrefs.edit().putBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, true).apply()
+                userPrefs?.edit()?.putBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, true)?.apply()
             }
             val alert: AlertDialog = builder.create()
             alert.show()
