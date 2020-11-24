@@ -18,11 +18,18 @@ import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import java.util.*
+import java.util.regex.Pattern
 
-class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val changeListener: (String) -> Unit) :
+class PhoneNumberItem(
+    private var phoneNumber: String?,
+    question: Question?,
+    private val changeListener: (String) -> Unit
+) :
     BaseQuestionItem<ItemPhoneInputBinding>(question) {
     override fun getLayout() = R.layout.item_phone_input
     private var binding: ItemPhoneInputBinding? = null
+
+    private val phoneNumberPattern = Pattern.compile("[\\+]?[0-9]{10,13}$")
 
     override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
         binding = viewBinding
@@ -50,13 +57,11 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
     }
 
     private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
-        val input = viewBinding.inputField.editText?.text.toString()
+        val input = viewBinding.inputField.editText?.text.toString().replace(" ", "")
         if (!TextUtils.isEmpty(input)) {
-            if (!android.util.Patterns.PHONE.matcher(input)
-                    .matches()
-                || input.length != 10) {
+            if (!phoneNumberPattern.matcher(input).matches()) {
                 viewBinding.inputField.error =
-                    viewBinding.inputField.context.getString(R.string.error_valid_email)
+                    viewBinding.inputField.context.getString(R.string.error_valid_phone)
                 viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
