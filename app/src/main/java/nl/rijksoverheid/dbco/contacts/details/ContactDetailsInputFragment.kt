@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.contacts.details
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -120,6 +121,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             checkIfInformSectionComplete()
             checkIfContactDetailsSectionComplete()
             itemsStorage?.refreshInformSection()
+            if(it == CommunicationType.Index){
+                binding.saveButton.apply{
+                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
+                    setTextColor(context.getColor(R.color.cyan))
+                }
+            }
         })
 
         viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {

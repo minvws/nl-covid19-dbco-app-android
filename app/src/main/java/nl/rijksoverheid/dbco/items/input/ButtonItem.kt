@@ -18,7 +18,7 @@ class ButtonItem(
         private val text: String,
         buttonClickListener: () -> Unit,
         private val enabled: Boolean = true,
-        private val type: ButtonType = ButtonType.REGULAR
+        private val type: ButtonType = ButtonType.LIGHT
 ) : BaseBindableItem<ItemButtonBinding>() {
     data class ViewState(
             val text: String,
@@ -38,10 +38,10 @@ class ButtonItem(
 
     override fun bind(viewBinding: ItemButtonBinding, position: Int) {
         viewBinding.viewState = viewState
-        if (type == ButtonType.LIGHT) {
+        if (type == ButtonType.DARK) {
             viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.cyan))
+                backgroundTintList = ContextCompat.getColorStateList(context, R.color.cyan)
+                setTextColor(context.getColor(R.color.white))
             }
         }
     }
@@ -52,4 +52,4 @@ class ButtonItem(
 }
 
 @Keep
-enum class ButtonType { REGULAR, LIGHT }
+enum class ButtonType { LIGHT, DARK }

@@ -21,15 +21,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ContactNameItem
-import nl.rijksoverheid.dbco.items.input.DateInputItem
-import nl.rijksoverheid.dbco.items.input.EmailAddressItem
-import nl.rijksoverheid.dbco.items.input.NoRiskItem
-import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
-import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
-import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
-import nl.rijksoverheid.dbco.items.input.SingleInputItem
+import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
@@ -513,12 +505,17 @@ class TaskDetailItemsStorage(
                     ButtonItem(
                         context.getString(
                             R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName?: "contact"
+                            viewModel.selectedContact?.firstName ?: "contact"
                         ),
                         {
                             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
                             context.startActivity(intent)
                         },
+                        type = if (viewModel.communicationType.value == CommunicationType.Index) {
+                            ButtonType.DARK
+                        } else {
+                            ButtonType.LIGHT
+                        }
                     )
                 )
             }
