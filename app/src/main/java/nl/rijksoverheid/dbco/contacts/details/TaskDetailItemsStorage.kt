@@ -248,7 +248,7 @@ class TaskDetailItemsStorage(
             ), false
     )
 
-    private val dateOfLastExposureItem = QuestionMultipleOptionsItem(
+    val dateOfLastExposureItem = QuestionMultipleOptionsItem(
             context,
             Question(
                     null,
