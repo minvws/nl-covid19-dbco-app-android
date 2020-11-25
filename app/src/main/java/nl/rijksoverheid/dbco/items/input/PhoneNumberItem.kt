@@ -9,16 +9,22 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
+import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import java.util.*
 
-class PhoneNumberItem(private var phoneNumber: String?, question: Question?, private val changeListener: (String) -> Unit) :
+class PhoneNumberItem(
+    private var phoneNumber: String?,
+    question: Question?,
+    private val changeListener: (String) -> Unit
+) :
     BaseQuestionItem<ItemPhoneInputBinding>(question) {
     override fun getLayout() = R.layout.item_phone_input
     private var binding: ItemPhoneInputBinding? = null
@@ -41,15 +47,37 @@ class PhoneNumberItem(private var phoneNumber: String?, question: Question?, pri
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
-                checkCompleted()
+                checkCompleted(viewBinding)
             }
         }
 
-        checkCompleted()
+        checkCompleted(viewBinding)
     }
 
-    private fun checkCompleted() {
-        // TODO check phone
+    private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
+        val input = viewBinding.inputField.editText?.text.toString().replace(" ", "")
+        if (!TextUtils.isEmpty(input)) {
+            if (!Constants.PHONE_VALIDATION_MATCHER.matcher(input).matches()) {
+                viewBinding.inputField.error =
+                    viewBinding.inputField.context.getString(R.string.error_valid_phone)
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    0,
+                    0
+                )
+            } else {
+                viewBinding.inputField.error = null
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_valid_small,
+                    0
+                )
+                viewBinding.inputField.setEndIconActivated(true)
+                changeListener.invoke(input)
+            }
+        }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =

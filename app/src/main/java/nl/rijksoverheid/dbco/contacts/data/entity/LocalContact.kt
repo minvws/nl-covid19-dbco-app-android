@@ -12,6 +12,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.Constants
 import java.util.*
 
 @Keep
@@ -26,7 +27,8 @@ data class LocalContact(
 ) : Parcelable {
 
     fun hasValidEmailOrPhone(): Boolean {
-        return !number.isNullOrEmpty() || !email.isNullOrEmpty()
+        return (!number.isNullOrEmpty() && Constants.PHONE_VALIDATION_MATCHER.matcher(number!!).matches()) || (!email.isNullOrEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email!!)
+            .matches())
     }
 
     fun getDisplayName(): String {

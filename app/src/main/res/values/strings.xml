@@ -38,6 +38,7 @@
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
+    <string name="error_valid_phone">Vul een geldig telefoonnummer in</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->
