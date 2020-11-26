@@ -19,9 +19,11 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.applifecycle.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.ButtonItem
+import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.DateInputItem
 import nl.rijksoverheid.dbco.items.input.EmailAddressItem
@@ -53,7 +55,8 @@ import kotlin.math.absoluteValue
 class TaskDetailItemsStorage(
     val viewModel: TasksDetailViewModel,
     val context: Context,
-    private val viewLifecycleOwner: LifecycleOwner
+    private val viewLifecycleOwner: LifecycleOwner,
+    private val featureFlags: FeatureFlags
 ) {
 
     var classificationQuestion: Question? = null
@@ -492,35 +495,44 @@ class TaskDetailItemsStorage(
 
             add(SubHeaderItem(header))
             add(ParagraphItem(message))
-            add(ButtonItem(
-                context.getString(R.string.contact_section_inform_copy),
-                {
-                    val clipboard =
-                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
-                    clipboard.setPrimaryClip(clip)
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.contact_section_inform_copied),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            ))
+            if(featureFlags.enablePerspectiveCopy) {
+                add(ButtonItem(
+                    context.getString(R.string.contact_section_inform_copy),
+                    {
+                        val clipboard =
+                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.contact_section_inform_copied),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                ))
+            }
 
             // add "Call $name" button if phone is set
-            viewModel.selectedContact?.number?.let {
-                add(
-                    ButtonItem(
-                        context.getString(
-                            R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName?: "contact"
-                        ),
-                        {
-                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
-                            context.startActivity(intent)
-                        },
+            if(featureFlags.enableContactCalling) {
+                viewModel.selectedContact?.number?.let {
+                    add(
+                        ButtonItem(
+                            context.getString(
+                                R.string.contact_section_inform_call,
+                                viewModel.selectedContact?.firstName ?: "contact"
+                            ),
+                            {
+                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
+                                context.startActivity(intent)
+                            },
+                            type = if (viewModel.communicationType.value == CommunicationType.Index) {
+                                ButtonType.DARK
+                            } else {
+                                ButtonType.LIGHT
+                            }
+                        )
                     )
-                )
+                }
             }
         }
     }

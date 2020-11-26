@@ -60,7 +60,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 ParagraphItem(getString(R.string.contact_permission_summary)),
                 ButtonItem(
                     getString(R.string.mycontacts_grant_permission),
-                    { requestContactAccess() }),
+                    { requestContactAccess() }, type = ButtonType.DARK),
                 ButtonItem(
                     getString(R.string.mycontacts_deny_permission),
                     {
