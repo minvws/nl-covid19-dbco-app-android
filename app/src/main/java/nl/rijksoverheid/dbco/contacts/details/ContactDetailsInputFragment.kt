@@ -21,6 +21,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -47,6 +48,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactDetailsInputFragmentArgs by navArgs()
     private val viewModel by viewModels<TasksDetailViewModel>()
+    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
     private var itemsStorage: TaskDetailItemsStorage? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +65,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
         viewModel.setTask(task)
 
-        itemsStorage = TaskDetailItemsStorage(viewModel, view.context, viewLifecycleOwner).apply {
+        itemsStorage = TaskDetailItemsStorage(viewModel,  view.context, viewLifecycleOwner, appLifecycleViewModel.getFeatureFlags()).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)

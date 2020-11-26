@@ -16,10 +16,10 @@ import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.network.StubbedAPI
 
-class AppConfigRepository (val context : Context) {
+class AppConfigRepository(val context: Context) {
 
     private val api = StubbedAPI.create(context)
-    private var storedAppConfig : AppConfig? = null
+    private var storedAppConfig: AppConfig? = null
 
     suspend fun getAppConfig(): AppConfig {
         return if (storedAppConfig == null) {
@@ -32,26 +32,36 @@ class AppConfigRepository (val context : Context) {
         }
     }
 
-    fun getUpdateMessage() : String {
-        return if(storedAppConfig != null){
+    fun getUpdateMessage(): String {
+        return if (storedAppConfig != null) {
             storedAppConfig?.androidMinimumVersionMessage ?: ""
-        }else{
+        } else {
             context.getString(R.string.update_app_description)
         }
     }
 
-    fun getLocalConfig() : AppConfig {
+    fun getFeatureFlags(): FeatureFlags {
+        return storedAppConfig?.featureFlags ?: FeatureFlags()
+
+    }
+
+    fun getLocalConfig(): AppConfig {
         return if (storedAppConfig == null) {
             val appConfigString = "{\n" +
-                    "    \"androidMinimumVersion\": 99,\n" +
-                    "    \"androidMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                    "    \"iosMinimumVersion\": \"1.0.0\",\n" +
-                    "    \"iosMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                    "    \"iosAppStoreURL\": \"\"\n" +
+                    "  \"androidMinimumVersion\": 1,\n" +
+                    "  \"androidMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
+                    "  \"iosMinimumVersion\": \"1.0.0\",\n" +
+                    "  \"iosMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
+                    "  \"iosAppStoreURL\": \"\",\n" +
+                    "  \"featureFlags\": {\n" +
+                    "  \"enableContactCalling\": true,\n" +
+                    "  \"enablePerspectiveSharing\": true,\n" +
+                    "  \"enablePerspectiveCopy\": false\n" +
+                    "  }\n" +
                     "}"
             storedAppConfig = Json.decodeFromString(appConfigString)
             storedAppConfig!!
-        }else{
+        } else {
             storedAppConfig!!
         }
     }

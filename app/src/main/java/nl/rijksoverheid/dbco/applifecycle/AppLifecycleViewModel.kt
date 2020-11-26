@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
+import nl.rijksoverheid.dbco.applifecycle.config.FeatureFlags
 import nl.rijksoverheid.dbco.lifecycle.Event
 
 @SuppressLint("StaticFieldLeak")
@@ -26,7 +27,7 @@ class AppLifecycleViewModel(
 
     fun checkForForcedAppUpdate() {
         viewModelScope.launch {
-            val config = appConfigRepository.getAppConfig()
+            val config = appConfigRepository.getLocalConfig()
             appLifecycleManager.verifyMinimumVersion(config.androidMinimumVersion, false)
             when (val result = appLifecycleManager.getUpdateState()) {
                 is AppLifecycleManager.UpdateState.UpdateRequired,
@@ -43,6 +44,10 @@ class AppLifecycleViewModel(
 
     fun getUpdateMessage() : String {
         return appConfigRepository.getUpdateMessage()
+    }
+
+    fun getFeatureFlags() : FeatureFlags {
+        return appConfigRepository.getFeatureFlags()
     }
 
 
