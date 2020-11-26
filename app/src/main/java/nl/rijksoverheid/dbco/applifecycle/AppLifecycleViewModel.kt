@@ -27,7 +27,7 @@ class AppLifecycleViewModel(
 
     fun checkForForcedAppUpdate() {
         viewModelScope.launch {
-            val config = appConfigRepository.getLocalConfig()
+            val config = appConfigRepository.getAppConfig()
             appLifecycleManager.verifyMinimumVersion(config.androidMinimumVersion, false)
             when (val result = appLifecycleManager.getUpdateState()) {
                 is AppLifecycleManager.UpdateState.UpdateRequired,
