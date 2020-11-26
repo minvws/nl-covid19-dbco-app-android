@@ -40,7 +40,7 @@ class ButtonItem(
         viewBinding.viewState = viewState
         if (type == ButtonType.DARK) {
             viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.cyan)
+                backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
                 setTextColor(context.getColor(R.color.white))
             }
         }
