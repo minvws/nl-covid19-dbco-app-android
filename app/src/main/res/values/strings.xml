@@ -59,9 +59,9 @@
     <!--    Contact details and questions-->
 
     <!--    Classification questions-->
-    <string name="lived_together_risk_label">Woon je in hetzelfde huis of ben je langer dan 12 uur op dezelfde plek geweest?</string>
+    <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
     <string name="duration_risk_label">Was je langer dan 15 minuten op minder dan 1,5 meter afstand van elkaar?</string>
-    <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Ander lichamelijk contact</li><ul>]]></string>
+    <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Seksueel contact</li><ul>]]></string>
     <string name="distance_risk_label">Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
     <string name="other_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
     <string name="contact_section_typeofcontact_header">Soort contact</string>
@@ -110,7 +110,7 @@
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
     <string name="contact_inform_option_done">Ja</string>
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
-    <string name="contact_inform_action_inform_now">Nee, nu informeren</string>
+    <string name="contact_inform_action_inform_now">Nu doen</string>
 
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
