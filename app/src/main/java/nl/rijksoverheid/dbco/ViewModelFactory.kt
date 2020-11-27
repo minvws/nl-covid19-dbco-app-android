@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
+import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
@@ -55,6 +56,7 @@ class ViewModelFactory(
                     AppUpdateManagerFactory.create(context)
                 ), appConfigRepository
             ) as T
+            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }

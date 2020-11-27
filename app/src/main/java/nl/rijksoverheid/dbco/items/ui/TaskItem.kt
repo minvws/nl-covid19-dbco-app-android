@@ -32,7 +32,7 @@ class TaskItem(
         // completeness indicator
         when (task.getStatus()) {
             0 -> viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status)
-            1 -> getPieDrawable(33, viewBinding)
+            1 -> { if(task.linkedContact == null) { viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status) } else { getPieDrawable(33, viewBinding) } }
             2 -> getPieDrawable(66, viewBinding)
             else -> viewBinding.indexContactState.setImageResource(R.drawable.ic_completed)
         }

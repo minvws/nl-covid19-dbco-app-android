@@ -49,6 +49,15 @@
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
+    <!--    Onboarding privacy consent -->
+    <string name="onboarding_privacy_title">Zo gaat de GGD om met je gegevens</string>
+    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/privacy\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
+    <string name="onboarding_privacy_item1">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
+    <string name="onboarding_privacy_item2">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
+    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invoert worden gedeeld</string>
+    <string name="onboarding_privacy_item4">Gegevens worden maximaal 14 dagen bewaard op je telefoon</string>
+
+
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Geef toegang tot contacten</string>
