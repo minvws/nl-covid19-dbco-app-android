@@ -126,7 +126,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if(it == CommunicationType.Index){
                 binding.saveButton.apply{
                     backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                    setTextColor(context.getColor(R.color.cyan))
+                    setTextColor(context.getColor(R.color.purple))
                 }
             }
         })

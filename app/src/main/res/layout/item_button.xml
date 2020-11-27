@@ -25,7 +25,7 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/gray_lighter"
-        android:textColor="@color/cyan"
+        android:textColor="@color/purple"
         android:enabled="@{viewState.enabled}"
         android:onClick="@{_ -> viewState.click.invoke()}"
         android:text="@{viewState.text}"
