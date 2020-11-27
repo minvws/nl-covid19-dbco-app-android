@@ -177,19 +177,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
+            // Set informed to true, close the dialog and check if all answers were added
             viewModel.task.value?.didInform = true
             dialog.dismiss()
             checkIfInformSectionComplete()
+            collectAnswers()
         }
         builder.setNeutralButton(R.string.contact_inform_action_inform_now) { dialog, _ ->
+            // Close dialog and focus on inform section
             dialog.dismiss()
-            // TODO do same as cancel - don't save data???
+            itemsStorage?.informSection?.onToggleExpanded()
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
+            // Index will inform later. Close dialog and save answers already given
             dialog.dismiss()
-            itemsStorage?.contactDetailsSection?.onToggleExpanded()
-            itemsStorage?.informSection?.onToggleExpanded()
-            // TODO scroll to inform section
+            collectAnswers()
         }
         builder.create().show()
     }
