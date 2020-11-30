@@ -53,12 +53,19 @@ class DateInputItem(
         val now = LocalDate.now()
         val dialog = DatePickerDialog(
             context,
+            R.style.SpinnerDatePickerDialogTheme,
             this,
             date?.year ?: now.year,
             date?.monthOfYear ?: now.monthOfYear,
             date?.dayOfMonth ?: now.dayOfMonth
         ) // default date 1 Jan 1980
+        dialog.datePicker.calendarViewShown = false
+        dialog.datePicker.spinnersShown = true
         dialog.show()
+
+        // Override button color manually since Google doesn't support Spinner mode and/or spinner theming out of the box since API 24 & the Material design guidelines
+        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.color_primary))
+        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.color_primary))
     }
 
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
