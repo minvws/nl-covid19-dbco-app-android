@@ -90,12 +90,18 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 }
             }
 
-            if (uninformedSection.groupCount > 1) {
+            if (uninformedSection.itemCount > 1) {
                 contentSection.add(uninformedSection)
             }
 
             if (noPhoneOrEmailSection.groupCount > 1) {
                 contentSection.add(noPhoneOrEmailSection)
+            }
+
+            // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
+            if(uninformedSection.groupCount <= 1 && noPhoneOrEmailSection.groupCount <= 1){
+                tasksViewModel.uploadCurrentCase()
+                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
             }
         }
 
@@ -111,9 +117,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         }
 
         binding.sendButton.setOnClickListener {
-
             tasksViewModel.uploadCurrentCase()
-
             findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
         }
     }
