@@ -142,6 +142,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
 
                 binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
+                if(!tasksViewModel.ifCaseWasChanged()) {
+                    binding.sendButtonHolder.visibility = View.GONE
+                }
             })
 
         })
