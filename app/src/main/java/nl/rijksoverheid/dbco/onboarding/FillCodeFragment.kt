@@ -136,7 +136,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
     }
 
     companion object {
-        const val ENTRY_MAX_LENGTH = 3
+        const val ENTRY_MAX_LENGTH = 4
         const val KEYBOARD_DELAY = 400L
     }
 }
