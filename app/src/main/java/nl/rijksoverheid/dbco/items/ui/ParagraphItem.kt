@@ -7,6 +7,7 @@
  */
 package nl.rijksoverheid.dbco.items.ui
 
+import android.text.method.LinkMovementMethod
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
@@ -24,6 +25,8 @@ class ParagraphItem(
 
     override fun bind(viewBinding: ItemParagraphBinding, position: Int) {
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
+        viewBinding.content.linksClickable = true
+        viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
 
         Timber.d("Got value $text")
         text?.let {

@@ -497,7 +497,7 @@ class TaskDetailItemsStorage(
             }
 
             add(SubHeaderItem(header))
-            add(ParagraphItem(message))
+            add(ParagraphItem(message, clickable = true))
             if(featureFlags.enablePerspectiveCopy) {
                 add(ButtonItem(
                     context.getString(R.string.contact_section_inform_copy),
@@ -511,7 +511,8 @@ class TaskDetailItemsStorage(
                             context.getString(R.string.contact_section_inform_copied),
                             Toast.LENGTH_LONG
                         ).show()
-                    }
+                    },
+                    type = ButtonType.LIGHT
                 ))
             }
 
