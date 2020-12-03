@@ -21,7 +21,8 @@ class QuestionTwoOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswerValue: JsonObject? = null
+    previousAnswerValue: JsonObject? = null,
+    private val isLocked : Boolean = false
 ) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswerValue) {
 
     override fun getLayout() = R.layout.item_question_2_options
@@ -73,5 +74,16 @@ class QuestionTwoOptionsItem(
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.questionDescription.text = spannableBuilder
         }
+
+        // If the input it locked due to the combination of task source and risk, disable the buttons but show the selection based on GGD input
+        if(isLocked){
+            viewBinding.answerGroup.isEnabled = false
+            viewBinding.option1.isEnabled = false
+            viewBinding.option2.isEnabled = false
+            viewBinding.option1.setOnCheckedChangeListener(null)
+            viewBinding.option2.setOnCheckedChangeListener(null)
+        }
+
+
     }
 }
