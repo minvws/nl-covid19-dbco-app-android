@@ -508,7 +508,8 @@ class TaskDetailItemsStorage(
                             context.getString(R.string.contact_section_inform_copied),
                             Toast.LENGTH_LONG
                         ).show()
-                    }
+                    },
+                    type = ButtonType.LIGHT
                 ))
             }
 
