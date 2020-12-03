@@ -82,8 +82,10 @@ class QuestionTwoOptionsItem(
             viewBinding.option2.isEnabled = false
             viewBinding.option1.setOnCheckedChangeListener(null)
             viewBinding.option2.setOnCheckedChangeListener(null)
+        } else {
+            viewBinding.answerGroup.isEnabled = true
+            viewBinding.option1.isEnabled = true
+            viewBinding.option2.isEnabled = true
         }
-
-
     }
 }
