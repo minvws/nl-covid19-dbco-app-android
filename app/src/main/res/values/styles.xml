@@ -57,6 +57,15 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="QuestionText.Locked">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/color_primary</item>
+        <item name="android:drawableLeft">@drawable/ic_error_purple_small</item>
+        <item name="drawableSize">12dp</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
+
     <style name="QuestionText.ChoiceButton">
         <item name="android:layout_height">72dp</item>
         <item name="android:button">@null</item>

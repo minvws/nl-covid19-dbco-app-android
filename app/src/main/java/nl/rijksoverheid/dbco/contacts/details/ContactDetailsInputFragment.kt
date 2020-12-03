@@ -98,9 +98,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 if (itemsStorage?.classificationSection?.isExpanded == true) {
                     itemsStorage?.classificationSection?.onToggleExpanded()
                 }
-                if (task.source == Source.Portal) {
-                    itemsStorage?.classificationSection?.setBlocked(true)
-                }
             }
 
             if (hasCategory) {

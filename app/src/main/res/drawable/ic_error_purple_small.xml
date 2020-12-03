@@ -6,9 +6,12 @@
   ~   SPDX-License-Identifier: EUPL-1.2
   ~
   -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="8dp" />
-    <solid android:color="#F2F2F7" />
-    <stroke android:width="2dp" android:color="@color/color_disabled" />
-</shape>
+    <item
+        android:drawable="@drawable/ic_error_purple"
+        android:width="15dp"
+        android:height="15dp"
+        />
+
+</layer-list >

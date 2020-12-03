@@ -95,7 +95,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
                     }
-            )
+            ),
+            isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val durationRiskItem = QuestionTwoOptionsItem(
@@ -121,7 +122,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.durationRisk.value))
                     }
-            )
+            ),
+        isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val distanceRiskItem = QuestionTwoOptionsItem(
@@ -147,7 +149,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.distanceRisk.value))
                     }
-            )
+            ),
+        isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val otherRiskItem = QuestionTwoOptionsItem(
