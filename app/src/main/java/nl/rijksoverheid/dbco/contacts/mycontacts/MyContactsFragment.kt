@@ -9,7 +9,9 @@
 package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -28,6 +30,7 @@ import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDire
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -42,6 +45,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
+
+    private var dataWipeClickedAmount = 0
 
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
@@ -70,6 +75,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             BuildConfig.VERSION_NAME,
             "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
         )
+        binding.buildVersion.setOnClickListener {
+            handleQADataWipe()
+        }
+
 
         binding.content.adapter = adapter
 
@@ -200,5 +209,28 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             }
         }
+    }
+
+    private fun handleQADataWipe(){
+        dataWipeClickedAmount++
+        if(dataWipeClickedAmount == 4){
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(getString(R.string.qa_clear_data_summary))
+            builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
+                dataWipeClickedAmount = 0
+
+                // Clear locally stored data & remove tokens from UserRepository
+                val encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+                encryptedSharedPreferences.edit().clear().commit()
+                dialog.dismiss()
+                activity?.finish()
+            }
+            builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+                dialog.dismiss()
+                dataWipeClickedAmount = 0
+            }
+            builder.create().show()
+        }
+
     }
 }
