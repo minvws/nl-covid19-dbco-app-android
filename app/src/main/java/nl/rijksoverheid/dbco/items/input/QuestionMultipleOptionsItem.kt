@@ -11,9 +11,7 @@ import android.content.Context
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -24,7 +22,8 @@ class QuestionMultipleOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswer: JsonObject? = null
+    previousAnswer: JsonObject? = null,
+    private val isLocked : Boolean = false
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
@@ -75,5 +74,19 @@ class QuestionMultipleOptionsItem(
                 }
             }
         }
+
+        // If values are set through the portal this item should be locked from input
+        if(isLocked){
+            viewBinding.inputLayout.isEnabled = false
+            viewBinding.inputEditText.isEnabled = false
+            viewBinding.optionsSpinner.isEnabled = false
+            viewBinding.questionLockedDescription.visibility = View.VISIBLE
+        } else {
+            viewBinding.inputLayout.isEnabled = true
+            viewBinding.inputEditText.isEnabled = true
+            viewBinding.optionsSpinner.isEnabled = true
+            viewBinding.questionLockedDescription.visibility = View.GONE
+        }
+
     }
 }

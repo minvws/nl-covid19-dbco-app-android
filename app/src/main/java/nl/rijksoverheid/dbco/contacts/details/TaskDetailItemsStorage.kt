@@ -27,6 +27,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.ContactNameItem
 import nl.rijksoverheid.dbco.items.input.DateInputItem
 import nl.rijksoverheid.dbco.items.input.EmailAddressItem
+import nl.rijksoverheid.dbco.items.input.NoExposureRiskItem
 import nl.rijksoverheid.dbco.items.input.NoRiskItem
 import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
 import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
@@ -180,6 +181,7 @@ class TaskDetailItemsStorage(
     )
 
     private val noRiskItem = NoRiskItem()
+    private val noExposureRiskItem = NoExposureRiskItem()
 
     fun addClassificationQuestions(
         question: Question,
@@ -279,13 +281,15 @@ class TaskDetailItemsStorage(
                     }
             ),
             {
-                viewModel.dateOfLastExposure.value = it.value
+                viewModel.dateOfLastExposure.postValue(it.value)
             },
             JsonObject(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
                     }
-            )
+            ),
+        // Lock input if a date has been set through the GGD portal
+        isLocked = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
     )
 
     fun refreshContactDetailsSection() {
@@ -420,6 +424,15 @@ class TaskDetailItemsStorage(
                 }
             )
         )
+
+        viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
+            if(it == ANSWER_EARLIER){
+                contactDetailsSection.add(contactDetailsSection.getPosition(dateOfLastExposureItem), noExposureRiskItem)
+                informSection.setEnabled(false)
+            }else{
+                contactDetailsSection.remove(noExposureRiskItem)
+            }
+        })
     }
 
     // Inform
