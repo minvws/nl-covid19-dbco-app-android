@@ -42,6 +42,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
@@ -94,7 +95,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
                     }
-            )
+            ),
+            isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val durationRiskItem = QuestionTwoOptionsItem(
@@ -120,7 +122,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.durationRisk.value))
                     }
-            )
+            ),
+        isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val distanceRiskItem = QuestionTwoOptionsItem(
@@ -146,7 +149,8 @@ class TaskDetailItemsStorage(
                     HashMap<String, JsonElement>().apply {
                         put("value", JsonPrimitive(viewModel.distanceRisk.value))
                     }
-            )
+            ),
+        isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val otherRiskItem = QuestionTwoOptionsItem(
@@ -366,6 +370,7 @@ class TaskDetailItemsStorage(
                             }
                         )
                     }
+                    val isLocked = viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             context,
@@ -378,7 +383,8 @@ class TaskDetailItemsStorage(
                                         CommunicationType.Index
                                 }
                             },
-                            previousAnswerValue
+                            previousAnswerValue,
+                            isLocked
                         )
                     )
                 }
