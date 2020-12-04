@@ -51,7 +51,7 @@
 
     <!--    Onboarding privacy consent -->
     <string name="onboarding_privacy_title">Zo gaat de GGD om met je gegevens</string>
-    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/privacy\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
+    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
     <string name="onboarding_privacy_item1">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
     <string name="onboarding_privacy_item2">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
     <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invoert worden gedeeld</string>
