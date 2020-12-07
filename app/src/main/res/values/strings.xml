@@ -51,7 +51,7 @@
 
     <!--    Onboarding privacy consent -->
     <string name="onboarding_privacy_title">Zo gaat de GGD om met je gegevens</string>
-    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/privacy\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
+    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
     <string name="onboarding_privacy_item1">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
     <string name="onboarding_privacy_item2">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
     <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invoert worden gedeeld</string>
@@ -165,5 +165,7 @@
     <string name="rooted_device_warning">Je telefoon lijkt jailbroken of rooted. Dit betekent dat het besturingssysteem gekraakt is. Hierdoor is je telefoon mogelijk minder goed beveiligd.</string>
     <string name="qa_clear_data_summary">Weet je zeker dat je alle opgeslagen gegevens wilt wissen? De applicatie wordt hierbij afgesloten.</string>
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
+    <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
+    <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
 
 </resources>

@@ -25,6 +25,7 @@ import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
+import nl.rijksoverheid.dbco.contacts.details.TaskDetailItemsStorage.Companion.ANSWER_EARLIER
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
@@ -94,11 +95,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
             itemsStorage?.classificationSection?.setEnabled(true)
             itemsStorage?.classificationSection?.setCompleted(hasCategory)
-            if (categoryHasRisk) {
-                if (itemsStorage?.classificationSection?.isExpanded == true) {
-                    itemsStorage?.classificationSection?.onToggleExpanded()
-                }
-            }
 
             if (hasCategory) {
                 if (itemsStorage?.contactDetailsSection?.isExpanded == false) {
@@ -133,12 +129,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         })
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()
+            binding.saveButton.text =
+                    if (it == ANSWER_EARLIER) getString(R.string.cancel) else getString(R.string.save)
         })
 
         refreshClassificationSection()
 
         binding.saveButton.setOnClickListener {
-            if (viewModel.category.value == Category.NO_RISK) {
+            if (viewModel.category.value == Category.NO_RISK || viewModel.dateOfLastExposure.value == ANSWER_EARLIER) {
                 findNavController().popBackStack()
                 return@setOnClickListener
             }
