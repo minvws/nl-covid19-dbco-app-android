@@ -359,13 +359,14 @@ class TaskDetailItemsStorage(
                 size == 2 -> {
                     var previousAnswerValue =
                         viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                    val shouldStaffContact = viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
                     if (isCommunicationTypeQuestion(question)) {
                         // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
                         previousAnswerValue = JsonObject(
                             HashMap<String, JsonElement>().apply {
                                 val trigger = when (viewModel.communicationType.value) {
                                     CommunicationType.Index -> ContactDetailsInputFragment.COMMUNICATION_INDEX
-                                    CommunicationType.Staff -> ContactDetailsInputFragment.COMMUNICATION_STUFF
+                                    CommunicationType.Staff -> ContactDetailsInputFragment.COMMUNICATION_STAFF
                                     else -> null
                                 }
                                 trigger?.let {
@@ -374,21 +375,21 @@ class TaskDetailItemsStorage(
                             }
                         )
                     }
-                    val isLocked = viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
+
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             context,
                             question,
                             {
+                                if(!shouldStaffContact) {
                                 when (it.trigger) {
-                                    ContactDetailsInputFragment.COMMUNICATION_STUFF -> viewModel.communicationType.value =
+                                    ContactDetailsInputFragment.COMMUNICATION_STAFF -> viewModel.communicationType.value =
                                         CommunicationType.Staff
                                     ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
                                         CommunicationType.Index
-                                }
+                                } }
                             },
-                            previousAnswerValue,
-                            isLocked
+                            previousAnswerValue
                         )
                     )
                 }
@@ -562,7 +563,7 @@ class TaskDetailItemsStorage(
     private fun isCommunicationTypeQuestion(question: Question): Boolean {
         var foundTrigger = false
         question.answerOptions?.forEach {
-            if (it?.trigger == ContactDetailsInputFragment.COMMUNICATION_STUFF || it?.trigger == ContactDetailsInputFragment.COMMUNICATION_INDEX) {
+            if (it?.trigger == ContactDetailsInputFragment.COMMUNICATION_STAFF || it?.trigger == ContactDetailsInputFragment.COMMUNICATION_INDEX) {
                 foundTrigger = true
             }
         }

@@ -284,7 +284,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     companion object { // TODO not use UUID's in future, they might change!
         const val CONTACT_TYPE_UUID = "37d818ed-9499-4b9a-9771-725467368390"
-        const val COMMUNICATION_STUFF = "communication_staff"
+        const val COMMUNICATION_STAFF = "communication_staff"
         const val COMMUNICATION_INDEX = "communication_index"
     }
 
