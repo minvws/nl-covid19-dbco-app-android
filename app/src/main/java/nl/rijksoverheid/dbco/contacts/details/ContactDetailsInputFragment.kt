@@ -193,7 +193,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setNeutralButton(R.string.contact_inform_action_inform_now) { dialog, _ ->
             // Close dialog and focus on inform section
             dialog.dismiss()
-            itemsStorage?.informSection?.onToggleExpanded()
+            itemsStorage?.informSection?.isExpanded = true
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
             // Index will inform later. Close dialog and save answers already given
