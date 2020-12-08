@@ -50,12 +50,13 @@
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
     <!--    Onboarding privacy consent -->
-    <string name="onboarding_privacy_title">Zo gaat de GGD om met je gegevens</string>
-    <string name="onboarding_privacy_summary"><![CDATA[Om de GGD Contact-app te gebruiken moet je akkoord gaan met de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring.</a><br/> Belangrijk om te weten:]]></string>
+    <string name="onboarding_privacy_title">Zo gaat GGD Contact om met je gegevens</string>
+    <string name="onboarding_privacy_summary"><![CDATA[In de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
     <string name="onboarding_privacy_item1">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
     <string name="onboarding_privacy_item2">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
-    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invoert worden gedeeld</string>
-    <string name="onboarding_privacy_item4">Gegevens worden maximaal 14 dagen bewaard op je telefoon</string>
+    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invult worden gedeeld</string>
+    <string name="onboarding_privacy_item4">Je kunt na het delen de gegevens zelf verwijderen</string>
+    <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
 
 
     <!--    Contacts Picker-->
@@ -167,5 +168,4 @@
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
     <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
-
 </resources>

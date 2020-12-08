@@ -66,7 +66,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
         viewModel.setTask(task)
 
-        itemsStorage = TaskDetailItemsStorage(viewModel,  view.context, viewLifecycleOwner, appLifecycleViewModel.getFeatureFlags()).apply {
+        itemsStorage = TaskDetailItemsStorage(
+            viewModel,
+            view.context,
+            viewLifecycleOwner,
+            appLifecycleViewModel.getFeatureFlags()
+        ).apply {
             adapter.add(classificationSection)
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
@@ -116,10 +121,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             checkIfInformSectionComplete()
             checkIfContactDetailsSectionComplete()
             itemsStorage?.refreshInformSection()
-            if(it == CommunicationType.Index){
-                binding.saveButton.apply{
-                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
+            if (it == CommunicationType.Index) {
+                binding.saveButton.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.gray_lighter)
                     setTextColor(context.getColor(R.color.purple))
+                }
+            } else {
+                binding.saveButton.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.color_primary)
+                    setTextColor(context.getColor(R.color.white))
                 }
             }
         })
@@ -130,7 +142,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()
             binding.saveButton.text =
-                    if (it == ANSWER_EARLIER) getString(R.string.cancel) else getString(R.string.save)
+                if (it == ANSWER_EARLIER) getString(R.string.cancel) else getString(R.string.save)
         })
 
         refreshClassificationSection()
@@ -181,7 +193,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setNeutralButton(R.string.contact_inform_action_inform_now) { dialog, _ ->
             // Close dialog and focus on inform section
             dialog.dismiss()
-            itemsStorage?.informSection?.onToggleExpanded()
+            itemsStorage?.informSection?.isExpanded = true
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
             // Index will inform later. Close dialog and save answers already given
@@ -196,7 +208,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.Classification) {
-                itemsStorage?.addClassificationQuestions(question, itemsStorage?.classificationSection)
+                itemsStorage?.addClassificationQuestions(
+                    question,
+                    itemsStorage?.classificationSection
+                )
             }
         }
     }
@@ -242,10 +257,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             question.uuid,
                             value
                         )
-                        val answersOnSameQuestion = answers.filter { predicate -> predicate.questionUuid == question.uuid }
+                        val answersOnSameQuestion =
+                            answers.filter { predicate -> predicate.questionUuid == question.uuid }
                         if (answersOnSameQuestion.isEmpty()) {
                             answers.add(answer)
-                        } else if(value!= null) {
+                        } else if (value != null) {
                             val newValue = answersOnSameQuestion.firstOrNull()?.value?.plus(value)
                             newValue?.let {
                                 answersOnSameQuestion.firstOrNull()?.value = JsonObject(it)
