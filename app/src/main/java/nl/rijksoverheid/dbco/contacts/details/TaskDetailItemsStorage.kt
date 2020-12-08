@@ -360,21 +360,6 @@ class TaskDetailItemsStorage(
                     var previousAnswerValue =
                         viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
                     val shouldStaffContact = viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
-                    if (isCommunicationTypeQuestion(question)) {
-                        // if it is communication type question - we override previous answer so we can set communicationType from viewmodel
-                        previousAnswerValue = JsonObject(
-                            HashMap<String, JsonElement>().apply {
-                                val trigger = when (viewModel.communicationType.value) {
-                                    CommunicationType.Index -> ContactDetailsInputFragment.COMMUNICATION_INDEX
-                                    CommunicationType.Staff -> ContactDetailsInputFragment.COMMUNICATION_STAFF
-                                    else -> null
-                                }
-                                trigger?.let {
-                                    put("trigger", JsonPrimitive(it))
-                                }
-                            }
-                        )
-                    }
 
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
