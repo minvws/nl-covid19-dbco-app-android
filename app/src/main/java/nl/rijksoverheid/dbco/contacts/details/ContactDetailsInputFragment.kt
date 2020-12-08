@@ -142,13 +142,25 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()
             binding.saveButton.text =
-                if (it == ANSWER_EARLIER) getString(R.string.cancel) else getString(R.string.save)
+                // If the user selects Earlier, and the task has been saved before, delete it
+                // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
+                if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
+                    getString(R.string.delete)
+                }else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null) {
+                    getString(R.string.cancel)
+                } else { getString(R.string.save) }
         })
 
         refreshClassificationSection()
 
         binding.saveButton.setOnClickListener {
-            if (viewModel.category.value == Category.NO_RISK || viewModel.dateOfLastExposure.value == ANSWER_EARLIER) {
+            if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
+                viewModel.deleteCurrentTask()
+                findNavController().popBackStack()
+                return@setOnClickListener
+            }
+
+            if (viewModel.category.value == Category.NO_RISK || (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.uuid == null)) {
                 findNavController().popBackStack()
                 return@setOnClickListener
             }
@@ -194,6 +206,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             // Close dialog and focus on inform section
             dialog.dismiss()
             itemsStorage?.informSection?.isExpanded = true
+            itemsStorage?.classificationSection?.isExpanded = false
+            itemsStorage?.contactDetailsSection?.isExpanded = false
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
             // Index will inform later. Close dialog and save answers already given

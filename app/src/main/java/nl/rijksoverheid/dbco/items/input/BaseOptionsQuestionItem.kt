@@ -54,4 +54,8 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
             }
         }
     }
+
+    open fun clearPreviousAnswer() {
+        selectedAnswer = null
+    }
 }
