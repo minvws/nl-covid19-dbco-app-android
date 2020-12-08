@@ -22,7 +22,7 @@
             android:layout_marginTop="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Ik heb de privacyverklaring gelezen en ga hiermee akkoord"
+            android:text="@string/onboarding_consent_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
