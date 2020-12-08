@@ -66,118 +66,122 @@ class TaskDetailItemsStorage(
     // Classification
 
     val classificationSection = QuestionnaireSection(
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_typeofcontact_header,
-                    R.string.contact_section_typeofcontact_subtext,
-                    1
-            ), true
+        QuestionnaireSectionHeader(
+            R.string.contact_section_typeofcontact_header,
+            R.string.contact_section_typeofcontact_subtext,
+            1
+        ), true
     )
 
     private val livedTogetherRiskItem = QuestionTwoOptionsItem(
-            context,
-            Question(
-                    null,
-                    context.getString(R.string.lived_together_risk_label),
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption(context.getString(R.string.answer_no), null, false.toString()),
-                            AnswerOption(context.getString(R.string.answer_yes), null, true.toString())
-                    )
-            ),
-            {
-                when (it.value) {
-                    false.toString() -> viewModel.livedTogetherRisk.value = false
-                    true.toString() -> viewModel.livedTogetherRisk.value = true
+        context,
+        Question(
+            null,
+            context.getString(R.string.lived_together_risk_label),
+            QuestionType.ClassificationDetails,
+            Group.Classification,
+            listOf(
+                AnswerOption(context.getString(R.string.answer_no), null, false.toString()),
+                AnswerOption(context.getString(R.string.answer_yes), null, true.toString())
+            )
+        ),
+        {
+            when (it.value) {
+                false.toString() -> {
+                    viewModel.livedTogetherRisk.value = false
                 }
-                viewModel.updateCategoryFromRiskFlags()
-            },
-            JsonObject(
-                    HashMap<String, JsonElement>().apply {
-                        put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
-                    }
-            ),
-            isLocked = viewModel.task.value?.source == Source.Portal
+                true.toString() -> {
+                    viewModel.livedTogetherRisk.value = true
+                }
+            }
+            viewModel.updateCategoryFromRiskFlags()
+        },
+        JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
+            }
+        ),
+        isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val durationRiskItem = QuestionTwoOptionsItem(
-            context,
-            Question(
-                    null,
-                    context.getString(R.string.duration_risk_label),
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
-                    )
-            ),
-            {
-                when (it.value) {
-                    false.toString() -> viewModel.durationRisk.value = false
-                    true.toString() -> viewModel.durationRisk.value = true
-                }
-                viewModel.updateCategoryFromRiskFlags()
-            },
-            JsonObject(
-                    HashMap<String, JsonElement>().apply {
-                        put("value", JsonPrimitive(viewModel.durationRisk.value))
-                    }
-            ),
+        context,
+        Question(
+            null,
+            context.getString(R.string.duration_risk_label),
+            QuestionType.ClassificationDetails,
+            Group.Classification,
+            listOf(
+                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+            )
+        ),
+        {
+            when (it.value) {
+                false.toString() -> viewModel.durationRisk.value = false
+                true.toString() -> viewModel.durationRisk.value = true
+            }
+            viewModel.updateCategoryFromRiskFlags()
+        },
+        JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.durationRisk.value))
+            }
+        ),
         isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val distanceRiskItem = QuestionTwoOptionsItem(
-            context,
-            Question(
-                    context.getString(R.string.distance_risk_description),
-                    context.getString(R.string.distance_risk_label),
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
-                    )
-            ),
-            {
-                when (it.value) {
-                    false.toString() -> viewModel.distanceRisk.value = false
-                    true.toString() -> viewModel.distanceRisk.value = true
-                }
-                viewModel.updateCategoryFromRiskFlags()
-            },
-            JsonObject(
-                    HashMap<String, JsonElement>().apply {
-                        put("value", JsonPrimitive(viewModel.distanceRisk.value))
-                    }
-            ),
+        context,
+        Question(
+            context.getString(R.string.distance_risk_description),
+            context.getString(R.string.distance_risk_label),
+            QuestionType.ClassificationDetails,
+            Group.Classification,
+            listOf(
+                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+            )
+        ),
+        {
+            when (it.value) {
+                false.toString() -> viewModel.distanceRisk.value = false
+                true.toString() -> viewModel.distanceRisk.value = true
+            }
+            viewModel.updateCategoryFromRiskFlags()
+        },
+        JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.distanceRisk.value))
+            }
+        ),
         isLocked = viewModel.task.value?.source == Source.Portal
     )
 
     private val otherRiskItem = QuestionTwoOptionsItem(
-            context,
-            Question(
-                    null,
-                    context.getString(R.string.other_risk_label),
-                    QuestionType.ClassificationDetails,
-                    Group.Classification,
-                    listOf(
-                            AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                            AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
-                    )
-            ),
-            {
-                when (it.value) {
-                    false.toString() -> viewModel.otherRisk.value = false
-                    true.toString() -> viewModel.otherRisk.value = true
-                }
-                viewModel.updateCategoryFromRiskFlags()
-            },
-            JsonObject(
-                    HashMap<String, JsonElement>().apply {
-                        put("value", JsonPrimitive(viewModel.otherRisk.value))
-                    }
+        context,
+        Question(
+            null,
+            context.getString(R.string.other_risk_label),
+            QuestionType.ClassificationDetails,
+            Group.Classification,
+            listOf(
+                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
+                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
             )
+        ),
+        {
+            when (it.value) {
+                false.toString() -> viewModel.otherRisk.value = false
+                true.toString() -> viewModel.otherRisk.value = true
+            }
+            viewModel.updateCategoryFromRiskFlags()
+        },
+        JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.otherRisk.value))
+            }
+        )
     )
 
     private val noRiskItem = NoRiskItem()
@@ -187,59 +191,59 @@ class TaskDetailItemsStorage(
         question: Question,
         section: QuestionnaireSection?
     ) {
-            classificationQuestion = question
-            section?.add(livedTogetherRiskItem) // always added
+        classificationQuestion = question
+        section?.add(livedTogetherRiskItem) // always added
 
-            viewModel.livedTogetherRisk.observe(viewLifecycleOwner, {
-                if (it == false) {
-                    section?.add(durationRiskItem)
-                } else {
-                    section?.remove(distanceRiskItem)
-                    section?.remove(durationRiskItem)
-                    section?.remove(otherRiskItem)
-                    section?.remove(noRiskItem)
-                }
-            })
-
-            viewModel.durationRisk.observe(viewLifecycleOwner, {
-                if (it == false) {
-                    section?.add(distanceRiskItem)
-                } else {
-                    section?.remove(distanceRiskItem)
-                    section?.remove(otherRiskItem)
-                    section?.remove(noRiskItem)
-                }
-            })
-
-            viewModel.distanceRisk.observe(viewLifecycleOwner, {
-                if (it == false) {
-                    section?.add(otherRiskItem)
-                } else {
-                    section?.remove(otherRiskItem)
-                    section?.remove(noRiskItem)
-                }
-            })
-
-            viewModel.otherRisk.observe(viewLifecycleOwner, {
-                if (it == false) {
-                    section?.add(noRiskItem)
-                } else {
-                    section?.remove(noRiskItem)
-                }
-            })
-
-            listOf(
-                livedTogetherRiskItem,
-                distanceRiskItem,
-                durationRiskItem,
-                otherRiskItem
-            ).forEach {
-                it.question?.uuid = question.uuid
+        viewModel.livedTogetherRisk.observe(viewLifecycleOwner, { it ->
+            if (it == false) {
+                section?.add(durationRiskItem)
+            } else {
+                section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(durationRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(noRiskItem)
             }
+        })
+
+        viewModel.durationRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(distanceRiskItem)
+            } else {
+                section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(noRiskItem)
+            }
+        })
+
+        viewModel.distanceRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(otherRiskItem)
+            } else {
+                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(noRiskItem)
+            }
+        })
+
+        viewModel.otherRisk.observe(viewLifecycleOwner, {
+            if (it == false) {
+                section?.add(noRiskItem)
+            } else {
+                section?.remove(noRiskItem)
+            }
+        })
+
+        listOf(
+            livedTogetherRiskItem,
+            distanceRiskItem,
+            durationRiskItem,
+            otherRiskItem
+        ).forEach {
+            it.question?.uuid = question.uuid
+        }
     }
 
     fun getClassificationAnswerValue(): JsonObject {
-        val map = HashMap<String, JsonElement> ()
+        val map = HashMap<String, JsonElement>()
         map["category1Risk"] = JsonPrimitive(viewModel.livedTogetherRisk.value ?: false)
         map["category2ARisk"] = JsonPrimitive(viewModel.durationRisk.value ?: false)
         map["category2BRisk"] = JsonPrimitive(viewModel.distanceRisk.value ?: false)
@@ -250,44 +254,50 @@ class TaskDetailItemsStorage(
     // Contact details
 
     val contactDetailsSection = QuestionnaireSection(
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_contactdetails_header,
-                    R.string.contact_section_contactdetails_subtext,
-                    2
-            ), false
+        QuestionnaireSectionHeader(
+            R.string.contact_section_contactdetails_header,
+            R.string.contact_section_contactdetails_subtext,
+            2
+        ), false
     )
 
     val dateOfLastExposureItem = QuestionMultipleOptionsItem(
-            context,
-            Question(
-                    null,
-                    context.getString(R.string.contact_information_last_exposure_label),
-                    QuestionType.Multiplechoice,
-                    Group.ContactDetails,
-                    mutableListOf<AnswerOption>().apply {
-                        viewModel.getDateOfSymptomOnset()?.let {
+        context,
+        Question(
+            null,
+            context.getString(R.string.contact_information_last_exposure_label),
+            QuestionType.Multiplechoice,
+            Group.ContactDetails,
+            mutableListOf<AnswerOption>().apply {
+                viewModel.getDateOfSymptomOnset()?.let {
 
-                            add(AnswerOption(context.getString(R.string.contact_information_last_exposure_earlier), null, ANSWER_EARLIER))
+                    add(
+                        AnswerOption(
+                            context.getString(R.string.contact_information_last_exposure_earlier),
+                            null,
+                            ANSWER_EARLIER
+                        )
+                    )
 
-                            val twoDaysBeforeSymptoms = it.minusDays(2)
-                            val interval = Days.daysBetween(twoDaysBeforeSymptoms, LocalDate.now()).days
-                            for (i in 0 .. interval) {
-                                val date = twoDaysBeforeSymptoms.plusDays(i)
-                                val label = date.toString(DateFormats.exposureUI)
-                                val value = date.toString(DateFormats.dateInputData)
-                                add(AnswerOption(label, null, value))
-                            }
-                        }
+                    val twoDaysBeforeSymptoms = it.minusDays(2)
+                    val interval = Days.daysBetween(twoDaysBeforeSymptoms, LocalDate.now()).days
+                    for (i in 0..interval) {
+                        val date = twoDaysBeforeSymptoms.plusDays(i)
+                        val label = date.toString(DateFormats.exposureUI)
+                        val value = date.toString(DateFormats.dateInputData)
+                        add(AnswerOption(label, null, value))
                     }
-            ),
-            {
-                viewModel.dateOfLastExposure.postValue(it.value)
-            },
-            JsonObject(
-                    HashMap<String, JsonElement>().apply {
-                        put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
-                    }
-            ),
+                }
+            }
+        ),
+        {
+            viewModel.dateOfLastExposure.postValue(it.value)
+        },
+        JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
+            }
+        ),
         // Lock input if a date has been set through the GGD portal
         isLocked = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
     )
@@ -359,20 +369,22 @@ class TaskDetailItemsStorage(
                 size == 2 -> {
                     var previousAnswerValue =
                         viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
-                    val shouldStaffContact = viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
+                    val shouldStaffContact =
+                        viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
 
                     sectionToAddTo?.add(
                         QuestionTwoOptionsItem(
                             context,
                             question,
                             {
-                                if(!shouldStaffContact) {
-                                when (it.trigger) {
-                                    ContactDetailsInputFragment.COMMUNICATION_STAFF -> viewModel.communicationType.value =
-                                        CommunicationType.Staff
-                                    ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
-                                        CommunicationType.Index
-                                } }
+                                if (!shouldStaffContact) {
+                                    when (it.trigger) {
+                                        ContactDetailsInputFragment.COMMUNICATION_STAFF -> viewModel.communicationType.value =
+                                            CommunicationType.Staff
+                                        ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
+                                            CommunicationType.Index
+                                    }
+                                }
                             },
                             previousAnswerValue
                         )
@@ -412,10 +424,13 @@ class TaskDetailItemsStorage(
         )
 
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
-            if(it == ANSWER_EARLIER){
-                contactDetailsSection.add(contactDetailsSection.getPosition(dateOfLastExposureItem), noExposureRiskItem)
+            if (it == ANSWER_EARLIER) {
+                contactDetailsSection.add(
+                    contactDetailsSection.getPosition(dateOfLastExposureItem),
+                    noExposureRiskItem
+                )
                 informSection.setEnabled(false)
-            }else{
+            } else {
                 contactDetailsSection.remove(noExposureRiskItem)
             }
         })
@@ -424,11 +439,11 @@ class TaskDetailItemsStorage(
     // Inform
 
     val informSection = QuestionnaireSection(
-            QuestionnaireSectionHeader(
-                    R.string.contact_section_inform_header,
-                    R.string.contact_section_inform_subtext,
-                    3
-            ), false
+        QuestionnaireSectionHeader(
+            R.string.contact_section_inform_header,
+            R.string.contact_section_inform_subtext,
+            3
+        ), false
     )
 
     fun refreshInformSection() {
@@ -439,9 +454,15 @@ class TaskDetailItemsStorage(
             else -> false  // in those cases inform section is disabled and thus hidden
         }
 
-        val header = when(viewModel.communicationType.value) {
-            CommunicationType.Staff -> context.getString(R.string.inform_contact_title_staff, viewModel.selectedContact?.firstName)
-            else -> context.getString(R.string.inform_contact_title_index, viewModel.selectedContact?.firstName)
+        val header = when (viewModel.communicationType.value) {
+            CommunicationType.Staff -> context.getString(
+                R.string.inform_contact_title_staff,
+                viewModel.selectedContact?.firstName
+            )
+            else -> context.getString(
+                R.string.inform_contact_title_index,
+                viewModel.selectedContact?.firstName
+            )
         }
 
         var message = when (viewModel.category.value) {
@@ -454,13 +475,20 @@ class TaskDetailItemsStorage(
                 } else {
                     val date = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
                     val untilDate = date.plusDays(10)
-                    val untilDateString = context.getString(R.string.inform_contact_guidelines_category2_until_date, untilDate.toString(DateFormats.informContactGuidelinesUI))
+                    val untilDateString = context.getString(
+                        R.string.inform_contact_guidelines_category2_until_date,
+                        untilDate.toString(DateFormats.informContactGuidelinesUI)
+                    )
 
-                    val daysRemaining = Days.daysBetween(LocalDate.now(), untilDate).days.absoluteValue
+                    val daysRemaining =
+                        Days.daysBetween(LocalDate.now(), untilDate).days.absoluteValue
 
                     val daysRemainingString = when (daysRemaining) {
                         1 -> context.getString(R.string.inform_contact_guidelines_category2_day_remaining)
-                        else -> context.getString(R.string.inform_contact_guidelines_category2_days_remaining, daysRemaining.toString())
+                        else -> context.getString(
+                            R.string.inform_contact_guidelines_category2_days_remaining,
+                            daysRemaining.toString()
+                        )
                     }
 
                     context.getString(
@@ -500,26 +528,28 @@ class TaskDetailItemsStorage(
 
             add(SubHeaderItem(header))
             add(ParagraphItem(message, clickable = true))
-            if(featureFlags.enablePerspectiveCopy) {
-                add(ButtonItem(
-                    context.getString(R.string.contact_section_inform_copy),
-                    {
-                        val clipboard =
-                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
-                        clipboard.setPrimaryClip(clip)
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.contact_section_inform_copied),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    },
-                    type = ButtonType.LIGHT
-                ))
+            if (featureFlags.enablePerspectiveCopy) {
+                add(
+                    ButtonItem(
+                        context.getString(R.string.contact_section_inform_copy),
+                        {
+                            val clipboard =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.contact_section_inform_copied),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        },
+                        type = ButtonType.LIGHT
+                    )
+                )
             }
 
             // add "Call $name" button if phone is set
-            if(featureFlags.enableContactCalling) {
+            if (featureFlags.enableContactCalling) {
                 viewModel.selectedContact?.number?.let {
                     add(
                         ButtonItem(
