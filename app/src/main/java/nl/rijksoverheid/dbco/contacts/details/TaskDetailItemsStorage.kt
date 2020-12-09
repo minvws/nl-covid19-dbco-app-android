@@ -465,41 +465,49 @@ class TaskDetailItemsStorage(
             )
         }
 
-        var message = when (viewModel.category.value) {
-            Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_guidelines_category1)
-            Category.OTHER -> context.getString(R.string.inform_contact_guidelines_category3)
-            Category.DURATION, Category.DISTANCE -> {
-                val dateLastExposure = viewModel.dateOfLastExposure.value
-                if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
-                    context.getString(R.string.inform_contact_guidelines_category2, "", "")
-                } else {
-                    val date = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-                    val untilDate = date.plusDays(10)
-                    val untilDateString = context.getString(
-                        R.string.inform_contact_guidelines_category2_until_date,
-                        untilDate.toString(DateFormats.informContactGuidelinesUI)
-                    )
+        val dateLastExposure = viewModel.dateOfLastExposure.value
 
-                    val daysRemaining =
-                        Days.daysBetween(LocalDate.now(), untilDate).days.absoluteValue
-
-                    val daysRemainingString = when (daysRemaining) {
-                        1 -> context.getString(R.string.inform_contact_guidelines_category2_day_remaining)
-                        else -> context.getString(
-                            R.string.inform_contact_guidelines_category2_days_remaining,
-                            daysRemaining.toString()
-                        )
-                    }
-
-                    context.getString(
-                        R.string.inform_contact_guidelines_category2,
-                        untilDateString,
-                        daysRemainingString
-                    )
+        var message = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+            // Handle generic texts
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> {
+                    context.getString(R.string.inform_contact_guidelines_category1_no_date)
                 }
+                Category.DISTANCE -> {
+                    context.getString(R.string.inform_contact_guidelines_category2a_no_date)
+                }
+                Category.DURATION -> {
+                    context.getString(R.string.inform_contact_guidelines_category2b_no_date)
+                }
+                Category.OTHER -> {
+                    context.getString(R.string.inform_contact_guidelines_category3_no_date)
+                }
+                else -> ""
             }
-            else -> ""
+            }else{
+                // Handle with dates
+            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
+            val exposureDatePlusTen = exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusFive = exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusFourteen = exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> {
+                    context.getString(R.string.inform_contact_guidelines_category1_with_date, exposureDatePlusTen)
+                }
+                Category.DISTANCE -> {
+                    context.getString(R.string.inform_contact_guidelines_category2a_with_date, exposureDatePlusFive, exposureDatePlusTen)
+                }
+                Category.DURATION -> {
+                    context.getString(R.string.inform_contact_guidelines_category2b_with_date, exposureDatePlusFive, exposureDatePlusTen)
+                }
+                Category.OTHER -> {
+                    context.getString(R.string.inform_contact_guidelines_category3_with_date, exposureDatePlusFourteen)
+                }
+                else -> ""
+            }
+
         }
+
 
         val link = when (viewModel.category.value) {
             Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_link_category1)
@@ -511,7 +519,29 @@ class TaskDetailItemsStorage(
 
         message += "<br/>$link"
 
-        val plainMessage = message.removeHtmlTags()
+        // To be shown above the copied message
+        val introMessage = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
+                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,"")
+                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,"")
+                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, "")
+                else -> ""
+            }
+        }else{
+            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
+            val exposureDateFormatted = "${context.getString(R.string.inform_contact_intro_date, exposureDate.toString(DateFormats.informContactGuidelinesUI))} "
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
+                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
+                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
+                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, exposureDateFormatted)
+                else -> ""
+            }
+        }
+
+        val fullMessage = "$introMessage<br/>$message"
+        val plainMessage = fullMessage.removeHtmlTags()
 
         informSection.apply {
 
@@ -535,7 +565,7 @@ class TaskDetailItemsStorage(
                         {
                             val clipboard =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
                             clipboard.setPrimaryClip(clip)
                             Toast.makeText(
                                 context,
