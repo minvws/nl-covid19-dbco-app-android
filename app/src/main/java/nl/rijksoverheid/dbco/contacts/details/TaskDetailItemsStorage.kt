@@ -530,12 +530,12 @@ class TaskDetailItemsStorage(
             }
         }else{
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            val exposureDateFormatted = context.getString(R.string.inform_contact_intro_date, exposureDate.toString(DateFormats.informContactGuidelinesUI))
+            val exposureDateFormatted = context.getString(R.string.inform_contact_intro_date, exposureDate.toString(DateFormats.informContactGuidelinesUI))+" "
             when (viewModel.category.value) {
                 Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
-                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)+" "
-                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)+" "
-                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, exposureDateFormatted)+" "
+                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
+                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
+                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, exposureDateFormatted)
                 else -> ""
             }
         }
