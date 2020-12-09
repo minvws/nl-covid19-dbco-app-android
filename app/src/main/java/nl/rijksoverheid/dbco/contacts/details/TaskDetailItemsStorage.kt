@@ -519,7 +519,29 @@ class TaskDetailItemsStorage(
 
         message += "<br/>$link"
 
-        val plainMessage = message.removeHtmlTags()
+        // To be shown above the copied message
+        val introMessage = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
+                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,"")
+                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,"")
+                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, "")
+                else -> ""
+            }
+        }else{
+            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
+            val exposureDateFormatted = context.getString(R.string.inform_contact_intro_date, exposureDate.toString(DateFormats.informContactGuidelinesUI))
+            when (viewModel.category.value) {
+                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
+                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)+" "
+                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)+" "
+                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, exposureDateFormatted)+" "
+                else -> ""
+            }
+        }
+
+        val fullMessage = "$introMessage<br/>$message"
+        val plainMessage = fullMessage.removeHtmlTags()
 
         informSection.apply {
 
@@ -543,7 +565,7 @@ class TaskDetailItemsStorage(
                         {
                             val clipboard =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, message)
+                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
                             clipboard.setPrimaryClip(clip)
                             Toast.makeText(
                                 context,

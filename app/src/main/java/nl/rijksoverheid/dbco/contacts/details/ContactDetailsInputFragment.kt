@@ -141,6 +141,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         })
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()
+            itemsStorage?.refreshInformSection()
             binding.saveButton.text =
                 // If the user selects Earlier, and the task has been saved before, delete it
                 // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
