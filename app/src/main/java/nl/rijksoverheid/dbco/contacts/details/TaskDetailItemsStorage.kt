@@ -113,7 +113,7 @@ class TaskDetailItemsStorage(
             Group.Classification,
             listOf(
                 AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+                AnswerOption(context.getString(R.string.answer_know_no), null, false.toString())
             )
         ),
         {
