@@ -453,15 +453,15 @@ class TaskDetailItemsStorage(
             Category.OTHER -> true
             else -> false  // in those cases inform section is disabled and thus hidden
         }
-
+        val contactName =  if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else "dit contact"
         val header = when (viewModel.communicationType.value) {
             CommunicationType.Staff -> context.getString(
                 R.string.inform_contact_title_staff,
-                viewModel.selectedContact?.firstName
+                contactName
             )
             else -> context.getString(
                 R.string.inform_contact_title_index,
-                viewModel.selectedContact?.firstName
+                contactName
             )
         }
 
@@ -469,41 +469,64 @@ class TaskDetailItemsStorage(
 
         var message = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
-            when (viewModel.category.value) {
-                Category.LIVED_TOGETHER -> {
-                    context.getString(R.string.inform_contact_guidelines_category1_no_date)
+                if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
+                    when (viewModel.category.value) {
+                        Category.LIVED_TOGETHER -> {
+                            context.getString(R.string.inform_contact_guidelines_category1_no_date)
+                        }
+                        Category.DISTANCE -> {
+                            context.getString(R.string.inform_contact_guidelines_category2a_no_date)
+                        }
+                        Category.DURATION -> {
+                            context.getString(R.string.inform_contact_guidelines_category2b_no_date)
+                        }
+                        Category.OTHER -> {
+                            context.getString(R.string.inform_contact_guidelines_category3_no_date)
+                        }
+                        else -> ""
+                    }
+                } else {
+                    context.getString(R.string.inform_contact_guidelines_no_name)
                 }
-                Category.DISTANCE -> {
-                    context.getString(R.string.inform_contact_guidelines_category2a_no_date)
-                }
-                Category.DURATION -> {
-                    context.getString(R.string.inform_contact_guidelines_category2b_no_date)
-                }
-                Category.OTHER -> {
-                    context.getString(R.string.inform_contact_guidelines_category3_no_date)
-                }
-                else -> ""
-            }
             }else{
                 // Handle with dates
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
             val exposureDatePlusTen = exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFive = exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFourteen = exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
-            when (viewModel.category.value) {
-                Category.LIVED_TOGETHER -> {
-                    context.getString(R.string.inform_contact_guidelines_category1_with_date, exposureDatePlusTen)
+
+            if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
+                when (viewModel.category.value) {
+                    Category.LIVED_TOGETHER -> {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category1_with_date,
+                            exposureDatePlusTen
+                        )
+                    }
+                    Category.DISTANCE -> {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2a_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    }
+                    Category.DURATION -> {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2b_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    }
+                    Category.OTHER -> {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category3_with_date,
+                            exposureDatePlusFourteen
+                        )
+                    }
+                    else -> ""
                 }
-                Category.DISTANCE -> {
-                    context.getString(R.string.inform_contact_guidelines_category2a_with_date, exposureDatePlusFive, exposureDatePlusTen)
-                }
-                Category.DURATION -> {
-                    context.getString(R.string.inform_contact_guidelines_category2b_with_date, exposureDatePlusFive, exposureDatePlusTen)
-                }
-                Category.OTHER -> {
-                    context.getString(R.string.inform_contact_guidelines_category3_with_date, exposureDatePlusFourteen)
-                }
-                else -> ""
+            }else{
+                context.getString(R.string.inform_contact_guidelines_no_name)
             }
 
         }
