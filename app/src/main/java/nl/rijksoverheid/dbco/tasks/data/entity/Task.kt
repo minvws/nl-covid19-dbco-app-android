@@ -40,30 +40,32 @@ class Task(
     @Contextual
     var linkedContact: LocalContact? = null
 
-    fun getStatus(): Int {  // number from 0 to 3
-        var status = 0
-        if (category != null && category != Category.NO_RISK) {
-            status++
-        }
-
+    fun getStatus(): Int {
+        // check for essential data first, if any of these are missing always return 0
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
-
-        if (hasEmailOrPhone &&
-            communication != null &&
-            dateOfLastExposure != null) {
-            status++
+        if(category == null || (linkedContact?.firstName.isNullOrEmpty() && linkedContact?.lastName.isNullOrEmpty()) || !hasEmailOrPhone || dateOfLastExposure == null ){
+            return 0
         }
 
-        val informSectionCompleted = when (communication) {
-            CommunicationType.Index -> didInform
-            CommunicationType.Staff -> hasEmailOrPhone
-            else -> false
-        }
-        if (informSectionCompleted) {
-            status++
+        if(questionnaireResult != null && questionnaireResult?.answers != null){
+            val totalQuestions = questionnaireResult?.answers?.size ?: 1 // 1 to make sure we don't divide by 0
+            var filledInAnswers = 0
+            questionnaireResult?.answers?.forEach {
+                if(it.value!!.size > 0) { // isNotEmpty with a nullable JsonObject seems to always return false, hence checking size instead
+                   filledInAnswers++
+                }
+            }
+
+            // Calculate percentage filled out of 100%
+            val filledDouble = filledInAnswers.toDouble()
+            val totalDouble = totalQuestions.toDouble()
+            val percentageFilled : Double = (filledDouble / totalDouble) * 100
+
+            return percentageFilled.toInt()
         }
 
-        return status
+        // Should never come here, return 0 to show warning
+        return 0
     }
 
     override fun toString(): String {

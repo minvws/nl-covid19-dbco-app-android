@@ -31,4 +31,8 @@ class QuestionnaireSection(
         headerItem.blocked = blocked
     }
 
+    fun setSectionNumber(position : Int){
+        headerItem.sectionNumber = position
+    }
+
 }

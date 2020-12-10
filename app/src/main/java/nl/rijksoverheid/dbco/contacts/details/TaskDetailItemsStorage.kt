@@ -298,8 +298,8 @@ class TaskDetailItemsStorage(
                 put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
             }
         ),
-        // Lock input if a date has been set through the GGD portal
-        isLocked = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
+        // Hide input if a date has been set through the GGD portal
+        isHidden = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
     )
 
     fun refreshContactDetailsSection() {
@@ -311,8 +311,10 @@ class TaskDetailItemsStorage(
                 // add hardcoded "date of last exposure" question before communication type question
                 if (isCommunicationTypeQuestion(question)) {
                     let {
-                        it.contactDetailsSection.add(it.dateOfLastExposureItem)
-                        communicationTypeQuestionFound = true
+                        if(!it.dateOfLastExposureItem.isHidden) {
+                            it.contactDetailsSection.add(it.dateOfLastExposureItem)
+                            communicationTypeQuestionFound = true
+                        }
                     }
                 }
                 when (question.questionType) {
@@ -345,6 +347,7 @@ class TaskDetailItemsStorage(
         }
         if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
             let {
+                if(!it.dateOfLastExposureItem.isHidden)
                 contactDetailsSection?.add(it.dateOfLastExposureItem)
             }
         }
@@ -443,14 +446,13 @@ class TaskDetailItemsStorage(
             R.string.contact_section_inform_header,
             R.string.contact_section_inform_subtext,
             3
-        ), false
+        ), true
     )
 
     fun refreshInformSection() {
 
         val isEnabled = when (viewModel.category.value) {
-            Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE -> viewModel.communicationType.value != null
-            Category.OTHER -> true
+            Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE, Category.OTHER  -> true
             else -> false  // in those cases inform section is disabled and thus hidden
         }
         val contactName =  if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else "dit contact"

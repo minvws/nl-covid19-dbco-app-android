@@ -46,7 +46,7 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
                 PrivacyConsentItem(viewModel)
             )
         )
-
+        adapter.clear()
         adapter.add(content)
 
         binding.content.adapter = adapter
