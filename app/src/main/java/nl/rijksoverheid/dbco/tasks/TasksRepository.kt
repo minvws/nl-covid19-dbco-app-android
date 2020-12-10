@@ -103,7 +103,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
                 }
             }
 
-            val storeString = Defaults.json.encodeToString(remoteCase)
+            val storeString = Defaults.json.encodeToString(cachedCase)
             encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString)
                 .apply()
         }
