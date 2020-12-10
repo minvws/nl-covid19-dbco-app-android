@@ -156,8 +156,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         binding.saveButton.setOnClickListener {
             if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
-                viewModel.deleteCurrentTask()
-                findNavController().popBackStack()
+                showDeleteItemDialog(it)
                 return@setOnClickListener
             }
 
