@@ -61,9 +61,7 @@
             android:id="@+id/index_contact_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{task.taskContext}"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{task.taskContext==null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/index_contact_name"
             app:layout_constraintTop_toBottomOf="@id/index_contact_name"
@@ -78,6 +76,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/index_task_progress"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/cd_info_box"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:background="@drawable/circular_progress_background"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+            android:progress="0"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
 
         <View
             android:id="@+id/divider"

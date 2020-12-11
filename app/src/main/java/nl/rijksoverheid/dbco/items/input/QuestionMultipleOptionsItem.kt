@@ -23,7 +23,8 @@ class QuestionMultipleOptionsItem(
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswer: JsonObject? = null,
-    private val isLocked : Boolean = false
+    private val isLocked : Boolean = false,
+    val isHidden : Boolean = false,
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
@@ -87,6 +88,5 @@ class QuestionMultipleOptionsItem(
             viewBinding.optionsSpinner.isEnabled = true
             viewBinding.questionLockedDescription.visibility = View.GONE
         }
-
     }
 }

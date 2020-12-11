@@ -18,7 +18,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 class QuestionnaireSectionHeader(
         @StringRes val sectionTitle: Int,
         @StringRes val sectionSubtext: Int,
-        private var sectionNumber: Int = 1
+        var sectionNumber: Int = 1
 ) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
     private var binding: ItemQuestionnaireSectionBinding? = null

@@ -8,11 +8,12 @@
 
 package nl.rijksoverheid.dbco.items.ui
 
+import android.view.View
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.util.PieProgressDrawable
 import java.io.Serializable
 
 class TaskItem(
@@ -23,29 +24,46 @@ class TaskItem(
         viewBinding.task = task
 
         val displayName = task.linkedContact?.getDisplayName()
-        viewBinding.indexContactName.text = when {
+        var labelToDisplay = when {
             displayName?.isNotEmpty() == true -> displayName
             task.label?.isNotEmpty() == true -> task.label
             else -> viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
         }
+        if(!task.taskContext.isNullOrEmpty()){
+            labelToDisplay = "$labelToDisplay (${task.taskContext})"
+        }
+        viewBinding.indexContactName.text = labelToDisplay
+
+        viewBinding.indexContactSubtitle.setText(getCommunicationContext())
 
         // completeness indicator
-        when (task.getStatus()) {
-            0 -> viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status)
-            1 -> { if(task.linkedContact == null) { viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status) } else { getPieDrawable(33, viewBinding) } }
-            2 -> getPieDrawable(66, viewBinding)
-            else -> viewBinding.indexContactState.setImageResource(R.drawable.ic_completed)
+        if(task.getStatus() == 0 || task.linkedContact == null) {
+            viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status)
+            viewBinding.indexTaskProgress.visibility = View.GONE
+        } else {
+            setStatus(task.getStatus() ,viewBinding)
         }
     }
 
-    private fun getPieDrawable(progress: Int, viewBinding: ItemTaskBinding) {
-        val resources = viewBinding.root.resources
-        val color = resources.getColor(R.color.color_primary)
-        val pieProgressDrawable = PieProgressDrawable()
-        pieProgressDrawable.setColor(color)
-        pieProgressDrawable.onLevelChange(progress)
-        pieProgressDrawable.setBorderWidth(2f, resources.displayMetrics)
-        viewBinding.indexContactState.setImageDrawable(pieProgressDrawable)
+    private fun setStatus(progress: Int, viewBinding: ItemTaskBinding){
+        viewBinding.indexContactState.setImageResource(R.drawable.ic_check_icon)
+        viewBinding.indexTaskProgress.visibility = View.VISIBLE
+        viewBinding.indexTaskProgress.progress = progress
+    }
+
+    private fun getCommunicationContext() : Int{
+        return if(task.getStatus() > 0 && task.communication == CommunicationType.Staff){
+            R.string.communication_context_staff_data
+        }else if(task.getStatus() == 0) {
+           R.string.communication_context_no_data
+        }else if (task.communication == CommunicationType.Index && !task.didInform && task.getStatus() > 0){
+           R.string.communication_context_index_not_informed
+        }else if(task.communication == CommunicationType.Index && task.didInform){
+            R.string.communication_context_index_informed
+        }else{
+            R.string.communication_context_blank
+        }
+
     }
 
     override fun getLayout() = R.layout.item_task

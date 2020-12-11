@@ -72,7 +72,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewLifecycleOwner,
             appLifecycleViewModel.getFeatureFlags()
         ).apply {
-            adapter.add(classificationSection)
+            if(task.source != Source.Portal) {
+                // If the task is coming from the portal remove the classification section and change the other section's numbering accordingly
+                adapter.add(classificationSection)
+            }else{
+                contactDetailsSection.setSectionNumber(1)
+                informSection.setSectionNumber(2)
+            }
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
         }

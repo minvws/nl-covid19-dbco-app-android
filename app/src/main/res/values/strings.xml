@@ -29,10 +29,10 @@
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef Toestemming</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
-    <string name="mycontacts_uninformed_header">Vul contactgegevens aan</string>
-    <string name="mycontacts_uninformed_subtext">Contacten die moeten weten dat je besmet bent</string>
-    <string name="mycontacts_informed_header">Behandelde contacten</string>
-    <string name="mycontacts_informed_subtext">Contacten die zijn of worden geinformeerd</string>
+    <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
+    <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
+    <string name="mycontacts_informed_header">Deze contacten zijn klaar</string>
+    <string name="mycontacts_informed_subtext">Jij hebt ze geïnformeerd of de GGD doet dit</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
@@ -61,8 +61,8 @@
 
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
-    <string name="contact_permission_header">Geef toegang tot contacten</string>
-    <string name="contact_permission_summary">De app heeft zo toegang tot de contacten op je telefoon. Wil je dit niet? Dan kun je contactgegevens ook handmatig toevoegen.</string>
+    <string name="contact_permission_header">Geef toegang tot je contacten</string>
+    <string name="contact_permission_summary">Zo kun je makkelijk contactgegevens aanvullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt. Wil je de app geen toegang geven? Dan kun je contactgegevens ook handmatig toevoegen.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
 
@@ -139,7 +139,7 @@
 
     <string name="finalize_appbar_title">Bijna klaar</string>
     <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
-    <string name="finalize_uninformed_subtext">Vul contactgegevens aan</string>
+    <string name="finalize_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
     <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>
     <string name="finalize_no_phone_or_email_subtext">De GGD zal deze contacten informeren</string>
     <string name="finalize_sent_title">Bedankt voor het delen van de gegevens met de GGD</string>
@@ -179,4 +179,9 @@
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
     <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
+    <string name="communication_context_staff_data">GGD gaat informeren</string>
+    <string name="communication_context_no_data">Vul gegevens aan</string>
+    <string name="communication_context_index_not_informed">Jij informeert dit contact</string>
+    <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
+    <string name="communication_context_blank"></string>
 </resources>
