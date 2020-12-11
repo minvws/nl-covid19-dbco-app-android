@@ -25,8 +25,6 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.PrivacyInformationItem
 
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
-
-    private val adapter = GroupAdapter<GroupieViewHolder>()
     private val viewModel by viewModels<OnboardingConsentViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +44,7 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
                 PrivacyConsentItem(viewModel)
             )
         )
-        adapter.clear()
+        val adapter = GroupAdapter<GroupieViewHolder>()
         adapter.add(content)
 
         binding.content.adapter = adapter
