@@ -88,12 +88,5 @@ class QuestionMultipleOptionsItem(
             viewBinding.optionsSpinner.isEnabled = true
             viewBinding.questionLockedDescription.visibility = View.GONE
         }
-
-        if(isHidden){
-            viewBinding.inputContainer.visibility = View.GONE
-        } else {
-            viewBinding.inputContainer.visibility = View.VISIBLE
-        }
-
     }
 }
