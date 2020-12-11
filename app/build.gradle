@@ -91,7 +91,6 @@ android {
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
-            signingConfig signingConfigs.release
             android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
         }
     }
