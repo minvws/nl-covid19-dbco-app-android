@@ -72,7 +72,7 @@ android {
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
         }
-        acc {
+        acctest {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
