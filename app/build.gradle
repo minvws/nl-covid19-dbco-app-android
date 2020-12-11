@@ -60,7 +60,7 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        dev {
+        acc {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"

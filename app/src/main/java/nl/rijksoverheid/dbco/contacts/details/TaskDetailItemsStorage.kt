@@ -346,11 +346,9 @@ class TaskDetailItemsStorage(
             }
         }
         if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
-            let {
-                if(!it.dateOfLastExposureItem.isHidden) {
-                    contactDetailsSection?.add(it.dateOfLastExposureItem)
+                if(!dateOfLastExposureItem.isHidden) {
+                    contactDetailsSection?.add(dateOfLastExposureItem)
                 }
-            }
         }
     }
 
