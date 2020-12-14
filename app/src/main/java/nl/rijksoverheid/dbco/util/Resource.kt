@@ -1,7 +1,6 @@
 package nl.rijksoverheid.dbco.util
 
 import timber.log.Timber
-import java.lang.Exception
 
 /**
  * Class combines state and data in one object
@@ -39,7 +38,6 @@ fun <T> Resource<T>.resolve(onError: (E: Exception) -> Unit = {}, onSuccess: (T)
             onSuccess(data)
         }
         is Resource.Failure -> {
-            Timber.e("Exception in request, ")
             onError(exception)
         }
     }
