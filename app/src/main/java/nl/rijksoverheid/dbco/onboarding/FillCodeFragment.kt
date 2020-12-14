@@ -100,7 +100,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                             && binding.pinEntry3.text?.length == ENTRY_MAX_LENGTH
 
                     if (binding.inputErrorView.visibility == View.VISIBLE) {
-                        binding.inputErrorView.visibility == View.GONE
+                        binding.inputErrorView.visibility = View.GONE
                     }
                 }
 
