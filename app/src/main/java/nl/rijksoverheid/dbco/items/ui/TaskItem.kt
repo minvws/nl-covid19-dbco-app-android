@@ -52,15 +52,21 @@ class TaskItem(
     }
 
     private fun getCommunicationContext() : Int{
-        return if(task.getStatus() > 0 && task.communication == CommunicationType.Staff){
+        // If status is not fully complete, always show the 'add more data' context
+        return if(task.getStatus() < 100) {
+            R.string.communication_context_no_data
+        }
+        // If fully filled in, and communication is staff, show staff-oriented message
+        else if(task.getStatus() == 100 && task.communication == CommunicationType.Staff){
             R.string.communication_context_staff_data
-        }else if(task.getStatus() == 0) {
-           R.string.communication_context_no_data
-        }else if (task.communication == CommunicationType.Index && !task.didInform && task.getStatus() > 0){
-           R.string.communication_context_index_not_informed
-        }else if(task.communication == CommunicationType.Index && task.didInform){
+        }
+        // If fully filled in, and communication is index, show index-oriented message based on inform state
+        else if(task.getStatus() == 100 && task.communication == CommunicationType.Index && !task.didInform) {
+            R.string.communication_context_index_not_informed
+        }else if (task.getStatus() == 100 && task.communication == CommunicationType.Index && task.didInform){
             R.string.communication_context_index_informed
         }else{
+            // Catch-all, shouldn't arrive here
             R.string.communication_context_blank
         }
 
