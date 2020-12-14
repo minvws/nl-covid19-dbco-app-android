@@ -30,7 +30,7 @@ class FillCodeViewModel(private val userRepository: IUserRepository) : ViewModel
                 try {
                     userRepository.pair(pin)
                     _pairingResult.postValue(Resource.success(true))
-                } catch (ex: Exception) {
+                } catch (ex: Throwable) {
                     Timber.e(ex, "Error while retrieving case")
                     _pairingResult.postValue(Resource.failure(ex))
                 }
