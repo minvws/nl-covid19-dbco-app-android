@@ -454,9 +454,11 @@ class TaskDetailItemsStorage(
             Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE, Category.OTHER  -> true
             else -> false  // in those cases inform section is disabled and thus hidden
         }
-        val contactName =  if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else "dit contact"
-        val header = when (viewModel.communicationType.value) {
-            CommunicationType.Staff -> context.getString(
+        val contactName =  if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else context.getString(
+                    R.string.inform_header_this_person)
+        val header = context.getString(R.string.inform_header,contactName)
+        val footer = when (viewModel.communicationType.value) {
+            CommunicationType.Staff ->context.getString(
                 R.string.inform_contact_title_staff,
                 contactName
             )
@@ -582,6 +584,12 @@ class TaskDetailItemsStorage(
 
             add(SubHeaderItem(header))
             add(ParagraphItem(message, clickable = true))
+
+            // Only add the footer if the source is Portal.
+            if(viewModel.task.value?.source == Source.Portal) {
+                add(SubHeaderItem(footer))
+            }
+
             if (featureFlags.enablePerspectiveCopy) {
                 add(
                     ButtonItem(
