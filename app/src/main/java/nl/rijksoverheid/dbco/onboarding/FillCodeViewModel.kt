@@ -15,7 +15,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.util.Resource
 import timber.log.Timber
@@ -31,7 +30,7 @@ class FillCodeViewModel(private val userRepository: IUserRepository) : ViewModel
                 try {
                     userRepository.pair(pin)
                     _pairingResult.postValue(Resource.success(true))
-                } catch (ex: Throwable) {
+                } catch (ex: Exception) {
                     Timber.e(ex, "Error while retrieving case")
                     _pairingResult.postValue(Resource.failure(ex))
                 }
