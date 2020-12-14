@@ -37,7 +37,7 @@ class TaskItem(
         viewBinding.indexContactSubtitle.setText(getCommunicationContext())
 
         // completeness indicator
-        if(task.getStatus() == 0 || task.linkedContact == null) {
+        if(task.getStatus() == 0 || task.linkedContact == null || (task.communication == CommunicationType.Index && !task.didInform)) {
             viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status)
             viewBinding.indexTaskProgress.visibility = View.GONE
         } else {
