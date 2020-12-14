@@ -95,6 +95,15 @@
         <item name="android:layout_marginBottom">3dp</item>
     </style>
 
+    <style name="CodeEntryError">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:drawableLeft">@drawable/ic_error_small</item>
+        <item name="drawableSize">12dp</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
+
     <style name="DatePickerDialog" parent="@android:style/Widget.Material.Light.DatePicker">
         <item name="android:colorAccent">@color/color_primary</item>
         <item name="colorAccent">@color/color_primary</item>
