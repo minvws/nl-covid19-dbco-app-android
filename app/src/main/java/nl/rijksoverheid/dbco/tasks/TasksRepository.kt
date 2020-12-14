@@ -26,6 +26,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.StubbedAPI
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
@@ -114,6 +115,9 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         caseChanged = true
         val currentTasks = cachedCase?.tasks as ArrayList
         var found = false
+        if(updatedTask.communication == null || updatedTask.communication == CommunicationType.None){
+            updatedTask.communication = CommunicationType.Index
+        }
         currentTasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
                 currentTasks[index] = updatedTask
