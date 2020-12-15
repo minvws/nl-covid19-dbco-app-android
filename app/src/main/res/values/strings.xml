@@ -128,7 +128,7 @@
     <string name="inform_contact_link_category2b"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-nauwe-contacten\">lci.rivm.nl/covid-19-nauwe-contacten</a>]]></string>
     <string name="inform_contact_link_category3"><![CDATA[Alle leefregels staan op <a href=\"https://lci.rivm.nl/covid-19-overige-contacten\">lci.rivm.nl/covid-19-overige-contacten</a>]]></string>
 
-    <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string> 
+    <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string>
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
     <string name="contact_inform_option_done">Ja</string>
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
