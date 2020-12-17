@@ -6,7 +6,9 @@
  */
 package nl.rijksoverheid.dbco.network
 
+import android.content.Context
 import android.os.Build
+import nl.rijksoverheid.dbco.R
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -14,14 +16,9 @@ import okhttp3.Response
  * Interceptor that modifies the user-agent so it contains the Device model,
  * OS version and App version.
  */
-class UserAgentInterceptor : Interceptor {
+class UserAgentInterceptor(val context: Context) : Interceptor {
 
-    companion object {
-        private const val USER_AGENT = "User-Agent"
-    }
-
-    private val userAgent: String =
-        "Oplossing2/${nl.rijksoverheid.dbco.BuildConfig.VERSION_CODE} (${Build.MANUFACTURER} ${Build.MODEL}) Android (${Build.VERSION.SDK_INT})"
+    private val userAgent: String = "${context.getString(R.string.app_name)}/${nl.rijksoverheid.dbco.BuildConfig.VERSION_CODE} (${Build.MANUFACTURER} ${Build.MODEL}) Android (${Build.VERSION.SDK_INT})"
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestWithUserAgent = chain.request().newBuilder()
@@ -30,4 +27,9 @@ class UserAgentInterceptor : Interceptor {
 
         return chain.proceed(requestWithUserAgent)
     }
+
+    companion object {
+        private const val USER_AGENT = "User-Agent"
+    }
+
 }

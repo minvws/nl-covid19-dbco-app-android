@@ -11,9 +11,7 @@ import android.content.Context
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -21,94 +19,74 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import timber.log.Timber
 
 class QuestionMultipleOptionsItem(
-        val context: Context,
-        question: Question?,
-        val answerSelectedListener: (AnswerOption) -> Unit,
-        private val previousAnswer: JsonObject? = null
-) : BaseQuestionItem<ItemQuestionMultipleOptionsBinding>(question) {
+    context: Context,
+    question: Question?,
+    answerSelectedListener: (AnswerOption) -> Unit,
+    previousAnswer: JsonObject? = null,
+    private val isLocked : Boolean = false,
+    val isHidden : Boolean = false,
+) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
-    private var selectedAnswer: AnswerOption? = null
 
     override fun bind(viewBinding: ItemQuestionMultipleOptionsBinding, position: Int) {
         viewBinding.item = this
 
         val list =
-                question?.answerOptions?.map { option -> option?.label } ?: mutableListOf<String>()
+            question?.answerOptions?.map { option -> option?.label } ?: mutableListOf<String>()
 
         viewBinding.inputLayout.hint = question?.label
         val adapter: ArrayAdapter<String> = ArrayAdapter(
-                context,
-                android.R.layout.simple_spinner_dropdown_item,
-                list.toTypedArray()
+            context,
+            android.R.layout.simple_spinner_dropdown_item,
+            list.toTypedArray()
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        fillInPreviousAnswer(viewBinding)
+        if (selectedAnswer == null) {
+            fillInPreviousAnswer()
+        }
+
+        viewBinding.inputEditText.setText(selectedAnswer?.label?:"")
+
         viewBinding.optionsSpinner.apply {
             this.adapter = adapter
-            setSelection(0, false)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                var check = 0
                 override fun onItemSelected(
-                        p0: AdapterView<*>?,
-                        p1: View?,
-                        position: Int,
-                        p3: Long
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    position: Int,
+                    p3: Long
                 ) {
-                    question?.answerOptions?.getOrNull(position)?.let {
-                        answerSelectedListener.invoke(it)
-                        selectedAnswer = it
-                        viewBinding.inputEditText.setText(it.label)
-                        Timber.d("Selected option $it")
-                        checkCompleted()
+                    if (++check > 1) { // prevents spinner from firing during initialization
+                        question?.answerOptions?.getOrNull(position)?.let {
+                            answerSelectedListener.invoke(it)
+                            selectedAnswer = it
+                            viewBinding.inputEditText.setText(it.label)
+                            Timber.d("Selected option $it")
+                        }
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     selectedAnswer = null
                     viewBinding.inputEditText.setText("")
-                    checkCompleted()
                 }
             }
         }
-    }
 
-    override fun isSameAs(other: Item<*>): Boolean =
-            other is QuestionMultipleOptionsItem && other.question?.uuid == question?.uuid
-
-    override fun hasSameContentAs(other: Item<*>) =
-            other is QuestionMultipleOptionsItem && other.question?.uuid == question?.uuid
-
-    override fun isRequired(): Boolean = true
-
-    override fun isCompleted(): Boolean {
-        return (selectedAnswer != null)
-    }
-
-    override fun getUserAnswers(): Map<String, Any> {
-        val answers = HashMap<String, Any>()
-        selectedAnswer?.let {
-            it.value?.let {
-                answers.put("value", it)
-            }
-        }
-        return answers
-    }
-
-    private fun fillInPreviousAnswer(viewBinding: ItemQuestionMultipleOptionsBinding) {
-        previousAnswer?.let {
-            val previousAnswerLabel = it["value"]?.jsonPrimitive?.jsonPrimitive?.content
-            question?.answerOptions?.forEachIndexed { index, option ->
-                if (option?.label?.equals(previousAnswerLabel) == true) {
-                    answerSelectedListener.invoke(option)
-                    selectedAnswer = option
-                    checkCompleted()
-                    viewBinding.inputEditText.setText(previousAnswerLabel)
-                    viewBinding.optionsSpinner.setSelection(index, false)
-                    return
-                }
-            }
-            viewBinding.optionsSpinner.setSelection(0, false) // nothing was found
+        // If values are set through the portal this item should be locked from input
+        if(isLocked){
+            viewBinding.inputLayout.isEnabled = false
+            viewBinding.inputEditText.isEnabled = false
+            viewBinding.optionsSpinner.isEnabled = false
+            viewBinding.questionLockedDescription.visibility = View.VISIBLE
+        } else {
+            viewBinding.inputLayout.isEnabled = true
+            viewBinding.inputEditText.isEnabled = true
+            viewBinding.optionsSpinner.isEnabled = true
+            viewBinding.questionLockedDescription.visibility = View.GONE
         }
     }
 }

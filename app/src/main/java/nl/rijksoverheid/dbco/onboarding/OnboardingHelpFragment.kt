@@ -24,7 +24,7 @@ class OnboardingHelpFragment : BaseFragment(R.layout.fragment_onboarding_help) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingHelpBinding.bind(view)
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(OnboardingHelpFragmentDirections.toFillCodeFragment())
+            findNavController().navigate(OnboardingHelpFragmentDirections.toOnboardingPrivacyConsentFragment())
         }
 
         if (viewModel.skipOnboarding) {

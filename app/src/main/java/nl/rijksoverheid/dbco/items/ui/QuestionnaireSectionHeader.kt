@@ -18,7 +18,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 class QuestionnaireSectionHeader(
         @StringRes val sectionTitle: Int,
         @StringRes val sectionSubtext: Int,
-        private var sectionNumber: Int = 1
+        var sectionNumber: Int = 1
 ) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
     private var binding: ItemQuestionnaireSectionBinding? = null
@@ -26,8 +26,9 @@ class QuestionnaireSectionHeader(
     var completed = false
     set(value) {
         field = value
-        binding?.sectionStatusIcon?.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
-        enabled = true
+        if (value) {
+            enabled = true
+        }
     }
 
     var enabled = false
@@ -37,12 +38,15 @@ class QuestionnaireSectionHeader(
             expandableGroup.onToggleExpanded()
         }
         binding?.sectionStatusIcon?.isEnabled = value
+        binding?.sectionStatusIcon?.setImageResource(if (completed && enabled) R.drawable.ic_valid else getSectionIcon())
     }
+
+    var blocked = false
 
     override fun bind(viewBinding: ItemQuestionnaireSectionBinding, position: Int) {
         this.binding = viewBinding
         viewBinding.root.setOnClickListener {
-            if (enabled) {
+            if (enabled && !blocked) {
                 expandableGroup.onToggleExpanded()
                 viewBinding.sectionChevron.setImageResource(getSectionChevron())
             }
@@ -51,7 +55,7 @@ class QuestionnaireSectionHeader(
         viewBinding.sectionHeader.setText(sectionTitle)
         viewBinding.sectionSubtext.setText(sectionSubtext)
         viewBinding.sectionChevron.setImageResource(getSectionChevron())
-        viewBinding.sectionStatusIcon.setImageResource(if (completed) R.drawable.ic_valid else getSectionIcon())
+        viewBinding.sectionStatusIcon.setImageResource(if (completed && enabled) R.drawable.ic_valid else getSectionIcon())
         viewBinding.sectionStatusIcon.isEnabled = enabled
     }
 

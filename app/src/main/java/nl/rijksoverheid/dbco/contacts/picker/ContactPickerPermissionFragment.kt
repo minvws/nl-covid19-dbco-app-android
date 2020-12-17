@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.picker
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -25,6 +26,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentListBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
@@ -36,6 +38,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactPickerPermissionFragmentArgs by navArgs()
+    private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
@@ -57,13 +60,14 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 ParagraphItem(getString(R.string.contact_permission_summary)),
                 ButtonItem(
                     getString(R.string.mycontacts_grant_permission),
-                    { requestContactAccess() }),
+                    { requestContactAccess() }, type = ButtonType.DARK),
                 ButtonItem(
                     getString(R.string.mycontacts_deny_permission),
                     {
                         findNavController().navigate(
                             ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
                         )
+                        userPrefs?.edit()?.putBoolean(Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, true)?.apply()
                     }, type = ButtonType.LIGHT
                 )
             )

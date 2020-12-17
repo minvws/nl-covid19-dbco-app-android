@@ -71,10 +71,10 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
-                        val hasEmailOrPhone = task.linkedContact?.hasEmailOrPhone() == true
+                        val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
 
                         val informed = when (task.communication) {
-                            CommunicationType.Index -> task.contactIsInformedAlready
+                            CommunicationType.Index -> task.didInform
                             CommunicationType.Staff -> hasEmailOrPhone
                             else -> false
                         }
@@ -90,19 +90,34 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 }
             }
 
-            if (uninformedSection.groupCount > 1) {
+            if (uninformedSection.itemCount > 1) {
                 contentSection.add(uninformedSection)
             }
 
             if (noPhoneOrEmailSection.groupCount > 1) {
                 contentSection.add(noPhoneOrEmailSection)
             }
+
+            // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
+            if(uninformedSection.groupCount <= 1 && noPhoneOrEmailSection.groupCount <= 1){
+                tasksViewModel.uploadCurrentCase()
+                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
+            }
+        }
+
+        adapter.setOnItemClickListener { item, view ->
+            if (item is TaskItem) {
+                findNavController().navigate(
+                    FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
+                        item.task,
+                        item.task.linkedContact
+                    )
+                )
+            }
         }
 
         binding.sendButton.setOnClickListener {
-
-            tasksViewModel.sendCurrentCase()
-
+            tasksViewModel.uploadCurrentCase()
             findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
         }
     }

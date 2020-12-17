@@ -26,4 +26,13 @@ class QuestionnaireSection(
     }
 
     fun isEnabled() = headerItem.enabled
+
+    fun setBlocked(blocked: Boolean) {
+        headerItem.blocked = blocked
+    }
+
+    fun setSectionNumber(position : Int){
+        headerItem.sectionNumber = position
+    }
+
 }

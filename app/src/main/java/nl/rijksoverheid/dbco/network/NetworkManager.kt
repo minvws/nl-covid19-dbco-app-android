@@ -9,7 +9,12 @@
 package nl.rijksoverheid.dbco.network
 
 import android.content.Context
+import android.net.Uri
+import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.util.Obfuscator
 import okhttp3.Cache
+import okhttp3.CertificatePinner
+import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
@@ -29,6 +34,18 @@ internal fun createOkHttpClient(context: Context): OkHttpClient {
                     }
                 }).setLevel(HttpLoggingInterceptor.Level.BODY))
             }
-            addInterceptor(UserAgentInterceptor())
+            addInterceptor(UserAgentInterceptor(context))
+            if (BuildConfig.FEATURE_SSL_PINNING) {
+                connectionSpecs(
+                    listOf(
+                        ConnectionSpec.MODERN_TLS
+                    )
+                )
+                certificatePinner(
+                    CertificatePinner.Builder()
+                        .add(Uri.parse(BuildConfig.BASE_API_URL).host!!, Obfuscator.deObfuscate(BuildConfig.OBFUSCATED_SSL_PIN))
+                        .build()
+                )
+            }
         }.build().also { okHttpClient = it }
 }

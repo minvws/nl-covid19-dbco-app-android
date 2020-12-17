@@ -23,12 +23,11 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode project.getVersionCode()
-        versionName '0.1.' + project.getVersionCode()
+        versionName '1.0.0.' + project.getVersionCode()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "boolean", "FEATURE_LOGGING", "false"
-        buildConfigField "String", "STUBBED_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
 
         manifestPlaceholders = [appLabel: "@string/app_name"]
     }
@@ -37,6 +36,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
         }
 
@@ -63,16 +63,34 @@ android {
         acc {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.acc
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
+        }
+        acctest {
+            dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08ej5Zu5odqWpcjJnMmszKiv2rzZtr2qnd3gypupzKDepLnMyMSdnLqXwqQ=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
         }
         prod {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08PPyJmY287DtsPLlqmXxtu5zLbctrnFxcHIu8aY3OHcrq2tz8KencGb2Mc=\""
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08ej5Zu5odqWpcjJnMmszKiv2rzZtr2qnd3gypupzKDepLnMyMSdnLqXwqQ=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
-            // TODO sort out signing
         }
     }
 
@@ -107,6 +125,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$androidx_fragment_version"
     implementation "androidx.core:core-ktx:$androidx_core_version"
 
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version"
@@ -134,6 +153,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
 
+    implementation 'com.scottyab:rootbeer-lib:0.0.8'
 
     implementation 'net.danlew:android.joda:2.10.6.2'
 
@@ -148,5 +168,8 @@ dependencies {
     androidTestImplementation 'com.microsoft.appcenter:espresso-test-extension:1.4'
 
     implementation "androidx.security:security-crypto:1.0.0-rc03"
+
+    // Firebase is for the acc builds only
+    accImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
 
 }

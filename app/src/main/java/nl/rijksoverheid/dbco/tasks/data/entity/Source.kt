@@ -6,9 +6,17 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.tasks.data.entity
 
-import java.io.Serializable
+import androidx.annotation.Keep
+import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
-data class ContactName(val firstName: String, val lastName: String) : Serializable
+@Keep
+enum class Source {
+    @SerialName("app")
+    App,
+
+    @SerialName("portal")
+    Portal
+}

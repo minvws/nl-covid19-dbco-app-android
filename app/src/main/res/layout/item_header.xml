@@ -21,12 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
         android:accessibilityHeading="true"
         android:text="@{text}"
-        android:textAppearance="?attr/textAppearanceHeadline4"
+        android:textAppearance="@style/TextAppearance.App.Headline5"
         tools:text="@string/placeholder"
         tools:targetApi="p" />
 </layout>
