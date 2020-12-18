@@ -495,6 +495,7 @@ class TaskDetailItemsStorage(
                 // Handle with dates
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
             val exposureDatePlusTen = exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusEleven = exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFive = exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFourteen = exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
 
@@ -503,7 +504,7 @@ class TaskDetailItemsStorage(
                     Category.LIVED_TOGETHER -> {
                         context.getString(
                             R.string.inform_contact_guidelines_category1_with_date,
-                            exposureDatePlusTen
+                            exposureDatePlusEleven
                         )
                     }
                     Category.DISTANCE -> {

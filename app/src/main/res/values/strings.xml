@@ -34,6 +34,11 @@
     <string name="mycontacts_informed_header">Deze contacten zijn klaar</string>
     <string name="mycontacts_informed_subtext">Jij hebt ze geïnformeerd of de GGD doet dit</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
+    <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
+    <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
+    <string name="mycontacts_delete_data_ok">Verwijder</string>
+    <string name="mycontacts_delete_data_cancel">Ga terug</string>
+    <string name="mycontacts_delete_data_button">Verwijder gegevens</string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
@@ -186,4 +191,5 @@
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
+    <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
 </resources>
