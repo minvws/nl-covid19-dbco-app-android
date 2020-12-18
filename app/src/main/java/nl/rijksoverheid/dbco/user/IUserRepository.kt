@@ -24,6 +24,6 @@ interface IUserRepository {
         const val KEY_RX = "KEY_RX"
         const val KEY_TOKEN = "KEY_TOKEN"
         const val KEY_CLIENT_SECRET_KEY = "KEY_CLIENT_SECRET_KEY"
-        const val PUBLIC_KEY_VERSION = "20201210"
+        const val PUBLIC_KEY_VERSION = "20201217"
     }
 }
