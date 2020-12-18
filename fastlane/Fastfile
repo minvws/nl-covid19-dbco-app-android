@@ -14,24 +14,68 @@ platform :android do
     desc "Builds and distributes app via firebase"
     lane :distribute do
 
-        build_android_app(
-            task: "assemble",
-            flavor: "Acc",
-            build_type: "Release"
+        deploy_test
+
+        deploy_acc
+
+        deploy_prod
+
+
+        inform_slack(
+            default_payloads: [:git_author],
+            message: "Successfully distributed beta builds 1.0.0.#{ENV['GITHUB_RUN_NUMBER']} (#{ENV['GITHUB_RUN_NUMBER']}) :rocket:",
         )
+    end
+
+    private_lane :deploy_test do
+        build_android_app(
+                    task: "assemble",
+                    flavor: "Acc",
+                    build_type: "Release"
+         )
 
         firebase_app_distribution(
             app: "1:14711935107:android:5ef53bbc991b05c1074bb6",
             firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
             groups: "testers",
-            release_notes: "Release via Firebase"
-        )
-
-        inform_slack(
-            default_payloads: [:git_author],
-            message: "Successfully distributed beta build 1.0.0.#{ENV['GITHUB_RUN_NUMBER']} (#{ENV['GITHUB_RUN_NUMBER']}) :rocket:",
+            release_notes: "Release on test environment via Firebase"
         )
     end
+
+
+    private_lane :deploy_acc do
+            build_android_app(
+                        task: "assemble",
+                        flavor: "Acctest",
+                        build_type: "Release"
+             )
+
+            firebase_app_distribution(
+                app: "1:514196416954:android:9716beeae89478dc8f9583",
+                firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+                groups: "testers",
+                release_notes: "Release on acceptence environment via Firebase"
+            )
+     end
+
+
+
+    private_lane :deploy_prod do
+             build_android_app(
+                         task: "assemble",
+                         flavor: "prod",
+                         build_type: "Release"
+              )
+
+             firebase_app_distribution(
+                 app: "1:1027445500001:android:563963ac88ff228a7ce220",
+                 firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+                 groups: "testers",
+                 release_notes: "Release on production environment via Firebase"
+             )
+    end
+
+
 
     private_lane :inform_slack do |options|
         unless ENV['SLACK_URL'].nil?
