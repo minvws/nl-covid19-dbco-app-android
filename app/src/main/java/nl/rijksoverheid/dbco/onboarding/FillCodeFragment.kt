@@ -13,7 +13,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.alimuzaffar.lib.pin.PinEntryEditText
@@ -24,6 +23,7 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.resolve
 import nl.rijksoverheid.dbco.util.showKeyboard
 import org.jetbrains.annotations.NotNull
+import retrofit2.HttpException
 
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
 
@@ -46,18 +46,23 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                     binding.pinEntry2.text.toString() +
                     binding.pinEntry3.text.toString()
             viewModel.pair(pin)
-            // Pairing is stubbed till we have access to the portal to create new pairings
         }
 
         viewModel.pairingResult.observe(viewLifecycleOwner, {
 
-            it?.resolve(onError = {
-                showErrorDialog(getString(R.string.error_while_pairing), {
-                    binding.pinEntry1.setText("")
-                    binding.pinEntry2.setText("")
-                    binding.pinEntry3.setText("")
-                    binding.pinEntry1.requestFocus()
-                }, it)
+            it?.resolve(onError = { exception ->
+                if (exception is HttpException && exception.code() == 400) {
+                    // Invalid pairing code, show error message but keep code
+                    binding.inputErrorView.visibility = View.VISIBLE
+                } else {
+                    // Other general error
+                    showErrorDialog(getString(R.string.error_while_pairing), {
+                        binding.pinEntry1.setText("")
+                        binding.pinEntry2.setText("")
+                        binding.pinEntry3.setText("")
+                        binding.pinEntry1.requestFocus()
+                    }, exception)
+                }
             }, onSuccess = {
                 binding.btnNext.hideKeyboard()
                 binding.btnNext.postDelayed({
@@ -93,6 +98,10 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
                     binding.btnNext.isEnabled = binding.pinEntry1.text?.length == ENTRY_MAX_LENGTH
                             && binding.pinEntry2.text?.length == ENTRY_MAX_LENGTH
                             && binding.pinEntry3.text?.length == ENTRY_MAX_LENGTH
+
+                    if (binding.inputErrorView.visibility == View.VISIBLE) {
+                        binding.inputErrorView.visibility = View.GONE
+                    }
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
@@ -136,7 +145,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code) {
     }
 
     companion object {
-        const val ENTRY_MAX_LENGTH = 3
+        const val ENTRY_MAX_LENGTH = 4
         const val KEYBOARD_DELAY = 400L
     }
 }

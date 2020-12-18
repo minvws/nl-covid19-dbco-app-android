@@ -8,8 +8,6 @@
 
 package nl.rijksoverheid.dbco.contacts.data
 
-import android.text.SpannableStringBuilder
-import androidx.core.text.bold
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.databinding.ItemContactBinding
@@ -24,7 +22,7 @@ class LocalContactItem(
 ) : BaseBindableItem<ItemContactBinding>(), Serializable {
 
     override fun bind(viewBinding: ItemContactBinding, position: Int) {
-        viewBinding.contactName.text = formatDisplayName(contact.displayName)
+        viewBinding.contactName.text = contact.getDisplayName()
     }
 
     override fun getLayout() = R.layout.item_contact
@@ -32,17 +30,6 @@ class LocalContactItem(
 
     override fun isClickable(): Boolean {
         return true
-    }
-
-    // Format name to show first word as bold
-    private fun formatDisplayName(displayName: String): SpannableStringBuilder {
-        val nameSplit = displayName.split(" ", limit = 2)
-        return SpannableStringBuilder()
-            .bold { append(nameSplit[0]) }.also {
-                if (nameSplit.size > 1) {
-                    it.append(" ${nameSplit[1]}")
-                }
-            }
     }
 
     override fun toString(): String {

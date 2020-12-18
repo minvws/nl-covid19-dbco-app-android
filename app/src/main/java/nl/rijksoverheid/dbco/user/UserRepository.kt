@@ -20,6 +20,7 @@ import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_CLIENT_SECRET_KE
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_RX
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TOKEN
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TX
+import nl.rijksoverheid.dbco.user.IUserRepository.Companion.PUBLIC_KEY_VERSION
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.util.Obfuscator
 import nl.rijksoverheid.dbco.util.toHexString
@@ -41,6 +42,8 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
     private var rx: String? = null
     private var tx: String? = null
     private var token: String? = null
+
+
 
     init {
         encryptedSharedPreferences.getString(KEY_RX, null)?.let {
@@ -77,7 +80,7 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
         val sealedClientPublicKey = Base64.encodeToString(sealedClientPublicKeyBytes, BASE64_FLAGS)
 
         // call to GGD server
-        val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey)
+        val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey, PUBLIC_KEY_VERSION)
         val pairingResponse = api.pair(pairingBody)
 
         // decrypting response

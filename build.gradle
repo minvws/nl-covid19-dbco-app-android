@@ -16,6 +16,8 @@ buildscript {
     ext.kotlin_version = '1.4.10'
     ext.play_services_base_version = "17.3.0"
     ext.play_services_tasks_version = "17.1.0"
+    ext.google_services_version = "4.3.4"
+    ext.firebase_crashlytics_version = "2.4.1"
     //3rd-party dependency versions
     ext.groupie_version = "2.8.0"
     ext.junit_version = "4.13"
@@ -38,6 +40,8 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$androidx_nav_version"
+        classpath "com.google.gms:google-services:$google_services_version"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_crashlytics_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

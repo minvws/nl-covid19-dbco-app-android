@@ -60,7 +60,6 @@ class AboutFragment : BaseFragment(R.layout.fragment_list) {
         listOf(
             FAQItem(FAQItemId.DUMMY, R.string.placeholder),
             FAQItem(FAQItemId.DUMMY, R.string.app_name),
-            FAQItem(FAQItemId.DUMMY, R.string.app_name_develop)
         )
     )
 }

@@ -15,7 +15,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.util.Resource
 import timber.log.Timber

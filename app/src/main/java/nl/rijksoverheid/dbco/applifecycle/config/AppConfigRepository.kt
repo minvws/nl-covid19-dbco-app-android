@@ -13,12 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.network.StubbedAPI
 
-class AppConfigRepository (context : Context) {
+class AppConfigRepository(val context: Context) {
 
     private val api = StubbedAPI.create(context)
-    private var storedAppConfig : AppConfig? = null
+    private var storedAppConfig: AppConfig? = null
 
     suspend fun getAppConfig(): AppConfig {
         return if (storedAppConfig == null) {
@@ -31,14 +32,37 @@ class AppConfigRepository (context : Context) {
         }
     }
 
-    fun getLocalConfig() : AppConfig {
-        val appConfigString = "{\n" +
-                "    \"androidMinimumVersion\": 50,\n" +
-                "    \"androidMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                "    \"iosMinimumVersion\": \"1.0.0\",\n" +
-                "    \"iosMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                "    \"iosAppStoreURL\": \"\"\n" +
-                "}"
-        return Json.decodeFromString(appConfigString)
+    fun getUpdateMessage(): String {
+        return if (storedAppConfig != null) {
+            storedAppConfig?.androidMinimumVersionMessage ?: ""
+        } else {
+            context.getString(R.string.update_app_description)
+        }
+    }
+
+    fun getFeatureFlags(): FeatureFlags {
+        return storedAppConfig?.featureFlags ?: FeatureFlags()
+
+    }
+
+    fun getLocalConfig(): AppConfig {
+        return if (storedAppConfig == null) {
+            val appConfigString = "{\n" +
+                    "  \"androidMinimumVersion\": 1,\n" +
+                    "  \"androidMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
+                    "  \"iosMinimumVersion\": \"1.0.0\",\n" +
+                    "  \"iosMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
+                    "  \"iosAppStoreURL\": \"\",\n" +
+                    "  \"featureFlags\": {\n" +
+                    "  \"enableContactCalling\": true,\n" +
+                    "  \"enablePerspectiveSharing\": true,\n" +
+                    "  \"enablePerspectiveCopy\": false\n" +
+                    "  }\n" +
+                    "}"
+            storedAppConfig = Json.decodeFromString(appConfigString)
+            storedAppConfig!!
+        } else {
+            storedAppConfig!!
+        }
     }
 }

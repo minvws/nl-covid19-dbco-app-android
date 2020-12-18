@@ -9,13 +9,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="text"
-            type="Integer" />
-    </data>
-
     <TextView
         android:id="@+id/content"
         android:layout_width="match_parent"
@@ -25,7 +18,6 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
         android:accessibilityHeading="true"
-        android:text="@{text}"
         android:textAppearance="?attr/textAppearanceSubtitle1"
         tools:text="@string/placeholder"
         tools:targetApi="p" />

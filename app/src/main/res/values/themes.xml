@@ -28,6 +28,8 @@
         <item name="colorControlHighlight">@color/color_control_highlight</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:datePickerDialogTheme">@style/DatePickerDialog</item>
+        <item name="android:datePickerStyle">@style/DatePickerDialog</item>
     </style>
 
     <!-- Launcher theme. -->

@@ -9,6 +9,9 @@
 package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -20,10 +23,14 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.Constants
+import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -37,6 +44,9 @@ import timber.log.Timber
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
+
+    private var dataWipeClickedAmount = 0
 
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
@@ -45,6 +55,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
+    private var clicksBlocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,25 +75,35 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             BuildConfig.VERSION_NAME,
             "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
         )
+        binding.buildVersion.setOnClickListener {
+            handleQADataWipe()
+        }
+
 
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
 
         binding.manualEntryButton.setOnClickListener {
-            checkPermissionAndNavigate()
+            checkPermissionGoToTaskDetails()
         }
 
         binding.sendButton.setOnClickListener {
             findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
         }
 
+        binding.swipeRefresh.setOnRefreshListener {
+            tasksViewModel.syncTasks()
+        }
+
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
             resource.resolve(onError = {
+                binding.swipeRefresh.isRefreshing = false
                 showErrorDialog(getString(R.string.error_while_fetching_case), {
                     tasksViewModel.syncTasks()
                 }, it)
             }, onSuccess = {case ->
+                binding.swipeRefresh.isRefreshing = false
                 contentSection.clear()
                 val uninformedSection = Section().apply {
                     setHeader(
@@ -108,8 +129,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     when (task.taskType) {
                         "contact" -> {
                             val informed = when (task.communication) {
-                                CommunicationType.Index -> task.contactIsInformedAlready
-                                CommunicationType.Staff -> task.linkedContact?.hasEmailOrPhone() == true
+                                CommunicationType.Index -> task.didInform
+                                CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
                                 else -> false
                             }
                             if (informed) {
@@ -130,27 +151,49 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
 
                 binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
+                if(!tasksViewModel.ifCaseWasChanged()) {
+                    binding.sendButtonHolder.visibility = View.GONE
+                }
             })
 
         })
 
         adapter.setOnItemClickListener { item, view ->
             if (item is TaskItem) {
-                checkPermissionAndNavigate(item.task)
+                checkPermissionGoToTaskDetails(item.task)
             }
         }
     }
 
-    private fun checkPermissionAndNavigate(task: Task? = null) {
+    override fun onResume() {
+        super.onResume()
+        clicksBlocked = false
+    }
+
+    private fun checkPermissionGoToTaskDetails(task: Task? = null) {
+        if (clicksBlocked) { // prevents from double click
+            return
+        }
+        clicksBlocked = true
+        if (tasksViewModel.getCachedQuestionnaire() == null) {
+            // questionare is null, this could happen in questionary call failed
+            showErrorDialog(getString(R.string.error_questionarre_is_empty), {})
+            return
+        }
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // If not granted send users to permission grant screen
-            findNavController().navigate(MyContactsFragmentDirections.toContactPickerAbout(task))
+            if (userPrefs?.getBoolean(USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, false) == true){
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
+                )
+            } else {
+                // If not granted permission - send users to permission grant screen (if he didn't see it before)
+                findNavController().navigate(MyContactsFragmentDirections.toContactPickerPermission(task))
+            }
         } else {
-
             if (task?.linkedContact != null) {
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactDetails(
@@ -168,4 +211,26 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
+    private fun handleQADataWipe(){
+        dataWipeClickedAmount++
+        if(dataWipeClickedAmount == 4){
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(getString(R.string.qa_clear_data_summary))
+            builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
+                dataWipeClickedAmount = 0
+
+                // Clear locally stored data & remove tokens from UserRepository
+                val encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+                encryptedSharedPreferences.edit().clear().commit()
+                dialog.dismiss()
+                activity?.finish()
+            }
+            builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+                dialog.dismiss()
+                dataWipeClickedAmount = 0
+            }
+            builder.create().show()
+        }
+
+    }
 }
