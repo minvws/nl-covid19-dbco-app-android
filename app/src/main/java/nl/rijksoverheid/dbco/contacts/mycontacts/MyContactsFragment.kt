@@ -83,8 +83,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             BuildConfig.VERSION_NAME,
             "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
         )
-        binding.buildVersion.setOnClickListener {
-            handleQADataWipe()
+        if(BuildConfig.DEBUG) {
+            binding.buildVersion.setOnClickListener {
+                handleQADataWipe()
+            }
         }
 
 
