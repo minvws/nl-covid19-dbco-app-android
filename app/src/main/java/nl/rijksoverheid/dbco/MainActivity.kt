@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +46,11 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Set FLAG_SECURE to hide content
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE);
 
         userPrefs = LocalStorageRepository.getInstance(this).getSharedPreferences()
 
