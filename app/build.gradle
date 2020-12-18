@@ -87,9 +87,9 @@ android {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"08ej5Zu5odqWpcjJnMmszKiv2rzZtr2qnd3gypupzKDepLnMyMSdnLqXwqQ=\""
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
         }
     }
