@@ -31,6 +31,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
+import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
@@ -136,7 +137,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
                 binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
                 if (!tasksViewModel.ifCaseWasChanged()) {
-                    binding.sendButtonHolder.visibility = View.GONE
+                    binding.sendButton.visibility = View.GONE
                 }
             })
 
@@ -147,6 +148,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 checkPermissionGoToTaskDetails(item.task)
             }
         }
+
+
 
     }
 
@@ -196,6 +199,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (informedSection.groupCount > 1) {
             contentSection.add(informedSection)
         }
+
+        contentSection.setFooter(FooterItem(getString(R.string.mycontact_privacy_footer), clickable = true))
     }
 
     override fun onResume() {

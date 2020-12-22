@@ -36,23 +36,13 @@
             android:transitionGroup="true"
             android:transitionName="content"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <TextView
-                android:id="@+id/buildVersion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="10dp"
-                android:textAppearance="?attr/textAppearanceSubtitle2"
-                android:textSize="10sp"
-                app:layout_constraintTop_toTopOf="parent" />
+            
 
             <TextView
                 android:id="@+id/my_contacts_header"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="48dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/mycontacts_header"
                 android:textAppearance="?attr/textAppearanceHeadline4"
@@ -124,16 +114,32 @@
                     android:text="@string/submit_window_ended_explanation"
                     android:visibility="gone" />
 
+
+
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/send_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="8dp"
                     android:backgroundTint="@color/cyan_enabled_grey_lighter_default"
                     android:text="@string/send_data"
                     android:textColor="@color/white_enabled_cyan_default" />
+
+                <TextView
+                    android:id="@+id/buildVersion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:textSize="10sp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
