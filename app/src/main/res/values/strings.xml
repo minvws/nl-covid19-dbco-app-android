@@ -39,6 +39,7 @@
     <string name="mycontacts_delete_data_ok">Verwijder</string>
     <string name="mycontacts_delete_data_cancel">Ga terug</string>
     <string name="mycontacts_delete_data_button">Verwijder gegevens</string>
+    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a>.]]></string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
