@@ -30,7 +30,7 @@ platform :android do
     private_lane :deploy_test do
         build_android_app(
                     task: "assemble",
-                    flavor: "Acc",
+                    flavor: "dbcoTest",
                     build_type: "Release"
          )
 
@@ -46,7 +46,7 @@ platform :android do
     private_lane :deploy_acc do
             build_android_app(
                         task: "assemble",
-                        flavor: "Acctest",
+                        flavor: "dbcoAcc",
                         build_type: "Release"
              )
 
@@ -63,7 +63,7 @@ platform :android do
     private_lane :deploy_prod do
              build_android_app(
                          task: "assemble",
-                         flavor: "prod",
+                         flavor: "dbcoProd",
                          build_type: "Release"
               )
 

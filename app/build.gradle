@@ -49,7 +49,7 @@ android {
     }
 
     signingConfigs {
-        acc {
+        firebase {
             storeFile file('demo_keystore.jks')
             storePassword 'store_password'
             keyAlias = 'key_alias'
@@ -60,19 +60,7 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        acc {
-            dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "false"
-            buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
-            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\""
-            manifestPlaceholders = [appLabel: "@string/app_name"]
-            signingConfig signingConfigs.acc
-            apply plugin: 'com.google.gms.google-services'
-            apply plugin: 'com.google.firebase.crashlytics'
-        }
-        acctest {
+        dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
@@ -83,7 +71,20 @@ android {
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
         }
-        prod {
+
+        dbcoAcc {
+            dimension "environment"
+            buildConfigField "boolean", "USER_TEST", "false"
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            signingConfig signingConfigs.firebase
+        }
+
+
+        dbcoProd {
             dimension "environment"
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
@@ -91,6 +92,7 @@ android {
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
+            signingConfig signingConfigs.firebase
         }
     }
 
@@ -170,6 +172,6 @@ dependencies {
     implementation "androidx.security:security-crypto:1.0.0-rc03"
 
     // Firebase is for the acc builds only
-    accImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
+    dbcoTestImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
 
 }
