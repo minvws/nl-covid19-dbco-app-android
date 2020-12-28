@@ -30,6 +30,7 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
@@ -78,19 +79,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentMyContactsBinding.bind(view)
-
-        binding.buildVersion.text = getString(
-            R.string.status_app_version,
-            BuildConfig.VERSION_NAME,
-            "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
-        )
-        if(BuildConfig.DEBUG) {
-            binding.buildVersion.setOnClickListener {
-                handleQADataWipe()
-            }
-        }
-
-
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
@@ -137,7 +125,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
                 binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
                 if (!tasksViewModel.ifCaseWasChanged()) {
-                    binding.sendButton.visibility = View.GONE
+                    binding.sendButtonHolder.visibility = View.GONE
                 }
             })
 
@@ -147,10 +135,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             if (item is TaskItem) {
                 checkPermissionGoToTaskDetails(item.task)
             }
+            if (item is BuildNumberItem) {
+                if (BuildConfig.DEBUG) {
+                    handleQADataWipe()
+                }
+            }
         }
-
-
-
     }
 
     private fun fillContentSection(case: Case?) {
@@ -200,7 +190,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             contentSection.add(informedSection)
         }
 
-        contentSection.setFooter(FooterItem(getString(R.string.mycontact_privacy_footer), clickable = true))
+        val footerSection = Section()
+        footerSection.apply {
+            add(FooterItem(getString(R.string.mycontact_privacy_footer), clickable = true))
+            add(
+                BuildNumberItem(
+                    getString(
+                        R.string.status_app_version,
+                        BuildConfig.VERSION_NAME,
+                        "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
+                    ), clickable = true
+                )
+            )
+        }
+        contentSection.setFooter(footerSection)
     }
 
     override fun onResume() {

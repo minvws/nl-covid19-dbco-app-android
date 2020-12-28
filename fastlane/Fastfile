@@ -8,7 +8,7 @@ platform :android do
 
     desc "Executes Android lint"
     lane :lint do
-        gradle(task: "lintAccRelease")
+        gradle(task: "lintDbcoProdRelease")
     end
 
     desc "Builds and distributes app via firebase"

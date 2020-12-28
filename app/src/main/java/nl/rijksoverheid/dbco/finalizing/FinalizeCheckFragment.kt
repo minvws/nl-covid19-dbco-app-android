@@ -29,7 +29,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-                TasksOverviewViewModel::class.java
+            TasksOverviewViewModel::class.java
         )
     }
     private val contentSection = Section()
@@ -48,58 +48,38 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
         tasksViewModel.getCachedCase().let { case ->
             contentSection.clear()
-            val uninformedSection = Section().apply {
-                setHeader(
-                        DuoHeaderItem(
-                                R.string.finalize_uninformed_header,
-                                R.string.finalize_uninformed_subtext
-                        )
-                )
-            }
             val noPhoneOrEmailSection = Section()
-                    .apply {
-                        setHeader(
-                                DuoHeaderItem(
-                                        R.string.finalize_no_phone_or_email_header,
-                                        R.string.finalize_no_phone_or_email_subtext
-                                )
+                .apply {
+                    setHeader(
+                        DuoHeaderItem(
+                            R.string.finalize_no_phone_or_email_header,
+                            R.string.finalize_no_phone_or_email_subtext
                         )
-                    }
+                    )
+                }
 
 
             case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     "contact" -> {
+                        // Check if all (required) data has been filled in
                         val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
 
-                        val informed = when (task.communication) {
-                            CommunicationType.Index -> task.didInform
-                            CommunicationType.Staff -> hasEmailOrPhone
-                            else -> false
-                        }
-
-                        if (!informed) {
-                            if (hasEmailOrPhone) {
-                                uninformedSection.add(TaskItem(task))
-                            } else {
-                                noPhoneOrEmailSection.add(TaskItem(task))
-                            }
+                        if (!hasEmailOrPhone) {
+                            noPhoneOrEmailSection.add(TaskItem(task))
                         }
                     }
                 }
             }
 
-            if (uninformedSection.itemCount > 1) {
-                contentSection.add(uninformedSection)
-            }
 
             if (noPhoneOrEmailSection.groupCount > 1) {
                 contentSection.add(noPhoneOrEmailSection)
             }
 
             // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
-            if(uninformedSection.groupCount <= 1 && noPhoneOrEmailSection.groupCount <= 1){
+            if (noPhoneOrEmailSection.groupCount <= 1) {
                 tasksViewModel.uploadCurrentCase()
                 findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
             }
