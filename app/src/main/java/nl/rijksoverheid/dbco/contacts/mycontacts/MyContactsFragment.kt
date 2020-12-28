@@ -141,8 +141,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
         }
-
-
     }
 
     private fun fillContentSection(case: Case?) {
