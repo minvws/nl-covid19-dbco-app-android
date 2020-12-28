@@ -23,7 +23,9 @@ class FileTree(directory: File?) : Timber.DebugTree() {
     init {
         writer = try {
             directory?.mkdirs()
-            val file: File? = File(directory, "log.txt")
+            val initTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
+                .format(Date())
+            val file: File? = File(directory, "log-${initTimeStamp}.txt")
             if (file != null) {
                 FileWriter(file, true)
             } else {
