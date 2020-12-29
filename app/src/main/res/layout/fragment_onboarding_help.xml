@@ -9,6 +9,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,8 +23,10 @@
             android:id="@+id/onboarding_header_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@null"
             android:layout_marginBottom="24dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
             android:src="@drawable/illustration_onboarding"
             app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,4 +68,5 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>
