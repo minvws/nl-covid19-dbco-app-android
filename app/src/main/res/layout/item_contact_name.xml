@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="8dp"
+            android:nextFocusDown="@+id/last_name_edit"
             app:layout_constraintBottom_toBottomOf="@+id/last_name"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +41,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                android:id="@+id/first_name_edit"
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions"
+                android:nextFocusDown="@+id/last_name_edit"
                 android:hint="@string/hint_first_name" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,6 +61,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/last_name_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions"
