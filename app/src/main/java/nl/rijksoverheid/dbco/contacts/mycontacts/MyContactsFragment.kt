@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.contacts.mycontacts
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -26,6 +27,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
+import nl.rijksoverheid.dbco.MainActivity
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
@@ -273,6 +275,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
                 encryptedSharedPreferences.edit().clear().commit()
                 dialog.dismiss()
+                // Start activity to restart the onboarding flow before killing the original activity
+                activity?.startActivity(Intent(activity, MainActivity::class.java))
                 activity?.finish()
             }
             builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
@@ -293,6 +297,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
             encryptedSharedPreferences.edit().clear().commit()
             dialog.dismiss()
+            // Start activity to restart the onboarding flow before killing the original activity
+            activity?.startActivity(Intent(activity, MainActivity::class.java))
             activity?.finish()
         }
         builder.setNegativeButton(R.string.mycontacts_delete_data_cancel) { dialog, _ ->
