@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
 import android.text.TextUtils
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
@@ -32,6 +33,7 @@ class EmailAddressItem(
         binding = viewBinding
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            imeOptions = EditorInfo.IME_ACTION_DONE
             setText(emailAddress)
         }
         viewBinding.inputField.apply {
