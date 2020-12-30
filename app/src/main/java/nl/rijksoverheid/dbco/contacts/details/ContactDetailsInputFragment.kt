@@ -11,6 +11,8 @@ package nl.rijksoverheid.dbco.contacts.details
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
+import androidx.activity.addCallback
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -149,13 +151,15 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             checkIfContactDetailsSectionComplete()
             itemsStorage?.refreshInformSection()
             binding.saveButton.text =
-                // If the user selects Earlier, and the task has been saved before, delete it
-                // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
+                    // If the user selects Earlier, and the task has been saved before, delete it
+                    // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
                 if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
                     getString(R.string.delete)
-                }else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null) {
+                } else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null) {
                     getString(R.string.cancel)
-                } else { getString(R.string.save) }
+                } else {
+                    getString(R.string.save)
+                }
         })
 
         refreshClassificationSection()
@@ -177,7 +181,19 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
             collectAnswers()
         }
+
+        // Catch backbutton click in toolbar and on-device backbutton to show appropriate popup
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        toolbar?.setNavigationOnClickListener {
+            showUnsavedChangesDialog(it)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            showUnsavedChangesDialog(view)
+        }
+
     }
+
 
     private fun showDeleteItemDialog(view: View) {
         val builder = AlertDialog.Builder(view.context)
@@ -189,6 +205,24 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
         builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
             dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    private fun showUnsavedChangesDialog(view: View){
+        val builder = AlertDialog.Builder(view.context)
+        builder.setMessage(getString(R.string.unsaved_changes_message))
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.didInform == false) {
+                showDidYouInformDialog(view)
+            }else{
+                collectAnswers()
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.dont_save) { dialog, _ ->
+            dialog.dismiss()
+            findNavController().popBackStack()
         }
         builder.create().show()
     }

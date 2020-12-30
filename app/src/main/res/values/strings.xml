@@ -11,6 +11,7 @@
 
     <!--    Common words-->
     <string name="save">Opslaan</string>
+    <string name="dont_save">Niet opslaan</string>
     <string name="next">Volgende</string>
     <string name="ready">Klaar</string>
     <string name="previous">Vorige</string>
@@ -73,6 +74,7 @@
     <string name="contact_question_select_option">Kiezen</string>
 
     <!--    Contact details and questions-->
+    <string name="unsaved_changes_message">Wil je de aangepaste gegevens opslaan?</string>
 
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
