@@ -606,7 +606,12 @@ class TaskDetailItemsStorage(
                                 Toast.LENGTH_LONG
                             ).show()
                         },
-                        type = ButtonType.LIGHT
+                        // If contact calling is off, make button dark. Otherwise always light
+                        type = if(!featureFlags.enableContactCalling){
+                            ButtonType.DARK
+                        }else{
+                            ButtonType.LIGHT
+                        }
                     )
                 )
             }
