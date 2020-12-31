@@ -122,7 +122,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage?.refreshInformSection()
 
             binding.saveButton.text =
-                if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.save)
+            if (it == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
+                getString(R.string.delete)
+            } else  if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null) {
+                getString(R.string.cancel)
+            } else {
+                getString(R.string.save)
+            }
         })
 
         viewModel.communicationType.observe(viewLifecycleOwner, {
