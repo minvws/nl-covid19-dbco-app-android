@@ -66,12 +66,34 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
+    private lateinit var footerSection : Section
     private var clicksBlocked = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contentSection.setHideWhenEmpty(true)
+
+        footerSection  = Section().apply {
+            add(
+                FooterItem(
+                    getString(R.string.mycontact_privacy_footer),
+                    clickable = true
+                )
+            )
+            add(
+                BuildNumberItem(
+                    getString(
+                        R.string.status_app_version,
+                        BuildConfig.VERSION_NAME,
+                        "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
+                    ), clickable = true
+                )
+            )
+        }
+
+        // pre-set footer section to show content even if no tasks are available
+        contentSection.setFooter(footerSection)
+
         adapter.add(contentSection)
 
         // Load data from backend
@@ -192,19 +214,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             contentSection.add(informedSection)
         }
 
-        val footerSection = Section()
-        footerSection.apply {
-            add(FooterItem(getString(R.string.mycontact_privacy_footer), clickable = true))
-            add(
-                BuildNumberItem(
-                    getString(
-                        R.string.status_app_version,
-                        BuildConfig.VERSION_NAME,
-                        "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
-                    ), clickable = true
-                )
-            )
-        }
+        // Re-add footer section after clearing content
         contentSection.setFooter(footerSection)
     }
 

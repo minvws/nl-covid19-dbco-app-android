@@ -122,7 +122,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage?.refreshInformSection()
 
             binding.saveButton.text =
-                if (it == Category.NO_RISK) getString(R.string.cancel) else getString(R.string.save)
+            if (it == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
+                getString(R.string.delete)
+            } else  if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null) {
+                getString(R.string.cancel)
+            } else {
+                getString(R.string.save)
+            }
         })
 
         viewModel.communicationType.observe(viewLifecycleOwner, {
@@ -165,7 +171,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         refreshClassificationSection()
 
         binding.saveButton.setOnClickListener {
-            if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
+            if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null || viewModel.category.value == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
                 showDeleteItemDialog(it)
                 return@setOnClickListener
             }
