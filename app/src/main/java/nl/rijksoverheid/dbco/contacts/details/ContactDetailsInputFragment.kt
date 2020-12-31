@@ -171,7 +171,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         refreshClassificationSection()
 
         binding.saveButton.setOnClickListener {
-            if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
+            if (viewModel.dateOfLastExposure.value == ANSWER_EARLIER && task.source == Source.App && task.uuid != null || viewModel.category.value == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
                 showDeleteItemDialog(it)
                 return@setOnClickListener
             }
