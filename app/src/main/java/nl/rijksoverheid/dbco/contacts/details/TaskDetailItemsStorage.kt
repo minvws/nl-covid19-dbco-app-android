@@ -444,6 +444,10 @@ class TaskDetailItemsStorage(
                 contactDetailsSection.remove(noExposureRiskItem)
             }
         })
+
+        viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {
+            refreshInformSection()
+        })
     }
 
     // Inform
@@ -595,7 +599,7 @@ class TaskDetailItemsStorage(
             add(ParagraphItem(message, clickable = true))
 
             // Only add the footer if the source is Portal.
-            if(viewModel.task.value?.source == Source.Portal) {
+            if (viewModel.task.value?.source == Source.Portal) {
                 add(SubHeaderItem(footer))
             }
 
@@ -606,7 +610,8 @@ class TaskDetailItemsStorage(
                         {
                             val clipboard =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
+                            val clip =
+                                ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
                             clipboard.setPrimaryClip(clip)
                             Toast.makeText(
                                 context,
@@ -614,37 +619,36 @@ class TaskDetailItemsStorage(
                                 Toast.LENGTH_LONG
                             ).show()
                         },
-                        // If contact calling is off, make button dark. Otherwise always light
-                        type = if(!featureFlags.enableContactCalling){
+                        // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
+                        // Otherwise always light
+                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == false)) {
                             ButtonType.DARK
-                        }else{
+                        } else {
                             ButtonType.LIGHT
                         }
                     )
                 )
             }
 
-            // add "Call $name" button if phone is set
-            if (featureFlags.enableContactCalling) {
-                viewModel.selectedContact?.number?.let {
-                    add(
-                        ButtonItem(
-                            context.getString(
-                                R.string.contact_section_inform_call,
-                                viewModel.selectedContact?.firstName ?: "contact"
-                            ),
-                            {
-                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
-                                context.startActivity(intent)
-                            },
-                            type = if (viewModel.communicationType.value == CommunicationType.Index) {
-                                ButtonType.DARK
-                            } else {
-                                ButtonType.LIGHT
-                            }
-                        )
+            // add "Call $name" button if phone is set and config has calling on
+            if (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == true) {
+                add(
+                    ButtonItem(
+                        context.getString(
+                            R.string.contact_section_inform_call,
+                            viewModel.selectedContact?.firstName ?: "contact"
+                        ),
+                        {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.selectedContact?.number}"))
+                            context.startActivity(intent)
+                        },
+                        type = if (viewModel.communicationType.value == CommunicationType.Index) {
+                            ButtonType.DARK
+                        } else {
+                            ButtonType.LIGHT
+                        }
                     )
-                }
+                )
             }
         }
     }

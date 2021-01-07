@@ -63,6 +63,12 @@ class EmailAddressItem(
                 viewBinding.inputField.error =
                     viewBinding.inputField.context.getString(R.string.error_valid_email)
                 isValidEmail = false
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    0,
+                    0
+                )
             } else {
                 viewBinding.inputField.error = null
                 isValidEmail = true
@@ -75,6 +81,13 @@ class EmailAddressItem(
                 viewBinding.inputField.setEndIconActivated(true)
                 changeListener.invoke(input)
             }
+        }else{
+            viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                0,
+                0
+            )
         }
     }
 
