@@ -42,12 +42,16 @@ class PhoneNumberItem(
 
         viewBinding.inputField.editText?.doAfterTextChanged {
             phoneNumber = it.toString()
-            changeListener.invoke(it.toString())
+
         }
 
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
+                phoneNumber?.let{
+                    changeListener.invoke(it)
+                }
+
             }
         }
 
@@ -77,6 +81,13 @@ class PhoneNumberItem(
                 viewBinding.inputField.setEndIconActivated(true)
                 changeListener.invoke(input)
             }
+        } else {
+            viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                0,
+                0
+            )
         }
     }
 
