@@ -23,11 +23,12 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode project.getVersionCode()
-        versionName '1.0.0.' + project.getVersionCode()
+        versionName '1.1.0.' + project.getVersionCode()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "boolean", "FEATURE_LOGGING", "false"
+        buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
 
         manifestPlaceholders = [appLabel: "@string/app_name"]
     }

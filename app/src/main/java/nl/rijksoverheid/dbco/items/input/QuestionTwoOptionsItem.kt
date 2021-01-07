@@ -110,5 +110,5 @@ class QuestionTwoOptionsItem(
         other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is PhoneNumberItem && other.question?.uuid == question?.uuid
+        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
 }
