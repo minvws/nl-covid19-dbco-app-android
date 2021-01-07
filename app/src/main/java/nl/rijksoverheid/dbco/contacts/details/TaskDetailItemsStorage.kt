@@ -196,7 +196,9 @@ class TaskDetailItemsStorage(
 
         viewModel.livedTogetherRisk.observe(viewLifecycleOwner, { it ->
             if (it == false) {
-                section?.add(durationRiskItem)
+                if(section?.getPosition(durationRiskItem) == -1){
+                    section.add(durationRiskItem)
+                }
             } else {
                 section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(durationRiskItem.apply { clearPreviousAnswer() })
@@ -207,7 +209,9 @@ class TaskDetailItemsStorage(
 
         viewModel.durationRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(distanceRiskItem)
+                if(section?.getPosition(distanceRiskItem) == -1){
+                    section.add(distanceRiskItem)
+                }
             } else {
                 section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
@@ -217,7 +221,9 @@ class TaskDetailItemsStorage(
 
         viewModel.distanceRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(otherRiskItem)
+                if(section?.getPosition(otherRiskItem) == -1){
+                    section.add(otherRiskItem)
+                }
             } else {
                 section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(noRiskItem)
@@ -226,7 +232,9 @@ class TaskDetailItemsStorage(
 
         viewModel.otherRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(noRiskItem)
+                if(section?.getPosition(noRiskItem) == -1){
+                    section.add(noRiskItem)
+                }
             } else {
                 section?.remove(noRiskItem)
             }
