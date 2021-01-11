@@ -152,6 +152,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()
+            // This value can be broadcast again while the app is scrolling due to views re-binding.
+            // If this happens, the app can crash due to the RV not accepting changes during layout computes
+            // Adding this check makes sure the section is only refreshed when the user is actively filling
+            // in their data rather than during a scroll.
+            if(!binding.content.isComputingLayout) {
+                itemsStorage?.refreshInformSection()
+            }
         })
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             checkIfContactDetailsSectionComplete()

@@ -43,12 +43,15 @@ class EmailAddressItem(
         viewBinding.inputField.editText?.setOnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
+                emailAddress?.let{
+                    changeListener.invoke(it.toString())
+                }
             }
         }
 
         viewBinding.inputField.editText?.doAfterTextChanged {
             emailAddress = it.toString()
-            changeListener.invoke(it.toString())
+
         }
 
         checkCompleted(viewBinding)

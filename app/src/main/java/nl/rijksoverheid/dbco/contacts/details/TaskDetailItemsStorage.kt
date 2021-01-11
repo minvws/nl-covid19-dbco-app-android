@@ -48,6 +48,7 @@ import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
+import timber.log.Timber
 import kotlin.math.absoluteValue
 
 
@@ -443,10 +444,6 @@ class TaskDetailItemsStorage(
             } else {
                 contactDetailsSection.remove(noExposureRiskItem)
             }
-        })
-
-        viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, {
-            refreshInformSection()
         })
     }
 
