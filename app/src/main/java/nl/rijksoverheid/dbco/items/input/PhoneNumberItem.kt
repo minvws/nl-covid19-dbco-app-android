@@ -48,7 +48,7 @@ class PhoneNumberItem(
         viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
-                phoneNumber?.let{
+                phoneNumber?.let {
                     changeListener.invoke(it)
                 }
 
@@ -71,15 +71,42 @@ class PhoneNumberItem(
                     0
                 )
             } else {
-                viewBinding.inputField.error = null
-                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_valid_small,
-                    0
-                )
-                viewBinding.inputField.setEndIconActivated(true)
-                changeListener.invoke(input)
+                // Special case for numbers of length 11 to 13
+                if (input.length in 11..13) {
+                    // If its not a number starting with our valid prefixes, don't allow it
+                    if (!Constants.VALID_PHONENUMER_PREFIXES.any { input.startsWith(it) }) {
+                        viewBinding.inputField.error =
+                            viewBinding.inputField.context.getString(R.string.error_valid_phone)
+                        viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                            0,
+                            0,
+                            0,
+                            0
+                        )
+                    } else {
+                        viewBinding.inputField.error = ""
+                        viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                            0,
+                            0,
+                            R.drawable.ic_valid_small,
+                            0
+                        )
+                        viewBinding.inputField.setEndIconActivated(true)
+                        changeListener.invoke(input)
+                    }
+                    // Branch for length = 10, all others fall outside of the matcher
+                } else {
+                    viewBinding.inputField.error = null
+                    viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        0,
+                        R.drawable.ic_valid_small,
+                        0
+                    )
+                    viewBinding.inputField.setEndIconActivated(true)
+                    changeListener.invoke(input)
+                }
+
             }
         } else {
             viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
