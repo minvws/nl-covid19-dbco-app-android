@@ -24,4 +24,6 @@ object Constants {
 
     // Validation patterns
     val PHONE_VALIDATION_MATCHER : Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
+    // prefixes for the Netherlands, Belgium and Germany
+    val VALID_PHONENUMER_PREFIXES = listOf("+31", "+0031", "0031", "+32", "+0032", "0032","+49", "+0049", "0049" )
 }
