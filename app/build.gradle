@@ -78,7 +78,7 @@ android {
             buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"05m6v+Ckup7hm5zFxaSYo6LXzKnXnrbYzMui3sCqx5vMu8Dbz7asnpfYzZ8=\""
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
