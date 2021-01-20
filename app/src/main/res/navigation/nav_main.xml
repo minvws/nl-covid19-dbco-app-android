@@ -184,9 +184,9 @@
 
     <fragment
         android:id="@+id/onboardingFragmentHelp"
-        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingHelpFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFlowSelectionFragment"
         android:label="OnboardingHelpFragment"
-        tools:layout="@layout/fragment_onboarding_help">
+        tools:layout="@layout/fragment_onboarding_flow_selection">
         <action
             android:id="@+id/toMyContacts"
             app:destination="@id/myContactsFragment"

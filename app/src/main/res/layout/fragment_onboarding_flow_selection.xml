@@ -9,6 +9,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="viewmodel"
+            type="nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,6 +63,17 @@
             android:textSize="@dimen/onboarding_subtext_textsize"
             android:text="@string/onboarding_help_subtext"
             app:layout_constraintBottom_toTopOf="@+id/btn_next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_no_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            android:visibility="@{viewmodel.featureFlags.enableSelfBCO ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/onboarding_button_background"
+            app:layout_constraintBottom_toTopOf="@id/btn_next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
