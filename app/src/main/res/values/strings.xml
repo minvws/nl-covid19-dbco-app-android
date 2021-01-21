@@ -53,6 +53,8 @@
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Dit doe je als je corona hebt of denkt te hebben. Zo help je de GGD met het sneller en beter uitvoeren van bron- en contactonderzoek.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
+    <string name="fill_code_placeholder">0000-0000-0000</string>
+    <string name="fill_code_invalid">Deze code is ongeldig</string>
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
