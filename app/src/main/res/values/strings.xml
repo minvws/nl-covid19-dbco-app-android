@@ -28,7 +28,7 @@
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
-    <string name="mycontacts_grant_permission">Geef Toestemming</string>
+    <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
     <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
     <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
