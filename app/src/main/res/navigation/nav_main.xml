@@ -10,7 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/onboardingFragmentHelp">
+    app:startDestination="@id/splashFragment">
 
     <action
         android:id="@+id/action_end_of_life"
@@ -196,6 +196,12 @@
         <action
             android:id="@+id/toOnboardingPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment" />
+        <action
+            android:id="@+id/toSelfBcoExplanationFragment"
+            app:destination="@id/selfBcoExplanationFragment" />
+        <action
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
@@ -292,6 +298,21 @@
         <action
             android:id="@+id/toFillCodeFragment"
             app:destination="@id/fillCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.selfbco.SelfBcoExplanationFragment"
+        android:label="SelfBcoExplanationFragment" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/toOnboarding"
+            app:destination="@id/onboardingFragmentHelp"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
 

@@ -26,15 +26,27 @@ class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboardin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Toast.makeText(context, "Pinning is ${BuildConfig.FEATURE_SSL_PINNING}", Toast.LENGTH_SHORT).show()
         val binding = FragmentOnboardingFlowSelectionBinding.bind(view)
         binding.viewmodel = appLifecycleViewModel
-        binding.btnNext.setOnClickListener {
-            findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toOnboardingPrivacyConsentFragment())
-        }
 
         if (viewModel.skipOnboarding) {
             findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toMyContacts())
+        }
+
+        if(appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
+            binding.btnNext.setOnClickListener {
+                findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toCodeFillFragment())
+            }
+
+            binding.btnNoCode.setOnClickListener {
+                findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toSelfBcoExplanationFragment())
+            }
+
+
+        }else{
+            binding.btnNext.setOnClickListener {
+                findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toOnboardingPrivacyConsentFragment())
+            }
         }
 
 
