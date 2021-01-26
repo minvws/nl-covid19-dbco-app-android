@@ -21,13 +21,12 @@ import android.widget.TextView
  *
  * Note: there is no support (yet) for multiple embedded links.
  */
-class AccessibleTextView: TextView {
+class AccessibleTextView: androidx.appcompat.widget.AppCompatTextView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-
+    
     private fun getClickableSpans(text: CharSequence): Array<ClickableSpan?>? {
         try {
             if (text is Spanned) {
