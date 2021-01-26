@@ -44,7 +44,8 @@
             android:text="@string/onboarding_help_title"
             app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:accessibilityHeading="@{true}"/>
 
         <TextView
             android:id="@+id/onboarding_subtext"

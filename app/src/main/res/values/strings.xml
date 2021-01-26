@@ -22,13 +22,16 @@
     <string name="close">Sluiten</string>
     <string name="cancel">Annuleren</string>
     <string name="delete">Verwijderen</string>
+    <string name="completed">Afgerond</string>
+    <string name="collapsed">Ingeklapt</string>
+    <string name="expanded">Uitgeklapt</string>
 
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
-    <string name="mycontacts_grant_permission">Geef Toestemming</string>
+    <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
     <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
     <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
@@ -111,6 +114,14 @@
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
+
+    <string name="contact_section_icon_one">Stap 1</string>
+    <string name="contact_section_icon_two">Stap 2</string>
+    <string name="contact_section_icon_three">Stap 3</string>
+
+    <string name="contact_section_announcement_one">Je hebt stap 1 afgerond</string>
+    <string name="contact_section_announcement_two">Je hebt stap 2 afgerond</string>
+    <string name="contact_section_announcement_three">Je hebt stap 3 afgerond</string>
 
     <string name="inform_contact_title_index"><![CDATA[Je hebt met de GGD afgesproken dat jij %s informeert]]></string>
     <string name="inform_contact_title_staff"><![CDATA[De GGD neemt ook contact op met %s.]]></string>

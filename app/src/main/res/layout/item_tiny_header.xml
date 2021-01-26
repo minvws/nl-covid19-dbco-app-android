@@ -7,7 +7,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -24,9 +25,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
-        android:accessibilityHeading="true"
         android:text="@{text}"
         android:textAppearance="@style/TextAppearance.App.Subtitle3"
+        app:accessibilityHeading="@{true}"
         tools:text="@string/placeholder"
         tools:targetApi="p" />
 </layout>

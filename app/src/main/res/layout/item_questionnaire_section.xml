@@ -14,9 +14,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/section_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:padding="@dimen/activity_horizontal_margin"
+        android:accessibilityHeading="@{true}">
 
         <ImageView
             android:id="@+id/section_status_icon"
