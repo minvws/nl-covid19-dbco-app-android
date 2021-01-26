@@ -298,11 +298,18 @@
         <action
             android:id="@+id/toFillCodeFragment"
             app:destination="@id/fillCodeFragment" />
+        <action
+            android:id="@+id/toSymptomSelectionFragment"
+            app:destination="@id/symptomSelectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/selfBcoExplanationFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.selfbco.SelfBcoExplanationFragment"
-        android:label="SelfBcoExplanationFragment" />
+        android:label="SelfBcoExplanationFragment" >
+        <action
+            android:id="@+id/toPrivacyConsentFragment"
+            app:destination="@id/onboardingPrivacyConsentFragment" />
+    </fragment>
     <fragment
         android:id="@+id/splashFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
@@ -314,6 +321,10 @@
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/symptomSelectionFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.selfbco.SymptomSelectionFragment"
+        android:label="SymptomSelectionFragment" />
 
 
 </navigation>

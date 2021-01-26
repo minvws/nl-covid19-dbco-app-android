@@ -25,7 +25,7 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoExplanationBinding.bind(view)
         binding.btnNext.setOnClickListener {
-            //findNavController().navigate(OnboardingAddDataFragmentDirections.toMyContactsFragment())
+            findNavController().navigate(SelfBcoExplanationFragmentDirections.toPrivacyConsentFragment())
         }
 
         binding.backButton.setOnClickListener {

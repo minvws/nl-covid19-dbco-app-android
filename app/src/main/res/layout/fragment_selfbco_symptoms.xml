@@ -33,50 +33,67 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/onboarding_header_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:layout_marginBottom="24dp"
-                android:src="@drawable/illustration_general_user"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.75" />
-
             <TextView
                 android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:id="@+id/onboarding_header"
+                android:id="@+id/symtoms_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:textSize="@dimen/onboarding_title_textsize"
-                android:text="@string/selfbco_explanation_title"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
+                android:text="@string/selfbco_symptom_header"
+                app:layout_constraintTop_toBottomOf="@id/back_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/onboarding_subtext"
+                android:id="@+id/symptoms_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:textSize="@dimen/onboarding_subtext_textsize"
-                android:text="@string/selfbco_explanation_summary"
-                app:layout_constraintBottom_toTopOf="@+id/btn_next"
+                android:text="@string/selfbco_symptom_summary"
+                app:layout_constraintTop_toBottomOf="@id/symtoms_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <Button
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:layout_constraintBottom_toTopOf="@id/btn_show_more"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/symptoms_summary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_show_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/gray_lighter"
+                android:text="@string/add_manually"
+                android:textColor="@color/purple"
+                app:icon="@drawable/ic_add"
+                app:iconGravity="textStart"
+                android:visibility="gone"
+                app:iconPadding="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btn_next"
+                app:iconTint="@color/color_primary" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/next"
-                android:background="@drawable/onboarding_button_background"
+                android:backgroundTint="@color/gray_lighter"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/purple"
+                android:text="@string/selfbco_symptoms_nosymptoms"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

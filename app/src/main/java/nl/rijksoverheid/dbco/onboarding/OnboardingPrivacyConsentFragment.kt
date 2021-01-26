@@ -18,6 +18,7 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingPrivacyBinding
 import nl.rijksoverheid.dbco.items.input.PrivacyConsentItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
@@ -26,6 +27,7 @@ import nl.rijksoverheid.dbco.items.ui.PrivacyInformationItem
 
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
     private val viewModel by viewModels<OnboardingConsentViewModel>()
+    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,7 +58,11 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         )
 
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
+            if(appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
+                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment())
+            }else{
+                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
+            }
         }
 
         binding.backButton.setOnClickListener {
