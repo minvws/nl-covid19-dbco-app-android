@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import android.view.accessibility.AccessibilityEvent
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
@@ -39,6 +40,9 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
 
         binding.nextButton.setOnClickListener {
             viewModel.pair(binding.codeEntry.code)
+            binding.nextButton.isEnabled = false
+            binding.loadingContainer.visibility = View.VISIBLE
+            binding.loadingIndicator.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
         }
 
         binding.codeEntry.callback = this
@@ -60,7 +64,12 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                         binding.codeEntry.requestFocus()
                     }, exception)
                 }
+
+                binding.nextButton.isEnabled = true
+                binding.loadingContainer.visibility = View.GONE
             }, onSuccess = {
+                binding.nextButton.isEnabled = true
+                binding.loadingContainer.visibility = View.GONE
                 binding.nextButton.hideKeyboard()
                 binding.nextButton.postDelayed({
                     findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
