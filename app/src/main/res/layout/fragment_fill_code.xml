@@ -87,7 +87,7 @@
         android:layout_height="0dp"
         android:clickable="false"
         android:focusable="false"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
