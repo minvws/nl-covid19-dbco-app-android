@@ -304,7 +304,7 @@
     </fragment>
     <fragment
         android:id="@+id/selfBcoExplanationFragment"
-        android:name="nl.rijksoverheid.dbco.onboarding.selfbco.SelfBcoExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
         android:label="SelfBcoExplanationFragment" >
         <action
             android:id="@+id/toPrivacyConsentFragment"
@@ -323,8 +323,45 @@
     </fragment>
     <fragment
         android:id="@+id/symptomSelectionFragment"
-        android:name="nl.rijksoverheid.dbco.onboarding.selfbco.SymptomSelectionFragment"
-        android:label="SymptomSelectionFragment" />
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SymptomSelectionFragment"
+        android:label="SymptomSelectionFragment"
+        tools:layout="@layout/fragment_selfbco_symptoms">
+        <action
+            android:id="@+id/to_selfBcoDateCheckFragment"
+            app:destination="@id/selfBcoDateCheckFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoDateCheckFragment"
+        tools:layout="@layout/fragment_selfbco_date_check"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckFragment"
+        android:label="SelfBcoDateCheckFragment">
+        <argument
+            android:name="date_checking_flow"
+            app:argType="integer"
+            app:nullable="false" />
+        <action
+            android:id="@+id/to_selfBcoDoubleCheckFragment"
+            app:destination="@id/selfBcoDoubleCheckFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoDoubleCheckFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
+        android:label="SelfBcoDoubleCheckFragment"
+        tools:layout="@layout/fragment_selfbco_doublecheck">
+        <argument
+            android:name="date_checking_flow"
+            app:argType="integer"
+            app:nullable="false" />
+
+        <argument
+            android:name="date_selected"
+            app:argType="long"
+            app:nullable="false" />
+        <action
+            android:id="@+id/to_symptomSelectionFragment"
+            app:destination="@id/symptomSelectionFragment" />
+
+    </fragment>
 
 
 </navigation>

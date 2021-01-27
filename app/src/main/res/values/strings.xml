@@ -219,4 +219,12 @@
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
     <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
+    <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
+    <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
+    <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
+    <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
+    <string name="selfbco_date_covid_summary">Kies de datum waarop de test bij je is afgenomen.</string>
+    <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
+    <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
+    <string name="selfbco_not_sure">Ik weet het niet</string>
 </resources>

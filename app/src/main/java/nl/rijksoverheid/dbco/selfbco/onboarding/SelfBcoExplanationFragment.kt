@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.onboarding.selfbco
+package nl.rijksoverheid.dbco.selfbco.onboarding
 
 import android.os.Bundle
 import android.view.View
@@ -14,9 +14,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentOnboardingAddDataBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoExplanationBinding
-import nl.rijksoverheid.dbco.onboarding.FillCodeFragment
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
 class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explanation) {
@@ -32,7 +30,7 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
             it.hideKeyboard()
             it.postDelayed({
                 findNavController().popBackStack()
-            }, FillCodeFragment.KEYBOARD_DELAY)
+            }, KEYBOARD_DELAY)
         }
 
         val callback: OnBackPressedCallback =
@@ -43,5 +41,9 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    companion object {
+        private const val KEYBOARD_DELAY = 400L
     }
 }

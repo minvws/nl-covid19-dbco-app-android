@@ -21,5 +21,6 @@ object DateFormats {
     val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy").withLocale(Locale("nl"))
     val informContactGuidelinesUI: DateTimeFormatter = DateTimeFormat.forPattern("d MMMM").withLocale(Locale("nl"))
     val dateInputUI: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy").withLocale(Locale("nl"))
+    val selfBcoDateCheck : DateTimeFormatter = DateTimeFormat.forPattern("EEEE dd MMMM").withLocale(Locale("nl"))
 
 }

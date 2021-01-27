@@ -6,11 +6,12 @@
  *
  */
 
-package nl.rijksoverheid.dbco.onboarding.selfbco
+package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -35,25 +36,26 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
 
         adapter.setOnItemClickListener { item, vieww ->
             Timber.d("Item clicked ${item}")
-            if(item is SymptomItem){
+            if (item is SymptomItem) {
                 item.selected = !item.selected
                 item.setChecked()
-                if(item.selected){
+                if (item.selected) {
                     selectedItems++
-                }else{
+                } else {
                     selectedItems--
                 }
             }
 
-            if(selectedItems > 0){
+            if (selectedItems > 0) {
                 binding.btnNext.apply {
                     backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
                     setTextColor(context.getColor(R.color.white))
                     text = getText(R.string.next)
                 }
             } else {
-                binding.btnNext.apply{
-                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
+                binding.btnNext.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.gray_lighter)
                     setTextColor(context.getColor(R.color.purple))
                     text = getText(R.string.selfbco_symptoms_nosymptoms)
                 }
@@ -66,6 +68,24 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
             content.add(SymptomItem(symptomName))
         }
         adapter.add(content)
+
+        binding.btnNext.setOnClickListener {
+            if (selectedItems > 0) {
+                // Go to date check
+                findNavController().navigate(
+                    SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                        SelfBcoDateCheckFragment.SYMPTOM_CHECK_FLOW
+                    )
+                )
+            } else {
+                // go to
+                findNavController().navigate(
+                    SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                        SelfBcoDateCheckFragment.COVID_CHECK_FLOW
+                    )
+                )
+            }
+        }
 
     }
 
@@ -97,6 +117,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
             "Rode prikkende ogen (oogontsteking)",
             "Huidafwijkingen"
         )
+
     }
 
 
