@@ -148,4 +148,9 @@
         <item name="colorControlNormal">@color/color_primary</item>
     </style>
 
+    <!-- Landscape -->
+    <style name="LandscapeHidden">
+        <item name="android:visibility">visible</item>
+    </style>
+
 </resources>

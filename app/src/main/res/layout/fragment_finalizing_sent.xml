@@ -14,52 +14,57 @@
         android:layout_height="match_parent"
         android:padding="@dimen/activity_horizontal_margin">
 
-        <ImageView
-            android:id="@+id/onboarding_header_image"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@null"
-            android:layout_marginBottom="24dp"
-            android:src="@drawable/illustration_data_uploaded"
-            app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.75" />
+            app:layout_constraintBottom_toTopOf="@+id/btn_next">
 
-        <TextView
-            android:textAppearance="@style/TextAppearance.App.Headline5"
-            android:id="@+id/onboarding_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textSize="@dimen/onboarding_title_textsize"
-            android:text="@string/finalize_sent_title"
-            app:accessibilityHeading="@{true}"
-            app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="32dp"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/onboarding_subtext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:textSize="@dimen/onboarding_subtext_textsize"
-            android:text="@string/finalize_sent_subtitle"
-            app:layout_constraintBottom_toTopOf="@+id/btn_next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+                <ImageView style="@style/LandscapeHidden"
+                    android:id="@+id/onboarding_header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/illustration_onboarding" />
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.App.Headline5"
+                    android:id="@+id/onboarding_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="@dimen/onboarding_title_textsize"
+                    android:text="@string/onboarding_help_title" />
+
+                <TextView
+                    android:id="@+id/onboarding_subtext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/onboarding_subtext_textsize"
+                    android:text="@string/onboarding_help_subtext" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <Button
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/close"
+            android:text="@string/next"
             android:background="@drawable/onboarding_button_background"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
+            app:layout_constraintBottom_toBottomOf="parent"  />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
