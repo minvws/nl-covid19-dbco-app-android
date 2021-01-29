@@ -17,6 +17,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.accessibilityAnnouncement
 import nl.rijksoverheid.dbco.util.delay
 import nl.rijksoverheid.dbco.util.setContentResource
+import nl.rijksoverheid.dbco.util.setImageResource
 
 class QuestionnaireSectionHeader(
     @StringRes val sectionTitle: Int,
@@ -65,8 +66,7 @@ class QuestionnaireSectionHeader(
 
     private fun updateSectionStatus(binding: ItemQuestionnaireSectionBinding?) {
         val icon = getIcon()
-        binding?.sectionStatusIcon?.setImageResource(icon.imageId)
-        binding?.sectionStatusIcon?.setContentResource(icon.stringId)
+        binding?.sectionStatusIcon?.setImageResource(icon.imageId, icon.stringId)
         binding?.sectionStatusIcon?.isEnabled = enabled
 
         binding?.sectionContainer?.isEnabled = enabled
@@ -91,8 +91,7 @@ class QuestionnaireSectionHeader(
 
     private fun updateChevron(binding: ItemQuestionnaireSectionBinding?) {
         val chevron = getChevron()
-        binding?.sectionChevron?.setImageResource(chevron.imageId)
-        binding?.sectionChevron?.setContentResource(chevron.stringId)
+        binding?.sectionChevron?.setImageResource(chevron.imageId, chevron.stringId)
     }
 
     override fun getLayout() = R.layout.item_questionnaire_section

@@ -14,6 +14,7 @@ import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.util.setImageResource
 import java.io.Serializable
 
 class TaskItem(
@@ -37,16 +38,16 @@ class TaskItem(
         viewBinding.indexContactSubtitle.setText(getCommunicationContext())
 
         // completeness indicator
-        if(task.getStatus() == 0 || task.linkedContact == null || (task.communication == CommunicationType.Index && !task.didInform)) {
-            viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status)
+        if (task.getStatus() == 0 || task.linkedContact == null || (task.communication == CommunicationType.Index && !task.didInform)) {
+            viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status, R.string.important)
             viewBinding.indexTaskProgress.visibility = View.GONE
         } else {
             setStatus(task.getStatus() ,viewBinding)
         }
     }
 
-    private fun setStatus(progress: Int, viewBinding: ItemTaskBinding){
-        viewBinding.indexContactState.setImageResource(R.drawable.ic_check_icon)
+    private fun setStatus(progress: Int, viewBinding: ItemTaskBinding) {
+        viewBinding.indexContactState.setImageResource(R.drawable.ic_check_icon, R.string.completed)
         viewBinding.indexTaskProgress.visibility = View.VISIBLE
         viewBinding.indexTaskProgress.progress = progress
     }

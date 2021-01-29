@@ -16,6 +16,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.onboarding.FillCodeField
@@ -39,6 +40,11 @@ fun View.hideKeyboard() {
 
 fun View.setContentResource(stringId: Int) {
     contentDescription = context.getString(stringId)
+}
+
+fun ImageView.setImageResource(resId: Int, stringId: Int) {
+    setImageResource(resId)
+    setContentResource(stringId)
 }
 
 fun View.accessibilityAnnouncement(stringId: Int) {
