@@ -17,6 +17,7 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
+import androidx.core.widget.NestedScrollView
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
@@ -80,6 +81,12 @@ fun Context.accessibilityAnnouncement(stringId: Int) {
         event.text.add(getString(stringId))
         accessibilityManager.sendAccessibilityEvent(event)
     }
+}
+
+fun NestedScrollView.scrollTo(view: View, delay: Long = 0) {
+    postDelayed({
+        smoothScrollTo(0, view.bottom)
+    }, delay)
 }
 
 fun String.removeHtmlTags(): String{

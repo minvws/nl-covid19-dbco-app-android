@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.view_loading.view.*
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
 abstract class BaseFragment @JvmOverloads constructor(
@@ -52,6 +53,29 @@ abstract class BaseFragment @JvmOverloads constructor(
         }
         val alert: AlertDialog = builder.create()
         alert.show()
+    }
+
+    fun showProgressDialog(message: Int, dismissAction: (() -> Unit)? = null): AlertDialog {
+        return showProgressDialog(getString(message), dismissAction)
+    }
+
+    fun showProgressDialog(message: String, dismissAction: (() -> Unit)? = null): AlertDialog {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+
+        builder.setCancelable(false)
+
+        val view = layoutInflater.inflate(R.layout.view_loading, null)
+        view.message.text = message
+        builder.setView(view)
+
+        builder.setOnDismissListener {
+            dismissAction?.invoke()
+        }
+
+        val alert = builder.create()
+        alert.show()
+
+        return alert
     }
 
     override fun onPause() {
