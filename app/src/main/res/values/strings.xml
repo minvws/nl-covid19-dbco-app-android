@@ -227,4 +227,6 @@
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
+    <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
+    <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
 </resources>

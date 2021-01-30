@@ -30,6 +30,7 @@ import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PA
 import nl.rijksoverheid.dbco.MainActivity
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
@@ -250,7 +251,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactPickerPermission(
-                        task
+                        task, ContactPickerPermissionFragment.NORMAL_BCO_FLOW
                     )
                 )
             }

@@ -90,6 +90,12 @@
             android:defaultValue="@null"
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+
+        <argument
+            android:name="permission_type_flow"
+            app:argType="integer"
+            app:nullable="false" />
+
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -107,6 +113,10 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
+            android:id="@+id/to_roommateInputFragment"
+            app:destination="@id/roommateInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactPickerSelectionFragment"
@@ -358,10 +368,23 @@
             app:argType="long"
             app:nullable="false" />
         <action
+            android:id="@+id/toContactPickerPermission"
+            app:destination="@id/contactPickerPermission"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+        <action
             android:id="@+id/to_symptomSelectionFragment"
             app:destination="@id/symptomSelectionFragment" />
 
+
     </fragment>
+    <fragment
+        android:id="@+id/roommateInputFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.roommates.RoommateInputFragment"
+        android:label="RoommateInputFragment" />
 
 
 </navigation>

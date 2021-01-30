@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDoublecheckBindingImpl
 import org.joda.time.DateTime
 
@@ -43,6 +44,10 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
 
         binding.btnHadSymptoms.setOnClickListener {
             findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toSymptomSelectionFragment())
+        }
+
+        binding.btnNext.setOnClickListener {
+            findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toContactPickerPermission(null,ContactPickerPermissionFragment.SELF_BCO_FLOW))
         }
 
 
