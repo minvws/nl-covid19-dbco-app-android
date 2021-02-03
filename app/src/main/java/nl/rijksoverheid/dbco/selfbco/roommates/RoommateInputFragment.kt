@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -23,6 +25,9 @@ import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoRoommatesInputBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.ContactAddItem
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import timber.log.Timber
 
 class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layout.fragment_selfbco_roommates_input) {
@@ -30,6 +35,11 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
     private var contactNames = ArrayList<String>()
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,7 +83,26 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
             })
 
 
+        binding.btnNext.setOnClickListener {
+            grabInput()
+            findNavController().navigate(RoommateInputFragmentDirections.toTimelineExplanationFragment())
+        }
 
+
+
+    }
+
+    private fun grabInput(){
+        for (groupIndex: Int in 0 until adapter.itemCount) {
+            val item = adapter.getItem(groupIndex)
+            Timber.d("Found at $groupIndex an item of $item with input")
+            if(item is ContactInputItem){
+                Timber.d("Content is ${item.contactName}")
+                if(item.contactName.isNotEmpty()) {
+                    selfBcoViewModel.addRoommate(item.contactName)
+                }
+            }
+        }
     }
 
 

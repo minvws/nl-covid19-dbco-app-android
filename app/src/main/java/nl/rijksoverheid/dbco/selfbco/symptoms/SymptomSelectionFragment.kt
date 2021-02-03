@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -19,16 +20,18 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
 import nl.rijksoverheid.dbco.items.input.SymptomItem
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import timber.log.Timber
 
 class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private var selectedItems = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,8 +44,10 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 item.setChecked()
                 if (item.selected) {
                     selectedItems++
+                    selfBcoViewModel.addSymptom(item.text.toString())
                 } else {
                     selectedItems--
+                    selfBcoViewModel.removeSymptom(item.text.toString())
                 }
             }
 

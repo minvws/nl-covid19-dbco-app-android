@@ -23,7 +23,7 @@ import nl.rijksoverheid.dbco.databinding.FragmentOnboardingPrivacyBinding
 import nl.rijksoverheid.dbco.items.input.PrivacyConsentItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.items.ui.PrivacyInformationItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
     private val viewModel by viewModels<OnboardingConsentViewModel>()
@@ -39,10 +39,10 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
             listOf(
                 HeaderItem(R.string.onboarding_privacy_title),
                 ParagraphItem(getString(R.string.onboarding_privacy_summary), clickable = true),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item1)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item2)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item3)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item4)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item1)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item2)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item3)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item4)),
                 PrivacyConsentItem(viewModel)
             )
         )

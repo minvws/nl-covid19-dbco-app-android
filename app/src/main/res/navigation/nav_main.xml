@@ -384,7 +384,17 @@
     <fragment
         android:id="@+id/roommateInputFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.roommates.RoommateInputFragment"
-        android:label="RoommateInputFragment" />
+        android:label="RoommateInputFragment"
+        tools:layout="@layout/fragment_selfbco_roommates_input">
+        <action
+            android:id="@+id/to_timelineExplanationFragment"
+            app:destination="@id/timelineExplanationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timelineExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_timeline_explanation"
+        android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineExplanationFragment"
+        android:label="TimelineExplanationFragment" />
 
 
 </navigation>
