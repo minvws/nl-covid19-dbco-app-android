@@ -31,14 +31,10 @@ class SymptomItem(val text: CharSequence, var selected: Boolean = false) : BaseB
     override fun bind(viewBinding: ItemSymptomBinding, position: Int) {
         Timber.d("For $text we've stored selected = $selected")
         binding = viewBinding
-        //viewBinding.symptomSelection.isChecked = selected
         viewBinding.text = text
         viewBinding.checked = selected
-//        viewBinding.symptomSelection.setOnCheckedChangeListener { buttonView, isChecked ->
-//            selected = isChecked
-//            Timber.d("For $text we've stored selected = $selected")
-//        }
     }
+    
     fun setChecked(){
         binding?.checked = selected
     }
