@@ -54,6 +54,10 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             findNavController().navigate(SelfBcoDateCheckFragmentDirections.toSelfBcoDoubleCheckFragment(args.dateCheckingFlow, dateSelected.time))
         }
 
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
     }
 
 

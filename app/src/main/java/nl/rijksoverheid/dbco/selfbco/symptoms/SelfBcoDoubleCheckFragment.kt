@@ -62,6 +62,10 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
             findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toContactPickerPermission(null,ContactPickerPermissionFragment.SELF_BCO_FLOW))
         }
 
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
 
     }
 }

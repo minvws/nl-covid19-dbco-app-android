@@ -21,6 +21,8 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
 import nl.rijksoverheid.dbco.items.input.SymptomItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment
+import nl.rijksoverheid.dbco.util.hideKeyboard
 import timber.log.Timber
 
 class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms) {
@@ -91,6 +93,11 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 )
             }
         }
+
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
 
     }
 

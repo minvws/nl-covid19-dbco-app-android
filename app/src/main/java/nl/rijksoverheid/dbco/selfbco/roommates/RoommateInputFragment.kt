@@ -16,18 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Item
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoRoommatesInputBinding
-import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.ContactAddItem
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import timber.log.Timber
 
 class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layout.fragment_selfbco_roommates_input) {
@@ -44,9 +40,6 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
-
-
-
 
         val section = Section()
         section.setFooter(ContactAddItem())
@@ -88,8 +81,10 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
             findNavController().navigate(RoommateInputFragmentDirections.toTimelineExplanationFragment())
         }
 
-
-
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        
     }
 
     private fun grabInput(){

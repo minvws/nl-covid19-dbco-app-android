@@ -33,14 +33,6 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
             }, KEYBOARD_DELAY)
         }
 
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true /* enabled by default */) {
-                override fun handleOnBackPressed() {
-                    // you can't go back from this fragment, only close the app
-                    requireActivity().finish()
-                }
-            }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     companion object {
