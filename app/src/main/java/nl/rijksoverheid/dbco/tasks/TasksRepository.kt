@@ -31,6 +31,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
+import nl.rijksoverheid.dbco.util.Resource
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 
@@ -185,4 +186,11 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     }
 
     override fun ifCaseWasChanged(): Boolean = caseChanged
+
+    override fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case{
+        cachedCase = Case(dateOfSymptomOnset = dateOfSymptomOnset, tasks = ArrayList())
+        return cachedCase!!
+    }
+
+
 }

@@ -15,10 +15,12 @@ import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.DatePicker
 import android.widget.EditText
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.onboarding.FillCodeField
+import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
     Handler().postDelayed(Runnable(block), milliseconds)
@@ -94,5 +96,11 @@ fun CharSequence.numbers(limit: Int? = null): String {
         true -> numbers.take(limit)
         false -> numbers
     }
+}
+
+fun DatePicker.getDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.set(year, month, dayOfMonth)
+    return calendar.time
 }
 

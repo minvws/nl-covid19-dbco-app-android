@@ -56,7 +56,8 @@ class AppConfigRepository(val context: Context) {
                     "  \"featureFlags\": {\n" +
                     "  \"enableContactCalling\": true,\n" +
                     "  \"enablePerspectiveSharing\": true,\n" +
-                    "  \"enablePerspectiveCopy\": false\n" +
+                    "  \"enablePerspectiveCopy\": true,\n" +
+                    "  \"enableSelfBCO\": true\n" +
                     "  }\n" +
                     "}"
             storedAppConfig = Json.decodeFromString(appConfigString)

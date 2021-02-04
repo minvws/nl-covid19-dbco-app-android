@@ -19,6 +19,7 @@ interface ITaskRepository {
     fun getCachedCase(): Case?
     fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
+    fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case
 
     companion object {
         const val CASE_KEY = "case"

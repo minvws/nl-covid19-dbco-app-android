@@ -10,7 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/onboardingFragmentHelp">
+    app:startDestination="@id/splashFragment">
 
     <action
         android:id="@+id/action_end_of_life"
@@ -90,6 +90,12 @@
             android:defaultValue="@null"
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+
+        <argument
+            android:name="permission_type_flow"
+            app:argType="integer"
+            app:nullable="false" />
+
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -107,6 +113,10 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
+            android:id="@+id/to_roommateInputFragment"
+            app:destination="@id/roommateInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactPickerSelectionFragment"
@@ -184,9 +194,9 @@
 
     <fragment
         android:id="@+id/onboardingFragmentHelp"
-        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingHelpFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFlowSelectionFragment"
         android:label="OnboardingHelpFragment"
-        tools:layout="@layout/fragment_onboarding_help">
+        tools:layout="@layout/fragment_onboarding_flow_selection">
         <action
             android:id="@+id/toMyContacts"
             app:destination="@id/myContactsFragment"
@@ -196,6 +206,12 @@
         <action
             android:id="@+id/toOnboardingPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment" />
+        <action
+            android:id="@+id/toSelfBcoExplanationFragment"
+            app:destination="@id/selfBcoExplanationFragment" />
+        <action
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
@@ -292,7 +308,93 @@
         <action
             android:id="@+id/toFillCodeFragment"
             app:destination="@id/fillCodeFragment" />
+        <action
+            android:id="@+id/toSymptomSelectionFragment"
+            app:destination="@id/symptomSelectionFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/selfBcoExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
+        android:label="SelfBcoExplanationFragment" >
+        <action
+            android:id="@+id/toPrivacyConsentFragment"
+            app:destination="@id/onboardingPrivacyConsentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/toOnboarding"
+            app:destination="@id/onboardingFragmentHelp"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/symptomSelectionFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SymptomSelectionFragment"
+        android:label="SymptomSelectionFragment"
+        tools:layout="@layout/fragment_selfbco_symptoms">
+        <action
+            android:id="@+id/to_selfBcoDateCheckFragment"
+            app:destination="@id/selfBcoDateCheckFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoDateCheckFragment"
+        tools:layout="@layout/fragment_selfbco_date_check"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckFragment"
+        android:label="SelfBcoDateCheckFragment">
+        <argument
+            android:name="date_checking_flow"
+            app:argType="integer"
+            app:nullable="false" />
+        <action
+            android:id="@+id/to_selfBcoDoubleCheckFragment"
+            app:destination="@id/selfBcoDoubleCheckFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoDoubleCheckFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
+        android:label="SelfBcoDoubleCheckFragment"
+        tools:layout="@layout/fragment_selfbco_doublecheck">
+        <argument
+            android:name="date_checking_flow"
+            app:argType="integer"
+            app:nullable="false" />
+
+        <argument
+            android:name="date_selected"
+            app:argType="long"
+            app:nullable="false" />
+        <action
+            android:id="@+id/toContactPickerPermission"
+            app:destination="@id/contactPickerPermission"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popUpTo="@id/myContactsFragment"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/to_symptomSelectionFragment"
+            app:destination="@id/symptomSelectionFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/roommateInputFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.roommates.RoommateInputFragment"
+        android:label="RoommateInputFragment"
+        tools:layout="@layout/fragment_selfbco_roommates_input">
+        <action
+            android:id="@+id/to_timelineExplanationFragment"
+            app:destination="@id/timelineExplanationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timelineExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_timeline_explanation"
+        android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineExplanationFragment"
+        android:label="TimelineExplanationFragment" />
 
 
 </navigation>

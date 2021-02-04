@@ -61,17 +61,18 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 
-    override fun deleteTask(taskToDelete: Task) {
-        TODO("Not yet implemented")
-    }
+    override fun deleteTask(taskToDelete: Task) {    }
 
     override fun getCachedCase(): Case? {
         return cachedCase
     }
 
-    override suspend fun uploadCase() {
-        TODO("Not yet implemented")
+    override suspend fun uploadCase() {    }
+
+    override fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case{
+        return Case(dateOfSymptomOnset = dateOfSymptomOnset, tasks = ArrayList())
     }
+
 
     override fun ifCaseWasChanged(): Boolean = true
 
