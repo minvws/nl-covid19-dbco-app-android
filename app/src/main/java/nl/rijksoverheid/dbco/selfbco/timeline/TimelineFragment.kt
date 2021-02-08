@@ -30,6 +30,8 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineExplanationBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.MemoryTipGrayItem
+import nl.rijksoverheid.dbco.items.ui.MemoryTipOrangeItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.StringHeaderItem
@@ -72,13 +74,14 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                 StringHeaderItem(
                     String.format(
                         getString(R.string.selfbco_timeline_title),
-                        firstDay
+                        firstDay.toString(DateFormats.selfBcoDateCheck)
                     )
                 ),
                 ParagraphItem(
                     getString(R.string.selfbco_timeline_summary),
                     clickable = true
                 ),
+                MemoryTipOrangeItem()
             )
         )
 
@@ -135,8 +138,9 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             val section = TimelineSection(it.withTimeAtStartOfDay(), contactNames.toTypedArray())
             sections.add(section)
             content.add(section)
-
         }
+        // Add memory tip after original timeline items
+        content.add(MemoryTipGrayItem())
     }
     
     private fun checkInput(){

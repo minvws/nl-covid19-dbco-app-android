@@ -241,4 +241,11 @@
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
     <string name="selfbco_timeline_error_message">Klopt het dat je op %s niemand hebt ontmoet?</string>
     <string name="str_continue">Ga verder</string>
+    <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
+    <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>
+    <string name="selfbco_memory_car">Samen in de auto zitten</string>
+    <string name="selfbco_memory_photos">Foto\'s</string>
+    <string name="selfbco_memory_agenda">Agenda</string>
+    <string name="selfbco_memory_pin">Pintransacties</string>
+    <string name="selfbco_memory_socials">Social media</string>
 </resources>
