@@ -34,7 +34,7 @@ class SymptomItem(val text: CharSequence, var selected: Boolean = false) : BaseB
         viewBinding.text = text
         viewBinding.checked = selected
     }
-    
+
     fun setChecked(){
         binding?.checked = selected
     }

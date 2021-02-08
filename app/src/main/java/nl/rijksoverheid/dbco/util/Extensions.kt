@@ -20,6 +20,7 @@ import android.widget.EditText
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.onboarding.FillCodeField
+import org.joda.time.Interval
 import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
@@ -103,4 +104,7 @@ fun DatePicker.getDate(): Date {
     calendar.set(year, month, dayOfMonth)
     return calendar.time
 }
+
+fun Interval.toDateTimes() = generateSequence(start) { it.plusDays(1) }
+    .takeWhile(::contains)
 

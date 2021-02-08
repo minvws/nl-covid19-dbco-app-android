@@ -17,6 +17,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBindingImpl
 import nl.rijksoverheid.dbco.util.getDate
+import nl.rijksoverheid.dbco.util.hideKeyboard
 import java.util.*
 
 /**
@@ -34,10 +35,6 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             SYMPTOM_CHECK_FLOW -> {
                 binding.selfBcoDateHeader.text = getString(R.string.selfbco_date_symptoms_title)
                 binding.selfBcoDateSummary.text = getString(R.string.selfbco_date_symptoms_summary)
-                binding.btnNotSure.visibility = View.VISIBLE
-                binding.btnNotSure.setOnClickListener {
-                    Toast.makeText(context, "Open nieuw scherm, tekst was nog niet bekend", Toast.LENGTH_SHORT).show()
-                }
             }
 
             COVID_CHECK_FLOW -> {
@@ -56,6 +53,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+            it.hideKeyboard()
         }
 
     }

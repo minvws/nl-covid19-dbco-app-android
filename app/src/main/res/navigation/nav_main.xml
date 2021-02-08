@@ -394,7 +394,15 @@
         android:id="@+id/timelineExplanationFragment"
         tools:layout="@layout/fragment_selfbco_timeline_explanation"
         android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineExplanationFragment"
-        android:label="TimelineExplanationFragment" />
+        android:label="TimelineExplanationFragment" >
+        <action
+            android:id="@+id/to_timelineFragment"
+            app:destination="@id/timelineFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timelineFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineFragment"
+        android:label="TimelineFragment" />
 
 
 </navigation>

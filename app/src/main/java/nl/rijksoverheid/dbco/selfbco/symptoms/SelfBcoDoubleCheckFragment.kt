@@ -57,7 +57,7 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
         }
 
         binding.btnNext.setOnClickListener {
-            selfBcoViewModel.generateSelfBcoCase(DateTime(args.dateSelected).toString(DateFormats.dateInputData))
+            selfBcoViewModel.generateSelfBcoCase(DateTime(args.dateSelected))
 
             findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toContactPickerPermission(null,ContactPickerPermissionFragment.SELF_BCO_FLOW))
         }
