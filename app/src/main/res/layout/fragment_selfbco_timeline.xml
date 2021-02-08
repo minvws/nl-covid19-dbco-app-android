@@ -34,6 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/content"
                 android:layout_width="0dp"
@@ -42,36 +43,33 @@
                 android:layout_marginBottom="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                app:layout_constraintBottom_toTopOf="@id/btn_show_more"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_day"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/back_button" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_show_more"
+                android:id="@+id/btn_add_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/gray_lighter"
-                android:text="@string/add_manually"
+                android:text="Extra dag toevoegen"
                 android:textColor="@color/purple"
                 app:icon="@drawable/ic_add"
                 app:iconGravity="textStart"
-                android:visibility="gone"
                 app:iconPadding="6dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:iconTint="@color/color_primary"
                 app:layout_constraintBottom_toTopOf="@id/btn_next"
-                app:iconTint="@color/color_primary" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/gray_lighter"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/purple"
-                android:text="@string/selfbco_symptoms_nosymptoms"
+                android:text="@string/next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

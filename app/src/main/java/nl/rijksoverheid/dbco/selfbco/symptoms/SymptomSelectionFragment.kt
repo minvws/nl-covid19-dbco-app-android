@@ -20,6 +20,9 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
 import nl.rijksoverheid.dbco.items.input.SymptomItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment
 import nl.rijksoverheid.dbco.util.hideKeyboard
@@ -71,6 +74,14 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         binding.content.adapter = adapter
 
         val content = Section()
+        // Add header and summary
+        content.addAll(
+            listOf(
+                HeaderItem(R.string.selfbco_symptom_header),
+                ParagraphItem(getString(R.string.selfbco_symptom_summary))
+            )
+        )
+
         SYMPTOMS.forEach { symptomName ->
             content.add(SymptomItem(symptomName))
         }

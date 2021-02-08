@@ -15,17 +15,27 @@ import android.widget.ArrayAdapter
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.util.hideKeyboard
+import nl.rijksoverheid.dbco.util.showKeyboard
 
 
 class ContactInputItem(private val contactNames : Array<String>, var contactName: String = "", val trashListener: OnTrashClickedListener) : BaseBindableItem<ItemContactInputBinding>() {
 
+    private var shownKeyboard = false
     private var binding: ItemContactInputBinding? = null
     private val onClickListener = View.OnClickListener {
         trashListener.onTrashClicked(this@ContactInputItem)
     }
     override fun bind(viewBinding: ItemContactInputBinding, position: Int) {
         this.binding = viewBinding
-
+        viewBinding.contactInput.setText(contactName)
+        // Show the keyboard for easy input once the item is created, but only once
+        // Otherwise the keyboard / focus jumps every time a user scrolls
+        if(!shownKeyboard) {
+            viewBinding.contactInput.requestFocus()
+            viewBinding.contactInput.showKeyboard()
+            shownKeyboard = true
+        }
 
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -42,6 +52,10 @@ class ContactInputItem(private val contactNames : Array<String>, var contactName
         })
 
         viewBinding.iconTrash.setOnClickListener(onClickListener)
+        viewBinding.contactInput.setOnItemClickListener { parent, view, position, id ->
+            viewBinding.contactInput.clearFocus()
+            viewBinding.contactInput.hideKeyboard()
+        }
 
 
     }

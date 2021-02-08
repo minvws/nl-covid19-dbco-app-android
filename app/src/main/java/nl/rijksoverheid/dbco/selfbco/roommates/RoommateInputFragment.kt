@@ -43,6 +43,7 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
 
         val section = Section()
         section.setFooter(ContactAddItem())
+        adapter.clear()
         adapter.add(section)
         binding.content.adapter = adapter
 
@@ -50,8 +51,8 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
             if(item is ContactAddItem){
                 section.add(ContactInputItem(contactNames.toTypedArray(), trashListener = object :
                     ContactInputItem.OnTrashClickedListener {
+                    // Remove item from section if trashcan is clicked
                     override fun onTrashClicked(item: ContactInputItem) {
-                        Toast.makeText(context, "Clicked trash for item with text ${item.contactName}", Toast.LENGTH_SHORT).show()
                         section.remove(item)
                     }
 
@@ -84,7 +85,7 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-        
+
     }
 
     private fun grabInput(){
