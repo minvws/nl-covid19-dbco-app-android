@@ -14,7 +14,7 @@ import nl.rijksoverheid.dbco.databinding.ItemDuoHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 
-class DuoHeaderItem(@StringRes private val header: Int, @StringRes private val subtitle: Int) :
+class DuoHeaderItem(private val header: String, private val subtitle: String) :
     BaseBindableItem<ItemDuoHeaderBinding>() {
     override fun getLayout() = R.layout.item_duo_header
 

@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.selfbco.roommates
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -20,6 +19,7 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoRoommatesInputBinding
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.ContactAddItem
@@ -95,7 +95,7 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
             if(item is ContactInputItem){
                 Timber.d("Content is ${item.contactName}")
                 if(item.contactName.isNotEmpty()) {
-                    selfBcoViewModel.addRoommate(item.contactName)
+                    selfBcoViewModel.addSelfBcoContact(item.contactName, category = Category.LIVED_TOGETHER)
                 }
             }
         }

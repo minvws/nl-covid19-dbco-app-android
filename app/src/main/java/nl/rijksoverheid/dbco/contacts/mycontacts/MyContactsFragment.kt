@@ -173,8 +173,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         val uninformedSection = Section().apply {
             setHeader(
                 DuoHeaderItem(
-                    R.string.mycontacts_uninformed_header,
-                    R.string.mycontacts_uninformed_subtext
+                    getString(R.string.mycontacts_uninformed_header),
+                    getString(R.string.mycontacts_uninformed_subtext)
                 )
             )
         }
@@ -182,8 +182,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             .apply {
                 setHeader(
                     DuoHeaderItem(
-                        R.string.mycontacts_informed_header,
-                        R.string.mycontacts_informed_subtext
+                        getString(R.string.mycontacts_informed_header),
+                        getString(R.string.mycontacts_informed_subtext)
                     )
                 )
             }

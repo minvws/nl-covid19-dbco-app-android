@@ -12,17 +12,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingFlowSelectionBinding
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 
 class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 
     private val viewModel by viewModels<OnboardingHelpViewModel>()
     private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

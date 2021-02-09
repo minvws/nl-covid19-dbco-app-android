@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDoublecheckBindingImpl
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import org.joda.time.DateTime
 
@@ -40,13 +41,13 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
 
         val selectedDate = DateTime(args.dateSelected).minusDays(1)
         when(args.dateCheckingFlow){
-            SelfBcoDateCheckFragment.SYMPTOM_CHECK_FLOW -> {
+            SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
                 binding.datecheckHeader.text = String.format(getString(R.string.selfbco_checkdate_symptoms_title), selectedDate.toString(
                     DateFormats.selfBcoDateCheck))
                 binding.datecheckSubtext.text = getString(R.string.selfbco_checkdate_summary)
             }
 
-            SelfBcoDateCheckFragment.COVID_CHECK_FLOW -> {
+            SelfBcoConstants.COVID_CHECK_FLOW -> {
                 binding.datecheckHeader.text = getString(R.string.selfbco_checkdate_covid_title)
                 binding.datecheckSubtext.text = getString(R.string.selfbco_checkdate_summary)
             }

@@ -14,10 +14,8 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.util.Resource
 import org.joda.time.DateTime
 import timber.log.Timber
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,6 +23,7 @@ class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewM
 
     private var dateOfSymptomOnset : DateTime? = null
     private val indexSymptoms = ArrayList<String>()
+    private var testedOrSymptoms = SelfBcoConstants.NOT_SELECTED
 
     fun generateSelfBcoCase(dateOfSymptomOnset: DateTime) {
         this.dateOfSymptomOnset = dateOfSymptomOnset
@@ -45,26 +44,28 @@ class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewM
         }
     }
 
-    fun addRoommate(name : String){
-        val roommateTask = Task(taskType = "contact", source = Source.App,category = Category.LIVED_TOGETHER, label = name, uuid = UUID.randomUUID().toString())
-        tasksRepository.saveChangesToTask(roommateTask)
+    fun addSelfBcoContact(name : String, dateOfLastExposure : String = DateTime.now().withTimeAtStartOfDay().toString(DateFormats.dateInputData), category : Category?){
+        val selfBcoContactTask = Task(taskType = "contact", source = Source.App,category = category, label = name, uuid = UUID.randomUUID().toString(), dateOfLastExposure = dateOfLastExposure)
+        tasksRepository.saveChangesToTask(selfBcoContactTask)
     }
 
     fun getOnsetAsFormattedString() : String{
         return dateOfSymptomOnset?.toString(DateFormats.selfBcoDateCheck) ?: ""
     }
 
-    fun getDateOfSymptomOnset(): DateTime? {
-        return dateOfSymptomOnset
+    fun getDateOfSymptomOnset(): DateTime {
+        return dateOfSymptomOnset ?: DateTime.now().withTimeAtStartOfDay()
     }
 
     fun updateDateOfSymptomOnset(newDateTime: DateTime){
         dateOfSymptomOnset = newDateTime
     }
 
+    fun getCase() = tasksRepository.getCachedCase()
 
-
-
-
+    fun getTypeOfFlow() = testedOrSymptoms
+    fun setTypeOfFlow(type : Int){
+        testedOrSymptoms = type
+    }
 
 }

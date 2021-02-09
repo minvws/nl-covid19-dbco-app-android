@@ -34,6 +34,7 @@ import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import nl.rijksoverheid.dbco.util.Resource
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
+import timber.log.Timber
 
 
 class TasksRepository(context: Context, private val userRepository: IUserRepository) :
@@ -120,8 +121,13 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             updatedTask.communication = CommunicationType.Index
         }
         currentTasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid) {
-                currentTasks[index] = updatedTask
+            if (updatedTask.uuid == currentTask.uuid || updatedTask.label!!.contentEquals(currentTask.label!!)) {
+                Timber.d("Comparing ${updatedTask} and $currentTask and found a match")
+                // Only update if the new date is either later or equal to the currently stored date
+                // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
+                if(updatedTask.getExposureDateAsDateTime().isAfter(currentTask.getExposureDateAsDateTime()) || currentTask.getExposureDateAsDateTime().isEqual(updatedTask.getExposureDateAsDateTime())) {
+                    currentTasks[index] = updatedTask
+                }
                 found = true
             }
         }
