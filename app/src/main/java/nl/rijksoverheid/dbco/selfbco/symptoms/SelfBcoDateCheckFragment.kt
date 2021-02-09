@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBindingImpl
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.util.getDate
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import java.util.*
@@ -32,12 +33,12 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         val binding = FragmentSelfbcoDateCheckBindingImpl.bind(view)
 
         when(args.dateCheckingFlow){
-            SYMPTOM_CHECK_FLOW -> {
+            SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
                 binding.selfBcoDateHeader.text = getString(R.string.selfbco_date_symptoms_title)
                 binding.selfBcoDateSummary.text = getString(R.string.selfbco_date_symptoms_summary)
             }
 
-            COVID_CHECK_FLOW -> {
+            SelfBcoConstants.COVID_CHECK_FLOW -> {
                 binding.selfBcoDateHeader.text = getString(R.string.selfbco_date_covid_title)
                 binding.selfBcoDateSummary.text = getString(R.string.selfbco_date_covid_summary)
             }
@@ -56,12 +57,6 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             it.hideKeyboard()
         }
 
-    }
-
-
-    companion object {
-        const val SYMPTOM_CHECK_FLOW = 0
-        const val COVID_CHECK_FLOW = 1
     }
 
 }

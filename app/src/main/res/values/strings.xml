@@ -248,4 +248,6 @@
     <string name="selfbco_memory_agenda">Agenda</string>
     <string name="selfbco_memory_pin">Pintransacties</string>
     <string name="selfbco_memory_socials">Social media</string>
+    <string name="selfbco_timeline_extra_day_header">Weet je zeker dat je voor %s nog geen klachten had?</string>
+    <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
 </resources>

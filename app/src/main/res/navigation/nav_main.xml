@@ -402,7 +402,11 @@
     <fragment
         android:id="@+id/timelineFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineFragment"
-        android:label="TimelineFragment" />
+        android:label="TimelineFragment" >
+        <action
+            android:id="@+id/to_myContactsFragment"
+            app:destination="@id/myContactsFragment" />
+    </fragment>
 
 
 </navigation>

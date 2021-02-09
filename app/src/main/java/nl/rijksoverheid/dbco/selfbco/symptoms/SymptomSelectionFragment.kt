@@ -24,6 +24,7 @@ import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import timber.log.Timber
@@ -82,7 +83,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
             )
         )
 
-        SYMPTOMS.forEach { symptomName ->
+        SelfBcoConstants.SYMPTOMS.forEach { symptomName ->
             content.add(SymptomItem(symptomName))
         }
         adapter.add(content)
@@ -92,16 +93,18 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 // Go to date check
                 findNavController().navigate(
                     SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                        SelfBcoDateCheckFragment.SYMPTOM_CHECK_FLOW
+                        SelfBcoConstants.SYMPTOM_CHECK_FLOW
                     )
                 )
+                selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
             } else {
                 // go to
                 findNavController().navigate(
                     SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                        SelfBcoDateCheckFragment.COVID_CHECK_FLOW
+                        SelfBcoConstants.COVID_CHECK_FLOW
                     )
                 )
+                selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
             }
         }
 
@@ -109,39 +112,9 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
             findNavController().popBackStack()
         }
 
-
     }
 
-    companion object {
-        val SYMPTOMS = listOf(
-            "Neusverkoudheid",
-            "Schorre stem",
-            "Keelpijn",
-            "(licht) hoesten",
-            "Kortademigheid/benauwdheid",
-            "Pijn bij de ademhaling",
-            "Koorts (= boven 38 graden Celsius)",
-            "Koude rillingen",
-            "Verlies van of verminderde reuk",
-            "Verlies van of verminderde smaak",
-            "Algehele malaise",
-            "Vermoeidheid",
-            "Hoofdpijn",
-            "Spierpijn",
-            "Pijn achter de ogen",
-            "Algehele pijnklachten",
-            "Duizeligheid",
-            "Prikkelbaarheid/verwardheid",
-            "Verlies van eetlust",
-            "Misselijkheid",
-            "Overgeven",
-            "Diarree",
-            "Buikpijn",
-            "Rode prikkende ogen (oogontsteking)",
-            "Huidafwijkingen"
-        )
 
-    }
 
 
 }
