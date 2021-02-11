@@ -27,6 +27,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.fragment_selfbco_timeline.*
 import nl.rijksoverheid.dbco.BaseFragment
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
@@ -245,6 +246,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
         val encryptedSharedPreferences: SharedPreferences =
             LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-        encryptedSharedPreferences.edit().putBoolean("completedOnboarding", true).apply()
+        encryptedSharedPreferences.edit().putBoolean(Constants.USER_COMPLETED_ONBOARDING, true).apply()
     }
 }

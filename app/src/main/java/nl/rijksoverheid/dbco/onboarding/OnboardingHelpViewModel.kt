@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.onboarding
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 
@@ -18,6 +19,7 @@ class OnboardingHelpViewModel(userRepository: IUserRepository, context : Context
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
-    val skipOnboarding =  userRepository.getToken() != null || encryptedSharedPreferences.getBoolean("completedOnboarding", false)
+    val skipOnboarding =  userRepository.getToken() != null || encryptedSharedPreferences.getBoolean(
+        Constants.USER_COMPLETED_ONBOARDING, false)
 
 }

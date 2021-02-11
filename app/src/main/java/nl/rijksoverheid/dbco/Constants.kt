@@ -21,6 +21,7 @@ object Constants {
     // Pref keys
     const val USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY = "userChoseAddContactsManuallyAfterPairing"
     const val USER_SAW_ROOTED_WARNING_KEY = "userSawRootedWarning"
+    const val USER_COMPLETED_ONBOARDING = "completedOnboarding"
 
     // Validation patterns
     val PHONE_VALIDATION_MATCHER : Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
