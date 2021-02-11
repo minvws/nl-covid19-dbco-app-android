@@ -19,6 +19,8 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
+import nl.rijksoverheid.dbco.items.input.ButtonItem
+import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.SymptomItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
@@ -43,6 +45,46 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoSymptomsBinding.bind(view)
 
+        adapter.clear() // Clear adapter in case items were already added, possible on backbutton loop
+
+        val content = Section()
+        val nextButton = ButtonItem(getString(R.string.next), {
+            findNavController().navigate(
+                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                    SelfBcoConstants.SYMPTOM_CHECK_FLOW
+                )
+            )
+            selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
+        }, type = ButtonType.DARK)
+
+        val noSymptomButton = ButtonItem(getString(R.string.selfbco_symptoms_nosymptoms), {
+            findNavController().navigate(
+                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                    SelfBcoConstants.COVID_CHECK_FLOW
+                )
+            )
+            selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
+        }, type = ButtonType.LIGHT)
+
+        // Add header and summary
+        content.addAll(
+            listOf(
+                HeaderItem(R.string.selfbco_symptom_header),
+                ParagraphItem(getString(R.string.selfbco_symptom_summary))
+            )
+        )
+
+        SelfBcoConstants.SYMPTOMS.forEach { symptomName ->
+            content.add(SymptomItem(symptomName))
+        }
+        // Button to start with
+        content.setFooter(noSymptomButton)
+
+        adapter.add(content)
+
+        binding.content.adapter = adapter
+        binding.content.itemAnimator = null // Remove animator here to avoid flashing on clicking symptoms
+
         adapter.setOnItemClickListener { item, vieww ->
             Timber.d("Item clicked ${item}")
             if (item is SymptomItem) {
@@ -57,54 +99,10 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 }
             }
 
-            if (selectedItems > 0) {
-                binding.btnNext.apply {
-                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
-                    setTextColor(context.getColor(R.color.white))
-                    text = getText(R.string.next)
-                }
+            if (selfBcoViewModel.getSelectedSymptomsSize() > 0) {
+                content.setFooter(nextButton)
             } else {
-                binding.btnNext.apply {
-                    backgroundTintList =
-                        ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                    setTextColor(context.getColor(R.color.purple))
-                    text = getText(R.string.selfbco_symptoms_nosymptoms)
-                }
-            }
-        }
-        binding.content.adapter = adapter
-
-        val content = Section()
-        // Add header and summary
-        content.addAll(
-            listOf(
-                HeaderItem(R.string.selfbco_symptom_header),
-                ParagraphItem(getString(R.string.selfbco_symptom_summary))
-            )
-        )
-
-        SelfBcoConstants.SYMPTOMS.forEach { symptomName ->
-            content.add(SymptomItem(symptomName))
-        }
-        adapter.add(content)
-
-        binding.btnNext.setOnClickListener {
-            if (selectedItems > 0) {
-                // Go to date check
-                findNavController().navigate(
-                    SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                        SelfBcoConstants.SYMPTOM_CHECK_FLOW
-                    )
-                )
-                selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
-            } else {
-                // go to
-                findNavController().navigate(
-                    SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                        SelfBcoConstants.COVID_CHECK_FLOW
-                    )
-                )
-                selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
+                content.setFooter(noSymptomButton)
             }
         }
 
@@ -113,8 +111,6 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         }
 
     }
-
-
 
 
 }

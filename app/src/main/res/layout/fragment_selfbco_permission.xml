@@ -17,8 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="@dimen/activity_horizontal_margin"
-            android:paddingBottom="16dp">
+            android:padding="@dimen/activity_horizontal_margin">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/back_button"
@@ -37,48 +36,50 @@
                 android:id="@+id/onboarding_header_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:layout_marginBottom="24dp"
-                android:src="@drawable/illustration_user_calendar"
-                app:layout_constraintBottom_toTopOf="@+id/datecheck_header"
+                android:src="@drawable/ic_permission_header"
+                app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/back_button"
                 app:layout_constraintVertical_bias="0.75" />
 
             <TextView
-                android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:id="@+id/datecheck_header"
+                android:id="@+id/onboarding_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_permission_header"
+                android:textAppearance="@style/TextAppearance.App.Headline5"
                 android:textSize="@dimen/onboarding_title_textsize"
-                android:text="@string/selfbco_checkdate_symptoms_title"
-                app:layout_constraintBottom_toTopOf="@+id/datecheck_subtext"
+                app:accessibilityHeading="@{true}"
+                app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/datecheck_subtext"
+                android:id="@+id/onboarding_subtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
+                android:text="@string/selfbco_permission_summary"
                 android:textSize="@dimen/onboarding_subtext_textsize"
-                android:text="@string/selfbco_checkdate_summary"
-                app:layout_constraintBottom_toTopOf="@+id/btn_had_symptoms"
+                app:layout_constraintBottom_toTopOf="@+id/btn_manual"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
+
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_had_symptoms"
+                android:id="@+id/btn_manual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/gray_lighter"
-                android:text="@string/selfbco_had_symptoms"
+                android:text="@string/add_manually"
                 android:textColor="@color/purple"
                 app:iconTint="@color/color_primary"
                 app:layout_constraintBottom_toTopOf="@id/btn_next"
@@ -90,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/selfbco_no_symptoms"
+                android:text="@string/seflco_permission_give_access"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
