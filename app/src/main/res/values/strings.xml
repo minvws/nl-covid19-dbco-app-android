@@ -250,4 +250,9 @@
     <string name="selfbco_memory_socials">Social media</string>
     <string name="selfbco_timeline_extra_day_header">Weet je zeker dat je voor %s nog geen klachten had?</string>
     <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
+    <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
+    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt.</string>
+    <string name="seflco_permission_give_access">Toegang geven</string>
+    <string name="selfbco_had_symptoms">Ik had toch klachten</string>
+    <string name="selfbco_no_symptoms">Geen klachten</string>
 </resources>

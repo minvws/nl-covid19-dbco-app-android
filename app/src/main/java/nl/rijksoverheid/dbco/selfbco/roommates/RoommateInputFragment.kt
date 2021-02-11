@@ -8,8 +8,11 @@
 
 package nl.rijksoverheid.dbco.selfbco.roommates
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -66,8 +69,14 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
                 }
             }
         }
-
-        contactsViewModel.fetchLocalContacts()
+        // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            contactsViewModel.fetchLocalContacts()
+        }
 
         contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner,

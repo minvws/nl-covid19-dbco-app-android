@@ -68,4 +68,8 @@ class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewM
         testedOrSymptoms = type
     }
 
+    fun getSelectedSymptomsSize() : Int {
+        return indexSymptoms.size
+    }
+
 }

@@ -49,7 +49,7 @@ class ViewModelFactory(
                     questionnareRepository
             ) as T
             FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
-            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository) as T
+            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,

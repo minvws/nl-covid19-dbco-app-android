@@ -8,13 +8,17 @@
 
 package nl.rijksoverheid.dbco.selfbco.timeline
 
+import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -39,6 +43,7 @@ import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.StringHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.toDateTimes
 import org.joda.time.DateTime
@@ -54,6 +59,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         )
     }
 
+
     private val sections = ArrayList<TimelineSection>()
 
     val content = Section()
@@ -66,8 +72,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
 
-        contactsViewModel.fetchLocalContacts()
-        firstDay = selfBcoViewModel.getDateOfSymptomOnset() ?: DateTime.now().withTimeAtStartOfDay()
+        firstDay = selfBcoViewModel.getDateOfSymptomOnset()
         // Set First day to selected date minus 2 days
         firstDay = firstDay.minusDays(2)
 
@@ -87,17 +92,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                 MemoryTipOrangeItem()
             )
         )
-
-        contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            {
-                contactNames = contactsViewModel.getLocalContactNames()
-                Timber.d("Found names ${contactNames}")
-
-                createTimelineSections()
-            })
-
-
         adapter.add(content)
 
         binding.content.adapter = adapter
@@ -110,12 +104,31 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         setFooterForContent()
 
+        // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            contactsViewModel.fetchLocalContacts()
+        }else{
+            // If no contacts can be found no sections are made (no callback), so we add them manually
+            createTimelineSections()
+        }
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }
 
+        contactsViewModel.localContactsLiveDataItem.observe(
+            viewLifecycleOwner,
+            {
+                contactNames = contactsViewModel.getLocalContactNames()
+                Timber.d("Found names ${contactNames}")
+
+                createTimelineSections()
+            })
 
     }
 
@@ -127,7 +140,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         // Unsure if this is required or not, commented out for now
         selfBcoViewModel.updateDateOfSymptomOnset(newDate)
 
-        val section = TimelineSection(firstDay, contactNames.toTypedArray(),selfBcoViewModel.getDateOfSymptomOnset(), selfBcoViewModel.getTypeOfFlow())
+        val section = TimelineSection(
+            firstDay,
+            contactNames.toTypedArray(),
+            selfBcoViewModel.getDateOfSymptomOnset(),
+            selfBcoViewModel.getTypeOfFlow()
+        )
         sections.add(section)
         content.add(section)
         binding.content.smoothScrollToPosition(adapter.itemCount)
@@ -138,7 +156,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val interval = Interval(firstDay, DateTime.now())
         interval.toDateTimes().toList().reversed().forEach {
             Timber.d("Adding timeline item for $it")
-            val section = TimelineSection(it.withTimeAtStartOfDay(), contactNames.toTypedArray(), selfBcoViewModel.getDateOfSymptomOnset(), selfBcoViewModel.getTypeOfFlow())
+            val section = TimelineSection(
+                it.withTimeAtStartOfDay(),
+                contactNames.toTypedArray(),
+                selfBcoViewModel.getDateOfSymptomOnset(),
+                selfBcoViewModel.getTypeOfFlow()
+            )
             sections.add(section)
             content.add(section)
         }
@@ -220,5 +243,8 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         Timber.d("Case is ${selfBcoViewModel.getCase().toString()}")
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
+        val encryptedSharedPreferences: SharedPreferences =
+            LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+        encryptedSharedPreferences.edit().putBoolean("completedOnboarding", true).apply()
     }
 }
