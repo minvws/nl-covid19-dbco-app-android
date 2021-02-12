@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,12 +18,11 @@ import android.widget.EditText
 import nl.rijksoverheid.dbco.util.numbers
 import nl.rijksoverheid.dbco.util.updateText
 
-class FillCodeField : EditText {
+class FillCodeField : androidx.appcompat.widget.AppCompatEditText {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     interface Callback {
         fun onTextChanged(field: FillCodeField, string: CharSequence?)
@@ -32,7 +32,7 @@ class FillCodeField : EditText {
 
     val code: String
         get() {
-            return text.numbers(MAX_LENGTH)
+            return text?.numbers(MAX_LENGTH) ?: ""
         }
 
     val isFilled: Boolean
@@ -83,6 +83,7 @@ class FillCodeField : EditText {
         return super.dispatchPopulateAccessibilityEvent(event)
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onSelectionChanged(start: Int, end: Int) {
         setSelection(length()) // Disables cursor movement
     }
