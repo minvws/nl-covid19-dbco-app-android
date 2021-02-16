@@ -73,6 +73,10 @@ class UsertestTaskRepository(context: Context, userInterface: IUserRepository) :
         return Case(dateOfSymptomOnset = dateOfSymptomOnset, tasks = ArrayList())
     }
 
+    override fun updateSymptomOnsetDate(dateOfSymptomOnset: String?) {
+        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
+    }
+
 
     override fun ifCaseWasChanged(): Boolean = true
 

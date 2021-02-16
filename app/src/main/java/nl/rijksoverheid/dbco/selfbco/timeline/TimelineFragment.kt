@@ -138,7 +138,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val newDate = firstDay.minusDays(1).withTimeAtStartOfDay()
         firstDay = newDate
 
-        // Unsure if this is required or not, commented out for now
+        // Update date of first symptom when adding extra dates
         selfBcoViewModel.updateDateOfSymptomOnset(newDate)
 
         val section = TimelineSection(
