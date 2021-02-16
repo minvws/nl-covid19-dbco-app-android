@@ -14,11 +14,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.network.DbcoApi
 
 class AppConfigRepository(val context: Context) {
 
-    private val api = StubbedAPI.create(context)
+    private val api = DbcoApi.create(context)
     private var storedAppConfig: AppConfig? = null
 
     suspend fun getAppConfig(): AppConfig {
