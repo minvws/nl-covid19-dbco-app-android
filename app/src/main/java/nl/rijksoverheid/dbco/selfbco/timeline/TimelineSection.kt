@@ -134,7 +134,7 @@ class TimelineSection(
             }
             // Everything else
             else -> {
-                setHeader(SubHeaderItem("" + date.toString(DateFormats.selfBcoDateCheck)))
+                setHeader(SubHeaderItem("" + date.toString(DateFormats.selfBcoDateCheck).capitalize()))
             }
         }
     }

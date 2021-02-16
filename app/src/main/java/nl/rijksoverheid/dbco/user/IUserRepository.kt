@@ -9,10 +9,15 @@
 package nl.rijksoverheid.dbco.user
 
 import android.util.Base64
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
+import retrofit2.Response
 
 interface IUserRepository {
 
     suspend fun pair(pincode: String)
+    suspend fun retrieveReversePairingCode() : Response<ReversePairingResponse>
+    suspend fun checkReversePairingStatus(token : String) : Response<ReversePairingStatusResponse>
     fun getRx(): String?
     fun getTx(): String?
     fun getToken(): String?

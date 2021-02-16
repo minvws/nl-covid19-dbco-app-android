@@ -247,5 +247,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val encryptedSharedPreferences: SharedPreferences =
             LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
         encryptedSharedPreferences.edit().putBoolean(Constants.USER_COMPLETED_ONBOARDING, true).apply()
+        encryptedSharedPreferences.edit().putBoolean(Constants.USER_LOCAL_CASE, true).apply()
     }
 }

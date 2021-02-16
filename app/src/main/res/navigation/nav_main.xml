@@ -173,6 +173,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_reversePairingFragment"
+            app:destination="@id/reversePairingFragment" />
 
     </fragment>
     <fragment
@@ -421,6 +424,11 @@
             android:id="@+id/to_roommateInputFragment"
             app:destination="@id/roommateInputFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/reversePairingFragment"
+        tools:layout="@layout/fragment_selfbco_pairing"
+        android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingFragment"
+        android:label="ReversePairingFragment" />
 
 
 </navigation>

@@ -67,14 +67,14 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
-    private lateinit var footerSection : Section
+    private lateinit var footerSection: Section
     private var clicksBlocked = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        footerSection  = Section().apply {
+        footerSection = Section().apply {
             add(
                 FooterItem(
                     getString(R.string.mycontact_privacy_footer),
@@ -113,15 +113,23 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         binding.sendButton.setOnClickListener {
-            if (!tasksViewModel.windowExpired.value!!) {
-                findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                if (!tasksViewModel.windowExpired.value!!) {
+                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                } else {
+                    showLocalDeletionDialog()
+                }
             } else {
-                showLocalDeletionDialog()
+                // User isn't paired yet, let them pair first
+                findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
             }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            tasksViewModel.syncTasks()
+            // Don't have to refresh if the user isn't paired yet, only local data
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                tasksViewModel.syncTasks()
+            }
         }
 
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
@@ -148,9 +156,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 binding.swipeRefresh.isRefreshing = false
                 fillContentSection(case)
 
-                binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
-                if (!tasksViewModel.ifCaseWasChanged()) {
-                    binding.sendButtonHolder.visibility = View.GONE
+
+                if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                    binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
+                    if (!tasksViewModel.ifCaseWasChanged()) {
+                        binding.sendButtonHolder.visibility = View.GONE
+                    }
                 }
             })
 

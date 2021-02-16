@@ -24,14 +24,13 @@ import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
-import nl.rijksoverheid.dbco.util.Resource
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import timber.log.Timber
@@ -39,7 +38,7 @@ import timber.log.Timber
 
 class TasksRepository(context: Context, private val userRepository: IUserRepository) :
     ITaskRepository {
-    private val api = StubbedAPI.create(context)
+    private val api = DbcoApi.create(context)
     private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
