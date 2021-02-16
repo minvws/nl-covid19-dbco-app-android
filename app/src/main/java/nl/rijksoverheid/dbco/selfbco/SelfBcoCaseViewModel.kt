@@ -59,6 +59,8 @@ class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewM
 
     fun updateDateOfSymptomOnset(newDateTime: DateTime){
         dateOfSymptomOnset = newDateTime
+        // Update EZD in case itself as well
+        tasksRepository.updateSymptomOnsetDate(newDateTime.withTimeAtStartOfDay().toString(DateFormats.dateInputData))
     }
 
     fun getCase() = tasksRepository.getCachedCase()

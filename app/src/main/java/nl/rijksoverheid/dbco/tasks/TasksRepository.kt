@@ -197,5 +197,12 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         return cachedCase!!
     }
 
+    override fun updateSymptomOnsetDate(dateOfSymptomOnset: String?) {
+        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
+        // save updated case
+        val storeString = Defaults.json.encodeToString(cachedCase)
+        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
+    }
+
 
 }
