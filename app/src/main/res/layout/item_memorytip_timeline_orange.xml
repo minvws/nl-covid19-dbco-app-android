@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+  ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+  ~
+  ~   SPDX-License-Identifier: EUPL-1.2
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/memorytip_background_orange"
+        android:padding="16dp">
+
+        <nl.rijksoverheid.dbco.util.AccessibleTextView
+            android:id="@+id/accessibleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memorytip_background_orange_bright"
+            android:padding="2dp"
+            android:text="Geheugentip"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <nl.rijksoverheid.dbco.util.AccessibleTextView
+            android:id="@+id/accessibleTextView2"
+            style="@style/TextAppearance.App.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Mensen vergeten vaak activiteiten.\nBekijk daarom ook je:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/accessibleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/accessibleTextView" />
+
+        <ImageView
+            android:id="@+id/ic_photos"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_photos"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accessibleTextView2" />
+
+        <TextView
+            android:id="@+id/txt_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_photos"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_photos"
+            app:layout_constraintStart_toEndOf="@+id/ic_photos"
+            app:layout_constraintTop_toTopOf="@+id/ic_photos" />
+
+
+        <ImageView
+            android:id="@+id/ic_calendar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_calendar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_photos" />
+
+        <TextView
+            android:id="@+id/txt_agenda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_agenda"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_calendar"
+            app:layout_constraintStart_toEndOf="@+id/ic_calendar"
+            app:layout_constraintTop_toTopOf="@+id/ic_calendar" />
+
+        <TextView
+            android:id="@+id/txt_pin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_pin"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_pin"
+            app:layout_constraintStart_toEndOf="@+id/ic_pin"
+            app:layout_constraintTop_toTopOf="@+id/ic_pin" />
+
+        <TextView
+            android:id="@+id/txt_socials"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_socials"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_socials"
+            app:layout_constraintStart_toEndOf="@+id/ic_socials"
+            app:layout_constraintTop_toTopOf="@+id/ic_socials" />
+
+
+        <ImageView
+            android:id="@+id/ic_socials"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="64dp"
+            android:src="@drawable/ic_thumbsup"
+            app:layout_constraintStart_toEndOf="@+id/txt_photos"
+            app:layout_constraintTop_toTopOf="@+id/ic_photos" />
+
+        <ImageView
+            android:id="@+id/ic_pin"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="64dp"
+            android:src="@drawable/ic_creditcard"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_calendar"
+            app:layout_constraintStart_toEndOf="@+id/txt_photos"
+            app:layout_constraintTop_toTopOf="@+id/ic_calendar" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -13,9 +13,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.Resource
 import timber.log.Timber
 
@@ -27,6 +29,12 @@ class TasksOverviewViewModel(
     private val _fetchCase = MutableLiveData<Resource<Case?>>()
     val fetchCase: LiveData<Resource<Case?>> = _fetchCase
 
+    var selfBcoCase = MutableLiveData<Resource<Case?>>()
+
+    private val _windowExpired = MutableLiveData<Boolean>(false)
+    val windowExpired: LiveData<Boolean> = _windowExpired
+
+
     fun getCachedCase() = tasksRepository.getCachedCase()
 
     fun syncTasks() {
@@ -37,6 +45,10 @@ class TasksOverviewViewModel(
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
                 _fetchCase.postValue(Resource.failure(ex))
+                // Window expired
+                if (ex is SerializationException) {
+                    _windowExpired.postValue(true)
+                }
             }
         }
         viewModelScope.launch {
@@ -53,4 +65,11 @@ class TasksOverviewViewModel(
     fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
+
+    fun generateSelfBcoCase(dateOfSymptomOnset: String? = null) {
+        val case = tasksRepository.generateSelfBcoCase(dateOfSymptomOnset)
+        val selfBcoCase = Resource.success(case)
+        _fetchCase.postValue(selfBcoCase)
+        this.selfBcoCase.postValue(selfBcoCase)
+    }
 }

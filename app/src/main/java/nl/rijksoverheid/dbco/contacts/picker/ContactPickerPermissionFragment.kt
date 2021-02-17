@@ -42,11 +42,16 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactPicker(
-                        args.indexTask
-                    )
-                )
+                when(args.permissionTypeFlow){
+                    NORMAL_BCO_FLOW -> {findNavController().navigate(
+                        ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                    )}
+                    SELF_BCO_FLOW -> {
+                        findNavController().navigate(
+                            ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                        )
+                    }
+                }
             }
         }
 
@@ -64,9 +69,17 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 ButtonItem(
                     getString(R.string.mycontacts_deny_permission),
                     {
-                        findNavController().navigate(
-                            ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
-                        )
+                        when(args.permissionTypeFlow){
+                            NORMAL_BCO_FLOW -> {findNavController().navigate(
+                                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                            )}
+                            SELF_BCO_FLOW -> {
+                                findNavController().navigate(
+                                    ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                                )
+                            }
+                        }
+
                         userPrefs?.edit()?.putBoolean(Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, true)?.apply()
                     }, type = ButtonType.LIGHT
                 )
@@ -123,12 +136,22 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 }
             }
         } else {
-            findNavController().navigate(
-                ContactPickerPermissionFragmentDirections.toContactPicker(
-                    args.indexTask
-                )
-            )
+            when(args.permissionTypeFlow){
+                NORMAL_BCO_FLOW -> {findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                )}
+                SELF_BCO_FLOW -> {
+                    findNavController().navigate(
+                        ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                    )
+                }
+            }
         }
+    }
+
+    companion object {
+        const val NORMAL_BCO_FLOW = 0
+        const val SELF_BCO_FLOW = 1
     }
 
 }

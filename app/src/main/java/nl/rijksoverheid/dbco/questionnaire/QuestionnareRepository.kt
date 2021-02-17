@@ -12,13 +12,13 @@ import android.content.Context
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
-import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import timber.log.Timber
 
 class QuestionnareRepository(context: Context) : IQuestionnaireRepository {
 
-    private val api = StubbedAPI.create(context)
+    private val api = DbcoApi.create(context)
     private var cachedQuestionnaire: Questionnaire? = null
     private val sharedPrefs =
         context.getSharedPreferences(PREFS_QUESTIONNAIRE, Context.MODE_PRIVATE)

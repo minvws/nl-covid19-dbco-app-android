@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 private var okHttpClient: OkHttpClient? = null
 
@@ -26,6 +27,7 @@ internal fun createOkHttpClient(context: Context): OkHttpClient {
     return okHttpClient ?: OkHttpClient.Builder()
         // enable cache for config and resource bundles
         .cache(Cache(File(context.cacheDir, "http"), 32 * 1024 * 1024))
+        .callTimeout(30, TimeUnit.SECONDS)
         .apply {
             if (Timber.forest().isNotEmpty()) {
                 addInterceptor(HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {

@@ -24,7 +24,7 @@ import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -33,11 +33,12 @@ import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
+import timber.log.Timber
 
 
 class TasksRepository(context: Context, private val userRepository: IUserRepository) :
     ITaskRepository {
-    private val api = StubbedAPI.create(context)
+    private val api = DbcoApi.create(context)
     private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
@@ -119,8 +120,13 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             updatedTask.communication = CommunicationType.Index
         }
         currentTasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid) {
-                currentTasks[index] = updatedTask
+            if (updatedTask.uuid == currentTask.uuid || updatedTask.label!!.contentEquals(currentTask.label!!)) {
+                Timber.d("Comparing ${updatedTask} and $currentTask and found a match")
+                // Only update if the new date is either later or equal to the currently stored date
+                // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
+                if(updatedTask.getExposureDateAsDateTime().isAfter(currentTask.getExposureDateAsDateTime()) || currentTask.getExposureDateAsDateTime().isEqual(updatedTask.getExposureDateAsDateTime())) {
+                    currentTasks[index] = updatedTask
+                }
                 found = true
             }
         }
@@ -185,4 +191,18 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     }
 
     override fun ifCaseWasChanged(): Boolean = caseChanged
+
+    override fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case{
+        cachedCase = Case(dateOfSymptomOnset = dateOfSymptomOnset, tasks = ArrayList())
+        return cachedCase!!
+    }
+
+    override fun updateSymptomOnsetDate(dateOfSymptomOnset: String?) {
+        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
+        // save updated case
+        val storeString = Defaults.json.encodeToString(cachedCase)
+        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
+    }
+
+
 }

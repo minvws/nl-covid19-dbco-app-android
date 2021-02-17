@@ -11,6 +11,7 @@
 
     <!--    Common words-->
     <string name="save">Opslaan</string>
+    <string name="dont_save">Niet opslaan</string>
     <string name="next">Volgende</string>
     <string name="ready">Klaar</string>
     <string name="previous">Vorige</string>
@@ -21,24 +22,33 @@
     <string name="close">Sluiten</string>
     <string name="cancel">Annuleren</string>
     <string name="delete">Verwijderen</string>
+    <string name="completed">Afgerond</string>
+    <string name="collapsed">Ingeklapt</string>
+    <string name="expanded">Uitgeklapt</string>
 
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
     <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
-    <string name="mycontacts_grant_permission">Geef Toestemming</string>
+    <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
     <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
     <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
     <string name="mycontacts_informed_header">Deze contacten zijn klaar</string>
     <string name="mycontacts_informed_subtext">Jij hebt ze geïnformeerd of de GGD doet dit</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
+    <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
+    <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
+    <string name="mycontacts_delete_data_ok">Verwijder</string>
+    <string name="mycontacts_delete_data_cancel">Ga terug</string>
+    <string name="mycontacts_delete_data_button">Verwijder gegevens</string>
+    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a>.]]></string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
-    <string name="error_valid_phone">Vul een geldig telefoonnummer in</string>
+    <string name="error_valid_phone">Dit telefoonnummer lijkt te veel of te weinig cijfers te bevatten, weet je zeker dat dit klopt?</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->
@@ -46,6 +56,8 @@
     <string name="onboarding_help_subtext">Je kunt via deze app gegevens van je contacten met de GGD delen. Dit doe je als je corona hebt of denkt te hebben. Zo help je de GGD met het sneller en beter uitvoeren van bron- en contactonderzoek.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
+    <string name="fill_code_placeholder">0000-0000-0000</string>
+    <string name="fill_code_invalid">Deze code is ongeldig</string>
     <string name="onboarding_add_data_title">Voeg de gegevens van je contacten toe</string>
     <string name="onboarding_add_data_subtext">De GGD heeft contactgegevens nodig van mensen die jij hebt ontmoet, omdat je hen misschien hebt besmet. Via deze app kun je gemakkelijk gegevens delen. Je bepaalt zelf welke gegevens je deelt en wanneer je dat doet.</string>
 
@@ -67,6 +79,7 @@
     <string name="contact_question_select_option">Kiezen</string>
 
     <!--    Contact details and questions-->
+    <string name="unsaved_changes_message">Wil je de aangepaste gegevens opslaan?</string>
 
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
@@ -101,6 +114,14 @@
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
+
+    <string name="contact_section_icon_one">Stap 1</string>
+    <string name="contact_section_icon_two">Stap 2</string>
+    <string name="contact_section_icon_three">Stap 3</string>
+
+    <string name="contact_section_announcement_one">Je hebt stap 1 afgerond</string>
+    <string name="contact_section_announcement_two">Je hebt stap 2 afgerond</string>
+    <string name="contact_section_announcement_three">Je hebt stap 3 afgerond</string>
 
     <string name="inform_contact_title_index"><![CDATA[Je hebt met de GGD afgesproken dat jij %s informeert]]></string>
     <string name="inform_contact_title_staff"><![CDATA[De GGD neemt ook contact op met %s.]]></string>
@@ -186,4 +207,52 @@
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
+    <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
+
+
+    <!-- Zelf BCO -->
+    <string name="zelfbco_have_code">Ik heb al een code</string>
+    <string name="zelfbco_no_code">Ik heb nog geen code</string>
+    <string name="selfbco_explanation_title">Ontdek welke leefregels gelden voor je contacten</string>
+    <string name="selfbco_explanation_summary">Goed om te weten: niet iedereen hoeft direct in quarantaine om de verspreiding van het coronavirus te stoppen.</string>
+    <string name="pairing_code_being_checked">Code wordt gecontroleerd</string>
+    <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
+    <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
+    <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
+    <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
+    <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
+    <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
+    <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
+    <string name="selfbco_date_covid_summary">Kies de datum waarop de test bij je is afgenomen.</string>
+    <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
+    <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
+    <string name="selfbco_not_sure">Ik weet het niet</string>
+    <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
+    <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
+    <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
+    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
+    <string name="selfbco_timeline_explanation_step1">Langer dan 15 minuten in dezelfde ruimte bent geweest</string>
+    <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
+    <string name="selfbco_timeline_explanation_step3">Twijfel je? Voeg de persoon dan toch toe</string>
+    <string name="selfbco_timeline_explanation_step4">Je hoeft je huisgenoten niet nog een keer toe te voegen</string>
+
+    <string name="selfbco_timeline_title">Wie heb je ontmoet tussen %s en vandaag?</string>
+    <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
+    <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
+    <string name="selfbco_timeline_error_message">Klopt het dat je op %s niemand hebt ontmoet?</string>
+    <string name="str_continue">Ga verder</string>
+    <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
+    <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>
+    <string name="selfbco_memory_car">Samen in de auto zitten</string>
+    <string name="selfbco_memory_photos">Foto\'s</string>
+    <string name="selfbco_memory_agenda">Agenda</string>
+    <string name="selfbco_memory_pin">Pintransacties</string>
+    <string name="selfbco_memory_socials">Social media</string>
+    <string name="selfbco_timeline_extra_day_header">Weet je zeker dat je voor %s nog geen klachten had?</string>
+    <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
+    <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
+    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt.</string>
+    <string name="seflco_permission_give_access">Toegang geven</string>
+    <string name="selfbco_had_symptoms">Ik had toch klachten</string>
+    <string name="selfbco_no_symptoms">Geen klachten</string>
 </resources>
