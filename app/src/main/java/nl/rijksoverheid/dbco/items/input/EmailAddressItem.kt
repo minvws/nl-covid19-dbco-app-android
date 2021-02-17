@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
 import android.text.TextUtils
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
@@ -32,6 +33,7 @@ class EmailAddressItem(
         binding = viewBinding
         viewBinding.inputField.editText?.apply {
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            imeOptions = EditorInfo.IME_ACTION_DONE
             setText(emailAddress)
         }
         viewBinding.inputField.apply {
@@ -41,12 +43,15 @@ class EmailAddressItem(
         viewBinding.inputField.editText?.setOnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
+                emailAddress?.let{
+                    changeListener.invoke(it.toString())
+                }
             }
         }
 
         viewBinding.inputField.editText?.doAfterTextChanged {
             emailAddress = it.toString()
-            changeListener.invoke(it.toString())
+
         }
 
         checkCompleted(viewBinding)
@@ -61,6 +66,12 @@ class EmailAddressItem(
                 viewBinding.inputField.error =
                     viewBinding.inputField.context.getString(R.string.error_valid_email)
                 isValidEmail = false
+                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    0,
+                    0
+                )
             } else {
                 viewBinding.inputField.error = null
                 isValidEmail = true
@@ -73,6 +84,13 @@ class EmailAddressItem(
                 viewBinding.inputField.setEndIconActivated(true)
                 changeListener.invoke(input)
             }
+        }else{
+            viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                0,
+                0
+            )
         }
     }
 

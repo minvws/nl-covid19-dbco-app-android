@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+  ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+  ~
+  ~   SPDX-License-Identifier: EUPL-1.2
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/memorytip_background_gray"
+        android:padding="16dp">
+
+        <nl.rijksoverheid.dbco.util.AccessibleTextView
+            android:id="@+id/accessibleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memorytip_background_orange_bright"
+            android:padding="2dp"
+            android:text="Geheugentip"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <nl.rijksoverheid.dbco.util.AccessibleTextView
+            android:id="@+id/memory_header"
+            style="@style/TextAppearance.App.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Deze activiteiten worden vaak vergeten:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/accessibleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/accessibleTextView" />
+
+        <ImageView
+            android:id="@+id/ic_car"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_car"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/memory_header" />
+
+        <TextView
+            android:id="@+id/txt_car"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_car"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_car"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_car"
+            app:layout_constraintTop_toTopOf="@+id/ic_car" />
+
+
+        <ImageView
+            android:id="@+id/ic_people"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_people"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_car" />
+
+        <TextView
+            android:id="@+id/txt_people"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_meeting"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_people"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_people"
+            app:layout_constraintTop_toTopOf="@+id/ic_people" />
+
+
+        <ImageView
+            android:id="@+id/ic_chat"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_chatballoons"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ic_people" />
+
+        <TextView
+            android:id="@+id/txt_chat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/selfbco_memory_work"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_chat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_chat"
+            app:layout_constraintTop_toTopOf="@+id/ic_chat" />
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

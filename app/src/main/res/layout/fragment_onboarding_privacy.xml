@@ -31,6 +31,7 @@
             android:text="@string/previous"
             android:textColor="@color/color_primary"
             android:textSize="17sp"
+            app:accessibilityButton="@{true}"
             app:drawableStartCompat="@drawable/ic_chevron_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

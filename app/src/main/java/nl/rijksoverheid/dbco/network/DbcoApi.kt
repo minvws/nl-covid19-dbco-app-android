@@ -15,6 +15,8 @@ import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
 import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
@@ -29,7 +31,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Streaming
 
-interface StubbedAPI {
+interface DbcoApi {
 
     @GET("v1/questionnaires")
     @Streaming
@@ -49,19 +51,25 @@ interface StubbedAPI {
     @Streaming
     suspend fun getAppConfig(): Response<AppConfig>
 
+    @POST("v1/pairingrequests")
+    suspend fun retrievePairingCode() : Response<ReversePairingResponse>
+
+    @GET("v1/pairingrequests/{token}")
+    suspend fun checkReversePairingStatus(@Path("token") token: String) : Response<ReversePairingStatusResponse>
+
 
     companion object {
         fun create(
             context: Context,
             client: OkHttpClient = createOkHttpClient(context),
             baseUrl: String = BuildConfig.BASE_API_URL
-        ): StubbedAPI {
+        ): DbcoApi {
             val contentType = "application/json".toMediaType()
             return Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(Defaults.json.asConverterFactory(contentType))
                 .baseUrl(baseUrl)
-                .build().create(StubbedAPI::class.java)
+                .build().create(DbcoApi::class.java)
         }
     }
 

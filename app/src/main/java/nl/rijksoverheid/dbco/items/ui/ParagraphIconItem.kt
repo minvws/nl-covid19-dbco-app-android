@@ -8,21 +8,22 @@
 
 package nl.rijksoverheid.dbco.items.ui
 
+import androidx.annotation.DrawableRes
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
-import nl.rijksoverheid.dbco.databinding.ItemPrivacyInformationBinding
+import nl.rijksoverheid.dbco.databinding.ItemParagraphIconBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import timber.log.Timber
 
-class PrivacyInformationItem(
-    private val text: String?
-) : BaseBindableItem<ItemPrivacyInformationBinding>() {
-    override fun getLayout() = R.layout.item_privacy_information
+class ParagraphIconItem(
+    private val text: String?,
+    @DrawableRes private val icon : Int = R.drawable.ic_privacy_lock
+) : BaseBindableItem<ItemParagraphIconBinding>() {
+    override fun getLayout() = R.layout.item_paragraph_icon
 
-    override fun bind(viewBinding: ItemPrivacyInformationBinding, position: Int) {
+    override fun bind(viewBinding: ItemParagraphIconBinding, position: Int) {
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
 
         Timber.d("Got value $text")
@@ -31,9 +32,10 @@ class PrivacyInformationItem(
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.text = spannableBuilder
         }
+        viewBinding.icon.setImageResource(icon)
     }
 
     override fun isClickable() = false
-    override fun isSameAs(other: Item<*>): Boolean = other is PrivacyInformationItem && other.text == text
-    override fun hasSameContentAs(other: Item<*>) = other is PrivacyInformationItem && other.text == text
+    override fun isSameAs(other: Item<*>): Boolean = other is ParagraphIconItem && other.text == text
+    override fun hasSameContentAs(other: Item<*>) = other is ParagraphIconItem && other.text == text
 }

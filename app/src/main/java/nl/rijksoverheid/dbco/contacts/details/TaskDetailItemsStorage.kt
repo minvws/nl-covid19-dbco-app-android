@@ -48,6 +48,7 @@ import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
+import timber.log.Timber
 import kotlin.math.absoluteValue
 
 
@@ -196,7 +197,9 @@ class TaskDetailItemsStorage(
 
         viewModel.livedTogetherRisk.observe(viewLifecycleOwner, { it ->
             if (it == false) {
-                section?.add(durationRiskItem)
+                if(section?.getPosition(durationRiskItem) == -1){
+                    section.add(durationRiskItem)
+                }
             } else {
                 section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(durationRiskItem.apply { clearPreviousAnswer() })
@@ -207,7 +210,9 @@ class TaskDetailItemsStorage(
 
         viewModel.durationRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(distanceRiskItem)
+                if(section?.getPosition(distanceRiskItem) == -1){
+                    section.add(distanceRiskItem)
+                }
             } else {
                 section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
@@ -217,7 +222,9 @@ class TaskDetailItemsStorage(
 
         viewModel.distanceRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(otherRiskItem)
+                if(section?.getPosition(otherRiskItem) == -1){
+                    section.add(otherRiskItem)
+                }
             } else {
                 section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(noRiskItem)
@@ -226,7 +233,9 @@ class TaskDetailItemsStorage(
 
         viewModel.otherRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                section?.add(noRiskItem)
+                if(section?.getPosition(noRiskItem) == -1){
+                    section.add(noRiskItem)
+                }
             } else {
                 section?.remove(noRiskItem)
             }
@@ -495,6 +504,7 @@ class TaskDetailItemsStorage(
                 // Handle with dates
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
             val exposureDatePlusTen = exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusEleven = exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFive = exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFourteen = exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
 
@@ -503,7 +513,7 @@ class TaskDetailItemsStorage(
                     Category.LIVED_TOGETHER -> {
                         context.getString(
                             R.string.inform_contact_guidelines_category1_with_date,
-                            exposureDatePlusTen
+                            exposureDatePlusEleven
                         )
                     }
                     Category.DISTANCE -> {
@@ -586,7 +596,7 @@ class TaskDetailItemsStorage(
             add(ParagraphItem(message, clickable = true))
 
             // Only add the footer if the source is Portal.
-            if(viewModel.task.value?.source == Source.Portal) {
+            if (viewModel.task.value?.source == Source.Portal) {
                 add(SubHeaderItem(footer))
             }
 
@@ -597,7 +607,8 @@ class TaskDetailItemsStorage(
                         {
                             val clipboard =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
+                            val clip =
+                                ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
                             clipboard.setPrimaryClip(clip)
                             Toast.makeText(
                                 context,
@@ -605,32 +616,36 @@ class TaskDetailItemsStorage(
                                 Toast.LENGTH_LONG
                             ).show()
                         },
-                        type = ButtonType.LIGHT
+                        // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
+                        // Otherwise always light
+                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == false)) {
+                            ButtonType.DARK
+                        } else {
+                            ButtonType.LIGHT
+                        }
                     )
                 )
             }
 
-            // add "Call $name" button if phone is set
-            if (featureFlags.enableContactCalling) {
-                viewModel.selectedContact?.number?.let {
-                    add(
-                        ButtonItem(
-                            context.getString(
-                                R.string.contact_section_inform_call,
-                                viewModel.selectedContact?.firstName ?: "contact"
-                            ),
-                            {
-                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it}"))
-                                context.startActivity(intent)
-                            },
-                            type = if (viewModel.communicationType.value == CommunicationType.Index) {
-                                ButtonType.DARK
-                            } else {
-                                ButtonType.LIGHT
-                            }
-                        )
+            // add "Call $name" button if phone is set and config has calling on
+            if (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == true) {
+                add(
+                    ButtonItem(
+                        context.getString(
+                            R.string.contact_section_inform_call,
+                            viewModel.selectedContact?.firstName ?: "contact"
+                        ),
+                        {
+                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.selectedContact?.number}"))
+                            context.startActivity(intent)
+                        },
+                        type = if (viewModel.communicationType.value == CommunicationType.Index) {
+                            ButtonType.DARK
+                        } else {
+                            ButtonType.LIGHT
+                        }
                     )
-                }
+                )
             }
         }
     }

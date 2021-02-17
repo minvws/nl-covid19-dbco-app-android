@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.contacts.mycontacts
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -21,14 +22,20 @@ import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
+import nl.rijksoverheid.dbco.MainActivity
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
+import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
@@ -44,7 +51,12 @@ import timber.log.Timber
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
+    private val userPrefs by lazy {
+        activity?.getSharedPreferences(
+            Constants.USER_PREFS,
+            Context.MODE_PRIVATE
+        )
+    }
 
     private var dataWipeClickedAmount = 0
 
@@ -55,11 +67,34 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
+    private lateinit var footerSection: Section
     private var clicksBlocked = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contentSection.setHideWhenEmpty(true)
+
+        footerSection = Section().apply {
+            add(
+                FooterItem(
+                    getString(R.string.mycontact_privacy_footer),
+                    clickable = true
+                )
+            )
+            add(
+                BuildNumberItem(
+                    getString(
+                        R.string.status_app_version,
+                        BuildConfig.VERSION_NAME,
+                        "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
+                    ), clickable = true
+                )
+            )
+        }
+
+        // pre-set footer section to show content even if no tasks are available
+        contentSection.setFooter(footerSection)
+
         adapter.add(contentSection)
 
         // Load data from backend
@@ -69,17 +104,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentMyContactsBinding.bind(view)
-
-        binding.buildVersion.text = getString(
-            R.string.status_app_version,
-            BuildConfig.VERSION_NAME,
-            "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
-        )
-        binding.buildVersion.setOnClickListener {
-            handleQADataWipe()
-        }
-
-
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
@@ -89,70 +113,55 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         binding.sendButton.setOnClickListener {
-            findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                if (!tasksViewModel.windowExpired.value!!) {
+                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                } else {
+                    showLocalDeletionDialog()
+                }
+            } else {
+                // User isn't paired yet, let them pair first
+                findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
+            }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            tasksViewModel.syncTasks()
+            // Don't have to refresh if the user isn't paired yet, only local data
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                tasksViewModel.syncTasks()
+            }
         }
 
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
             resource.resolve(onError = {
                 binding.swipeRefresh.isRefreshing = false
-                showErrorDialog(getString(R.string.error_while_fetching_case), {
-                    tasksViewModel.syncTasks()
-                }, it)
-            }, onSuccess = {case ->
+                // If we get a JSON Serialization error the case window has expired
+                if (it is SerializationException) {
+                    binding.windowClosedView.visibility = View.VISIBLE
+                    binding.sendButton.visibility = View.VISIBLE
+                    binding.sendButton.setText(R.string.mycontacts_delete_data_button)
+                    // turn off click listener if window is expired
+                    adapter.setOnItemClickListener { _, _ -> {} }
+                    binding.content.isEnabled = false
+                } else {
+                    // Generic error
+                    showErrorDialog(getString(R.string.error_while_fetching_case), {
+                        tasksViewModel.syncTasks()
+                    }, it)
+                }
+                // Show cached data when error occurs
+                val cachedCase = tasksViewModel.getCachedCase()
+                fillContentSection(cachedCase)
+            }, onSuccess = { case ->
                 binding.swipeRefresh.isRefreshing = false
-                contentSection.clear()
-                val uninformedSection = Section().apply {
-                    setHeader(
-                        DuoHeaderItem(
-                            R.string.mycontacts_uninformed_header,
-                            R.string.mycontacts_uninformed_subtext
-                        )
-                    )
-                }
-                val informedSection = Section()
-                    .apply {
-                        setHeader(
-                            DuoHeaderItem(
-                                R.string.mycontacts_informed_header,
-                                R.string.mycontacts_informed_subtext
-                            )
-                        )
+                fillContentSection(case)
+
+
+                if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                    binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
+                    if (!tasksViewModel.ifCaseWasChanged()) {
+                        binding.sendButtonHolder.visibility = View.GONE
                     }
-
-
-                case?.tasks?.forEach { task ->
-                    Timber.d("Found task $task")
-                    when (task.taskType) {
-                        "contact" -> {
-                            val informed = when (task.communication) {
-                                CommunicationType.Index -> task.didInform
-                                CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
-                                else -> false
-                            }
-                            if (informed) {
-                                informedSection.add(TaskItem(task))
-                            } else {
-                                uninformedSection.add(TaskItem(task))
-                            }
-                        }
-                    }
-                }
-
-                if (uninformedSection.groupCount > 1) {
-                    contentSection.add(uninformedSection)
-                }
-
-                if (informedSection.groupCount > 1) {
-                    contentSection.add(informedSection)
-                }
-
-                binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
-                if(!tasksViewModel.ifCaseWasChanged()) {
-                    binding.sendButtonHolder.visibility = View.GONE
                 }
             })
 
@@ -162,7 +171,63 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             if (item is TaskItem) {
                 checkPermissionGoToTaskDetails(item.task)
             }
+            if (item is BuildNumberItem) {
+                if (BuildConfig.DEBUG) {
+                    handleQADataWipe()
+                }
+            }
         }
+    }
+
+    private fun fillContentSection(case: Case?) {
+        contentSection.clear()
+        val uninformedSection = Section().apply {
+            setHeader(
+                DuoHeaderItem(
+                    getString(R.string.mycontacts_uninformed_header),
+                    getString(R.string.mycontacts_uninformed_subtext)
+                )
+            )
+        }
+        val informedSection = Section()
+            .apply {
+                setHeader(
+                    DuoHeaderItem(
+                        getString(R.string.mycontacts_informed_header),
+                        getString(R.string.mycontacts_informed_subtext)
+                    )
+                )
+            }
+
+
+        case?.tasks?.forEach { task ->
+            Timber.d("Found task $task")
+            when (task.taskType) {
+                "contact" -> {
+                    val informed = when (task.communication) {
+                        CommunicationType.Index -> task.didInform
+                        CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
+                        else -> false
+                    }
+                    if (informed) {
+                        informedSection.add(TaskItem(task))
+                    } else {
+                        uninformedSection.add(TaskItem(task))
+                    }
+                }
+            }
+        }
+
+        if (uninformedSection.groupCount > 1) {
+            contentSection.add(uninformedSection)
+        }
+
+        if (informedSection.groupCount > 1) {
+            contentSection.add(informedSection)
+        }
+
+        // Re-add footer section after clearing content
+        contentSection.setFooter(footerSection)
     }
 
     override fun onResume() {
@@ -185,13 +250,21 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (userPrefs?.getBoolean(USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, false) == true){
+            if (userPrefs?.getBoolean(
+                    USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
+                    false
+                ) == true
+            ) {
                 findNavController().navigate(
                     ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
                 )
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
-                findNavController().navigate(MyContactsFragmentDirections.toContactPickerPermission(task))
+                findNavController().navigate(
+                    MyContactsFragmentDirections.toContactPickerPermission(
+                        task, ContactPickerPermissionFragment.NORMAL_BCO_FLOW
+                    )
+                )
             }
         } else {
             if (task?.linkedContact != null) {
@@ -211,18 +284,21 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
-    private fun handleQADataWipe(){
+    private fun handleQADataWipe() {
         dataWipeClickedAmount++
-        if(dataWipeClickedAmount == 4){
+        if (dataWipeClickedAmount == 4) {
             val builder = AlertDialog.Builder(context)
             builder.setMessage(getString(R.string.qa_clear_data_summary))
             builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
                 dataWipeClickedAmount = 0
 
                 // Clear locally stored data & remove tokens from UserRepository
-                val encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+                val encryptedSharedPreferences: SharedPreferences =
+                    LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
                 encryptedSharedPreferences.edit().clear().commit()
                 dialog.dismiss()
+                // Start activity to restart the onboarding flow before killing the original activity
+                activity?.startActivity(Intent(activity, MainActivity::class.java))
                 activity?.finish()
             }
             builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
@@ -231,6 +307,25 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
             builder.create().show()
         }
+    }
 
+    private fun showLocalDeletionDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(getString(R.string.mycontacts_delete_data_title))
+        builder.setMessage(getString(R.string.mycontacts_delete_data_summary))
+        builder.setPositiveButton(R.string.mycontacts_delete_data_ok) { dialog, _ ->
+            // Clear locally stored data & remove tokens from UserRepository
+            val encryptedSharedPreferences: SharedPreferences =
+                LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+            encryptedSharedPreferences.edit().clear().commit()
+            dialog.dismiss()
+            // Start activity to restart the onboarding flow before killing the original activity
+            activity?.startActivity(Intent(activity, MainActivity::class.java))
+            activity?.finish()
+        }
+        builder.setNegativeButton(R.string.mycontacts_delete_data_cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 }

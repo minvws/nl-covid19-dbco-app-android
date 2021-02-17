@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1027445500001",
+    "project_id": "ggd-contact-productie",
+    "storage_bucket": "ggd-contact-productie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027445500001:android:563963ac88ff228a7ce220",
+        "android_client_info": {
+          "package_name": "nl.rijksoverheid.dbco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1027445500001-10912bmuggmahmbddhr0h78mtj6d3k5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs7hmmDC67eAjfBEsf_VqNbZMZgll1cRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1027445500001-10912bmuggmahmbddhr0h78mtj6d3k5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

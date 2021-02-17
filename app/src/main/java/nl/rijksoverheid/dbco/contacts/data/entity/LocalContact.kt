@@ -31,6 +31,10 @@ data class LocalContact(
             .matches())
     }
 
+    fun hasValidPhoneNumber() : Boolean {
+        return (!number.isNullOrEmpty() && Constants.PHONE_VALIDATION_MATCHER.matcher(number!!).matches())
+    }
+
     fun getDisplayName(): String {
         var result = ""
         firstName?.let {
