@@ -42,7 +42,7 @@
     </style>
 
     <style name="Widget.App.Toolbar.Surface" parent="Widget.MaterialComponents.Toolbar.Surface">
-        <item name="navigationContentDescription">@string/cd_back</item>
+        <item name="navigationContentDescription">@string/back</item>
         <item name="navigationIcon">?attr/homeAsUpIndicator</item>
     </style>
 

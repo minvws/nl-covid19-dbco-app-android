@@ -16,9 +16,9 @@
     <string name="ready">Klaar</string>
     <string name="previous">Vorige</string>
     <string name="begin">Beginnen</string>
-    <string name="cd_back">Terug</string>
-    <string name="cd_error_box">Waarschuwing</string>
-    <string name="cd_info_box">Belangrijk</string>
+    <string name="back">Terug</string>
+    <string name="warning">Waarschuwing</string>
+    <string name="important">Belangrijk</string>
     <string name="close">Sluiten</string>
     <string name="cancel">Annuleren</string>
     <string name="delete">Verwijderen</string>

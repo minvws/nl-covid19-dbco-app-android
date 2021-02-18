@@ -71,7 +71,7 @@
             android:id="@+id/index_contact_state"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="@string/cd_info_box"
+            android:contentDescription="@string/important"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

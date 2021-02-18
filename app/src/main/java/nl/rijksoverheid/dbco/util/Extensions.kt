@@ -17,8 +17,12 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
+import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.onboarding.FillCodeField
 import org.joda.time.Interval
 import java.util.*
@@ -42,6 +46,27 @@ fun View.hideKeyboard() {
 
 fun View.setContentResource(stringId: Int) {
     contentDescription = context.getString(stringId)
+}
+
+fun ImageView.setImageResource(resId: Int, stringId: Int) {
+    setImageResource(resId)
+    setContentResource(stringId)
+}
+
+fun TextInputLayout.setCompleted(completed: Boolean) {
+    if (completed) {
+        endIconMode = TextInputLayout.END_ICON_CUSTOM
+        setEndIconDrawable(R.drawable.ic_valid_small)
+        setEndIconContentDescription(R.string.completed)
+        setEndIconTintList(ContextCompat.getColorStateList(context, R.color.green))
+        isEndIconVisible = true
+    } else {
+        endIconMode = TextInputLayout.END_ICON_NONE
+        endIconDrawable = null
+        endIconContentDescription = null
+        setEndIconTintList(null)
+        isEndIconVisible = false
+    }
 }
 
 fun View.accessibilityAnnouncement(stringId: Int) {

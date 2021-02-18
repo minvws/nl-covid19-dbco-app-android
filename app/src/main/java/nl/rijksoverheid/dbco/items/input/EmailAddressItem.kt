@@ -17,6 +17,7 @@ import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemEmailInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.setCompleted
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 
 class EmailAddressItem(
@@ -66,31 +67,15 @@ class EmailAddressItem(
                 viewBinding.inputField.error =
                     viewBinding.inputField.context.getString(R.string.error_valid_email)
                 isValidEmail = false
-                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    0,
-                    0
-                )
+                viewBinding.inputField.setCompleted(false)
             } else {
                 viewBinding.inputField.error = null
                 isValidEmail = true
-                viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_valid_small,
-                    0
-                )
-                viewBinding.inputField.setEndIconActivated(true)
+                viewBinding.inputField.setCompleted(true)
                 changeListener.invoke(input)
             }
         }else{
-            viewBinding.inputField.editText?.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                0,
-                0
-            )
+            viewBinding.inputField.setCompleted(false)
         }
     }
 
