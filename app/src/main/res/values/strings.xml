@@ -208,5 +208,51 @@
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
+
+
+    <!-- Zelf BCO -->
+    <string name="zelfbco_have_code">Ik heb al een code</string>
+    <string name="zelfbco_no_code">Ik heb nog geen code</string>
+    <string name="selfbco_explanation_title">Ontdek welke leefregels gelden voor je contacten</string>
+    <string name="selfbco_explanation_summary">Goed om te weten: niet iedereen hoeft direct in quarantaine om de verspreiding van het coronavirus te stoppen.</string>
     <string name="pairing_code_being_checked">Code wordt gecontroleerd</string>
+    <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
+    <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
+    <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
+    <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
+    <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
+    <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
+    <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
+    <string name="selfbco_date_covid_summary">Kies de datum waarop de test bij je is afgenomen.</string>
+    <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
+    <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
+    <string name="selfbco_not_sure">Ik weet het niet</string>
+    <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
+    <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
+    <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
+    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
+    <string name="selfbco_timeline_explanation_step1">Langer dan 15 minuten in dezelfde ruimte bent geweest</string>
+    <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
+    <string name="selfbco_timeline_explanation_step3">Twijfel je? Voeg de persoon dan toch toe</string>
+    <string name="selfbco_timeline_explanation_step4">Je hoeft je huisgenoten niet nog een keer toe te voegen</string>
+
+    <string name="selfbco_timeline_title">Wie heb je ontmoet tussen %s en vandaag?</string>
+    <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
+    <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
+    <string name="selfbco_timeline_error_message">Klopt het dat je op %s niemand hebt ontmoet?</string>
+    <string name="str_continue">Ga verder</string>
+    <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
+    <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>
+    <string name="selfbco_memory_car">Samen in de auto zitten</string>
+    <string name="selfbco_memory_photos">Foto\'s</string>
+    <string name="selfbco_memory_agenda">Agenda</string>
+    <string name="selfbco_memory_pin">Pintransacties</string>
+    <string name="selfbco_memory_socials">Social media</string>
+    <string name="selfbco_timeline_extra_day_header">Weet je zeker dat je voor %s nog geen klachten had?</string>
+    <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
+    <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
+    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt.</string>
+    <string name="seflco_permission_give_access">Toegang geven</string>
+    <string name="selfbco_had_symptoms">Ik had toch klachten</string>
+    <string name="selfbco_no_symptoms">Geen klachten</string>
 </resources>

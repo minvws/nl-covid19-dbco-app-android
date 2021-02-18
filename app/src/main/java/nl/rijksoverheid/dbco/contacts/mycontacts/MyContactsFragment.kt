@@ -30,6 +30,7 @@ import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PA
 import nl.rijksoverheid.dbco.MainActivity
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
@@ -66,14 +67,14 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private val contentSection = Section()
-    private lateinit var footerSection : Section
+    private lateinit var footerSection: Section
     private var clicksBlocked = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        footerSection  = Section().apply {
+        footerSection = Section().apply {
             add(
                 FooterItem(
                     getString(R.string.mycontact_privacy_footer),
@@ -112,15 +113,23 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         binding.sendButton.setOnClickListener {
-            if (!tasksViewModel.windowExpired.value!!) {
-                findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                if (!tasksViewModel.windowExpired.value!!) {
+                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                } else {
+                    showLocalDeletionDialog()
+                }
             } else {
-                showLocalDeletionDialog()
+                // User isn't paired yet, let them pair first
+                findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
             }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            tasksViewModel.syncTasks()
+            // Don't have to refresh if the user isn't paired yet, only local data
+            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                tasksViewModel.syncTasks()
+            }
         }
 
         tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
@@ -147,9 +156,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 binding.swipeRefresh.isRefreshing = false
                 fillContentSection(case)
 
-                binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
-                if (!tasksViewModel.ifCaseWasChanged()) {
-                    binding.sendButtonHolder.visibility = View.GONE
+
+                if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                    binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
+                    if (!tasksViewModel.ifCaseWasChanged()) {
+                        binding.sendButtonHolder.visibility = View.GONE
+                    }
                 }
             })
 
@@ -172,8 +184,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         val uninformedSection = Section().apply {
             setHeader(
                 DuoHeaderItem(
-                    R.string.mycontacts_uninformed_header,
-                    R.string.mycontacts_uninformed_subtext
+                    getString(R.string.mycontacts_uninformed_header),
+                    getString(R.string.mycontacts_uninformed_subtext)
                 )
             )
         }
@@ -181,8 +193,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             .apply {
                 setHeader(
                     DuoHeaderItem(
-                        R.string.mycontacts_informed_header,
-                        R.string.mycontacts_informed_subtext
+                        getString(R.string.mycontacts_informed_header),
+                        getString(R.string.mycontacts_informed_subtext)
                     )
                 )
             }
@@ -250,7 +262,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactPickerPermission(
-                        task
+                        task, ContactPickerPermissionFragment.NORMAL_BCO_FLOW
                     )
                 )
             }

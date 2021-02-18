@@ -11,10 +11,14 @@ package nl.rijksoverheid.dbco.debug.usertest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_RX
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TOKEN
+import retrofit2.Response
 import java.security.MessageDigest
 
 class UsertestUserRepository(context: Context) : IUserRepository { // TODO move to dagger
@@ -49,6 +53,15 @@ class UsertestUserRepository(context: Context) : IUserRepository { // TODO move 
                 .putString(KEY_RX, rx)
                 .commit()
         }
+    }
+
+    override suspend fun retrieveReversePairingCode() : Response<ReversePairingResponse> {
+        val response =  ReversePairingResponse(code = "324432")
+        return Response.success(response)
+    }
+
+    override suspend fun checkReversePairingStatus(token: String): Response<ReversePairingStatusResponse> {
+        return Response.success(ReversePairingStatusResponse(refreshDelay = 10,expiresAt = "2021-12-31 23:59:59", status = ReversePairingState.PENDING))
     }
 
     private fun hash(input: String): String {

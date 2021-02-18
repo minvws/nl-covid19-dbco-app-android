@@ -50,4 +50,11 @@ class ContactsViewModel(private val repository: ContactsRepository) : ViewModel(
     }
 
 
+    fun getLocalContactNames(): ArrayList<String> {
+        return fullLocalContactItems.map{
+            it.getDisplayName()
+        } as ArrayList<String>
+    }
+
+
 }

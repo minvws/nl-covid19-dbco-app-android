@@ -14,21 +14,24 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentOnboardingHelpBinding
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import timber.log.Timber
 
-class OnboardingHelpFragment : BaseFragment(R.layout.fragment_onboarding_help) {
+class SplashFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 
     private val viewModel by viewModels<OnboardingHelpViewModel>()
+    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentOnboardingHelpBinding.bind(view)
-        binding.btnNext.setOnClickListener {
-            findNavController().navigate(OnboardingHelpFragmentDirections.toOnboardingPrivacyConsentFragment())
-        }
 
-        if (viewModel.skipOnboarding) {
-            findNavController().navigate(OnboardingHelpFragmentDirections.toMyContacts())
-        }
+        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, {
+            findNavController().navigate(SplashFragmentDirections.toOnboarding())
+        })
+
+        appLifecycleViewModel.checkForForcedAppUpdate()
+
+
     }
+
 }

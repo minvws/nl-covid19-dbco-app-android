@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import nl.rijksoverheid.dbco.util.hideKeyboard
 
 abstract class BaseFragment @JvmOverloads constructor(
     @LayoutRes layout: Int
@@ -51,5 +52,11 @@ abstract class BaseFragment @JvmOverloads constructor(
         }
         val alert: AlertDialog = builder.create()
         alert.show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        view?.hideKeyboard()
+        view?.clearFocus()
     }
 }
