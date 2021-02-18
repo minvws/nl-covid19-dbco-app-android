@@ -221,7 +221,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                 handleInput()
 
             }
-            builder.setNegativeButton(R.string.cd_back) { dialogInterface, _ ->
+            builder.setNegativeButton(R.string.back) { dialogInterface, _ ->
                 dialogInterface.dismiss()
             }
             val alert: AlertDialog = builder.create()
