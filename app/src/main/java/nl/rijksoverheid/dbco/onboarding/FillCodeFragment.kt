@@ -8,29 +8,39 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.accessibility.AccessibilityEvent
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
-import nl.rijksoverheid.dbco.util.hideKeyboard
-import nl.rijksoverheid.dbco.util.resolve
-import nl.rijksoverheid.dbco.util.showKeyboard
-import nl.rijksoverheid.dbco.util.updateText
+import nl.rijksoverheid.dbco.util.*
 import retrofit2.HttpException
 
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
     private val viewModel by viewModels<FillCodeViewModel>()
     private lateinit var binding: FragmentFillCodeBinding
+    private var progressDialog: AlertDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFillCodeBinding.bind(view)
 
+        // Setup code entry
+        binding.codeEntry.callback = this
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Only auto show keyboard in portrait because it takes up the whole screen in landscape.
+            binding.codeEntry.postDelayed({
+                binding.codeEntry.requestFocus()
+                binding.codeEntry.showKeyboard()
+            }, KEYBOARD_DELAY)
+        }
+
+        // Setup back button
         binding.backButton.setOnClickListener {
             it.hideKeyboard()
             it.postDelayed({
@@ -38,38 +48,36 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
             }, KEYBOARD_DELAY)
         }
 
+        // Setup next button
         binding.nextButton.setOnClickListener {
-            viewModel.pair(binding.codeEntry.code)
             binding.nextButton.isEnabled = false
-            binding.loadingContainer.visibility = View.VISIBLE
-            binding.loadingIndicator.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
+            progressDialog = showProgressDialog(R.string.pairing_code_being_checked)
+            viewModel.pair(binding.codeEntry.code)
         }
 
-        binding.codeEntry.callback = this
-
-        binding.codeEntry.postDelayed({
-            binding.codeEntry.requestFocus()
-            binding.codeEntry.showKeyboard()
-        }, KEYBOARD_DELAY)
-
+        // Setup pairing logic
         viewModel.pairingResult.observe(viewLifecycleOwner, { resource ->
             resource?.resolve(onError = { exception ->
+                progressDialog?.dismiss()
+
                 if (exception is HttpException && exception.code() == 400) {
-                    // Invalid pairing code, show error message but keep code
-                    binding.inputErrorView.visibility = View.VISIBLE
+                    binding.inputErrorView.setText(R.string.fill_code_invalid)
+                    binding.inputErrorView.accessibilityAnnouncement(R.string.fill_code_invalid)
                 } else {
-                    // Other general error
+                    binding.inputErrorView.setText(R.string.error_while_pairing)
+
                     showErrorDialog(getString(R.string.error_while_pairing), {
-                        binding.codeEntry.updateText("")
                         binding.codeEntry.requestFocus()
                     }, exception)
                 }
+                binding.inputErrorView.visibility = View.VISIBLE
+                binding.scrollView.scrollTo(binding.inputErrorView)
 
                 binding.nextButton.isEnabled = true
-                binding.loadingContainer.visibility = View.GONE
             }, onSuccess = {
+                progressDialog?.dismiss()
+
                 binding.nextButton.isEnabled = true
-                binding.loadingContainer.visibility = View.GONE
                 binding.nextButton.hideKeyboard()
                 binding.nextButton.postDelayed({
                     findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())

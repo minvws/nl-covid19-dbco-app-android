@@ -208,6 +208,7 @@
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
+    <string name="pairing_code_being_checked">Code wordt gecontroleerd, even geduld.</string>
 
 
     <!-- Zelf BCO -->
@@ -215,7 +216,6 @@
     <string name="zelfbco_no_code">Ik heb nog geen code</string>
     <string name="selfbco_explanation_title">Ontdek welke leefregels gelden voor je contacten</string>
     <string name="selfbco_explanation_summary">Goed om te weten: niet iedereen hoeft direct in quarantaine om de verspreiding van het coronavirus te stoppen.</string>
-    <string name="pairing_code_being_checked">Code wordt gecontroleerd</string>
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
     <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
