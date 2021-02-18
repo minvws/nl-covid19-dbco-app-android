@@ -13,9 +13,11 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
+import org.joda.time.DateTime
 
 @Serializable
 @Parcelize
@@ -66,6 +68,15 @@ class Task(
 
         // Should never come here, return 0 to show warning
         return 0
+    }
+
+    fun getExposureDateAsDateTime() : DateTime{
+        return if(dateOfLastExposure != null){
+            DateTime.parse(dateOfLastExposure, DateFormats.dateInputData).withTimeAtStartOfDay()
+        }else{
+            DateTime.now().withTimeAtStartOfDay()
+        }
+
     }
 
     override fun toString(): String {

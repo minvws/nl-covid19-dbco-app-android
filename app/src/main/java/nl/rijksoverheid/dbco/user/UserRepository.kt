@@ -13,7 +13,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import nl.rijksoverheid.dbco.BuildConfig
-import nl.rijksoverheid.dbco.network.StubbedAPI
+import nl.rijksoverheid.dbco.network.DbcoApi
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.BASE64_FLAGS
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_CLIENT_SECRET_KEY
@@ -27,6 +29,7 @@ import nl.rijksoverheid.dbco.util.toHexString
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import org.libsodium.jni.crypto.Util
+import retrofit2.Response
 import timber.log.Timber
 
 /**
@@ -37,7 +40,7 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
 
     private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
 
-    private val api: StubbedAPI = StubbedAPI.create(context)
+    private val api: DbcoApi = DbcoApi.create(context)
 
     private var rx: String? = null
     private var tx: String? = null
@@ -130,6 +133,15 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
             .putString(KEY_TOKEN, token)
             .putString(KEY_CLIENT_SECRET_KEY, clientSecretKey)
             .commit()
+    }
+
+    override suspend fun retrieveReversePairingCode() : Response<ReversePairingResponse> {
+        // call to GGD server
+        return api.retrievePairingCode()
+    }
+
+    override suspend fun checkReversePairingStatus(token : String) : Response<ReversePairingStatusResponse> {
+        return api.checkReversePairingStatus(token)
     }
 
     override fun getRx(): String? {

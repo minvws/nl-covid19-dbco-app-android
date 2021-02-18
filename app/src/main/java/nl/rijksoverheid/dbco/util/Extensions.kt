@@ -15,6 +15,7 @@ import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -22,6 +23,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.onboarding.FillCodeField
+import org.joda.time.Interval
+import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
     Handler().postDelayed(Runnable(block), milliseconds)
@@ -119,4 +123,13 @@ fun CharSequence.numbers(limit: Int? = null): String {
         false -> numbers
     }
 }
+
+fun DatePicker.getDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.set(year, month, dayOfMonth)
+    return calendar.time
+}
+
+fun Interval.toDateTimes() = generateSequence(start) { it.plusDays(1) }
+    .takeWhile(::contains)
 

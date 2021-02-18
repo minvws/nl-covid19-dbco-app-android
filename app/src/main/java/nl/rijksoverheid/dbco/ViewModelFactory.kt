@@ -21,6 +21,8 @@ import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewmodel
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
@@ -48,7 +50,7 @@ class ViewModelFactory(
                     questionnareRepository
             ) as T
             FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
-            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository) as T
+            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,
@@ -57,6 +59,8 @@ class ViewModelFactory(
                 ), appConfigRepository
             ) as T
             OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
+            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository) as T
+            ReversePairingViewmodel::class.java -> ReversePairingViewmodel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }

@@ -52,8 +52,8 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 .apply {
                     setHeader(
                         DuoHeaderItem(
-                            R.string.finalize_no_phone_or_email_header,
-                            R.string.finalize_no_phone_or_email_subtext
+                            getString(R.string.finalize_no_phone_or_email_header),
+                            getString(R.string.finalize_no_phone_or_email_subtext)
                         )
                     )
                 }

@@ -16,6 +16,7 @@ data class AppConfig(
 data class FeatureFlags(
 	val enableContactCalling : Boolean = false,
 	val enablePerspectiveSharing : Boolean = false,
-	val enablePerspectiveCopy : Boolean = false
+	val enablePerspectiveCopy : Boolean = false,
+	val enableSelfBCO : Boolean = false
 )
 

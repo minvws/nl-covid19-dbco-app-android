@@ -14,11 +14,11 @@
 
         <variable
             name="header"
-            type="Integer" />
+            type="String" />
 
         <variable
             name="summary"
-            type="Integer" />
+            type="String" />
 
 
     </data>

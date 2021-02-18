@@ -18,14 +18,16 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
+import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingPrivacyBinding
 import nl.rijksoverheid.dbco.items.input.PrivacyConsentItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.items.ui.PrivacyInformationItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
     private val viewModel by viewModels<OnboardingConsentViewModel>()
+    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,10 +39,10 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
             listOf(
                 HeaderItem(R.string.onboarding_privacy_title),
                 ParagraphItem(getString(R.string.onboarding_privacy_summary), clickable = true),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item1)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item2)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item3)),
-                PrivacyInformationItem(getString(R.string.onboarding_privacy_item4)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item1)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item2)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item3)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item4)),
                 PrivacyConsentItem(viewModel)
             )
         )
@@ -56,7 +58,11 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         )
 
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
+            if(appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
+                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment())
+            }else{
+                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
+            }
         }
 
         binding.backButton.setOnClickListener {
