@@ -9,14 +9,12 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import timber.log.Timber
 
 class QuestionMultipleOptionsItem(
     context: Context,
@@ -32,60 +30,44 @@ class QuestionMultipleOptionsItem(
     override fun bind(viewBinding: ItemQuestionMultipleOptionsBinding, position: Int) {
         viewBinding.item = this
 
-        val list =
-            question?.answerOptions?.map { option -> option?.label } ?: mutableListOf<String>()
-
         viewBinding.inputLayout.hint = question?.label
+
+        // Populate adapter with the answer options
+        val labels = question?.answerOptions?.map { it?.label }.orEmpty()
         val adapter: ArrayAdapter<String> = ArrayAdapter(
             context,
-            android.R.layout.simple_spinner_dropdown_item,
-            list.toTypedArray()
+            R.layout.item_dropdown,
+            labels
         )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        viewBinding.inputLabel.setAdapter(adapter) // Dropdown is shown when end icon is clicked
+
+        viewBinding.inputLabel.setOnClickListener {
+            viewBinding.inputLabel.showDropDown() // Also show dropdown when inputLabel is clicked
+        }
+
+        // Listen to selections that happen in the dropdown
+        viewBinding.inputLabel.setOnItemClickListener { _, _, position, _ ->
+            question?.answerOptions?.getOrNull(position)?.let { answer ->
+                answerSelectedListener.invoke(answer)
+                selectedAnswer = answer
+            }
+        }
+
+        viewBinding.inputLabel.setText(selectedAnswer?.label ?: "")
+        viewBinding.inputLabel.setOnKeyListener(null)
 
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
         }
 
-        viewBinding.inputEditText.setText(selectedAnswer?.label?:"")
-
-        viewBinding.optionsSpinner.apply {
-            this.adapter = adapter
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                var check = 0
-                override fun onItemSelected(
-                    p0: AdapterView<*>?,
-                    p1: View?,
-                    position: Int,
-                    p3: Long
-                ) {
-                    if (++check > 1) { // prevents spinner from firing during initialization
-                        question?.answerOptions?.getOrNull(position)?.let {
-                            answerSelectedListener.invoke(it)
-                            selectedAnswer = it
-                            viewBinding.inputEditText.setText(it.label)
-                            Timber.d("Selected option $it")
-                        }
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    selectedAnswer = null
-                    viewBinding.inputEditText.setText("")
-                }
-            }
-        }
-
         // If values are set through the portal this item should be locked from input
-        if(isLocked){
+        if (isLocked){
             viewBinding.inputLayout.isEnabled = false
-            viewBinding.inputEditText.isEnabled = false
-            viewBinding.optionsSpinner.isEnabled = false
+            viewBinding.inputLabel.isEnabled = false
             viewBinding.questionLockedDescription.visibility = View.VISIBLE
         } else {
             viewBinding.inputLayout.isEnabled = true
-            viewBinding.inputEditText.isEnabled = true
-            viewBinding.optionsSpinner.isEnabled = true
+            viewBinding.inputLabel.isEnabled = true
             viewBinding.questionLockedDescription.visibility = View.GONE
         }
     }
