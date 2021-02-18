@@ -39,17 +39,22 @@ class QuestionMultipleOptionsItem(
             R.layout.item_dropdown,
             labels
         )
-        viewBinding.inputEditText.setAdapter(adapter) // Dropdown is shown on click
+        viewBinding.inputLabel.setAdapter(adapter) // Dropdown is shown when end icon is clicked
+
+        viewBinding.inputLabel.setOnClickListener {
+            viewBinding.inputLabel.showDropDown() // Also show dropdown when inputLabel is clicked
+        }
 
         // Listen to selections that happen in the dropdown
-        viewBinding.inputEditText.setOnItemClickListener { _, _, position, _ ->
+        viewBinding.inputLabel.setOnItemClickListener { _, _, position, _ ->
             question?.answerOptions?.getOrNull(position)?.let { answer ->
                 answerSelectedListener.invoke(answer)
                 selectedAnswer = answer
             }
         }
 
-        viewBinding.inputEditText.setText(selectedAnswer?.label ?: "")
+        viewBinding.inputLabel.setText(selectedAnswer?.label ?: "")
+        viewBinding.inputLabel.setOnKeyListener(null)
 
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
@@ -58,11 +63,11 @@ class QuestionMultipleOptionsItem(
         // If values are set through the portal this item should be locked from input
         if (isLocked){
             viewBinding.inputLayout.isEnabled = false
-            viewBinding.inputEditText.isEnabled = false
+            viewBinding.inputLabel.isEnabled = false
             viewBinding.questionLockedDescription.visibility = View.VISIBLE
         } else {
             viewBinding.inputLayout.isEnabled = true
-            viewBinding.inputEditText.isEnabled = true
+            viewBinding.inputLabel.isEnabled = true
             viewBinding.questionLockedDescription.visibility = View.GONE
         }
     }

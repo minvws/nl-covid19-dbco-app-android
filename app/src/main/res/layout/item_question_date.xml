@@ -25,24 +25,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:hint="@{item.question.label}"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@{item.question.label}">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/date_label"
+            <AutoCompleteTextView
+                android:id="@+id/input_label"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:inputType="textNoSuggestions" />
+                android:layout_height="wrap_content"
+                android:inputType="none"/>
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        click interceptor-->
-        <View
-            android:onClick="@{item.onDateClicked}"
-            android:layout_width="match_parent"
-            android:layout_height="54dp" />
-
     </FrameLayout>
 </layout>
