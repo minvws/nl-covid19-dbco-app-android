@@ -183,14 +183,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                     ButtonItem(
                         getString(R.string.selfbco_add_extra_day),
                         { addExtraDay() },
-                        type = ButtonType.LIGHT,
-                        wide = true
+                        type = ButtonType.LIGHT
                     ),
                     ButtonItem(
                         getString(R.string.next), {
                             checkInput()
-                        }, type = ButtonType.DARK,
-                        wide = true
+                        }, type = ButtonType.DARK
                     )
                 )
             )
