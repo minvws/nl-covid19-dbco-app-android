@@ -33,28 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:id="@+id/roommates_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textSize="@dimen/onboarding_title_textsize"
-                android:text="@string/selfbco_roommates_header"
-                app:layout_constraintTop_toBottomOf="@id/back_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/roommates_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:textSize="@dimen/onboarding_subtext_textsize"
-                android:text="@string/selfbco_roommates_summary"
-                app:layout_constraintTop_toBottomOf="@id/roommates_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/content"
@@ -67,7 +46,7 @@
                 app:layout_constraintBottom_toTopOf="@id/btn_next"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/roommates_summary" />
+                app:layout_constraintTop_toBottomOf="@id/back_button" />
 
 
 
