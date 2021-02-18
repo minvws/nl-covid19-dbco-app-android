@@ -112,7 +112,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             contactsViewModel.fetchLocalContacts()
-        }else{
+        } else {
             // If no contacts can be found no sections are made (no callback), so we add them manually
             createTimelineSections()
         }
@@ -183,11 +183,15 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                     ButtonItem(
                         getString(R.string.selfbco_add_extra_day),
                         { addExtraDay() },
-                        type = ButtonType.LIGHT
+                        type = ButtonType.LIGHT,
+                        wide = true
                     ),
-                    ButtonItem(getString(R.string.next), {
-                        checkInput()
-                    }, type = ButtonType.DARK)
+                    ButtonItem(
+                        getString(R.string.next), {
+                            checkInput()
+                        }, type = ButtonType.DARK,
+                        wide = true
+                    )
                 )
             )
         )
@@ -246,7 +250,8 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
         val encryptedSharedPreferences: SharedPreferences =
             LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-        encryptedSharedPreferences.edit().putBoolean(Constants.USER_COMPLETED_ONBOARDING, true).apply()
+        encryptedSharedPreferences.edit().putBoolean(Constants.USER_COMPLETED_ONBOARDING, true)
+            .apply()
         encryptedSharedPreferences.edit().putBoolean(Constants.USER_LOCAL_CASE, true).apply()
     }
 }
