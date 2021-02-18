@@ -26,10 +26,13 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoRoommatesInputBinding
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.ContactAddItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import timber.log.Timber
 
-class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layout.fragment_selfbco_roommates_input) {
+class RoommateInputFragment() :
+    BaseFragment(R.layout.fragment_selfbco_roommates_input) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
@@ -45,13 +48,21 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
         val binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
 
         val section = Section()
+        section.setHeader(
+            Section(
+                listOf(
+                    HeaderItem(R.string.selfbco_roommates_header),
+                    ParagraphItem(getString(R.string.selfbco_roommates_summary))
+                )
+            )
+        )
         section.setFooter(ContactAddItem())
         adapter.clear()
         adapter.add(section)
         binding.content.adapter = adapter
 
         adapter.setOnItemClickListener { item, view ->
-            if(item is ContactAddItem){
+            if (item is ContactAddItem) {
                 section.add(ContactInputItem(contactNames.toTypedArray(), trashListener = object :
                     ContactInputItem.OnTrashClickedListener {
                     // Remove item from section if trashcan is clicked
@@ -61,8 +72,8 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
 
                 }))
             }
-            if(item is ContactInputItem){
-                when(view.id){
+            if (item is ContactInputItem) {
+                when (view.id) {
                     R.id.icon_trash -> {
                         section.remove(item)
                     }
@@ -80,9 +91,9 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
 
         contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner,
-             {
-                 contactNames = contactsViewModel.getLocalContactNames()
-                 Timber.d("Found names ${contactNames}")
+            {
+                contactNames = contactsViewModel.getLocalContactNames()
+                Timber.d("Found names ${contactNames}")
             })
 
 
@@ -97,14 +108,17 @@ class RoommateInputFragment(val contactName : String = "") : BaseFragment(R.layo
 
     }
 
-    private fun grabInput(){
+    private fun grabInput() {
         for (groupIndex: Int in 0 until adapter.itemCount) {
             val item = adapter.getItem(groupIndex)
             Timber.d("Found at $groupIndex an item of $item with input")
-            if(item is ContactInputItem){
+            if (item is ContactInputItem) {
                 Timber.d("Content is ${item.contactName}")
-                if(item.contactName.isNotEmpty()) {
-                    selfBcoViewModel.addSelfBcoContact(item.contactName, category = Category.LIVED_TOGETHER)
+                if (item.contactName.isNotEmpty()) {
+                    selfBcoViewModel.addSelfBcoContact(
+                        item.contactName,
+                        category = Category.LIVED_TOGETHER
+                    )
                 }
             }
         }

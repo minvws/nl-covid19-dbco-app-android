@@ -24,19 +24,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingLeft="32dp">
+        >
 
         <ImageView
             android:id="@+id/chevron"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginTop="22dp"
-            android:layout_marginRight="16dp"
             android:src="@drawable/ic_chevron_right"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="parent"

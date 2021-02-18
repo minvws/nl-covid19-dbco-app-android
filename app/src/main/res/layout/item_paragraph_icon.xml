@@ -27,7 +27,6 @@
             android:id="@+id/icon"
             android:layout_width="24dp"
             android:layout_height="28dp"
-            android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/content"
             app:srcCompat="@drawable/ic_privacy_lock" />

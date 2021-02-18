@@ -7,31 +7,34 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import timber.log.Timber
 
 class ButtonItem(
-        private val text: String,
-        buttonClickListener: () -> Unit,
-        private val enabled: Boolean = true,
-        private val type: ButtonType = ButtonType.LIGHT
+    private val text: String,
+    buttonClickListener: () -> Unit,
+    private val enabled: Boolean = true,
+    private val type: ButtonType = ButtonType.LIGHT
 ) : BaseBindableItem<ItemButtonBinding>() {
     data class ViewState(
-            val text: String,
-            val enabled: Boolean,
-            val click: () -> Unit
+        val text: String,
+        val enabled: Boolean,
+        val click: () -> Unit,
     )
 
     private val viewState =
-            ViewState(
-                    text,
-                    enabled,
-                    buttonClickListener
-            )
+        ViewState(
+            text,
+            enabled,
+            buttonClickListener,
+        )
 
     override fun getLayout() = R.layout.item_button
 
@@ -50,6 +53,7 @@ class ButtonItem(
             }
         }
     }
+
 
     override fun isSameAs(other: Item<*>): Boolean = other is ButtonItem && other.text == text
     override fun hasSameContentAs(other: Item<*>) = other is ButtonItem && other.text == text &&
