@@ -346,6 +346,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if (task.uuid.isNullOrEmpty()) {
                 task.uuid = UUID.randomUUID().toString()
             }
+            if(task.label.isNullOrEmpty()){
+                task.label = getString(R.string.mycontacts_name_unknown)
+            }
             answers.firstOrNull { it.questionUuid == CONTACT_TYPE_UUID }?.value?.get("value")?.jsonPrimitive?.content.let {
                 task.taskContext = it
             }

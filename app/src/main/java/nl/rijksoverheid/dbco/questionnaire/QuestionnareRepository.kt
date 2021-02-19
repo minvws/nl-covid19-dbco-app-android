@@ -14,14 +14,15 @@ import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import timber.log.Timber
 
 class QuestionnareRepository(context: Context) : IQuestionnaireRepository {
 
     private val api = DbcoApi.create(context)
     private var cachedQuestionnaire: Questionnaire? = null
-    private val sharedPrefs =
-        context.getSharedPreferences(PREFS_QUESTIONNAIRE, Context.MODE_PRIVATE)
+    private val sharedPrefs by lazy { LocalStorageRepository.getInstance(context).getSharedPreferences() }
+
 
     override suspend fun syncQuestionnaires() {
         if (cachedQuestionnaire != null) {

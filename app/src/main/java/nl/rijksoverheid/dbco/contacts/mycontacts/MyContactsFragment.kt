@@ -52,10 +52,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val userPrefs by lazy {
-        activity?.getSharedPreferences(
-            Constants.USER_PREFS,
-            Context.MODE_PRIVATE
-        )
+        LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
     }
 
     private var dataWipeClickedAmount = 0
@@ -113,7 +110,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         binding.sendButton.setOnClickListener {
-            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
                 if (!tasksViewModel.windowExpired.value!!) {
                     findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
                 } else {
@@ -127,7 +124,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         binding.swipeRefresh.setOnRefreshListener {
             // Don't have to refresh if the user isn't paired yet, only local data
-            if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
                 tasksViewModel.syncTasks()
             }
         }
@@ -157,7 +154,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 fillContentSection(case)
 
 
-                if (userPrefs?.getBoolean(Constants.USER_IS_PAIRED, false) == true) {
+                if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
                     binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
                     if (!tasksViewModel.ifCaseWasChanged()) {
                         binding.sendButtonHolder.visibility = View.GONE
