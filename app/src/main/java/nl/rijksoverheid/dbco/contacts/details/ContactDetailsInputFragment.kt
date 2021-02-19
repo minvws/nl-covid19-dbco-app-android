@@ -124,7 +124,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             binding.saveButton.text =
             if (it == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
                 getString(R.string.delete)
-            } else  if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null) {
+            } else  if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null || it == null) {
+                // Show cancel if contact is not at risk and not saved yet, or if no category is set yet
                 getString(R.string.cancel)
             } else {
                 getString(R.string.save)
@@ -168,7 +169,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
                 if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
                     getString(R.string.delete)
-                } else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null) {
+                } else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null || viewModel.category.value == null ) {
+                    // If the date is before the infection period OR the category isn't set yet, show cancel. Required to stop overriding by observers on category and date
                     getString(R.string.cancel)
                 } else {
                     getString(R.string.save)
