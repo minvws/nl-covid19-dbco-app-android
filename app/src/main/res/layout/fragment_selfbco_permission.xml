@@ -17,7 +17,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:paddingBottom="16dp">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/back_button"

@@ -394,6 +394,9 @@
         <action
             android:id="@+id/to_timelineExplanationFragment"
             app:destination="@id/timelineExplanationFragment" />
+        <action
+            android:id="@+id/to_selfBcoDoubleCheckFragment"
+            app:destination="@id/selfBcoDoubleCheckFragment" />
     </fragment>
     <fragment
         android:id="@+id/timelineExplanationFragment"
@@ -417,9 +420,6 @@
         tools:layout="@layout/fragment_selfbco_permission"
         android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragment"
         android:label="SelfBcoPermissionFragment" >
-        <action
-            android:id="@+id/to_selfBcoDateCheckFragment"
-            app:destination="@id/selfBcoDateCheckFragment" />
         <action
             android:id="@+id/to_roommateInputFragment"
             app:destination="@id/roommateInputFragment" />
