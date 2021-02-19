@@ -69,7 +69,7 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_people"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ic_car" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_car" />
 
         <TextView
             android:id="@+id/txt_people"
@@ -78,7 +78,6 @@
             android:layout_marginStart="8dp"
             android:text="@string/selfbco_memory_meeting"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/ic_people"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_people"
             app:layout_constraintTop_toTopOf="@+id/ic_people" />
@@ -91,7 +90,7 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_chatballoons"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ic_people" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_people" />
 
         <TextView
             android:id="@+id/txt_chat"
@@ -100,7 +99,6 @@
             android:layout_marginStart="8dp"
             android:text="@string/selfbco_memory_work"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/ic_chat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ic_chat"
             app:layout_constraintTop_toTopOf="@+id/ic_chat" />

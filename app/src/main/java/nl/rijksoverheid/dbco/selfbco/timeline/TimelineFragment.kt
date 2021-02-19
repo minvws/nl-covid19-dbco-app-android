@@ -155,19 +155,27 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
     fun createTimelineSections() {
         val interval = Interval(firstDay, DateTime.now())
-        interval.toDateTimes().toList().reversed().forEach {
-            Timber.d("Adding timeline item for $it")
+        var memoryItemAdded = false
+        interval.toDateTimes().toList().reversed().forEachIndexed { index, dateTime ->
+            Timber.d("Adding timeline item for $dateTime")
             val section = TimelineSection(
-                it.withTimeAtStartOfDay(),
+                dateTime.withTimeAtStartOfDay(),
                 contactNames.toTypedArray(),
                 selfBcoViewModel.getDateOfSymptomOnset(),
                 selfBcoViewModel.getTypeOfFlow()
             )
             sections.add(section)
             content.add(section)
+            // Add tip after 4 days, or at the end if there are less than 4
+            if(index == 3) {
+                content.add(MemoryTipGrayItem())
+                memoryItemAdded = true
+            }
         }
-        // Add memory tip after original timeline items
-        content.add(MemoryTipGrayItem())
+        if(!memoryItemAdded) {
+            // Add memory tip after original timeline items
+            content.add(MemoryTipGrayItem())
+        }
     }
 
     private fun setFooterForContent() {
