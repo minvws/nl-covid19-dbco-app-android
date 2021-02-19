@@ -60,7 +60,11 @@ class PhoneNumberItem(
     }
 
     private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
-        val input = viewBinding.inputField.editText?.text.toString().replace(" ", "")
+        val input = viewBinding.inputField.editText?.text.toString()
+            input.apply {
+                // Replace whitespace and parentheses as these shouldn't count towards the character limit
+                replace(Regex("[\\s)(]"), "")
+            }
         if (!TextUtils.isEmpty(input)) {
             if (!Constants.PHONE_VALIDATION_MATCHER.matcher(input).matches()) {
                 viewBinding.inputField.error =
