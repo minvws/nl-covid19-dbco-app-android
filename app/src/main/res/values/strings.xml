@@ -48,7 +48,9 @@
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
-    <string name="error_valid_phone">Dit telefoonnummer lijkt te veel of te weinig cijfers te bevatten, weet je zeker dat dit klopt?</string>
+    <string name="error_valid_phone">Dit telefoonnummer lijkt niet geldig, weet je zeker dat dit klopt?</string>
+    <string name="error_valid_phone_too_long">Dit telefoonnummer lijkt te veel cijfers te bevatten, weet je zeker dat dit klopt?</string>
+    <string name="error_valid_phone_too_short">Dit telefoonnummer lijkt te weinig cijfers te bevatten, weet je zeker dat dit klopt?</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->

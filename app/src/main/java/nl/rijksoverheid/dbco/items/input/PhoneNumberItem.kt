@@ -60,22 +60,35 @@ class PhoneNumberItem(
     }
 
     private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
-        val input = viewBinding.inputField.editText?.text.toString()
-            input.apply {
-                // Replace whitespace and parentheses as these shouldn't count towards the character limit
-                replace(Regex("[\\s)(]"), "")
-            }
+        // Replace whitespace and parentheses as these shouldn't count towards the character limit
+        val input = viewBinding.inputField.editText?.text.toString().replace(Regex("[\\s)(]"), "")
         if (!TextUtils.isEmpty(input)) {
             if (!Constants.PHONE_VALIDATION_MATCHER.matcher(input).matches()) {
-                viewBinding.inputField.error =
-                    viewBinding.inputField.context.getString(R.string.error_valid_phone)
+                // If the matcher fails for whatever reason, check if input was too long or too short
+                when {
+                    input.length < 10 -> {
+                        viewBinding.inputField.error =
+                            viewBinding.inputField.context.getString(R.string.error_valid_phone_too_short)
+                    }
+                    input.length > 11 -> {
+                        viewBinding.inputField.error =
+                            viewBinding.inputField.context.getString(R.string.error_valid_phone_too_long)
+                    }
+                    else -> {
+                        // general error if the length was 10, but it failed for another reason
+                        viewBinding.inputField.error =
+                            viewBinding.inputField.context.getString(R.string.error_valid_phone)
+                    }
+                }
+
                 viewBinding.inputField.setCompleted(false)
             } else {
-                // Special case for numbers of length 11 to 13
+                // Special case for numbers of length 11 to 13 but with valid syntax
                 if (input.length in 11..13) {
                     // If its not a number starting with our valid prefixes, don't allow it
                     if (!Constants.VALID_PHONENUMER_PREFIXES.any { input.startsWith(it) }) {
-                        viewBinding.inputField.error = viewBinding.inputField.context.getString(R.string.error_valid_phone)
+                        viewBinding.inputField.error =
+                            viewBinding.inputField.context.getString(R.string.error_valid_phone)
                         viewBinding.inputField.setCompleted(false)
                     } else {
                         viewBinding.inputField.error = null
