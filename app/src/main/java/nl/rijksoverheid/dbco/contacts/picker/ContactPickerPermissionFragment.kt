@@ -33,12 +33,13 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactPickerPermissionFragmentArgs by navArgs()
-    private val userPrefs by lazy { activity?.getSharedPreferences(Constants.USER_PREFS, Context.MODE_PRIVATE) }
+    private val userPrefs by lazy { LocalStorageRepository.getInstance(requireContext()).getSharedPreferences() }
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {

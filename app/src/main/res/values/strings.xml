@@ -255,4 +255,5 @@
     <string name="seflco_permission_give_access">Toegang geven</string>
     <string name="selfbco_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
+    <string name="finalize_check_contact_header">Kun je de gegevens van deze contacten controleren?</string>
 </resources>
