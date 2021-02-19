@@ -82,7 +82,7 @@
     </fragment>
     <fragment
         android:id="@+id/contactPickerPermission"
-        tools:layout="@layout/fragment_list"
+        tools:layout="@layout/fragment_permission"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
         android:label="ContactPickerPermissionFragment">
         <argument
@@ -91,10 +91,6 @@
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
 
-        <argument
-            android:name="permission_type_flow"
-            app:argType="integer"
-            app:nullable="false" />
 
         <action
             android:id="@+id/toContactPicker"
