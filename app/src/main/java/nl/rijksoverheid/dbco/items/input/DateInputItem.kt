@@ -57,14 +57,14 @@ class DateInputItem(
 
     private fun showDatePicker() {
         val now = LocalDate.now()
-        val monthOfYearToUse = (date?.monthOfYear ?: now.monthOfYear) -1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
+        val monthOfYearToUse = (date?.monthOfYear ?: 1) -1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
         val dialog = DatePickerDialog(
             context,
             R.style.SpinnerDatePickerDialogTheme,
             this,
-            date?.year ?: now.year,
+            date?.year ?: 1980,
             monthOfYearToUse,
-            date?.dayOfMonth ?: now.dayOfMonth
+            date?.dayOfMonth ?: 1
         ) // default date 1 Jan 1980
         dialog.datePicker.calendarViewShown = false
         dialog.datePicker.spinnersShown = true
