@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.contacts.picker
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -22,79 +21,71 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentListBinding
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ButtonType
-import nl.rijksoverheid.dbco.items.ui.HeaderItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
-class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
+class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
 
-    private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactPickerPermissionFragmentArgs by navArgs()
-    private val userPrefs by lazy { LocalStorageRepository.getInstance(requireContext()).getSharedPreferences() }
+    private val userPrefs by lazy {
+        LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
+    }
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                when(args.permissionTypeFlow){
-                    NORMAL_BCO_FLOW -> {findNavController().navigate(
-                        ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
-                    )}
-                    SELF_BCO_FLOW -> {
-                        findNavController().navigate(
-                            ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
-                        )
-                    }
-                }
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                )
             }
         }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        val content = Section(
-            listOf(
-                HeaderItem(R.string.contact_permission_header),
-                ParagraphItem(getString(R.string.contact_permission_summary)),
-                ButtonItem(
-                    getString(R.string.mycontacts_grant_permission),
-                    { requestContactAccess() }, type = ButtonType.DARK),
-                ButtonItem(
-                    getString(R.string.mycontacts_deny_permission),
-                    {
-                        when(args.permissionTypeFlow){
-                            NORMAL_BCO_FLOW -> {findNavController().navigate(
-                                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
-                            )}
-                            SELF_BCO_FLOW -> {
-                                findNavController().navigate(
-                                    ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
-                                )
-                            }
-                        }
-
-                        userPrefs?.edit()?.putBoolean(Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, true)?.apply()
-                    }, type = ButtonType.LIGHT
-                )
+        // Check if we somehow already gave contacts permission
+        // Continue to contact input if we do, or stay here if we don't
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            findNavController().navigate(
+                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
             )
-        )
-        adapter.add(content)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val binding = FragmentPermissionBinding.bind(view)
 
-        val binding = FragmentListBinding.bind(view)
-        binding.content.adapter = adapter
-        binding.toolbar.visibility = View.GONE
+        val nameToShow = if (args.indexTask != null) {
+            "'${args.indexTask?.label}'"
+        } else {
+            getString(R.string.this_contact)
+        }
+        binding.onboardingHeader.text =
+            String.format(getString(R.string.permission_name_header), nameToShow)
+        binding.btnNext.setOnClickListener {
+            requestContactAccess()
+        }
+
+        binding.btnManual.setOnClickListener {
+            userPrefs.edit()?.putBoolean(
+                Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
+                true
+            )?.apply()
+            findNavController().navigate(
+                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+            )
+        }
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
 
@@ -137,22 +128,9 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_list) {
                 }
             }
         } else {
-            when(args.permissionTypeFlow){
-                NORMAL_BCO_FLOW -> {findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
-                )}
-                SELF_BCO_FLOW -> {
-                    findNavController().navigate(
-                        ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
-                    )
-                }
-            }
+            ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
         }
     }
 
-    companion object {
-        const val NORMAL_BCO_FLOW = 0
-        const val SELF_BCO_FLOW = 1
-    }
 
 }

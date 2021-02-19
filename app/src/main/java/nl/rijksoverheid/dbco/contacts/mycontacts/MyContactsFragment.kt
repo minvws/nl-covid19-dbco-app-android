@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -30,7 +29,6 @@ import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PA
 import nl.rijksoverheid.dbco.MainActivity
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
-import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
@@ -247,10 +245,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (userPrefs?.getBoolean(
+            if (userPrefs.getBoolean(
                     USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
                     false
-                ) == true
+                )
             ) {
                 findNavController().navigate(
                     ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
@@ -258,9 +256,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerPermission(
-                        task, ContactPickerPermissionFragment.NORMAL_BCO_FLOW
-                    )
+                    MyContactsFragmentDirections.toContactPickerPermission(task)
                 )
             }
         } else {

@@ -258,4 +258,9 @@
     <string name="selfbco_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
     <string name="finalize_check_contact_header">Kun je de gegevens van deze contacten controleren?</string>
+    <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>
+    <string name="permission_summary">Zo kun je snel de gegevens van dit contact aanvullen. Je bepaalt altijd zelf welke gegevens je met de GGD deelt.</string>
+    <string name="no_add_manually">Nee, zelf toevoegen</string>
+    <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
+    <string name="this_contact">Dit contact</string>
 </resources>
