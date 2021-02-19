@@ -12,6 +12,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -103,8 +104,17 @@ class RoommateInputFragment() :
         }
 
         binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment(selfBcoViewModel.getTypeOfFlow(), selfBcoViewModel.getDateOfSymptomOnset().millis))
         }
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    // Handle the back button event
+                    findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment(selfBcoViewModel.getTypeOfFlow(), selfBcoViewModel.getDateOfSymptomOnset().millis))
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
     }
 
