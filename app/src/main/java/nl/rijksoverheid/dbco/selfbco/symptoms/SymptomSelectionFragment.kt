@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -18,6 +18,7 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
+import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.SymptomItem
@@ -31,7 +32,11 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
-    private val selfBcoViewModel by viewModels<SelfBcoCaseViewModel>()
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,7 +48,8 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val nextButton = ButtonItem(getString(R.string.next), {
             findNavController().navigate(
                 SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                    SelfBcoConstants.SYMPTOM_CHECK_FLOW
+                    dateCheckingFlow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
+                    date = null
                 )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
@@ -52,7 +58,8 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val noSymptomButton = ButtonItem(getString(R.string.selfbco_symptoms_nosymptoms), {
             findNavController().navigate(
                 SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                    SelfBcoConstants.COVID_CHECK_FLOW
+                    dateCheckingFlow = SelfBcoConstants.COVID_CHECK_FLOW,
+                    date = null
                 )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
@@ -76,6 +83,11 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         adapter.add(content)
 
         binding.content.adapter = adapter
+        binding.content.addItemDecoration(
+            VerticalSpaceItemDecoration(
+                requireContext().resources.getDimensionPixelSize(R.dimen.symptom_list_divider_height)
+            )
+        )
         binding.content.itemAnimator = null // Remove animator here to avoid flashing on clicking symptoms
 
         adapter.setOnItemClickListener { item, _ ->

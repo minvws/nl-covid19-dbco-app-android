@@ -22,4 +22,6 @@
     <dimen name="onboarding_subtext_textsize">17sp</dimen>
     <dimen name="fill_password_top_margin">25dp</dimen>
 
+    <dimen name="symptom_list_divider_height">1dp</dimen>
+
 </resources>
