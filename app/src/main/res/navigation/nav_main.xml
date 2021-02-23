@@ -384,7 +384,9 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit"/>
 
-
+        <action
+            android:id="@+id/to_symptomSelectionFragment"
+            app:destination="@id/symptomSelectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/roommateInputFragment"

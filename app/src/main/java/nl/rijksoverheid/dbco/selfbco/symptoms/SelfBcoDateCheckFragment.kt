@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
@@ -29,7 +30,11 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
     private val args: SelfBcoDateCheckFragmentArgs by navArgs()
 
-    private val selfBcoViewModel by viewModels<SelfBcoCaseViewModel>()
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

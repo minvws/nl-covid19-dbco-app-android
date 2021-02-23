@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
@@ -25,7 +26,11 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
 
     private val args: SelfBcoDoubleCheckFragmentArgs by navArgs()
 
-    private val selfBcoViewModel by viewModels<SelfBcoCaseViewModel>()
+    private val selfBcoViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            SelfBcoCaseViewModel::class.java
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,10 +51,18 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
         }
 
         binding.btnHadSymptoms.setOnClickListener {
-            findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment(
-                dateCheckingFlow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
-                date = selectedDate
-            ))
+            val symptoms = selfBcoViewModel.getSelectedSymptomsSize()
+            val direction = if (symptoms > 0) {
+                // only change date
+                SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment(
+                    dateCheckingFlow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
+                    date = selectedDate
+                )
+            } else {
+                // select symptoms
+                SelfBcoDoubleCheckFragmentDirections.toSymptomSelectionFragment()
+            }
+            findNavController().navigate(direction)
         }
 
         binding.btnNext.setOnClickListener {
