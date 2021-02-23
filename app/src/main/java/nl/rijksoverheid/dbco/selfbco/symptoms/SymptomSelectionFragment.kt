@@ -10,8 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -24,28 +23,21 @@ import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.SymptomItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
-import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment
-import nl.rijksoverheid.dbco.util.hideKeyboard
 import timber.log.Timber
 
 class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms) {
-    private val adapter = GroupAdapter<GroupieViewHolder>()
-    private var selectedItems = 0
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
 
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+
+    private val selfBcoViewModel by viewModels<SelfBcoCaseViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoSymptomsBinding.bind(view)
 
-        adapter.clear() // Clear adapter in case items were already added, possible on backbutton loop
+        adapter.clear() // Clear adapter in case items were already added, possible on back button loop
 
         val content = Section()
         val nextButton = ButtonItem(getString(R.string.next), {
@@ -74,8 +66,9 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
             )
         )
 
+        val selectedSymptoms = selfBcoViewModel.getSelectedSymptoms()
         SelfBcoConstants.SYMPTOMS.forEach { symptomName ->
-            content.add(SymptomItem(symptomName))
+            content.add(SymptomItem(text = symptomName, selected = selectedSymptoms.contains(symptomName)))
         }
         // Button to start with
         content.setFooter(noSymptomButton)
@@ -85,32 +78,36 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         binding.content.adapter = adapter
         binding.content.itemAnimator = null // Remove animator here to avoid flashing on clicking symptoms
 
-        adapter.setOnItemClickListener { item, vieww ->
-            Timber.d("Item clicked ${item}")
+        adapter.setOnItemClickListener { item, _ ->
+            Timber.d("Item clicked $item")
             if (item is SymptomItem) {
                 item.selected = !item.selected
                 item.setChecked()
                 if (item.selected) {
-                    selectedItems++
                     selfBcoViewModel.addSymptom(item.text.toString())
                 } else {
-                    selectedItems--
                     selfBcoViewModel.removeSymptom(item.text.toString())
                 }
             }
-
-            if (selfBcoViewModel.getSelectedSymptomsSize() > 0) {
-                content.setFooter(nextButton)
-            } else {
-                content.setFooter(noSymptomButton)
-            }
+            updateFooter(content, nextButton, noSymptomButton)
         }
+
+        updateFooter(content, nextButton, noSymptomButton)
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-
     }
 
-
+    private fun updateFooter(
+        content: Section,
+        nextButton: ButtonItem,
+        noSymptomButton: ButtonItem
+    ) {
+        if (selfBcoViewModel.getSelectedSymptomsSize() > 0) {
+            content.setFooter(nextButton)
+        } else {
+            content.setFooter(noSymptomButton)
+        }
+    }
 }
