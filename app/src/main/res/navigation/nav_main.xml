@@ -348,6 +348,10 @@
             android:name="date_checking_flow"
             app:argType="integer"
             app:nullable="false" />
+        <argument
+            android:name="date"
+            app:argType="org.joda.time.DateTime"
+            app:nullable="true" />
         <action
             android:id="@+id/to_selfBcoDoubleCheckFragment"
             app:destination="@id/selfBcoDoubleCheckFragment" />
@@ -368,8 +372,8 @@
             app:nullable="false" />
 
         <action
-            android:id="@+id/to_symptomSelectionFragment"
-            app:destination="@id/symptomSelectionFragment" />
+            android:id="@+id/to_selfBcoDateCheckFragment"
+            app:destination="@id/selfBcoDateCheckFragment" />
 
         <action
             android:id="@+id/to_selfBcoPermissionFragment"

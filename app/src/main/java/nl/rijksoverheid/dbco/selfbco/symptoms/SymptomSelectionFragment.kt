@@ -18,6 +18,7 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsBinding
+import nl.rijksoverheid.dbco.items.VerticalSpaceItemDecoration
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.SymptomItem
@@ -43,7 +44,8 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val nextButton = ButtonItem(getString(R.string.next), {
             findNavController().navigate(
                 SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                    SelfBcoConstants.SYMPTOM_CHECK_FLOW
+                    dateCheckingFlow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
+                    date = null
                 )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
@@ -52,7 +54,8 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val noSymptomButton = ButtonItem(getString(R.string.selfbco_symptoms_nosymptoms), {
             findNavController().navigate(
                 SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
-                    SelfBcoConstants.COVID_CHECK_FLOW
+                    dateCheckingFlow = SelfBcoConstants.COVID_CHECK_FLOW,
+                    date = null
                 )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
@@ -76,6 +79,11 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         adapter.add(content)
 
         binding.content.adapter = adapter
+        binding.content.addItemDecoration(
+            VerticalSpaceItemDecoration(
+                requireContext().resources.getDimensionPixelSize(R.dimen.symptom_list_divider_height)
+            )
+        )
         binding.content.itemAnimator = null // Remove animator here to avoid flashing on clicking symptoms
 
         adapter.setOnItemClickListener { item, _ ->

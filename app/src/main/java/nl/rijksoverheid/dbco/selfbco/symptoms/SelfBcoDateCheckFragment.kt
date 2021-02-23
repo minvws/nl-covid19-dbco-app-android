@@ -10,8 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
@@ -22,7 +21,6 @@ import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.util.getDate
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.DateTime
-import java.util.*
 
 /**
  * Handles both date checking for testing and symptoms
@@ -30,11 +28,8 @@ import java.util.*
 class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_check) {
 
     private val args: SelfBcoDateCheckFragmentArgs by navArgs()
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
+
+    private val selfBcoViewModel by viewModels<SelfBcoCaseViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,6 +39,10 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
                 binding.selfBcoDateHeader.text = getString(R.string.selfbco_date_symptoms_title)
                 binding.selfBcoDateSummary.text = getString(R.string.selfbco_date_symptoms_summary)
+                binding.datePicker.apply {
+                    val date = args.date ?: selfBcoViewModel.getDateOfSymptomOnset()
+                    updateDate(date.year, date.monthOfYear - 1, date.dayOfMonth)
+                }
                 selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
             }
 
@@ -53,7 +52,6 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
                 selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
             }
         }
-
 
         binding.datePicker.maxDate = System.currentTimeMillis()
 
