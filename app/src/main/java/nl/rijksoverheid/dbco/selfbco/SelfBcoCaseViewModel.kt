@@ -74,4 +74,5 @@ class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewM
         return indexSymptoms.size
     }
 
+    fun getSelectedSymptoms() : List<String> = indexSymptoms
 }
