@@ -59,7 +59,6 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     }
 
     init {
-        // restore saved case
         val savedCase = encryptedSharedPreferences.getString(
             ITaskRepository.CASE_KEY,
             null
@@ -67,7 +66,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         cachedCase = if (savedCase != null) {
             Defaults.json.decodeFromString(savedCase)
         } else {
-            generateSelfBcoCase()
+            Case()
         }
     }
 
@@ -210,11 +209,6 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
     override fun getSymptoms(): List<String> {
         return cachedCase?.symptoms?.toList() ?: emptyList()
     }
-
-    /**
-     * Create local case prior to sync with the backend
-     */
-    private fun generateSelfBcoCase(): Case = Case()
 
     private fun persistCase() {
         val storeString = Defaults.json.encodeToString(cachedCase)
