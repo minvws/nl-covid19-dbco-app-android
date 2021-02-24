@@ -22,6 +22,7 @@ import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import timber.log.Timber
 
 class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
@@ -62,7 +63,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
             case?.tasks?.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
-                    "contact" -> {
+                    TaskType.Contact -> {
                         // Check if all (required) data has been filled in
                         val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
 

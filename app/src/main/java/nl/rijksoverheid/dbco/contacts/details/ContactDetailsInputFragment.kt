@@ -40,6 +40,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
@@ -65,7 +66,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
+        val task = args.indexTask ?: Task(taskType = TaskType.Contact, source = Source.App)
         viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(

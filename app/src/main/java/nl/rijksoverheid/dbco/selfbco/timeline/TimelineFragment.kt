@@ -252,7 +252,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             }
         }
 
-        Timber.d("Case is ${selfBcoViewModel.getCase().toString()}")
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
         val encryptedSharedPreferences: SharedPreferences =
             LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()

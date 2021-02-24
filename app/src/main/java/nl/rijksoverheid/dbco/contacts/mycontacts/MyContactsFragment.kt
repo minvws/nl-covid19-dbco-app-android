@@ -39,6 +39,7 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
 
@@ -198,7 +199,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         case?.tasks?.forEach { task ->
             Timber.d("Found task $task")
             when (task.taskType) {
-                "contact" -> {
+                TaskType.Contact -> {
                     val informed = when (task.communication) {
                         CommunicationType.Index -> task.didInform
                         CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true

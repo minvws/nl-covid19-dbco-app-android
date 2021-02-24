@@ -65,11 +65,4 @@ class TasksOverviewViewModel(
     fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
-
-    fun generateSelfBcoCase(dateOfSymptomOnset: String? = null) {
-        val case = tasksRepository.generateSelfBcoCase(dateOfSymptomOnset)
-        val selfBcoCase = Resource.success(case)
-        _fetchCase.postValue(selfBcoCase)
-        this.selfBcoCase.postValue(selfBcoCase)
-    }
 }

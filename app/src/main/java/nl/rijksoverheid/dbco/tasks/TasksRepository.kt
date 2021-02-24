@@ -35,9 +35,9 @@ import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import timber.log.Timber
 
-
 class TasksRepository(context: Context, private val userRepository: IUserRepository) :
     ITaskRepository {
+
     private val api = DbcoApi.create(context)
     private var cachedCase: Case? = null
     private var encryptedSharedPreferences: SharedPreferences =
@@ -60,11 +60,14 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
 
     init {
         // restore saved case
-        encryptedSharedPreferences.getString(
+        val savedCase = encryptedSharedPreferences.getString(
             ITaskRepository.CASE_KEY,
             null
-        )?.apply {
-            cachedCase = Defaults.json.decodeFromString(this)
+        )
+        cachedCase = if (savedCase != null) {
+            Defaults.json.decodeFromString(savedCase)
+        } else {
+            generateSelfBcoCase()
         }
     }
 
@@ -87,27 +90,18 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
             val caseString = String(caseBodyBytes)
             val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
-            if (cachedCase == null) {
-                // it is first time we fetch case, save it in cache
-                cachedCase = remoteCase
-            } else {
-                // case was already fetched and stored, we just need to check for new tasks (by uuid)
-                remoteCase.tasks?.forEach { remoteTask ->
-                    var found = false
-                    cachedCase?.tasks?.forEach { currentTask ->
-                        if (remoteTask.uuid == currentTask.uuid) {
-                            found = true
-                        }
-                    }
-                    if (!found) {
-                        cachedCase?.tasks?.add(remoteTask)
+            remoteCase.tasks.forEach { remoteTask ->
+                var found = false
+                cachedCase?.tasks?.forEach { currentTask ->
+                    if (remoteTask.uuid == currentTask.uuid) {
+                        found = true
                     }
                 }
+                if (!found) {
+                    cachedCase?.tasks?.add(remoteTask)
+                }
             }
-
-            val storeString = Defaults.json.encodeToString(cachedCase)
-            encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString)
-                .apply()
+            persistCase()
         }
         return cachedCase
     }
@@ -116,15 +110,21 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         caseChanged = true
         val currentTasks = cachedCase?.tasks as ArrayList
         var found = false
-        if(updatedTask.communication == null || updatedTask.communication == CommunicationType.None){
+        if (updatedTask.communication == null || updatedTask.communication == CommunicationType.None) {
             updatedTask.communication = CommunicationType.Index
         }
         currentTasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid || updatedTask.label!!.contentEquals(currentTask.label!!)) {
+            if (updatedTask.uuid == currentTask.uuid || updatedTask.label!!.contentEquals(
+                    currentTask.label!!
+                )
+            ) {
                 Timber.d("Comparing ${updatedTask} and $currentTask and found a match")
                 // Only update if the new date is either later or equal to the currently stored date
                 // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
-                if(updatedTask.getExposureDateAsDateTime().isAfter(currentTask.getExposureDateAsDateTime()) || currentTask.getExposureDateAsDateTime().isEqual(updatedTask.getExposureDateAsDateTime())) {
+                if (updatedTask.getExposureDateAsDateTime()
+                        .isAfter(currentTask.getExposureDateAsDateTime()) || currentTask.getExposureDateAsDateTime()
+                        .isEqual(updatedTask.getExposureDateAsDateTime())
+                ) {
                     currentTasks[index] = updatedTask
                 }
                 found = true
@@ -133,9 +133,7 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
         if (!found) {
             currentTasks.add(updatedTask)
         }
-        // save whole task in prefs
-        val storeString = Defaults.json.encodeToString(cachedCase)
-        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
+        persistCase()
     }
 
     override fun deleteTask(taskToDelete: Task) {
@@ -192,17 +190,34 @@ class TasksRepository(context: Context, private val userRepository: IUserReposit
 
     override fun ifCaseWasChanged(): Boolean = caseChanged
 
-    override fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case{
-        cachedCase = Case(dateOfSymptomOnset = dateOfSymptomOnset, tasks = ArrayList())
-        return cachedCase!!
+    override fun getSymptomOnsetDate(): String? = cachedCase?.dateOfSymptomOnset
+
+    override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
+        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
+        persistCase()
     }
 
-    override fun updateSymptomOnsetDate(dateOfSymptomOnset: String?) {
-        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
-        // save updated case
+    override fun addSymptom(symptom: String) {
+        cachedCase?.symptoms?.add(symptom)
+        persistCase()
+    }
+
+    override fun removeSymptom(symptom: String) {
+        cachedCase?.symptoms?.remove(symptom)
+        persistCase()
+    }
+
+    override fun getSymptoms(): List<String> {
+        return cachedCase?.symptoms?.toList() ?: emptyList()
+    }
+
+    /**
+     * Create local case prior to sync with the backend
+     */
+    private fun generateSelfBcoCase(): Case = Case()
+
+    private fun persistCase() {
         val storeString = Defaults.json.encodeToString(cachedCase)
         encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
     }
-
-
 }
