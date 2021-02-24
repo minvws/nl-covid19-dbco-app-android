@@ -10,7 +10,7 @@ data class AppConfig(
     val androidMinimumVersion: Int = 0,
     val iosAppStoreURL: String? = null,
     val featureFlags: FeatureFlags? = null,
-    val symptoms: List<Symptom>
+    val symptoms: List<Symptom> = emptyList()
 )
 
 @Serializable
