@@ -91,19 +91,19 @@ class TasksRepository(
             if (case.windowExpiresAt == null) {
                 case = case.copy(windowExpiresAt = remoteCase.windowExpiresAt)
             }
-            val merged = case.tasks.toMutableList()
+            val mergedTasks = case.tasks.toMutableList()
             remoteCase.tasks.forEach { remoteTask ->
                 var found = false
-                merged.forEach { currentTask ->
+                mergedTasks.forEach { currentTask ->
                     if (remoteTask.uuid == currentTask.uuid) {
                         found = true
                     }
                 }
                 if (!found) {
-                    merged.add(remoteTask)
+                    mergedTasks.add(remoteTask)
                 }
             }
-            case = case.copy(tasks = merged)
+            case = case.copy(tasks = mergedTasks)
             persistCase()
         }
         return case
@@ -117,14 +117,14 @@ class TasksRepository(
             updatedTask.communication = CommunicationType.Index
         }
         tasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid || updatedTask.label!!.contentEquals(
-                    currentTask.label!!
-                )
+            if (updatedTask.uuid == currentTask.uuid ||
+                updatedTask.label!!.contentEquals(currentTask.label!!)
             ) {
                 // Only update if the new date is either later or equal to the currently stored date
                 // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
                 if (updatedTask.getExposureDateAsDateTime()
-                        .isAfter(currentTask.getExposureDateAsDateTime()) || currentTask.getExposureDateAsDateTime()
+                        .isAfter(currentTask.getExposureDateAsDateTime()) ||
+                    currentTask.getExposureDateAsDateTime()
                         .isEqual(updatedTask.getExposureDateAsDateTime())
                 ) {
                     tasks[index] = updatedTask
