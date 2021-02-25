@@ -13,8 +13,8 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
 data class Case(
-    var dateOfSymptomOnset: String? = null,
+    val dateOfSymptomOnset: String? = null,
     val windowExpiresAt: String? = null,
-    val tasks: MutableList<Task> = mutableListOf(),
-    val symptoms: MutableSet<String> = mutableSetOf()
+    val tasks: List<Task> = mutableListOf(),
+    val symptoms: Set<String> = mutableSetOf()
 )

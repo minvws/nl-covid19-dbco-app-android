@@ -13,10 +13,10 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 interface ITaskRepository {
 
-    suspend fun fetchCase(): Case?
+    suspend fun fetchCase(): Case
     fun saveChangesToTask(updatedTask: Task)
     fun deleteTask(taskToDelete: Task)
-    fun getCachedCase(): Case?
+    fun getCase(): Case
     fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
     fun getSymptomOnsetDate(): String?

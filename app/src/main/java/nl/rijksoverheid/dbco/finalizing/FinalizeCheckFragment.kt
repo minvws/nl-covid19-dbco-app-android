@@ -60,7 +60,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
                 }
 
 
-            case?.tasks?.forEach { task ->
+            case.tasks.forEach { task ->
                 Timber.d("Found task $task")
                 when (task.taskType) {
                     TaskType.Contact -> {

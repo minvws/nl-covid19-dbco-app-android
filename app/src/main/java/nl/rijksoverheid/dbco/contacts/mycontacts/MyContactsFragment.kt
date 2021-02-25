@@ -125,6 +125,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             // Don't have to refresh if the user isn't paired yet, only local data
             if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
                 tasksViewModel.syncTasks()
+            } else {
+                binding.swipeRefresh.isRefreshing = false
             }
         }
 
@@ -175,7 +177,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
-    private fun fillContentSection(case: Case?) {
+    private fun fillContentSection(case: Case) {
         contentSection.clear()
         val uninformedSection = Section().apply {
             setHeader(
@@ -196,7 +198,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
 
 
-        case?.tasks?.forEach { task ->
+        case.tasks.forEach { task ->
             Timber.d("Found task $task")
             when (task.taskType) {
                 TaskType.Contact -> {

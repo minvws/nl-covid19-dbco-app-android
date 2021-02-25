@@ -23,42 +23,39 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 class UsertestTaskRepository(context: Context) : ITaskRepository {
 
-    private var cachedCase: Case? = null
+    private var case: Case
 
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
-    /**
-     * Either get the previously stored task from local storage, or return the mocked response instead
-     */
-    override suspend fun fetchCase(): Case? {
-        if (cachedCase == null) {
-            val storedResponse: String = encryptedSharedPreferences.getString(
-                CASE_KEY,
-                null
-            ) ?: MOCKED_CASE_BODY
-            val caseBody: CaseBody = Json.decodeFromString(storedResponse)
-            cachedCase = caseBody.case
-        }
-        return cachedCase
+    init {
+        /**
+         * Either get the previously stored task from local storage, or return the mocked response instead
+         */
+        val storedResponse: String = encryptedSharedPreferences.getString(
+            CASE_KEY,
+            null
+        ) ?: MOCKED_CASE_BODY
+        val caseBody: CaseBody = Json.decodeFromString(storedResponse)
+        case = caseBody.case!!
     }
 
+    override suspend fun fetchCase(): Case = case
+
     override fun saveChangesToTask(updatedTask: Task) {
-        val currentTasks = cachedCase?.tasks as ArrayList
+        val tasks = case.tasks.toMutableList()
         var found = false
-        currentTasks.forEachIndexed { index, currentTask ->
+        tasks.forEachIndexed { index, currentTask ->
             if (updatedTask.uuid == currentTask.uuid) {
-                currentTasks[index] = updatedTask
+                tasks[index] = updatedTask
                 found = true
             }
         }
         if (!found) {
-            currentTasks.add(updatedTask)
+            tasks.add(updatedTask)
         }
-
-        //Timber.w("Final result is $previousResponse")
-
-        val storeString = Defaults.json.encodeToString(CaseBody(cachedCase))
+        case = case.copy(tasks = tasks)
+        val storeString = Defaults.json.encodeToString(CaseBody(case))
         encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 
@@ -66,30 +63,32 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
         // NO-OP
     }
 
-    override fun getCachedCase(): Case? {
-        return cachedCase
-    }
+    override fun getCase(): Case = case
 
     override suspend fun uploadCase() {
         // NO-OP
     }
 
-    override fun getSymptomOnsetDate(): String? = cachedCase?.dateOfSymptomOnset
+    override fun getSymptomOnsetDate(): String? = case.dateOfSymptomOnset
 
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
-        cachedCase?.dateOfSymptomOnset = dateOfSymptomOnset
+        case = case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
     }
 
     override fun addSymptom(symptom: String) {
-        cachedCase?.symptoms?.add(symptom)
+        val symptoms = case.symptoms.toMutableSet()
+        symptoms.add(symptom)
+        case = case.copy(symptoms = symptoms)
     }
 
     override fun removeSymptom(symptom: String) {
-        cachedCase?.symptoms?.remove(symptom)
+        val symptoms = case.symptoms.toMutableSet()
+        symptoms.remove(symptom)
+        case = case.copy(symptoms = symptoms)
     }
 
     override fun getSymptoms(): List<String> {
-        return cachedCase?.symptoms?.toList() ?: emptyList()
+        return case.symptoms.toList()
     }
 
     override fun ifCaseWasChanged(): Boolean = true
