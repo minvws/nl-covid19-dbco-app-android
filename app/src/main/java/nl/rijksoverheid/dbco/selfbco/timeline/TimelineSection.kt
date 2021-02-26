@@ -8,15 +8,12 @@
 
 package nl.rijksoverheid.dbco.selfbco.timeline
 
-import android.widget.Toast
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
-import nl.rijksoverheid.dbco.items.ui.ContactAddItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TimelineContactAddItem
-import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import org.joda.time.DateTime
 import timber.log.Timber

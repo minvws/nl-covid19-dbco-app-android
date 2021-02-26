@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.selfbco.reverse
 
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,10 +18,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState
 import nl.rijksoverheid.dbco.user.IUserRepository
-import nl.rijksoverheid.dbco.user.UserRepository
 import timber.log.Timber
 
 class ReversePairingViewmodel(val userRepository: IUserRepository) : ViewModel() {

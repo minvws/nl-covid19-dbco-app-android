@@ -10,12 +10,10 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
-import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingFlowSelectionBinding

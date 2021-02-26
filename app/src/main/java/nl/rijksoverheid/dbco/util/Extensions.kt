@@ -17,14 +17,13 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
-import androidx.core.widget.NestedScrollView
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.onboarding.FillCodeField
 import org.joda.time.Interval
 import java.util.*
 

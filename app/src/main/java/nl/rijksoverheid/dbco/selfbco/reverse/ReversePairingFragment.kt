@@ -8,13 +8,13 @@
 
 package nl.rijksoverheid.dbco.selfbco.reverse
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
@@ -98,7 +98,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     }
 
     private fun showShareCodeDialog() {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle("Heb je de code gedeeld met de GGD-medewerker?")
         builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
             // Start background polling

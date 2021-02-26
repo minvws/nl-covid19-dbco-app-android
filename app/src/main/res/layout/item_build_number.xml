@@ -25,7 +25,7 @@
         android:text="@{text}"
         android:gravity="center_horizontal"
         android:textColor="#89000000"
-        android:textColorLink="@color/color_primary"
+        android:textColorLink="@color/primary"
         android:textSize="12sp"
         tools:text="@string/placeholder" />
 </layout>

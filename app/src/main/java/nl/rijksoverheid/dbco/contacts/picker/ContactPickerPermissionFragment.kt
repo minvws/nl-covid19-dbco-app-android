@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
@@ -103,7 +104,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
                 requestCallback.launch(Manifest.permission.READ_CONTACTS)
             } else {
                 activity?.let {
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(it)
+                    val builder = MaterialAlertDialogBuilder(it)
                     builder.setTitle(R.string.permissions_title)
                     builder.setCancelable(false)
                     builder.setMessage(R.string.permissions_some_permissions_denied)

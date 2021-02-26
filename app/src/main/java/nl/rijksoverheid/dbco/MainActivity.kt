@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.install.model.AppUpdateType
 import com.scottyab.rootbeer.RootBeer
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (RootBeer(this).isRooted) {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            val builder = MaterialAlertDialogBuilder(this)
             builder.setCancelable(true)
             builder.setMessage(getString(R.string.rooted_device_warning))
             builder.setPositiveButton(

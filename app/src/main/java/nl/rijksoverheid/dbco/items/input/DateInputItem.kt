@@ -71,8 +71,8 @@ class DateInputItem(
         dialog.show()
 
         // Override button color manually since Google doesn't support Spinner mode and/or spinner theming out of the box since API 24 & the Material design guidelines
-        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.color_primary))
-        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.color_primary))
+        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.primary))
+        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.primary))
     }
 
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

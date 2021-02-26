@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -18,16 +17,13 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.serialization.SerializationException
-import nl.rijksoverheid.dbco.BaseFragment
-import nl.rijksoverheid.dbco.BuildConfig
-import nl.rijksoverheid.dbco.Constants
+import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
-import nl.rijksoverheid.dbco.MainActivity
-import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
@@ -280,7 +276,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private fun handleQADataWipe() {
         dataWipeClickedAmount++
         if (dataWipeClickedAmount == 4) {
-            val builder = AlertDialog.Builder(context)
+            val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setMessage(getString(R.string.qa_clear_data_summary))
             builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
                 dataWipeClickedAmount = 0
@@ -303,7 +299,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private fun showLocalDeletionDialog() {
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.mycontacts_delete_data_title))
         builder.setMessage(getString(R.string.mycontacts_delete_data_summary))
         builder.setPositiveButton(R.string.mycontacts_delete_data_ok) { dialog, _ ->

@@ -9,23 +9,19 @@
 package nl.rijksoverheid.dbco.selfbco.timeline
 
 import android.Manifest
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import kotlinx.android.synthetic.main.fragment_selfbco_timeline.*
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
@@ -33,16 +29,9 @@ import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineBinding
-import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineExplanationBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
-import nl.rijksoverheid.dbco.items.ui.HeaderItem
-import nl.rijksoverheid.dbco.items.ui.MemoryTipGrayItem
-import nl.rijksoverheid.dbco.items.ui.MemoryTipOrangeItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.items.ui.StringHeaderItem
-import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
+import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
@@ -50,7 +39,6 @@ import nl.rijksoverheid.dbco.util.toDateTimes
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import timber.log.Timber
-import java.util.stream.Collectors
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     val adapter = GroupAdapter<GroupieViewHolder>()
@@ -215,7 +203,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         if (!filledInAll) {
 
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setTitle(getString(R.string.selfbco_timeline_error_header))
             builder.setCancelable(false)
             builder.setMessage(
