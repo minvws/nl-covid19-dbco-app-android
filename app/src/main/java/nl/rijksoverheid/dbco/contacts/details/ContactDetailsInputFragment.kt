@@ -19,7 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -319,7 +321,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         var value: JsonObject? = JsonObject(child.getUserAnswers())
                         // override logic for classification questions
                         if (question.uuid == itemsStorage?.classificationQuestion?.uuid) {
-                            value = itemsStorage?.getClassificationAnswerValue()
+                            val map = HashMap<String, JsonElement>()
+                            viewModel.category.value?.let { category ->
+                                map["value"] = JsonPrimitive(category.label)
+                            }
+                            value =  JsonObject(map)
                         }
                         val answer = Answer(
                             UUID.randomUUID().toString(),
