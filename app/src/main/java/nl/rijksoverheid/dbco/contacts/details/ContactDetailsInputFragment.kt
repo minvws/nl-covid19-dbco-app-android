@@ -19,7 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -40,6 +42,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
@@ -65,7 +68,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
+        val task = args.indexTask ?: Task(taskType = TaskType.Contact, source = Source.App)
         viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(
@@ -318,7 +321,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         var value: JsonObject? = JsonObject(child.getUserAnswers())
                         // override logic for classification questions
                         if (question.uuid == itemsStorage?.classificationQuestion?.uuid) {
-                            value = itemsStorage?.getClassificationAnswerValue()
+                            val map = HashMap<String, JsonElement>()
+                            viewModel.category.value?.let { category ->
+                                map["value"] = JsonPrimitive(category.label)
+                            }
+                            value =  JsonObject(map)
                         }
                         val answer = Answer(
                             UUID.randomUUID().toString(),

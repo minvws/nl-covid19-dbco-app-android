@@ -74,8 +74,15 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         )
 
         val selectedSymptoms = selfBcoViewModel.getSelectedSymptoms()
-        SelfBcoConstants.SYMPTOMS.forEach { symptomName ->
-            content.add(SymptomItem(text = symptomName, selected = selectedSymptoms.contains(symptomName)))
+        val symptoms = selfBcoViewModel.getSymptoms()
+        symptoms.forEach { symptom ->
+            content.add(
+                SymptomItem(
+                    label = symptom.label,
+                    value = symptom.value,
+                    selected = selectedSymptoms.contains(symptom.value)
+                )
+            )
         }
         // Button to start with
         content.setFooter(noSymptomButton)
@@ -88,7 +95,8 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 requireContext().resources.getDimensionPixelSize(R.dimen.symptom_list_divider_height)
             )
         )
-        binding.content.itemAnimator = null // Remove animator here to avoid flashing on clicking symptoms
+        binding.content.itemAnimator =
+            null // Remove animator here to avoid flashing on clicking symptoms
 
         adapter.setOnItemClickListener { item, _ ->
             Timber.d("Item clicked $item")
@@ -96,9 +104,9 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 item.selected = !item.selected
                 item.setChecked()
                 if (item.selected) {
-                    selfBcoViewModel.addSymptom(item.text.toString())
+                    selfBcoViewModel.addSymptom(item.value)
                 } else {
-                    selfBcoViewModel.removeSymptom(item.text.toString())
+                    selfBcoViewModel.removeSymptom(item.value)
                 }
             }
             updateFooter(content, nextButton, noSymptomButton)

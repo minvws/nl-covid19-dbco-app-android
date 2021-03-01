@@ -39,7 +39,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoDateCheckBindingImpl.bind(view)
 
-        when(args.dateCheckingFlow){
+        when (args.dateCheckingFlow) {
             SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
                 binding.selfBcoDateHeader.text = getString(R.string.selfbco_date_symptoms_title)
                 binding.selfBcoDateSummary.text = getString(R.string.selfbco_date_symptoms_summary)
@@ -61,15 +61,18 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
         binding.btnNext.setOnClickListener {
             val dateSelected = binding.datePicker.getDate()
-            selfBcoViewModel.generateSelfBcoCase(DateTime(dateSelected.time))
-            findNavController().navigate(SelfBcoDateCheckFragmentDirections.toSelfBcoDoubleCheckFragment(args.dateCheckingFlow, dateSelected.time))
+            selfBcoViewModel.updateDateOfSymptomOnset(DateTime(dateSelected.time))
+            findNavController().navigate(
+                SelfBcoDateCheckFragmentDirections.toSelfBcoDoubleCheckFragment(
+                    args.dateCheckingFlow,
+                    dateSelected.time
+                )
+            )
         }
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }
-
     }
-
 }

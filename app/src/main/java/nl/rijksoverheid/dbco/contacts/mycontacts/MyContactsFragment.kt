@@ -39,6 +39,7 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
 
@@ -47,6 +48,8 @@ import timber.log.Timber
  */
 
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
+
+    lateinit var binding: FragmentMyContactsBinding
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val userPrefs by lazy {
@@ -98,7 +101,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentMyContactsBinding.bind(view)
+        binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
@@ -124,6 +127,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             // Don't have to refresh if the user isn't paired yet, only local data
             if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
                 tasksViewModel.syncTasks()
+            } else {
+                binding.swipeRefresh.isRefreshing = false
             }
         }
 
@@ -174,7 +179,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
-    private fun fillContentSection(case: Case?) {
+    private fun fillContentSection(case: Case) {
         contentSection.clear()
         val uninformedSection = Section().apply {
             setHeader(
@@ -195,10 +200,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
 
 
-        case?.tasks?.forEach { task ->
+        case.tasks.forEach { task ->
             Timber.d("Found task $task")
             when (task.taskType) {
-                "contact" -> {
+                TaskType.Contact -> {
                     val informed = when (task.communication) {
                         CommunicationType.Index -> task.didInform
                         CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
@@ -228,6 +233,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onResume() {
         super.onResume()
         clicksBlocked = false
+        tasksViewModel.syncTasks()
+        binding.swipeRefresh.isRefreshing = true
     }
 
     private fun checkPermissionGoToTaskDetails(task: Task? = null) {
