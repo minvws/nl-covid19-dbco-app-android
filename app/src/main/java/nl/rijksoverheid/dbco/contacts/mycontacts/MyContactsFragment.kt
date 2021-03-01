@@ -49,6 +49,8 @@ import timber.log.Timber
 
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
+    lateinit var binding: FragmentMyContactsBinding
+
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val userPrefs by lazy {
         LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
@@ -99,7 +101,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentMyContactsBinding.bind(view)
+        binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
         binding.toolbar.visibility = View.GONE
@@ -231,6 +233,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onResume() {
         super.onResume()
         clicksBlocked = false
+        tasksViewModel.syncTasks()
+        binding.swipeRefresh.isRefreshing = true
     }
 
     private fun checkPermissionGoToTaskDetails(task: Task? = null) {
