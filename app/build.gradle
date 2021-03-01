@@ -82,8 +82,6 @@ android {
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
-            apply plugin: 'com.google.gms.google-services'
-            apply plugin: 'com.google.firebase.crashlytics'
             signingConfig signingConfigs.firebase
         }
 
@@ -96,6 +94,8 @@ android {
             buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
             signingConfig signingConfigs.firebase
         }
 
@@ -189,6 +189,6 @@ dependencies {
     implementation "androidx.security:security-crypto:1.0.0-rc03"
 
     // Firebase is for the acc builds only
-    dbcoTestImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
+    dbcoAccImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
 
 }
