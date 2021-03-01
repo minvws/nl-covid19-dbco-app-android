@@ -61,7 +61,7 @@ class TasksDetailViewModel(
     }
 
     fun saveChangesToTask(updatedTask: Task) {
-        tasksRepository.saveChangesToTask(updatedTask)
+        tasksRepository.saveTask(updatedTask)
     }
 
     fun deleteCurrentTask() {

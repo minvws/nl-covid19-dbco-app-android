@@ -42,7 +42,7 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
 
     override suspend fun fetchCase(): Case = case
 
-    override fun saveChangesToTask(updatedTask: Task) {
+    override fun saveTask(updatedTask: Task) {
         val tasks = case.tasks.toMutableList()
         var found = false
         tasks.forEachIndexed { index, currentTask ->

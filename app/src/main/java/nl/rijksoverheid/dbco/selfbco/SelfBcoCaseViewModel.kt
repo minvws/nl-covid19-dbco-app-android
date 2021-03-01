@@ -48,7 +48,7 @@ class SelfBcoCaseViewModel(
             uuid = UUID.randomUUID().toString(),
             dateOfLastExposure = dateOfLastExposure
         )
-        tasksRepository.saveChangesToTask(selfBcoContactTask)
+        tasksRepository.saveTask(selfBcoContactTask)
     }
 
     fun getDateOfSymptomOnset(): DateTime {

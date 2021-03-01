@@ -34,7 +34,6 @@ import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
-import timber.log.Timber
 
 @ExperimentalSerializationApi
 class TasksRepository(
@@ -109,31 +108,31 @@ class TasksRepository(
         return case
     }
 
-    override fun saveChangesToTask(updatedTask: Task) {
+    override fun saveTask(task: Task) {
         caseChanged = true
         val tasks = case.tasks.toMutableList()
         var found = false
-        if (updatedTask.communication == null || updatedTask.communication == CommunicationType.None) {
-            updatedTask.communication = CommunicationType.Index
+        if (task.communication == null || task.communication == CommunicationType.None) {
+            task.communication = CommunicationType.Index
         }
         tasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid ||
-                updatedTask.label!!.contentEquals(currentTask.label!!)
+            if (task.uuid == currentTask.uuid ||
+                task.label!!.contentEquals(currentTask.label!!)
             ) {
                 // Only update if the new date is either later or equal to the currently stored date
                 // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
-                if (updatedTask.getExposureDateAsDateTime()
+                if (task.getExposureDateAsDateTime()
                         .isAfter(currentTask.getExposureDateAsDateTime()) ||
                     currentTask.getExposureDateAsDateTime()
-                        .isEqual(updatedTask.getExposureDateAsDateTime())
+                        .isEqual(task.getExposureDateAsDateTime())
                 ) {
-                    tasks[index] = updatedTask
+                    tasks[index] = task
                 }
                 found = true
             }
         }
         if (!found) {
-            tasks.add(updatedTask)
+            tasks.add(task)
         }
         case = case.copy(tasks = tasks)
         persistCase()
