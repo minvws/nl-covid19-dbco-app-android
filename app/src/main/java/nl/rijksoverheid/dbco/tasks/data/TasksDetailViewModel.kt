@@ -20,20 +20,19 @@ import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
-import timber.log.Timber
 
 class TasksDetailViewModel(
     private val tasksRepository: ITaskRepository,
-    private val questionnareRepository: IQuestionnaireRepository
+    questionnaireRepository: IQuestionnaireRepository
 ) : ViewModel() {
 
-    var questionnaire: Questionnaire? = questionnareRepository.getCachedQuestionnaire()
+    var questionnaire: Questionnaire? = questionnaireRepository.getCachedQuestionnaire()
 
     val category = MutableLiveData<Category?>()
-    val livedTogetherRisk = MutableLiveData<Boolean?>(null)
-    val durationRisk = MutableLiveData<Boolean?>(null)
-    val distanceRisk = MutableLiveData<Boolean?>(null)
-    val otherRisk = MutableLiveData<Boolean?>(null)
+    val sameHouseholdRisk = MutableLiveData<Boolean?>(null)
+    val distanceRisk = MutableLiveData<Pair<Boolean?, Boolean?>>(null)
+    val physicalContactRisk = MutableLiveData<Boolean?>(null)
+    val sameRoomRisk = MutableLiveData<Boolean?>(null)
 
     val communicationType = MutableLiveData<CommunicationType?>(null)
     val hasEmailOrPhone = MutableLiveData<Boolean>(null)
@@ -73,55 +72,62 @@ class TasksDetailViewModel(
 
     private fun updateRiskFlagsFromCategory(task: Task) {
         when (task.category) {
-            Category.LIVED_TOGETHER -> {
-                livedTogetherRisk.value = true
-                durationRisk.value = null
+            Category.ONE -> {
+                sameHouseholdRisk.value = true
                 distanceRisk.value = null
-                otherRisk.value = null
+                physicalContactRisk.value = null
+                sameRoomRisk.value = null
             }
-            Category.DURATION -> {
-                livedTogetherRisk.value = false
-                durationRisk.value = true
-                distanceRisk.value = null
-                otherRisk.value = null
+            Category.TWO_A -> {
+                sameHouseholdRisk.value = false
+                distanceRisk.value = Pair(first = true, second = true)
+                physicalContactRisk.value = null
+                sameRoomRisk.value = null
             }
-            Category.DISTANCE -> {
-                livedTogetherRisk.value = false
-                durationRisk.value = false
-                distanceRisk.value = true
-                otherRisk.value = null
+            Category.TWO_B -> {
+                sameHouseholdRisk.value = false
+                distanceRisk.value = Pair(first = true, second = false)
+                physicalContactRisk.value = true
+                sameRoomRisk.value = null
             }
-            Category.OTHER -> {
-                livedTogetherRisk.value = false
-                durationRisk.value = false
-                distanceRisk.value = false
-                otherRisk.value = true
+            Category.THREE_A -> {
+                sameHouseholdRisk.value = false
+                distanceRisk.value = Pair(first = true, second = false)
+                physicalContactRisk.value = false
+                sameRoomRisk.value = null
+            }
+            Category.THREE_B -> {
+                sameHouseholdRisk.value = false
+                distanceRisk.value = Pair(first = false, second = false)
+                physicalContactRisk.value = null
+                sameRoomRisk.value = true
             }
             Category.NO_RISK -> {
-                livedTogetherRisk.value = false
-                durationRisk.value = false
-                distanceRisk.value = false
-                otherRisk.value = false
+                sameHouseholdRisk.value = false
+                distanceRisk.value = Pair(first = false, second = false)
+                physicalContactRisk.value = false
+                sameRoomRisk.value = false
             }
             null -> {
-                livedTogetherRisk.value = null
-                durationRisk.value = null
+                sameHouseholdRisk.value = null
                 distanceRisk.value = null
-                otherRisk.value = null
+                physicalContactRisk.value = null
+                sameRoomRisk.value = null
             }
         }
-        Timber.d("updateRiskFlagsFromCategory: category=${category.value}, livedTogetherRisk=${livedTogetherRisk.value}, durationRisk=${durationRisk.value}, distanceRisk=${distanceRisk.value}, otherRisk=${otherRisk.value}")
     }
 
     fun updateCategoryFromRiskFlags() {
         category.value = when {
-            livedTogetherRisk.value == true -> Category.LIVED_TOGETHER
-            durationRisk.value == true -> Category.DURATION
-            distanceRisk.value == true -> Category.DISTANCE
-            otherRisk.value == true -> Category.OTHER
-            otherRisk.value == false -> Category.NO_RISK
+            sameHouseholdRisk.value == true -> Category.ONE
+            distanceRisk.value == Pair(first = true, second = true) -> Category.TWO_A
+            distanceRisk.value == Pair(first = true, second = false) &&
+                    physicalContactRisk.value == true -> Category.TWO_B
+            distanceRisk.value == Pair(first = true, second = false) &&
+                    physicalContactRisk.value == false -> Category.THREE_A
+            sameRoomRisk.value == true -> Category.THREE_B
+            sameRoomRisk.value == false -> Category.NO_RISK
             else -> null
         }
-        Timber.d("updateCategoryFromRiskFlags: category=${category.value}, livedTogetherRisk=${livedTogetherRisk.value}, durationRisk=${durationRisk.value}, distanceRisk=${distanceRisk.value}, otherRisk=${otherRisk.value}")
     }
 }

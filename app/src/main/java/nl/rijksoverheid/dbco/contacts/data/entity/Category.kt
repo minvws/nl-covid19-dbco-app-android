@@ -13,20 +13,23 @@ import kotlinx.serialization.SerialName
 
 @Keep
 @kotlinx.serialization.Serializable
-enum class Category {
+enum class Category(val label: String) {
 
 	@SerialName("1")
-	LIVED_TOGETHER,
+	ONE("1"),
 
 	@SerialName("2a")
-	DURATION,
+	TWO_A("2a"),
 
 	@SerialName("2b")
-	DISTANCE,
+	TWO_B("2b"),
 
-	@SerialName("3")
-	OTHER,
+	@SerialName("3a")
+	THREE_A("3a"),
+
+	@SerialName("3b")
+	THREE_B("3b"),
 
 	@SerialName("NO_RISK")
-	NO_RISK,
+	NO_RISK("NO_RISK"),
 }
