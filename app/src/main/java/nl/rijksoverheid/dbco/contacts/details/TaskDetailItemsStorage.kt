@@ -276,6 +276,14 @@ class TaskDetailItemsStorage(
                         val value = date.toString(DateFormats.dateInputData)
                         add(AnswerOption(label, null, value))
                     }
+
+                    add(
+                        AnswerOption(
+                            context.getString(R.string.contact_information_last_exposure_every_day),
+                            null,
+                            LocalDate.now().toString(DateFormats.dateInputData)
+                        )
+                    )
                 }
             }
         ),
