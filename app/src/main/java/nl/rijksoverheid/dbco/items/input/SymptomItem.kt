@@ -14,29 +14,35 @@ import nl.rijksoverheid.dbco.databinding.ItemSymptomBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import timber.log.Timber
 
-class SymptomItem(val text: CharSequence, var selected: Boolean = false) : BaseBindableItem<ItemSymptomBinding>() {
+class SymptomItem(
+    val label: CharSequence,
+    val value: String,
+    var selected: Boolean = false
+) : BaseBindableItem<ItemSymptomBinding>() {
 
     override fun getLayout(): Int = R.layout.item_symptom
+
     override fun isClickable(): Boolean {
         return true
     }
+
     override fun isSameAs(other: Item<*>): Boolean =
-        other is SymptomItem && other.text == text
+        other is SymptomItem && other.label == label
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is SymptomItem && other.text == text
+        other is SymptomItem && other.label == label
 
 
-    private var binding : ItemSymptomBinding? = null
+    private var binding: ItemSymptomBinding? = null
+
     override fun bind(viewBinding: ItemSymptomBinding, position: Int) {
-        Timber.d("For $text we've stored selected = $selected")
+        Timber.d("For $label we've stored selected = $selected")
         binding = viewBinding
-        viewBinding.text = text
+        viewBinding.text = label
         viewBinding.checked = selected
     }
 
-    fun setChecked(){
+    fun setChecked() {
         binding?.checked = selected
     }
-
 }

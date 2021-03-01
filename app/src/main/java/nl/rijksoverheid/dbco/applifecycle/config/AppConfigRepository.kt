@@ -11,14 +11,13 @@ package nl.rijksoverheid.dbco.applifecycle.config
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.network.DbcoApi
 
 class AppConfigRepository(val context: Context) {
 
     private val api = DbcoApi.create(context)
+
     private var storedAppConfig: AppConfig? = null
 
     suspend fun getAppConfig(): AppConfig {
@@ -26,7 +25,6 @@ class AppConfigRepository(val context: Context) {
             val data = withContext(Dispatchers.IO) { api.getAppConfig() }
             storedAppConfig = data.body()
             data.body()!!
-
         } else {
             storedAppConfig!!
         }
@@ -42,28 +40,7 @@ class AppConfigRepository(val context: Context) {
 
     fun getFeatureFlags(): FeatureFlags {
         return storedAppConfig?.featureFlags ?: FeatureFlags()
-
     }
 
-    fun getLocalConfig(): AppConfig {
-        return if (storedAppConfig == null) {
-            val appConfigString = "{\n" +
-                    "  \"androidMinimumVersion\": 1,\n" +
-                    "  \"androidMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                    "  \"iosMinimumVersion\": \"1.0.0\",\n" +
-                    "  \"iosMinimumVersionMessage\": \"Please upgrade to the latest store release! (nl_NL)\",\n" +
-                    "  \"iosAppStoreURL\": \"\",\n" +
-                    "  \"featureFlags\": {\n" +
-                    "  \"enableContactCalling\": true,\n" +
-                    "  \"enablePerspectiveSharing\": true,\n" +
-                    "  \"enablePerspectiveCopy\": true,\n" +
-                    "  \"enableSelfBCO\": true\n" +
-                    "  }\n" +
-                    "}"
-            storedAppConfig = Json.decodeFromString(appConfigString)
-            storedAppConfig!!
-        } else {
-            storedAppConfig!!
-        }
-    }
+    fun getSymptoms(): List<Symptom> = storedAppConfig?.symptoms ?: emptyList()
 }

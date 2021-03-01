@@ -9,70 +9,67 @@
 package nl.rijksoverheid.dbco.selfbco
 
 import androidx.lifecycle.ViewModel
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
+import nl.rijksoverheid.dbco.applifecycle.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import org.joda.time.DateTime
-import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
-class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewModel() {
+class SelfBcoCaseViewModel(
+    private val tasksRepository: ITaskRepository,
+    private val appConfigRepository: AppConfigRepository
+) : ViewModel() {
 
-    private var dateOfSymptomOnset : DateTime? = null
-    private val indexSymptoms = ArrayList<String>()
     private var testedOrSymptoms = SelfBcoConstants.NOT_SELECTED
 
-    fun generateSelfBcoCase(dateOfSymptomOnset: DateTime) {
-        this.dateOfSymptomOnset = dateOfSymptomOnset
-        tasksRepository.generateSelfBcoCase(dateOfSymptomOnset.toString(DateFormats.dateInputData))
-    }
+    fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
 
-    fun addSymptom(symptom : String){
-        if(!indexSymptoms.contains(symptom)){
-            indexSymptoms.add(symptom)
-            Timber.d("Added symptom $symptom")
-        }
-    }
+    fun addSymptom(symptom: String) = tasksRepository.addSymptom(symptom)
 
-    fun removeSymptom(symptom: String){
-        if(indexSymptoms.contains(symptom)){
-            indexSymptoms.remove(symptom)
-            Timber.d("Removed symptom $symptom")
-        }
-    }
+    fun removeSymptom(symptom: String) = tasksRepository.removeSymptom(symptom)
 
-    fun addSelfBcoContact(name : String, dateOfLastExposure : String = DateTime.now().withTimeAtStartOfDay().toString(DateFormats.dateInputData), category : Category?){
-        val selfBcoContactTask = Task(taskType = "contact", source = Source.App,category = category, label = name, uuid = UUID.randomUUID().toString(), dateOfLastExposure = dateOfLastExposure)
+    fun addSelfBcoContact(
+        name: String,
+        dateOfLastExposure: String = DateTime.now()
+            .withTimeAtStartOfDay()
+            .toString(DateFormats.dateInputData),
+        category: Category?
+    ) {
+        val selfBcoContactTask = Task(
+            taskType = TaskType.Contact,
+            source = Source.App,
+            category = category,
+            label = name,
+            uuid = UUID.randomUUID().toString(),
+            dateOfLastExposure = dateOfLastExposure
+        )
         tasksRepository.saveChangesToTask(selfBcoContactTask)
     }
 
-    fun getOnsetAsFormattedString() : String{
-        return dateOfSymptomOnset?.toString(DateFormats.selfBcoDateCheck) ?: ""
-    }
-
     fun getDateOfSymptomOnset(): DateTime {
-        return dateOfSymptomOnset ?: DateTime.now().withTimeAtStartOfDay()
+        return tasksRepository.getSymptomOnsetDate()?.let {
+            DateTime.parse(it, DateFormats.dateInputData)
+        } ?: DateTime.now().withTimeAtStartOfDay()
     }
 
-    fun updateDateOfSymptomOnset(newDateTime: DateTime){
-        dateOfSymptomOnset = newDateTime
-        // Update EZD in case itself as well
-        tasksRepository.updateSymptomOnsetDate(newDateTime.withTimeAtStartOfDay().toString(DateFormats.dateInputData))
+    fun updateDateOfSymptomOnset(date: DateTime) {
+        tasksRepository.updateSymptomOnsetDate(
+            date.withTimeAtStartOfDay().toString(DateFormats.dateInputData)
+        )
     }
-
-    fun getCase() = tasksRepository.getCachedCase()
 
     fun getTypeOfFlow() = testedOrSymptoms
-    fun setTypeOfFlow(type : Int){
+
+    fun setTypeOfFlow(type: Int) {
         testedOrSymptoms = type
     }
 
-    fun getSelectedSymptomsSize() : Int {
-        return indexSymptoms.size
-    }
+    fun getSelectedSymptomsSize(): Int = getSelectedSymptoms().size
 
-    fun getSelectedSymptoms() : List<String> = indexSymptoms
+    fun getSelectedSymptoms(): List<String> = tasksRepository.getSymptoms()
 }

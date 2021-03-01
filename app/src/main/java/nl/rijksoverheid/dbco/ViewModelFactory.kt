@@ -59,7 +59,7 @@ class ViewModelFactory(
                 ), appConfigRepository
             ) as T
             OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
-            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository) as T
+            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository, appConfigRepository) as T
             ReversePairingViewmodel::class.java -> ReversePairingViewmodel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
