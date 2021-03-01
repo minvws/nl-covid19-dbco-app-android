@@ -14,7 +14,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 interface ITaskRepository {
 
     suspend fun fetchCase(): Case
-    fun saveTask(updatedTask: Task)
+    fun saveTask(task: Task)
     fun deleteTask(taskToDelete: Task)
     fun getCase(): Case
     fun ifCaseWasChanged(): Boolean
