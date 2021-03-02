@@ -42,11 +42,11 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
 
     override suspend fun fetchCase(): Case = case
 
-    override fun saveTask(updatedTask: Task) {
+    override fun saveTask(updatedTask: Task, shouldMerge: (Task) -> Boolean) {
         val tasks = case.tasks.toMutableList()
         var found = false
         tasks.forEachIndexed { index, currentTask ->
-            if (updatedTask.uuid == currentTask.uuid) {
+            if (shouldMerge(currentTask)) {
                 tasks[index] = updatedTask
                 found = true
             }

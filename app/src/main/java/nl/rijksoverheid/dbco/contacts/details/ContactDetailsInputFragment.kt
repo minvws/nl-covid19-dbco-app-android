@@ -372,7 +372,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewModel.category.value?.let { newCategory ->
                 task.category = newCategory
             }
-            viewModel.saveChangesToTask(task)
+            viewModel.saveTask(task)
         }
 
         view?.hideKeyboard()
