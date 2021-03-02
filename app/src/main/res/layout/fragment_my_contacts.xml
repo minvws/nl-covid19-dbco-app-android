@@ -115,6 +115,37 @@
                     android:text="@string/submit_window_ended_explanation"
                     android:visibility="gone" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/waiting_for_pairing_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:paddingHorizontal="16dp">
+
+                    <ProgressBar
+                        android:id="@+id/loading_indicator"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/state_text"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/state_text" />
+
+                    <TextView
+                        android:id="@+id/state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="Wachten op koppeling met de GGD"
+                        android:textColor="@color/purple"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/loading_indicator"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/send_button"
                     android:layout_width="match_parent"

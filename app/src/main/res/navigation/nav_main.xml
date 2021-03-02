@@ -430,7 +430,11 @@
         android:id="@+id/reversePairingFragment"
         tools:layout="@layout/fragment_selfbco_pairing"
         android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingFragment"
-        android:label="ReversePairingFragment" />
+        android:label="ReversePairingFragment" >
+        <action
+            android:id="@+id/to_finalizeCheckFragment"
+            app:destination="@id/finalizeCheckFragment" />
+    </fragment>
 
 
 </navigation>

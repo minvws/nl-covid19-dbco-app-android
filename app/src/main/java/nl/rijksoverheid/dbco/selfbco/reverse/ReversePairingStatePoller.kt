@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.reverse
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -32,5 +33,6 @@ class ReversePairingStatePoller(private val repository: IUserRepository, private
 
     override fun close() {
         dispatcher.cancel()
+        dispatcher.cancelChildren()
     }
 }

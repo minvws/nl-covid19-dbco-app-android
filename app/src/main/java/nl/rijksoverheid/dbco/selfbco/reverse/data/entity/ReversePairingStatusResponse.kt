@@ -9,6 +9,8 @@ import kotlinx.serialization.Serializable
 data class ReversePairingStatusResponse(
 	val refreshDelay: Int? = null,
 	val expiresAt: String? = null,
-	val status: ReversePairingState? = null
+	val status: ReversePairingState? = null,
+	val pairingCode : String? = null,
+	val pairingCodeExpiresAt : String? = null
 )
 

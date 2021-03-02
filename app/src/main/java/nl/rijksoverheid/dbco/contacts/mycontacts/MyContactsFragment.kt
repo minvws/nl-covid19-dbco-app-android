@@ -15,7 +15,9 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
@@ -35,12 +37,16 @@ import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewmodel
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
+import retrofit2.HttpException
 import timber.log.Timber
 
 /**
@@ -61,6 +67,17 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             TasksOverviewViewModel::class.java
+        )
+    }
+
+    private val reversePairingViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            ReversePairingViewmodel::class.java
+        )
+    }
+    private val pairingViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            FillCodeViewModel::class.java
         )
     }
 
@@ -97,6 +114,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         // Load data from backend
         tasksViewModel.syncTasks()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,6 +195,55 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
         }
+
+        setUpListeners()
+        Timber.e("User shared code is ${reversePairingViewModel.userHasSharedCode.value}")
+        Timber.e("Reverse pairing token is ${reversePairingViewModel.pairingToken}")
+        Timber.e("Should be polling is ${reversePairingViewModel.shouldBePolling.value}")
+    }
+
+    private fun setUpListeners(){
+        reversePairingViewModel.reversePairingResult.observe(viewLifecycleOwner, { response ->
+            if(response.status == ReversePairingState.COMPLETED){
+                response.pairingCode?.let{
+                    pairingViewModel.pair(response.pairingCode)
+                }
+            }
+        })
+
+        reversePairingViewModel.shouldBePolling.observe(viewLifecycleOwner, { polling ->
+            if(polling){
+                binding.waitingForPairingContainer.visibility = View.VISIBLE
+                binding.sendButton.text = "Probeer opnieuw"
+            }else{
+                // Remove container and fetch the case now that we've paired
+                binding.waitingForPairingContainer.visibility = View.GONE
+                tasksViewModel.syncTasks()
+            }
+        })
+
+        setUpRegularPairingListener()
+    }
+    private fun setUpRegularPairingListener(){
+        // Setup pairing logic
+        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { resource ->
+            resource?.resolve(onError = { exception ->
+
+
+                if (exception is HttpException && exception.code() == 400) {
+                    Toast.makeText(requireContext(), "Error 400 met koppelen", Toast.LENGTH_SHORT).show()
+                } else {
+                    showErrorDialog(getString(R.string.error_while_pairing), {
+                    }, exception)
+                }
+
+            }, onSuccess = {
+                // Handle success flow
+                Toast.makeText(requireContext(), "Succesvol gekoppeld", Toast.LENGTH_SHORT).show()
+                reversePairingViewModel.cancelPollingForChanges()
+               // binding.btnNext.isEnabled = true
+            })
+        })
     }
 
     private fun fillContentSection(case: Case) {
