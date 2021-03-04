@@ -190,7 +190,8 @@ dependencies {
 
     implementation "androidx.security:security-crypto:1.0.0-rc03"
 
-    // Firebase is for the acc builds only
+    // Firebase is for the acc and test builds only
     dbcoAccImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
+    dbcoTestImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
 
 }
