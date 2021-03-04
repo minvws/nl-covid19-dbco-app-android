@@ -15,18 +15,30 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
-import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
 import nl.rijksoverheid.dbco.user.IUserRepository
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState.COMPLETED
+import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState.PENDING
 
-class ReversePairingStatePoller(private val repository: IUserRepository, private val dispatcher: CoroutineDispatcher) : Poller {
-    override fun poll(delay: Long, token : String): Flow<ReversePairingStatusResponse> {
+class ReversePairingStatePoller(
+    private val repository: IUserRepository,
+    private val dispatcher: CoroutineDispatcher
+) : Poller {
+    override fun poll(delay: Long, token: String): Flow<ReversePairingResult> {
         return channelFlow {
             while (!isClosedForSend) {
-                val data = repository.checkReversePairingStatus(token)
-                if(data.isSuccessful) {
-                    send(data.body()!!)
+                val response = repository.checkReversePairingStatus(token)
+                val body = response.body()
+                var refreshDelay: Long = delay
+                if (response.isSuccessful && body != null && body.status == PENDING) {
+                    refreshDelay = body.refreshDelay!! * 1_000L
+                    // TODO: check expiresAt
                 }
-                delay(delay)
+
+                if (response.isSuccessful && body != null && body.status == COMPLETED) {
+                    send(ReversePairingResult.Success(body.pairingCode!!))
+                }
+
+                delay(refreshDelay)
             }
         }.flowOn(dispatcher)
     }
@@ -34,5 +46,10 @@ class ReversePairingStatePoller(private val repository: IUserRepository, private
     override fun close() {
         dispatcher.cancel()
         dispatcher.cancelChildren()
+    }
+
+    sealed class ReversePairingResult {
+        data class Success(val code: String) : ReversePairingResult()
+        object Expired : ReversePairingResult()
     }
 }

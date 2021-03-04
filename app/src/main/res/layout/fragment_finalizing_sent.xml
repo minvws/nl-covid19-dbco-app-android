@@ -37,7 +37,7 @@
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:contentDescription="@null"
-                    android:src="@drawable/illustration_onboarding" />
+                    android:src="@drawable/illustration_data_uploaded" />
 
                 <TextView
                     android:textAppearance="@style/TextAppearance.App.Headline5"
@@ -46,14 +46,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:textSize="@dimen/onboarding_title_textsize"
-                    android:text="@string/onboarding_help_title" />
+                    android:text="@string/finalize_sent_title" />
 
                 <TextView
                     android:id="@+id/onboarding_subtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/onboarding_subtext_textsize"
-                    android:text="@string/onboarding_help_subtext" />
+                    android:text="@string/finalize_sent_subtitle" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -61,7 +61,7 @@
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/next"
+            android:text="@string/close"
             android:background="@drawable/onboarding_button_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

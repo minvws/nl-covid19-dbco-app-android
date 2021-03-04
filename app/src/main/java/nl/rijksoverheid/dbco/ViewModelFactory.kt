@@ -17,12 +17,12 @@ import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewmodel
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
@@ -49,7 +49,7 @@ class ViewModelFactory(
                     tasksRepository,
                     questionnareRepository
             ) as T
-            FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
+            PairingViewModel::class.java -> PairingViewModel(userRepository) as T
             OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
@@ -60,7 +60,7 @@ class ViewModelFactory(
             ) as T
             OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
             SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository, appConfigRepository) as T
-            ReversePairingViewmodel::class.java -> ReversePairingViewmodel(userRepository) as T
+            ReversePairingViewModel::class.java -> ReversePairingViewModel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }

@@ -17,24 +17,35 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.util.Resource
+import retrofit2.HttpException
 import timber.log.Timber
 
-class FillCodeViewModel(private val userRepository: IUserRepository) : ViewModel() {
+class PairingViewModel(private val userRepository: IUserRepository) : ViewModel() {
 
-    private val _pairingResult = MutableLiveData<Resource<Boolean?>>()
-    val pairingResult: LiveData<Resource<Boolean?>> = _pairingResult
+    private val _pairingResult = MutableLiveData<PairingResult>()
+    val pairingResult: LiveData<PairingResult> = _pairingResult
 
     fun pair(pin: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
                     userRepository.pair(pin)
-                    _pairingResult.postValue(Resource.success(true))
+                    _pairingResult.postValue(PairingResult.Success)
                 } catch (ex: Throwable) {
-                    Timber.e(ex, "Error while retrieving case")
-                    _pairingResult.postValue(Resource.failure(ex))
+                    Timber.e(ex, "Error while pairing")
+                    if (ex is HttpException && ex.code() == 400) {
+                        _pairingResult.postValue(PairingResult.Invalid)
+                    } else {
+                        _pairingResult.postValue(PairingResult.Error(ex))
+                    }
                 }
             }
         }
+    }
+
+    sealed class PairingResult {
+        object Success: PairingResult()
+        object Invalid: PairingResult()
+        data class Error(val exception: Throwable): PairingResult()
     }
 }

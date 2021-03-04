@@ -15,9 +15,8 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
@@ -37,17 +36,18 @@ import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
-import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewmodel
-import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
-import retrofit2.HttpException
 import timber.log.Timber
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -72,19 +72,18 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val reversePairingViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            ReversePairingViewmodel::class.java
+            ReversePairingViewModel::class.java
         )
     }
     private val pairingViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            FillCodeViewModel::class.java
+            PairingViewModel::class.java
         )
     }
 
     private val contentSection = Section()
     private lateinit var footerSection: Section
     private var clicksBlocked = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +113,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         // Load data from backend
         tasksViewModel.syncTasks()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,14 +120,14 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
-        binding.toolbar.visibility = View.GONE
+        binding.toolbar.isVisible = false
 
         binding.manualEntryButton.setOnClickListener {
             checkPermissionGoToTaskDetails()
         }
 
         binding.sendButton.setOnClickListener {
-            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
+            if (isUserPaired()) {
                 if (!tasksViewModel.windowExpired.value!!) {
                     findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
                 } else {
@@ -143,7 +141,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         binding.swipeRefresh.setOnRefreshListener {
             // Don't have to refresh if the user isn't paired yet, only local data
-            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
+            if (isUserPaired()) {
                 tasksViewModel.syncTasks()
             } else {
                 binding.swipeRefresh.isRefreshing = false
@@ -175,7 +173,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 fillContentSection(case)
 
 
-                if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
+                if (isUserPaired()) {
                     binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
                     if (!tasksViewModel.ifCaseWasChanged()) {
                         binding.sendButtonHolder.visibility = View.GONE
@@ -196,53 +194,39 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
 
-        setUpListeners()
-        Timber.e("User shared code is ${reversePairingViewModel.userHasSharedCode.value}")
-        Timber.e("Reverse pairing token is ${reversePairingViewModel.pairingToken}")
-        Timber.e("Should be polling is ${reversePairingViewModel.shouldBePolling.value}")
+        if (!isUserPaired()) {
+            setUpPairingListeners()
+        }
     }
 
-    private fun setUpListeners(){
-        reversePairingViewModel.reversePairingResult.observe(viewLifecycleOwner, { response ->
-            if(response.status == ReversePairingState.COMPLETED){
-                response.pairingCode?.let{
-                    pairingViewModel.pair(response.pairingCode)
+    private fun setUpPairingListeners() {
+        reversePairingViewModel.pairingResult.observe(viewLifecycleOwner, { completed ->
+            pairingViewModel.pair(completed.code)
+        })
+
+        reversePairingViewModel.isPairing.observe(viewLifecycleOwner, { isPolling ->
+            binding.waitingForPairingContainer.isVisible = isPolling
+            if (isPolling) {
+                binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+            }
+        })
+
+        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    binding.sendButton.text = getString(R.string.send_data)
+                    tasksViewModel.syncTasks()
                 }
-            }
-        })
-
-        reversePairingViewModel.shouldBePolling.observe(viewLifecycleOwner, { polling ->
-            if(polling){
-                binding.waitingForPairingContainer.visibility = View.VISIBLE
-                binding.sendButton.text = "Probeer opnieuw"
-            }else{
-                // Remove container and fetch the case now that we've paired
-                binding.waitingForPairingContainer.visibility = View.GONE
-                tasksViewModel.syncTasks()
-            }
-        })
-
-        setUpRegularPairingListener()
-    }
-    private fun setUpRegularPairingListener(){
-        // Setup pairing logic
-        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { resource ->
-            resource?.resolve(onError = { exception ->
-
-
-                if (exception is HttpException && exception.code() == 400) {
-                    Toast.makeText(requireContext(), "Error 400 met koppelen", Toast.LENGTH_SHORT).show()
-                } else {
+                is Invalid -> {
+                    // TODO what?
+                    val kees = "henk"
+                }
+                is Error -> {
                     showErrorDialog(getString(R.string.error_while_pairing), {
-                    }, exception)
+                        findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
+                    }, result.exception)
                 }
-
-            }, onSuccess = {
-                // Handle success flow
-                Toast.makeText(requireContext(), "Succesvol gekoppeld", Toast.LENGTH_SHORT).show()
-                reversePairingViewModel.cancelPollingForChanges()
-               // binding.btnNext.isEnabled = true
-            })
+            }
         })
     }
 
@@ -310,8 +294,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
         clicksBlocked = true
         if (tasksViewModel.getCachedQuestionnaire() == null) {
-            // questionare is null, this could happen in questionary call failed
-            showErrorDialog(getString(R.string.error_questionarre_is_empty), {})
+            showErrorDialog(getString(R.string.error_questionarre_is_empty), {
+                // TODO: what?
+            })
             return
         }
         if (ContextCompat.checkSelfPermission(
@@ -336,19 +321,18 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         } else {
             if (task?.linkedContact != null) {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(
-                        task,
-                        task.linkedContact
-                    )
+                    MyContactsFragmentDirections.toContactDetails(task, task.linkedContact)
                 )
             } else {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerSelection(
-                        task
-                    )
+                    MyContactsFragmentDirections.toContactPickerSelection(task)
                 )
             }
         }
+    }
+
+    private fun isUserPaired(): Boolean {
+        return userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)
     }
 
     private fun handleQADataWipe() {
