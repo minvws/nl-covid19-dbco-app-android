@@ -83,6 +83,8 @@ android {
             buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.firebase
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
         }
 
         dbcoAcc {
@@ -188,7 +190,8 @@ dependencies {
 
     implementation "androidx.security:security-crypto:1.0.0-rc03"
 
-    // Firebase is for the acc builds only
+    // Firebase is for the acc and test builds only
     dbcoAccImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
+    dbcoTestImplementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
 
 }

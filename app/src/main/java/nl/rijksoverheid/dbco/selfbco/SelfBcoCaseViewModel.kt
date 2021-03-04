@@ -40,7 +40,7 @@ class SelfBcoCaseViewModel(
             .toString(DateFormats.dateInputData),
         category: Category?
     ) {
-        val selfBcoContactTask = Task(
+        val task = Task(
             taskType = TaskType.Contact,
             source = Source.App,
             category = category,
@@ -48,7 +48,7 @@ class SelfBcoCaseViewModel(
             uuid = UUID.randomUUID().toString(),
             dateOfLastExposure = dateOfLastExposure
         )
-        tasksRepository.saveTask(selfBcoContactTask)
+        tasksRepository.saveTask(task) { current -> current.label!!.contentEquals(task.label!!) }
     }
 
     fun getDateOfSymptomOnset(): DateTime {
