@@ -67,7 +67,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
                 is Success -> {
                     binding.loadingIndicator.visibility = View.INVISIBLE
                     binding.pairedIndicator.visibility = View.VISIBLE
-                    binding.stateText.text = "Gekoppeld met GGD"
+                    binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
                     binding.btnNext.isEnabled = true
                     reversePairingViewModel.cancelPollingForChanges()
                 }
@@ -109,7 +109,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private fun showShareCodeDialog() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Heb je de code gedeeld met de GGD-medewerker?")
+        builder.setTitle(R.string.selfbco_reverse_pairing_share_message_title)
         builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
             reversePairingViewModel.setUserHasSharedCode(true)
             dialog.dismiss()

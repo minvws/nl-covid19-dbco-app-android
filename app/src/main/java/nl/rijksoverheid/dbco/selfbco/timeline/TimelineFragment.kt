@@ -72,6 +72,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
+        adapter.clear()
 
         firstDay = selfBcoViewModel.getDateOfSymptomOnset()
         // Set First day to selected date minus 2 days

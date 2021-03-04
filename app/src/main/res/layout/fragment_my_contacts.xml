@@ -137,7 +137,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="12dp"
-                        android:text="Wachten op koppeling met de GGD"
+                        android:text="@string/selfbco_reverse_pairing_pairing_waiting"
                         android:textColor="@color/purple"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
