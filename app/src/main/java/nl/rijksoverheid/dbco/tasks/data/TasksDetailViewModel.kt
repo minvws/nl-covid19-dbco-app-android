@@ -55,13 +55,13 @@ class TasksDetailViewModel(
 
     fun getDateOfSymptomOnset(): LocalDate? {
         tasksRepository.getSymptomOnsetDate()?.let {
-            return LocalDate.parse(it, DateFormats.dateInputData )
+            return LocalDate.parse(it, DateFormats.dateInputData)
         }
         return null
     }
 
-    fun saveChangesToTask(updatedTask: Task) {
-        tasksRepository.saveTask(updatedTask)
+    fun saveTask(task: Task) {
+        tasksRepository.saveTask(task) { current -> current.uuid == task.uuid }
     }
 
     fun deleteCurrentTask() {
