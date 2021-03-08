@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.contacts.details
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
@@ -17,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.serialization.json.JsonElement
@@ -148,7 +148,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             } else {
                 binding.saveButton.apply {
                     backgroundTintList =
-                        ContextCompat.getColorStateList(context, R.color.color_primary)
+                        ContextCompat.getColorStateList(context, R.color.primary)
                     setTextColor(context.getColor(R.color.white))
                 }
             }
@@ -214,7 +214,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
 
     private fun showDeleteItemDialog(view: View) {
-        val builder = AlertDialog.Builder(view.context)
+        val builder = MaterialAlertDialogBuilder(view.context)
         builder.setMessage(R.string.delete_contact_message)
         builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
             viewModel.deleteCurrentTask()
@@ -228,7 +228,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun showUnsavedChangesDialog(view: View) {
-        val builder = AlertDialog.Builder(view.context)
+        val builder = MaterialAlertDialogBuilder(view.context)
         builder.setMessage(getString(R.string.unsaved_changes_message))
         builder.setPositiveButton(R.string.save) { dialog, _ ->
             if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.didInform == false) {
@@ -246,7 +246,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun showDidYouInformDialog(view: View) {
-        val builder = AlertDialog.Builder(view.context)
+        val builder = MaterialAlertDialogBuilder(view.context)
         val string = getString(
             R.string.contact_inform_prompt_title, viewModel.selectedContact?.getDisplayName()
                 ?: ""

@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.selfbco.onboarding
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
@@ -93,7 +93,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
                 requestCallback.launch(Manifest.permission.READ_CONTACTS)
             } else {
                 activity?.let {
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(it)
+                    val builder = MaterialAlertDialogBuilder(it)
                     builder.setTitle(R.string.permissions_title)
                     builder.setCancelable(false)
                     builder.setMessage(R.string.permissions_some_permissions_denied)

@@ -16,7 +16,6 @@ import nl.rijksoverheid.dbco.databinding.ItemQuestionnaireSectionBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.accessibilityAnnouncement
 import nl.rijksoverheid.dbco.util.delay
-import nl.rijksoverheid.dbco.util.setContentResource
 import nl.rijksoverheid.dbco.util.setImageResource
 
 class QuestionnaireSectionHeader(

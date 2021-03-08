@@ -50,20 +50,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
                 android:id="@+id/manual_entry_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/gray_lighter"
                 android:text="@string/add_contact"
-                android:textColor="@color/purple"
                 app:icon="@drawable/ic_add"
                 app:iconGravity="textStart"
                 app:iconPadding="6dp"
-                app:iconTint="@color/color_primary"
+                app:iconTint="@color/primary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/my_contacts_header" />
@@ -122,12 +120,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
-                    android:backgroundTint="@color/cyan_enabled_grey_lighter_default"
-                    android:text="@string/send_data"
-                    android:textColor="@color/white_enabled_cyan_default" />
-
+                    android:text="@string/send_data" />
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

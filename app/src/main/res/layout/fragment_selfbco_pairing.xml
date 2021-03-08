@@ -28,7 +28,7 @@
                 android:drawablePadding="5dp"
                 android:paddingVertical="16dp"
                 android:text="@string/previous"
-                android:textColor="@color/color_primary"
+                android:textColor="@color/primary"
                 android:textSize="17sp"
                 app:drawableStartCompat="@drawable/ic_chevron_left"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,10 +155,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"

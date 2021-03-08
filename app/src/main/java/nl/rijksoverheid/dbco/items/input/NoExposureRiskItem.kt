@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.items.input
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemNoExposureRiskBinding
-import nl.rijksoverheid.dbco.databinding.ItemNoRiskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 class NoExposureRiskItem : BaseBindableItem<ItemNoExposureRiskBinding>() {

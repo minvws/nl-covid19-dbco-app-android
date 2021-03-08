@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.view_loading.view.*
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
@@ -36,7 +37,7 @@ abstract class BaseFragment @JvmOverloads constructor(
     }
 
     fun showErrorDialog(message: String, tryAgainAction: () -> Unit, throwable: Throwable? = null) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(R.string.error)
         builder.setCancelable(true)
         var finalMessage = message
@@ -60,7 +61,7 @@ abstract class BaseFragment @JvmOverloads constructor(
     }
 
     fun showProgressDialog(message: String, dismissAction: (() -> Unit)? = null): AlertDialog {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
 
         builder.setCancelable(false)
 

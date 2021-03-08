@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
-import timber.log.Timber
 
 class SplashFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 

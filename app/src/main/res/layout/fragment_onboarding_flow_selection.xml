@@ -67,23 +67,19 @@
             app:layout_constraintStart_toStartOf="parent" />
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginBottom="16dp"
-            android:background="@drawable/onboarding_button_background"
             android:text="@{viewmodel.featureFlags.enableSelfBCO ? @string/zelfbco_have_code : @string/next }"
             app:layout_constraintBottom_toTopOf="@id/btn_no_code"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
             android:id="@+id/btn_no_code"
             android:layout_width="match_parent"
-            android:backgroundTint="@color/gray_lighter"
-            android:textColor="@color/purple"
             android:layout_height="wrap_content"
             android:text="@string/zelfbco_no_code"
             android:visibility="@{viewmodel.featureFlags.enableSelfBCO ? View.VISIBLE : View.GONE}"

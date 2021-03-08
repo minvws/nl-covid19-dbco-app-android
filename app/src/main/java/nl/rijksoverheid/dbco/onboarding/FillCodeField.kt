@@ -14,7 +14,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.accessibility.AccessibilityEvent
-import android.widget.EditText
 import nl.rijksoverheid.dbco.util.numbers
 import nl.rijksoverheid.dbco.util.updateText
 

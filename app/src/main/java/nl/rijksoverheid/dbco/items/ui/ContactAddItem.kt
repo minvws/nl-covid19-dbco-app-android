@@ -11,8 +11,6 @@ package nl.rijksoverheid.dbco.items.ui
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactAddBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.items.input.ContactInputItem
-import nl.rijksoverheid.dbco.selfbco.timeline.TimelineSection
 
 class ContactAddItem() : BaseBindableItem<ItemContactAddBinding>() {
     override fun bind(viewBinding: ItemContactAddBinding, position: Int) {
