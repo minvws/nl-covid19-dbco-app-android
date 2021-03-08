@@ -41,9 +41,8 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -196,28 +195,33 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private fun setUpPairingListeners() {
-        reversePairingViewModel.pairingResult.observe(viewLifecycleOwner, { completed ->
-            pairingViewModel.pair(completed.code)
-        })
-
-        reversePairingViewModel.isPairing.observe(viewLifecycleOwner, { isPolling ->
-            binding.waitingForPairingContainer.isVisible = isPolling
-            if (isPolling) {
-                binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+        reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
+            when (status) {
+                is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
+                is ReversePairingStatus.Error -> {
+                    // TODO
+                }
+                is ReversePairingStatus.Expired -> {
+                    // TODO
+                }
+                is ReversePairingStatus.Pairing -> {
+                    binding.pairingContainer.isVisible = true // TODO set invisible after going to reverse pairing again
+                    binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+                }
             }
         })
 
         pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is Success -> {
+                is PairingResult.Success -> {
                     binding.sendButton.text = getString(R.string.send_data)
                     tasksViewModel.syncTasks()
                 }
-                is Invalid -> {
+                is PairingResult.Invalid -> {
                     // TODO what?
                     val kees = "henk"
                 }
-                is Error -> {
+                is PairingResult.Error -> {
                     showErrorDialog(getString(R.string.error_while_pairing), {
                         findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
                     }, result.exception)

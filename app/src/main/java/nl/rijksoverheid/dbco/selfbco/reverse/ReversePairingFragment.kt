@@ -18,9 +18,8 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
@@ -58,23 +57,34 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
                 .toString()
         })
 
-        reversePairingViewModel.pairingResult.observe(viewLifecycleOwner, { completed ->
-            pairingViewModel.pair(completed.code)
+        reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
+            when (status) {
+                is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
+                is ReversePairingStatus.Error -> {
+                    // TODO
+                }
+                is ReversePairingStatus.Expired -> {
+                    // TODO
+                }
+                is ReversePairingStatus.Pairing -> {
+                    // TODO
+                }
+            }
         })
 
         pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
             when (result) {
-                is Success -> {
+                is PairingResult.Success -> {
                     binding.loadingIndicator.visibility = View.INVISIBLE
                     binding.pairedIndicator.visibility = View.VISIBLE
                     binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
                     binding.btnNext.isEnabled = true
                     reversePairingViewModel.cancelPollingForChanges()
                 }
-                is Invalid -> {
+                is PairingResult.Invalid -> {
                     // TODO what?
                 }
-                is Error -> {
+                is PairingResult.Error -> {
                     showErrorDialog(getString(R.string.error_while_pairing), {}, result.exception)
                 }
             }

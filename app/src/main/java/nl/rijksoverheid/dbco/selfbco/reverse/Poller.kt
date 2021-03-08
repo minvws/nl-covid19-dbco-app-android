@@ -9,9 +9,9 @@
 package nl.rijksoverheid.dbco.selfbco.reverse
 
 import kotlinx.coroutines.flow.Flow
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingResult
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 
 interface Poller {
-    fun poll(delay: Long, token : String): Flow<ReversePairingResult>
+    fun poll(delay: Long, token : String): Flow<ReversePairingStatus>
     fun close()
 }
