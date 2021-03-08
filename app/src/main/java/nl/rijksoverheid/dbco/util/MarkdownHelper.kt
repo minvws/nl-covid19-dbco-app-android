@@ -39,7 +39,7 @@ object MarkdownHelper {
                     BulletPointSpan(
                         gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_size),
                         bulletRadius = context.resources.getDimension(R.dimen.bullet_radius),
-                        color = ContextCompat.getColor(context, R.color.color_primary)
+                        color = ContextCompat.getColor(context, R.color.primary)
                     ),
                     start,
                     end,

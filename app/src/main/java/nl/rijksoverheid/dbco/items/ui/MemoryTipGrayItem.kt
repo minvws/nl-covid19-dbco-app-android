@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.items.ui
 
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemMemorytipTimelineGrayBinding
-import nl.rijksoverheid.dbco.databinding.ItemMemorytipTimelineOrangeBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 

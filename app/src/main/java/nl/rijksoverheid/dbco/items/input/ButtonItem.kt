@@ -7,15 +7,12 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import timber.log.Timber
 
 class ButtonItem(
     private val text: String,

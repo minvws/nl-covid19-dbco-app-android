@@ -10,5 +10,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="8dp" />
     <solid android:color="#F2F2F7" />
-    <stroke android:width="2dp" android:color="@color/color_disabled" />
+    <stroke android:width="2dp" android:color="@color/disabled" />
 </shape>

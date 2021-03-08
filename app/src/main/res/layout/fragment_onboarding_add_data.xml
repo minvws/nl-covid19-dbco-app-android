@@ -57,12 +57,11 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/begin"
-            android:background="@drawable/onboarding_button_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"  />

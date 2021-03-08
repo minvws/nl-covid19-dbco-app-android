@@ -51,10 +51,10 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="De app heeft blootstelling permissie nodig om te kunnen werken." />
 
-        <Button
-            style="@style/Widget.MaterialComponents.Button.TextButton.Snackbar"
+        <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:onClick="@{() -> viewState.action.invoke()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
