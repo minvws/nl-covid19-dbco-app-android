@@ -30,28 +30,33 @@ class ReversePairingStatePoller(
 
     private var errorCount: Int = 0
 
-    override fun poll(delay: Long, token: String): Flow<ReversePairingStatus> {
+    override fun poll(
+        delay: Long,
+        credentials: ReversePairingCredentials
+    ): Flow<ReversePairingStatus> {
         return channelFlow {
             send(ReversePairingStatus.Pairing)
             while (!isClosedForSend) {
                 var refreshDelay: Long = delay
                 try {
-                    val response = repository.checkReversePairingStatus(token)
+                    val response = repository.checkReversePairingStatus(credentials.token)
                     val body = response.body()
                     if (!response.isSuccessful || body == null) {
                         if (errorCount > 2) {
-                            send(ReversePairingStatus.Error)
+                            send(ReversePairingStatus.Error(credentials))
                         } else {
                             errorCount++
                         }
                     } else if (body.status == PENDING) {
+                        val refresh = body.refreshDelay!!
+
                         val now = LocalDateTime.now(DateTimeZone.UTC)
                         val expiry = LocalDateTime.parse(body.expiresAt!!, DateFormats.pairingData)
                         val secondsLeft = Seconds.secondsBetween(now, expiry).seconds
-                        val refresh = body.refreshDelay!!
                         if (now.isAfter(expiry) || secondsLeft < refresh) {
                             send(ReversePairingStatus.Expired)
                         }
+
                         refreshDelay = refresh * 1_000L
                     } else if (body.status == COMPLETED) {
                         send(ReversePairingStatus.Success(body.pairingCode!!))
@@ -73,6 +78,6 @@ class ReversePairingStatePoller(
         object Pairing : ReversePairingStatus()
         data class Success(val code: String) : ReversePairingStatus()
         object Expired : ReversePairingStatus()
-        object Error : ReversePairingStatus()
+        data class Error(val credentials: ReversePairingCredentials) : ReversePairingStatus()
     }
 }

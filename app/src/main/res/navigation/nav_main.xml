@@ -431,6 +431,18 @@
         tools:layout="@layout/fragment_selfbco_pairing"
         android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingFragment"
         android:label="ReversePairingFragment" >
+        <argument
+            android:name="credentials"
+            app:argType="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials"
+            app:nullable="true" />
+        <argument
+            android:name="initWithErrorState"
+            app:argType="boolean"
+            app:nullable="false" />
+        <argument
+            android:name="errorText"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/to_finalizeCheckFragment"
             app:destination="@id/finalizeCheckFragment" />

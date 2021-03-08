@@ -16,9 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.user.IUserRepository
-import nl.rijksoverheid.dbco.util.Resource
-import retrofit2.HttpException
-import timber.log.Timber
 
 class PairingViewModel(private val userRepository: IUserRepository) : ViewModel() {
 
@@ -32,20 +29,14 @@ class PairingViewModel(private val userRepository: IUserRepository) : ViewModel(
                     userRepository.pair(pin)
                     _pairingResult.postValue(PairingResult.Success)
                 } catch (ex: Throwable) {
-                    Timber.e(ex, "Error while pairing")
-                    if (ex is HttpException && ex.code() == 400) {
-                        _pairingResult.postValue(PairingResult.Invalid)
-                    } else {
-                        _pairingResult.postValue(PairingResult.Error(ex))
-                    }
+                    _pairingResult.postValue(PairingResult.Error(ex))
                 }
             }
         }
     }
 
     sealed class PairingResult {
-        object Success: PairingResult()
-        object Invalid: PairingResult()
-        data class Error(val exception: Throwable): PairingResult()
+        object Success : PairingResult()
+        data class Error(val exception: Throwable) : PairingResult()
     }
 }

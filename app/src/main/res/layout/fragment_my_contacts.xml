@@ -124,12 +124,12 @@
                         android:id="@+id/loading_indicator"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/state_text"
+                        app:layout_constraintBottom_toBottomOf="@+id/pairing_state_text"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/state_text" />
+                        app:layout_constraintTop_toTopOf="@+id/pairing_state_text" />
 
                     <TextView
-                        android:id="@+id/state_text"
+                        android:id="@+id/pairing_state_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

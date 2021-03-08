@@ -1,3 +1,11 @@
+/*
+ *  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *   SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 package nl.rijksoverheid.dbco.selfbco.reverse
 
 import androidx.lifecycle.LiveData
@@ -27,7 +35,18 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
 
     private var pollingJob: Job? = null
 
-    fun retrievePairingCode() {
+    fun start(credentials: ReversePairingCredentials? = null) {
+        if (credentials != null) {
+            // need to start pairing with  provided credentials
+            _pairingCode.postValue(credentials.code)
+            startPairing(credentials)
+        } else {
+            // need to start with new credentials
+            retrievePairingCode()
+        }
+    }
+
+    private fun retrievePairingCode() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val pairingResponse = userRepository.retrieveReversePairingCode()
@@ -36,18 +55,18 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
                     val token = pairingResponse.body()?.token
                     if (code != null && token != null) {
                         _pairingCode.postValue(code)
-                        startPairing(token)
+                        startPairing(ReversePairingCredentials(token, code))
                     }
                 }
             }
         }
     }
 
-    private fun startPairing(token: String) {
+    private fun startPairing(credentials: ReversePairingCredentials) {
         cancelPollingForChanges()
         pollingJob = viewModelScope.launch {
             val poller = ReversePairingStatePoller(userRepository, Dispatchers.IO)
-            val flow = poller.poll(POLLING_DELAY, token).onEach { result ->
+            val flow = poller.poll(POLLING_DELAY, credentials).onEach { result ->
                 _pairingStatus.postValue(result)
                 if (result is Success) {
                     _userHasSharedCode.postValue(true)

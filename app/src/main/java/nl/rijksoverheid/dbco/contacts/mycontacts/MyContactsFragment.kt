@@ -43,6 +43,7 @@ import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -121,18 +122,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             checkPermissionGoToTaskDetails()
         }
 
-        binding.sendButton.setOnClickListener {
-            if (isUserPaired()) {
-                if (!tasksViewModel.windowExpired.value!!) {
-                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
-                } else {
-                    showLocalDeletionDialog()
-                }
-            } else {
-                // User isn't paired yet, let them pair first
-                findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
-            }
-        }
+        setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
             // Don't have to refresh if the user isn't paired yet, only local data
@@ -194,18 +184,53 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
+    private fun setupSendButton(
+        pairingCredentials: ReversePairingCredentials? = null,
+        initReversePairingWithErrorState: Boolean = false,
+        reversePairingErrorText: String? = null
+    ) {
+        binding.sendButton.setOnClickListener {
+            binding.pairingContainer.isVisible = false
+            if (isUserPaired()) {
+                if (!tasksViewModel.windowExpired.value!!) {
+                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                } else {
+                    showLocalDeletionDialog()
+                }
+            } else {
+                // User isn't paired yet, let them pair first
+                findNavController()
+                    .navigate(
+                        MyContactsFragmentDirections.toReversePairingFragment(
+                            credentials = pairingCredentials,
+                            initWithErrorState = initReversePairingWithErrorState,
+                            errorText = reversePairingErrorText
+                        )
+                    )
+            }
+        }
+    }
+
     private fun setUpPairingListeners() {
         reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
                 is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
                 is ReversePairingStatus.Error -> {
-                    // TODO
+                    // TODO show error text and button text
+                    binding.pairingStateText.text = "Error"
+                    binding.sendButton.text = "Pls retry with old"
+                    setupSendButton(pairingCredentials = status.credentials)
                 }
                 is ReversePairingStatus.Expired -> {
-                    // TODO
+                    binding.pairingStateText.text = "Expired"
+                    binding.sendButton.text = "Pls retry with new"
+                    setupSendButton(
+                        initReversePairingWithErrorState = true,
+                        reversePairingErrorText = "Code expired"
+                    )
                 }
                 is ReversePairingStatus.Pairing -> {
-                    binding.pairingContainer.isVisible = true // TODO set invisible after going to reverse pairing again
+                    binding.pairingContainer.isVisible = true
                     binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
                 }
             }
@@ -214,17 +239,18 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is PairingResult.Success -> {
+                    binding.pairingContainer.isVisible = false
                     binding.sendButton.text = getString(R.string.send_data)
                     tasksViewModel.syncTasks()
                 }
-                is PairingResult.Invalid -> {
-                    // TODO what?
-                    val kees = "henk"
-                }
                 is PairingResult.Error -> {
-                    showErrorDialog(getString(R.string.error_while_pairing), {
-                        findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
-                    }, result.exception)
+                    binding.pairingStateText.text = "Error"
+                    binding.sendButton.text = "Pls retry with new"
+                    // TODO show error text and button text
+                    setupSendButton(
+                        initReversePairingWithErrorState = true,
+                        reversePairingErrorText = "Code not worky"
+                    )
                 }
             }
         })

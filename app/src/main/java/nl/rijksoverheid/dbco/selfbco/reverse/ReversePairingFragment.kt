@@ -13,6 +13,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -22,6 +23,8 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
+
+    private val args: ReversePairingFragmentArgs by navArgs()
 
     lateinit var binding: FragmentSelfbcoPairingBinding
 
@@ -47,7 +50,12 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
         }
 
-        reversePairingViewModel.retrievePairingCode()
+        if (args.initWithErrorState) {
+            val text = args.errorText
+            // TODO: show not working state and call reversePairingViewModel.start() when retry is clicked
+        } else {
+            reversePairingViewModel.start(args.credentials)
+        }
     }
 
     private fun setUpListeners() {
@@ -61,31 +69,29 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             when (status) {
                 is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
                 is ReversePairingStatus.Error -> {
-                    // TODO
+                    // TODO show error text and retry button
                 }
                 is ReversePairingStatus.Expired -> {
-                    // TODO
+                    // TODO show expired text and retry button
                 }
                 is ReversePairingStatus.Pairing -> {
-                    // TODO
+                    /* NO-OP */
                 }
             }
         })
 
         pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
+            reversePairingViewModel.cancelPollingForChanges()
             when (result) {
                 is PairingResult.Success -> {
                     binding.loadingIndicator.visibility = View.INVISIBLE
                     binding.pairedIndicator.visibility = View.VISIBLE
                     binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
                     binding.btnNext.isEnabled = true
-                    reversePairingViewModel.cancelPollingForChanges()
-                }
-                is PairingResult.Invalid -> {
-                    // TODO what?
                 }
                 is PairingResult.Error -> {
-                    showErrorDialog(getString(R.string.error_while_pairing), {}, result.exception)
+                    // TODO show error text and retry button
+                    binding.stateText.text = "error pls retry with new token"
                 }
             }
         })
