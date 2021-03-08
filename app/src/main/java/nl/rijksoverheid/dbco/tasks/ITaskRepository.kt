@@ -13,15 +13,17 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 interface ITaskRepository {
 
-    suspend fun fetchCase(): Case?
-    fun saveChangesToTask(updatedTask: Task)
+    suspend fun fetchCase(): Case
+    fun saveTask(task: Task, shouldMerge: (Task) -> Boolean)
     fun deleteTask(taskToDelete: Task)
-    fun getCachedCase(): Case?
+    fun getCase(): Case
     fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
-    fun generateSelfBcoCase(dateOfSymptomOnset : String?) : Case
-    fun updateSymptomOnsetDate(dateOfSymptomOnset : String?)
-
+    fun getSymptomOnsetDate(): String?
+    fun updateSymptomOnsetDate(dateOfSymptomOnset: String)
+    fun addSymptom(symptom: String)
+    fun removeSymptom(symptom: String)
+    fun getSymptoms(): List<String>
 
     companion object {
         const val CASE_KEY = "case"

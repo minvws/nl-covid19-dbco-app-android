@@ -25,8 +25,8 @@ class TasksOverviewViewModel(
     private val questionnaireRepository: IQuestionnaireRepository
 ) : ViewModel() {
 
-    private val _fetchCase = MutableLiveData<Resource<Case?>>()
-    val fetchCase: LiveData<Resource<Case?>> = _fetchCase
+    private val _fetchCase = MutableLiveData<Resource<Case>>()
+    val fetchCase: LiveData<Resource<Case>> = _fetchCase
 
     var selfBcoCase = MutableLiveData<Resource<Case?>>()
 
@@ -34,7 +34,7 @@ class TasksOverviewViewModel(
     val windowExpired: LiveData<Boolean> = _windowExpired
 
 
-    fun getCachedCase() = tasksRepository.getCachedCase()
+    fun getCachedCase() = tasksRepository.getCase()
 
     fun syncTasks() {
         viewModelScope.launch {
@@ -64,11 +64,4 @@ class TasksOverviewViewModel(
     fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
-
-    fun generateSelfBcoCase(dateOfSymptomOnset: String? = null) {
-        val case = tasksRepository.generateSelfBcoCase(dateOfSymptomOnset)
-        val selfBcoCase = Resource.success(case)
-        _fetchCase.postValue(selfBcoCase)
-        this.selfBcoCase.postValue(selfBcoCase)
-    }
 }

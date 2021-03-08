@@ -127,7 +127,7 @@ class RoommateInputFragment() :
                 if (item.contactName.isNotEmpty()) {
                     selfBcoViewModel.addSelfBcoContact(
                         item.contactName,
-                        category = Category.LIVED_TOGETHER
+                        category = Category.ONE
                     )
                 }
             }

@@ -19,7 +19,9 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -40,6 +42,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
@@ -65,7 +68,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             )
         )
 
-        val task = args.indexTask ?: Task(taskType = "contact", source = Source.App)
+        val task = args.indexTask ?: Task(taskType = TaskType.Contact, source = Source.App)
         viewModel.setTask(task)
 
         itemsStorage = TaskDetailItemsStorage(
@@ -74,10 +77,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewLifecycleOwner,
             appLifecycleViewModel.getFeatureFlags()
         ).apply {
-            if(task.source != Source.Portal) {
+            if (task.source != Source.Portal) {
                 // If the task is coming from the portal remove the classification section and change the other section's numbering accordingly
                 adapter.add(classificationSection)
-            }else{
+            } else {
                 contactDetailsSection.setSectionNumber(1)
                 informSection.setSectionNumber(2)
             }
@@ -122,14 +125,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage?.refreshInformSection()
 
             binding.saveButton.text =
-            if (it == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
-                getString(R.string.delete)
-            } else  if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null || it == null) {
-                // Show cancel if contact is not at risk and not saved yet, or if no category is set yet
-                getString(R.string.cancel)
-            } else {
-                getString(R.string.save)
-            }
+                if (it == Category.NO_RISK && task.source == Source.App && task.uuid != null) {
+                    getString(R.string.delete)
+                } else if (it == Category.NO_RISK && task.source == Source.App && task.uuid == null || it == null) {
+                    // Show cancel if contact is not at risk and not saved yet, or if no category is set yet
+                    getString(R.string.cancel)
+                } else {
+                    getString(R.string.save)
+                }
         })
 
         viewModel.communicationType.observe(viewLifecycleOwner, {
@@ -157,7 +160,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             // If this happens, the app can crash due to the RV not accepting changes during layout computes
             // Adding this check makes sure the section is only refreshed when the user is actively filling
             // in their data rather than during a scroll.
-            if(!binding.content.isComputingLayout) {
+            if (!binding.content.isComputingLayout) {
                 itemsStorage?.refreshInformSection()
             }
         })
@@ -169,7 +172,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     // Or, if it hasn't been saved yet, cancel. If the task is valid, save instead
                 if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid != null) {
                     getString(R.string.delete)
-                } else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null || viewModel.category.value == null ) {
+                } else if (it == ANSWER_EARLIER && task.source == Source.App && task.uuid == null || viewModel.category.value == null) {
                     // If the date is before the infection period OR the category isn't set yet, show cancel. Required to stop overriding by observers on category and date
                     getString(R.string.cancel)
                 } else {
@@ -224,13 +227,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.create().show()
     }
 
-    private fun showUnsavedChangesDialog(view: View){
+    private fun showUnsavedChangesDialog(view: View) {
         val builder = MaterialAlertDialogBuilder(view.context)
         builder.setMessage(getString(R.string.unsaved_changes_message))
         builder.setPositiveButton(R.string.save) { dialog, _ ->
             if (viewModel.communicationType.value == CommunicationType.Index && viewModel.task.value?.didInform == false) {
                 showDidYouInformDialog(view)
-            }else{
+            } else {
                 collectAnswers()
             }
             dialog.dismiss()
@@ -318,7 +321,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         var value: JsonObject? = JsonObject(child.getUserAnswers())
                         // override logic for classification questions
                         if (question.uuid == itemsStorage?.classificationQuestion?.uuid) {
-                            value = itemsStorage?.getClassificationAnswerValue()
+                            val map = HashMap<String, JsonElement>()
+                            viewModel.category.value?.let { category ->
+                                map["value"] = JsonPrimitive(category.label)
+                            }
+                            value = JsonObject(map)
                         }
                         val answer = Answer(
                             UUID.randomUUID().toString(),
@@ -348,8 +355,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if (task.uuid.isNullOrEmpty()) {
                 task.uuid = UUID.randomUUID().toString()
             }
-            if(task.label.isNullOrEmpty()){
-                task.label = getString(R.string.mycontacts_name_unknown)
+            if (task.label.isNullOrEmpty()) {
+                if (!task.linkedContact?.getDisplayName().isNullOrEmpty()) {
+                    task.label = task.linkedContact?.getDisplayName()
+                } else {
+                    task.label = getString(R.string.mycontacts_name_unknown)
+                }
             }
             answers.firstOrNull { it.questionUuid == CONTACT_TYPE_UUID }?.value?.get("value")?.jsonPrimitive?.content.let {
                 task.taskContext = it
@@ -361,7 +372,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewModel.category.value?.let { newCategory ->
                 task.category = newCategory
             }
-            viewModel.saveChangesToTask(task)
+            viewModel.saveTask(task)
         }
 
         view?.hideKeyboard()

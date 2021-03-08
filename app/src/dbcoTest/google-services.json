@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "514196416954",
-    "project_id": "ggd-contact-acceptatie",
-    "storage_bucket": "ggd-contact-acceptatie.appspot.com"
+    "project_number": "14711935107",
+    "firebase_url": "https://ggd-dbco.firebaseio.com",
+    "project_id": "ggd-dbco",
+    "storage_bucket": "ggd-dbco.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:514196416954:android:9716beeae89478dc8f9583",
+        "mobilesdk_app_id": "1:14711935107:android:5ef53bbc991b05c1074bb6",
         "android_client_info": {
           "package_name": "nl.rijksoverheid.dbco"
         }
       },
       "oauth_client": [
         {
-          "client_id": "514196416954-hd1fevmbjgoeh5gr3hehtu89d86q4ppm.apps.googleusercontent.com",
+          "client_id": "14711935107-tln7hb3arbb8tmclpb43kiap1d57folb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCMHI7_xaJlDbIkBgOjxQDbh2XdjB_seJE"
+          "current_key": "AIzaSyC9jJSFPd0ZyzxmDC4gr-iHS76RtERD6w8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "514196416954-hd1fevmbjgoeh5gr3hehtu89d86q4ppm.apps.googleusercontent.com",
+              "client_id": "14711935107-tln7hb3arbb8tmclpb43kiap1d57folb.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "14711935107-0e0mt9utjrkbtjqjordcuujv282idg5n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nl.rijksoverheid.dbco"
+              }
             }
           ]
         }

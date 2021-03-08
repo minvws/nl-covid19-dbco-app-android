@@ -15,27 +15,30 @@ import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
+import nl.rijksoverheid.dbco.databinding.ItemQuestion3OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.HtmlHelper
 
-class QuestionTwoOptionsItem(
+// TODO: refactor to a more generic solution supporting multiple options without dropdown
+class QuestionThreeOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswerValue: JsonObject? = null,
     private val isLocked : Boolean = false
-) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(context, question, answerSelectedListener, previousAnswerValue) {
+) : BaseOptionsQuestionItem<ItemQuestion3OptionsBinding>(context, question, answerSelectedListener, previousAnswerValue) {
 
-    override fun getLayout() = R.layout.item_question_2_options
+    override fun getLayout() = R.layout.item_question_3_options
     private lateinit var answerGroup: RadioGroup
 
-    override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
+    override fun bind(viewBinding: ItemQuestion3OptionsBinding, position: Int) {
         viewBinding.item = this
         answerGroup = viewBinding.answerGroup
 
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
+        viewBinding.option3.setOnCheckedChangeListener(null)
 
         // try restore state
         if (selectedAnswer == null) {
@@ -51,6 +54,7 @@ class QuestionTwoOptionsItem(
             when (index) {
                 0 -> viewBinding.option1.isChecked = true
                 1 -> viewBinding.option2.isChecked = true
+                2 -> viewBinding.option3.isChecked = true
             }
         }
 
@@ -59,7 +63,8 @@ class QuestionTwoOptionsItem(
                 if (isChecked) {
                     val answerOption = when (compoundButton.id) {
                         R.id.option1 -> question?.answerOptions?.get(0)
-                        else -> question?.answerOptions?.get(1)
+                        R.id.option2 -> question?.answerOptions?.get(1)
+                        else -> question?.answerOptions?.get(2)
                     }
                     answerOption?.let {
                         selectedAnswer = it
@@ -69,6 +74,7 @@ class QuestionTwoOptionsItem(
             }
         viewBinding.option1.setOnCheckedChangeListener(onCheckedChangeListener)
         viewBinding.option2.setOnCheckedChangeListener(onCheckedChangeListener)
+        viewBinding.option3.setOnCheckedChangeListener(onCheckedChangeListener)
 
         question?.description?.let {
             val context = viewBinding.root.context
@@ -81,33 +87,43 @@ class QuestionTwoOptionsItem(
             viewBinding.answerGroup.isEnabled = false
             viewBinding.option1.isEnabled = false
             viewBinding.option2.isEnabled = false
+            viewBinding.option3.isEnabled = false
             viewBinding.option1.setOnCheckedChangeListener(null)
             viewBinding.option2.setOnCheckedChangeListener(null)
+            viewBinding.option3.setOnCheckedChangeListener(null)
 
             viewBinding.questionLockedDescription.visibility = View.VISIBLE
 
             if(viewBinding.option1.isChecked){
                 viewBinding.option2.visibility = View.GONE
+                viewBinding.option3.visibility = View.GONE
                 viewBinding.option1.visibility = View.VISIBLE
+            } else if (viewBinding.option2.isChecked) {
+                viewBinding.option1.visibility = View.GONE
+                viewBinding.option3.visibility = View.GONE
+                viewBinding.option2.visibility = View.VISIBLE
             } else {
                 viewBinding.option1.visibility = View.GONE
-                viewBinding.option2.visibility = View.VISIBLE
+                viewBinding.option3.visibility = View.VISIBLE
+                viewBinding.option2.visibility = View.GONE
             }
 
         } else {
             viewBinding.answerGroup.isEnabled = true
             viewBinding.option1.isEnabled = true
             viewBinding.option2.isEnabled = true
+            viewBinding.option3.isEnabled = true
             viewBinding.option1.visibility = View.VISIBLE
             viewBinding.option2.visibility = View.VISIBLE
+            viewBinding.option3.visibility = View.VISIBLE
             viewBinding.questionLockedDescription.visibility = View.GONE
 
         }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionThreeOptionsItem && other.question?.uuid == question?.uuid
 
     override fun hasSameContentAs(other: Item<*>) =
-        other is QuestionTwoOptionsItem && other.question?.uuid == question?.uuid
+        other is QuestionThreeOptionsItem && other.question?.uuid == question?.uuid
 }

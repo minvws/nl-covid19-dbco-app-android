@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             val userRepository = UsertestUserRepository(this)
             factory = ViewModelFactory(
                 baseContext,
-                UsertestTaskRepository(this, userRepository),
+                UsertestTaskRepository(this),
                 ContactsRepository(this),
                 UsertestQuestionnaireRepository(this),
                 userRepository,

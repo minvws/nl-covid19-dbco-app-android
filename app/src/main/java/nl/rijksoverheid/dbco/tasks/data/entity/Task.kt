@@ -22,7 +22,7 @@ import org.joda.time.DateTime
 @Serializable
 @Parcelize
 class Task(
-    val taskType: String? = null,
+    val taskType: TaskType? = null,
     var taskContext: String? = null,
     val source: Source? = null,
     var label: String? = null, // this field comes from API, we show it only if $linkedContact.displayName is empty

@@ -85,10 +85,13 @@
 
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
-    <string name="duration_risk_label">Waren jullie langer dan een kwartier dicht bij elkaar? (binnen 1,5 meter)</string>
-    <string name="distance_risk_description"><![CDATA[<ul><li>Binnen anderhalve meter van de ander gehoest of geniesd</li><li>Geknuffeld of gezoend</li><li>Seksueel contact</li><ul>]]></string>
-    <string name="distance_risk_label">Heb je één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
-    <string name="other_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
+    <string name="distance_risk_label">Zijn jullie die dag dicht bij elkaar geweest? (minder dan 1,5 meter)</string>
+    <string name="distance_risk_answer_long">Ja, in totaal langer dan een kwartier</string>
+    <string name="distance_risk_answer_short">Ja, in totaal korter dan een kwartier</string>
+    <string name="distance_risk_answer_no">Nee, we hielden genoeg afstand</string>
+    <string name="physical_risk_label">Hebben jullie één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
+    <string name="physical_risk_description"><![CDATA[<ul><li>In het gezicht van de ander gehoest of geniesd</li><li>Gezoend</li><li>Seksueel contact</li><ul>]]></string>
+    <string name="same_room_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
     <string name="contact_section_typeofcontact_header">Soort contact</string>
     <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
