@@ -39,10 +39,6 @@ import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
 
-
-/**
- * Created by Dima Kovalenko.
- */
 class TaskDetailItemsStorage(
     val viewModel: TasksDetailViewModel,
     val context: Context,
@@ -51,8 +47,6 @@ class TaskDetailItemsStorage(
 ) {
 
     var classificationQuestion: Question? = null
-
-    // Classification
 
     val classificationSection = QuestionnaireSection(
         QuestionnaireSectionHeader(
@@ -70,8 +64,8 @@ class TaskDetailItemsStorage(
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_no), null, false.toString()),
-                AnswerOption(context.getString(R.string.answer_yes), null, true.toString())
+                AnswerOption(context.getString(R.string.answer_no), false.toString()),
+                AnswerOption(context.getString(R.string.answer_yes), true.toString())
             )
         ),
         {
@@ -96,15 +90,13 @@ class TaskDetailItemsStorage(
             listOf(
                 AnswerOption(
                     context.getString(R.string.distance_risk_answer_long),
-                    null,
                     "true, true"
                 ),
                 AnswerOption(
                     context.getString(R.string.distance_risk_answer_short),
-                    null,
                     "true, false"
                 ),
-                AnswerOption(context.getString(R.string.distance_risk_answer_no), null, "false, false")
+                AnswerOption(context.getString(R.string.distance_risk_answer_no), "false, false")
             )
         ),
         {
@@ -135,8 +127,8 @@ class TaskDetailItemsStorage(
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_know_no), null, false.toString())
+                AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
+                AnswerOption(context.getString(R.string.answer_know_no), false.toString())
             )
         ),
         {
@@ -159,8 +151,8 @@ class TaskDetailItemsStorage(
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+                AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
+                AnswerOption(context.getString(R.string.answer_think_no), false.toString())
             )
         ),
         {
@@ -263,7 +255,6 @@ class TaskDetailItemsStorage(
                     add(
                         AnswerOption(
                             context.getString(R.string.contact_information_last_exposure_earlier),
-                            null,
                             ANSWER_EARLIER
                         )
                     )
@@ -274,13 +265,12 @@ class TaskDetailItemsStorage(
                         val date = twoDaysBeforeSymptoms.plusDays(i)
                         val label = date.toString(DateFormats.exposureUI)
                         val value = date.toString(DateFormats.dateInputData)
-                        add(AnswerOption(label, null, value))
+                        add(AnswerOption(label, value))
                     }
 
                     add(
                         AnswerOption(
                             context.getString(R.string.contact_information_last_exposure_every_day),
-                            null,
                             LocalDate.now().toString(DateFormats.dateInputData)
                         )
                     )
@@ -301,19 +291,9 @@ class TaskDetailItemsStorage(
 
     fun refreshContactDetailsSection() {
         contactDetailsSection.removeAllChildren()
-        var communicationTypeQuestionFound = false
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
-                // add hardcoded "date of last exposure" question before communication type question
-                if (isCommunicationTypeQuestion(question)) {
-                    let {
-                        if (!it.dateOfLastExposureItem.isHidden) {
-                            it.contactDetailsSection.add(it.dateOfLastExposureItem)
-                            communicationTypeQuestionFound = true
-                        }
-                    }
-                }
                 when (question.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, contactDetailsSection)
@@ -339,67 +319,45 @@ class TaskDetailItemsStorage(
                     QuestionType.ContactDetails -> {
                         addContactDetailsItems(contactDetailsSection, question)
                     }
+                    else -> { /* NO-OP */ }
                 }
             }
         }
-        if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
-            if (!dateOfLastExposureItem.isHidden) {
-                contactDetailsSection?.add(dateOfLastExposureItem)
-            }
+        if (!dateOfLastExposureItem.isHidden) {
+            contactDetailsSection.add(dateOfLastExposureItem)
         }
     }
 
     private fun addMultiChoiceItem(
         question: Question,
-        sectionToAddTo: QuestionnaireSection?
+        section: QuestionnaireSection
     ) {
-        question.answerOptions?.size?.let { size ->
-            when {
-                size > 2 -> {
-                    sectionToAddTo?.add(
-                        QuestionMultipleOptionsItem(
-                            context,
-                            question,
-                            {},
-                            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
-                        )
-                    )
-                }
-                size == 2 -> {
-                    var previousAnswerValue =
-                        viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
-                    val shouldStaffContact =
-                        viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
-
-                    sectionToAddTo?.add(
-                        QuestionTwoOptionsItem(
-                            context,
-                            question,
-                            {
-                                if (!shouldStaffContact) {
-                                    when (it.trigger) {
-                                        ContactDetailsInputFragment.COMMUNICATION_STAFF -> viewModel.communicationType.value =
-                                            CommunicationType.Staff
-                                        ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
-                                            CommunicationType.Index
-                                    }
-                                }
-                            },
-                            previousAnswerValue
-                        )
-                    )
-                }
-                else -> {
-                }
+        val size = question.answerOptions?.size ?: return
+        val previousValue = viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+        section.add(
+            if (size > 2) {
+                QuestionMultipleOptionsItem(
+                    context,
+                    question,
+                    { /* NO-OP */ },
+                    previousValue
+                )
+            } else {
+                QuestionMultipleOptionsItem(
+                    context,
+                    question,
+                    { /* NO-OP */ },
+                    previousValue
+                )
             }
-        }
+        )
     }
 
     private fun addContactDetailsItems(
-        sectionToAddTo: QuestionnaireSection?,
+        section: QuestionnaireSection,
         question: Question
     ) {
-        sectionToAddTo?.addAll(
+        section.addAll(
             listOf(
                 ContactNameItem(
                     viewModel.selectedContact?.firstName,
@@ -659,18 +617,6 @@ class TaskDetailItemsStorage(
                 )
             }
         }
-    }
-
-    // Misc
-
-    private fun isCommunicationTypeQuestion(question: Question): Boolean {
-        var foundTrigger = false
-        question.answerOptions?.forEach {
-            if (it?.trigger == ContactDetailsInputFragment.COMMUNICATION_STAFF || it?.trigger == ContactDetailsInputFragment.COMMUNICATION_INDEX) {
-                foundTrigger = true
-            }
-        }
-        return foundTrigger
     }
 
     companion object {
