@@ -464,6 +464,8 @@ class TaskDetailItemsStorage(
             val exposureDatePlusFive =
                 exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
 
+            val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
+
             when (viewModel.category.value) {
                 Category.ONE -> {
                     context.getString(
@@ -472,18 +474,25 @@ class TaskDetailItemsStorage(
                     )
                 }
                 Category.TWO_A, Category.TWO_B -> {
-                    context.getString(
-                        R.string.inform_contact_guidelines_category2_with_date,
-                        exposureDatePlusFive,
-                        exposureDatePlusFive,
-                        exposureDatePlusTen
-                    )
+                    if (daysBetweenEncounterAndNow < 4) {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2_recent_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    } else {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    }
                 }
                 Category.THREE_A, Category.THREE_B -> {
                     context.getString(
                         R.string.inform_contact_guidelines_category3_with_date,
-                        exposureDatePlusFive,
-                        exposureDatePlusTen
+                        exposureDatePlusFive
                     )
                 }
                 else -> ""
