@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.user.IUserRepository
+import retrofit2.HttpException
 
 class PairingViewModel(private val userRepository: IUserRepository) : ViewModel() {
 
@@ -29,7 +30,11 @@ class PairingViewModel(private val userRepository: IUserRepository) : ViewModel(
                     userRepository.pair(pin)
                     _pairingResult.postValue(PairingResult.Success)
                 } catch (ex: Throwable) {
-                    _pairingResult.postValue(PairingResult.Error(ex))
+                    if (ex is HttpException && ex.code() == 400) {
+                        _pairingResult.postValue(PairingResult.Invalid)
+                    } else {
+                        _pairingResult.postValue(PairingResult.Error(ex))
+                    }
                 }
             }
         }
@@ -37,6 +42,7 @@ class PairingViewModel(private val userRepository: IUserRepository) : ViewModel(
 
     sealed class PairingResult {
         object Success : PairingResult()
+        object Invalid : PairingResult()
         data class Error(val exception: Throwable) : PairingResult()
     }
 }

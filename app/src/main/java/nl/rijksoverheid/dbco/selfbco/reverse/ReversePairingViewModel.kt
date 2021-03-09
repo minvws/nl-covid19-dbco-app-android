@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus.Success
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus.Pairing
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.user.IUserRepository
 
@@ -71,8 +72,10 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
                 if (result is Success) {
                     _userHasSharedCode.postValue(true)
                 }
-                poller.close()
-                cancelPollingForChanges()
+                if (result !is Pairing) {
+                    poller.close()
+                    cancelPollingForChanges()
+                }
             }
             flow.collect()
         }

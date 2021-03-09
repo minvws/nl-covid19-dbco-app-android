@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.selfbco.reverse
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -50,16 +51,37 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
         }
 
-        if (args.initWithErrorState) {
-            val text = args.errorText
-            // TODO: show not working state and call reversePairingViewModel.start() when retry is clicked
+        binding.retryWithNewCode.setOnClickListener { reversePairingViewModel.start() }
+
+        if (args.initWithInvalidCodeState) {
+            showInvalidCode()
         } else {
             reversePairingViewModel.start(args.credentials)
         }
     }
 
+    private fun showInvalidCode() {
+        binding.pairingCode.isVisible = false
+        binding.pairingExpiredCodeContainer.isVisible = true
+    }
+
+    private fun showPairingError(credentials: ReversePairingCredentials) {
+        binding.retryPairing.setOnClickListener { reversePairingViewModel.start(credentials) }
+        binding.pairingLoadingIndicator.isVisible = false
+        binding.stateText.isVisible = false
+        binding.pairingErrorContainer.isVisible = true
+    }
+
+    private fun showPairing() {
+        binding.pairingErrorContainer.isVisible = false
+        binding.pairingLoadingIndicator.isVisible = true
+        binding.stateText.isVisible = true
+    }
+
     private fun setUpListeners() {
         reversePairingViewModel.pairingCode.observe(viewLifecycleOwner, { code ->
+            binding.pairingExpiredCodeContainer.isVisible = false
+            binding.pairingCode.isVisible = true
             binding.pairingCode.text = StringBuilder(code)
                 .insert(code.length / 2, "-")
                 .toString()
@@ -68,15 +90,9 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
         reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
                 is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
-                is ReversePairingStatus.Error -> {
-                    // TODO show error text and retry button
-                }
-                is ReversePairingStatus.Expired -> {
-                    // TODO show expired text and retry button
-                }
-                is ReversePairingStatus.Pairing -> {
-                    /* NO-OP */
-                }
+                is ReversePairingStatus.Error -> showPairingError(status.credentials)
+                is ReversePairingStatus.Expired -> showInvalidCode()
+                is ReversePairingStatus.Pairing -> showPairing()
             }
         })
 
@@ -84,15 +100,12 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             reversePairingViewModel.cancelPollingForChanges()
             when (result) {
                 is PairingResult.Success -> {
-                    binding.loadingIndicator.visibility = View.INVISIBLE
-                    binding.pairedIndicator.visibility = View.VISIBLE
+                    binding.pairingLoadingIndicator.isVisible = false
+                    binding.pairedIndicator.isVisible = true
                     binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
                     binding.btnNext.isEnabled = true
                 }
-                is PairingResult.Error -> {
-                    // TODO show error text and retry button
-                    binding.stateText.text = "error pls retry with new token"
-                }
+                is PairingResult.Error, PairingResult.Invalid -> showInvalidCode()
             }
         })
     }

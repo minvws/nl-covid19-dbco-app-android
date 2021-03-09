@@ -436,13 +436,9 @@
             app:argType="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials"
             app:nullable="true" />
         <argument
-            android:name="initWithErrorState"
+            android:name="initWithInvalidCodeState"
             app:argType="boolean"
             app:nullable="false" />
-        <argument
-            android:name="errorText"
-            app:argType="string"
-            app:nullable="true" />
         <action
             android:id="@+id/to_finalizeCheckFragment"
             app:destination="@id/finalizeCheckFragment" />

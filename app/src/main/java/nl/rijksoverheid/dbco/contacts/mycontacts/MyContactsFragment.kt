@@ -186,8 +186,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun setupSendButton(
         pairingCredentials: ReversePairingCredentials? = null,
-        initReversePairingWithErrorState: Boolean = false,
-        reversePairingErrorText: String? = null
+        initReversePairingWithInvalidState: Boolean = false
     ) {
         binding.sendButton.setOnClickListener {
             binding.pairingContainer.isVisible = false
@@ -203,8 +202,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     .navigate(
                         MyContactsFragmentDirections.toReversePairingFragment(
                             credentials = pairingCredentials,
-                            initWithErrorState = initReversePairingWithErrorState,
-                            errorText = reversePairingErrorText
+                            initWithInvalidCodeState = initReversePairingWithInvalidState
                         )
                     )
             }
@@ -214,24 +212,27 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private fun setUpPairingListeners() {
         reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
-                is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
+                is ReversePairingStatus.Success -> {
+                    pairingViewModel.pair(status.code)
+                    setupSendButton()
+                }
                 is ReversePairingStatus.Error -> {
-                    // TODO show error text and button text
-                    binding.pairingStateText.text = "Error"
-                    binding.sendButton.text = "Pls retry with old"
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_my_contacts_error_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_error_button_text)
+                    )
                     setupSendButton(pairingCredentials = status.credentials)
                 }
-                is ReversePairingStatus.Expired -> {
-                    binding.pairingStateText.text = "Expired"
-                    binding.sendButton.text = "Pls retry with new"
-                    setupSendButton(
-                        initReversePairingWithErrorState = true,
-                        reversePairingErrorText = "Code expired"
+                ReversePairingStatus.Expired -> {
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
                     )
+                    setupSendButton(initReversePairingWithInvalidState = true)
                 }
                 is ReversePairingStatus.Pairing -> {
-                    binding.pairingContainer.isVisible = true
-                    binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+                    showPairingInProgress()
+                    setupSendButton(pairingCredentials = status.credentials)
                 }
             }
         })
@@ -241,19 +242,48 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 is PairingResult.Success -> {
                     binding.pairingContainer.isVisible = false
                     binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.isVisible = true
                     tasksViewModel.syncTasks()
                 }
-                is PairingResult.Error -> {
-                    binding.pairingStateText.text = "Error"
-                    binding.sendButton.text = "Pls retry with new"
-                    // TODO show error text and button text
-                    setupSendButton(
-                        initReversePairingWithErrorState = true,
-                        reversePairingErrorText = "Code not worky"
+                is PairingResult.Error, PairingResult.Invalid -> {
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
                     )
+                    setupSendButton(initReversePairingWithInvalidState = true)
                 }
             }
         })
+    }
+
+    private fun showPairingInProgress() {
+        binding.pairingLoadingIndicator.isVisible = true
+        with(binding.pairingStateText) {
+            setTextColor(ContextCompat.getColor(context, R.color.purple))
+            text = getString(R.string.selfbco_reverse_pairing_pairing_waiting)
+            setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        }
+        binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+        binding.pairingContainer.isVisible = true
+    }
+
+    private fun showPairingError(
+        errorText: String,
+        buttonText: String
+    ) {
+        binding.pairingLoadingIndicator.isVisible = false
+        with(binding.pairingStateText) {
+            text = errorText
+            setTextColor(ContextCompat.getColor(context, R.color.red))
+            setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(context, R.drawable.ic_error),
+                null,
+                null,
+                null
+            )
+        }
+        binding.sendButton.text = buttonText
+        binding.pairingContainer.isVisible = true
     }
 
     private fun fillContentSection(case: Case) {
