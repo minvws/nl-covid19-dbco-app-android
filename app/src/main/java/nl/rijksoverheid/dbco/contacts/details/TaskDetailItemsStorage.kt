@@ -319,7 +319,8 @@ class TaskDetailItemsStorage(
                     QuestionType.ContactDetails -> {
                         addContactDetailsItems(contactDetailsSection, question)
                     }
-                    else -> { /* NO-OP */ }
+                    else -> { /* NO-OP */
+                    }
                 }
             }
         }
@@ -333,22 +334,35 @@ class TaskDetailItemsStorage(
         section: QuestionnaireSection
     ) {
         val size = question.answerOptions?.size ?: return
-        val previousValue = viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+        if (size == 1) return
+        val previousValue =
+            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
         section.add(
-            if (size > 2) {
-                QuestionMultipleOptionsItem(
-                    context,
-                    question,
-                    { /* NO-OP */ },
-                    previousValue
-                )
-            } else {
-                QuestionMultipleOptionsItem(
-                    context,
-                    question,
-                    { /* NO-OP */ },
-                    previousValue
-                )
+            when (size) {
+                2 -> {
+                    QuestionTwoOptionsItem(
+                        context,
+                        question,
+                        { /* NO-OP */ },
+                        previousValue
+                    )
+                }
+                3 -> {
+                    QuestionThreeOptionsItem(
+                        context,
+                        question,
+                        { /* NO-OP */ },
+                        previousValue
+                    )
+                }
+                else -> {
+                    QuestionMultipleOptionsItem(
+                        context,
+                        question,
+                        { /* NO-OP */ },
+                        previousValue
+                    )
+                }
             }
         )
     }
@@ -416,35 +430,30 @@ class TaskDetailItemsStorage(
                 R.string.inform_contact_title_staff,
                 contactName
             )
-            else -> context.getString(
+            CommunicationType.Index -> context.getString(
                 R.string.inform_contact_title_index,
                 contactName
             )
+            else -> context.getString(R.string.inform_contact_title_unknown, contactName)
         }
 
         val dateLastExposure = viewModel.dateOfLastExposure.value
 
         var message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
-            if (!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
-                when (viewModel.category.value) {
-                    Category.ONE -> {
-                        context.getString(R.string.inform_contact_guidelines_category1_no_date)
-                    }
-                    Category.TWO_B -> {
-                        context.getString(R.string.inform_contact_guidelines_category2a_no_date)
-                    }
-                    Category.TWO_A -> {
-                        context.getString(R.string.inform_contact_guidelines_category2b_no_date)
-                    }
-                    Category.THREE_A, Category.THREE_B -> {
-                        context.getString(R.string.inform_contact_guidelines_category3_no_date)
-                    }
-                    else -> ""
+            when (viewModel.category.value) {
+                Category.ONE -> {
+                    context.getString(R.string.inform_contact_guidelines_category1_no_date)
                 }
-            } else {
-                context.getString(R.string.inform_contact_guidelines_no_name)
+                Category.TWO_A, Category.TWO_B -> {
+                    context.getString(R.string.inform_contact_guidelines_category2_no_date)
+                }
+                Category.THREE_A, Category.THREE_B -> {
+                    context.getString(R.string.inform_contact_guidelines_category3_no_date)
+                }
+                else -> ""
             }
+
         } else {
             // Handle with dates
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
@@ -454,45 +463,32 @@ class TaskDetailItemsStorage(
                 exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
             val exposureDatePlusFive =
                 exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusFourteen =
-                exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
 
-            if (!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
-                when (viewModel.category.value) {
-                    Category.ONE -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category1_with_date,
-                            exposureDatePlusEleven
-                        )
-                    }
-                    Category.TWO_B -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2a_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    }
-                    Category.TWO_A -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2b_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    }
-                    Category.THREE_A, Category.THREE_B -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category3_with_date,
-                            exposureDatePlusFourteen
-                        )
-                    }
-                    else -> ""
+            when (viewModel.category.value) {
+                Category.ONE -> {
+                    context.getString(
+                        R.string.inform_contact_guidelines_category1_with_date,
+                        exposureDatePlusEleven
+                    )
                 }
-            } else {
-                context.getString(R.string.inform_contact_guidelines_no_name)
+                Category.TWO_A, Category.TWO_B -> {
+                    context.getString(
+                        R.string.inform_contact_guidelines_category2_with_date,
+                        exposureDatePlusFive,
+                        exposureDatePlusFive,
+                        exposureDatePlusTen
+                    )
+                }
+                Category.THREE_A, Category.THREE_B -> {
+                    context.getString(
+                        R.string.inform_contact_guidelines_category3_with_date,
+                        exposureDatePlusFive,
+                        exposureDatePlusTen
+                    )
+                }
+                else -> ""
             }
-
         }
-
 
         val link = when (viewModel.category.value) {
             Category.ONE -> context.getString(R.string.inform_contact_link_category1)
@@ -560,11 +556,7 @@ class TaskDetailItemsStorage(
 
             add(SubHeaderItem(header))
             add(ParagraphItem(message, clickable = true))
-
-            // Only add the footer if the source is Portal.
-            if (viewModel.task.value?.source == Source.Portal) {
-                add(SubHeaderItem(footer))
-            }
+            add(SubHeaderItem(footer))
 
             if (featureFlags.enablePerspectiveCopy) {
                 add(
