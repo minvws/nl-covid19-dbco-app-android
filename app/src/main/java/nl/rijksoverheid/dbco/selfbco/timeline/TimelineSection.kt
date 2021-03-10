@@ -60,9 +60,7 @@ class TimelineSection(
         setSectionHeader(newSymptomOnsetDate, date)
     }
 
-
     private fun setSectionHeader(dateOfSymptomOnset: DateTime, date: DateTime) {
-        Timber.d("Got date $date , comparing")
         // Todo: Move to string resources without requiring context
         setHeader(
             createHeader(

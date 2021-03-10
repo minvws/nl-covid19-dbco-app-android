@@ -43,19 +43,22 @@ import org.joda.time.Interval
 import timber.log.Timber
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
-    val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val selfBcoViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             SelfBcoCaseViewModel::class.java
         )
     }
 
+    private val contactsViewModel by viewModels<ContactsViewModel>()
+
+    val adapter = GroupAdapter<GroupieViewHolder>()
+    val content = Section()
 
     private val sections = ArrayList<TimelineSection>()
-
-    val content = Section()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
     private var contactNames = ArrayList<String>()
+
+    lateinit var header: StringHeaderItem
     lateinit var binding: FragmentSelfbcoTimelineBinding
     lateinit var firstDayInTimeLine: DateTime
 
@@ -63,17 +66,11 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
 
-        setupFirstDay(selfBcoViewModel.getDateOfSymptomOnset())
+        setFirstDay(selfBcoViewModel.getDateOfSymptomOnset())
 
-        // Add headers before sections get created
         content.addAll(
             listOf(
-                StringHeaderItem(
-                    String.format(
-                        getString(R.string.selfbco_timeline_title),
-                        firstDayInTimeLine.toString(DateFormats.selfBcoDateCheck)
-                    )
-                ),
+                createHeader(),
                 ParagraphItem(
                     getString(R.string.selfbco_timeline_summary),
                     clickable = true
@@ -111,33 +108,43 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
 
         contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            {
+            viewLifecycleOwner, {
                 contactNames = contactsViewModel.getLocalContactNames()
-                Timber.d("Found names ${contactNames}")
-
                 createTimelineSections()
-            })
-
+            }
+        )
     }
 
-    private fun setupFirstDay(symptomOnsetDate: DateTime) {
-        firstDayInTimeLine = if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
-            symptomOnsetDate.minusDays(2)
-        } else {
-            symptomOnsetDate
+    private fun createHeader(): StringHeaderItem {
+        return StringHeaderItem(
+            String.format(
+                getString(R.string.selfbco_timeline_title),
+                firstDayInTimeLine.toString(DateFormats.selfBcoDateCheck)
+            )
+        ).also {
+            header = it
         }
+    }
+
+    private fun setFirstDay(symptomOnsetDate: DateTime) {
+        firstDayInTimeLine =
+            if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+                symptomOnsetDate.minusDays(2)
+            } else {
+                symptomOnsetDate
+            }
     }
 
     private fun addExtraDay() {
 
-        // Add day to the bottom of the list
-        val newSymptomOnsetDate = selfBcoViewModel.getDateOfSymptomOnset().minusDays(1).withTimeAtStartOfDay()
+        val newSymptomOnsetDate = selfBcoViewModel
+            .getDateOfSymptomOnset()
+            .minusDays(1)
+            .withTimeAtStartOfDay()
 
-        // Update date of first symptom when adding extra dates
         selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
 
-        setupFirstDay(newSymptomOnsetDate)
+        setFirstDay(newSymptomOnsetDate)
 
         val section = TimelineSection(
             firstDayInTimeLine,
@@ -150,8 +157,9 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
         sections.add(section)
         content.add(section)
-        binding.content.smoothScrollToPosition(adapter.itemCount)
+        setHeaderForContent()
         setFooterForContent()
+        binding.content.smoothScrollToPosition(adapter.itemCount)
     }
 
     fun createTimelineSections() {
@@ -177,6 +185,11 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             // Add memory tip after original timeline items
             content.add(MemoryTipGrayItem())
         }
+    }
+
+    private fun setHeaderForContent() {
+        content.remove(header)
+        content.add(0, createHeader())
     }
 
     private fun setFooterForContent() {
