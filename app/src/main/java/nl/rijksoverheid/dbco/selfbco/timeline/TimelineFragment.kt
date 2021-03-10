@@ -19,6 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -33,6 +34,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.toDateTimes
@@ -167,28 +169,30 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     private fun setFooterForContent() {
-        content.setFooter(
-            Section(
-                listOf(
-                    SubHeaderItem(
-                        getString(
-                            R.string.selfbco_timeline_extra_day_header,
-                            firstDay.toString(DateFormats.selfBcoDateOnly)
-                        )
-                    ),
-                    ButtonItem(
-                        getString(R.string.selfbco_add_extra_day),
-                        { addExtraDay() },
-                        type = ButtonType.LIGHT
-                    ),
-                    ButtonItem(
-                        getString(R.string.next), {
-                            checkInput()
-                        }, type = ButtonType.DARK
-                    )
+        val groups = mutableListOf<Group>()
+        if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            groups.add(SubHeaderItem(
+                getString(
+                    R.string.selfbco_timeline_extra_day_header,
+                    firstDay.toString(DateFormats.selfBcoDateOnly)
+                )
+            ))
+            groups.add(
+                ButtonItem(
+                    getString(R.string.selfbco_add_extra_day),
+                    { addExtraDay() },
+                    type = ButtonType.LIGHT
                 )
             )
+        }
+        groups.add(
+            ButtonItem(
+                getString(R.string.ready), {
+                    checkInput()
+                }, type = ButtonType.DARK
+            )
         )
+        content.setFooter(Section(groups))
     }
 
     private fun checkInput() {

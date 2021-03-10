@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.timeline
 
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
@@ -58,83 +59,71 @@ class TimelineSection(
     private fun setSectionHeader(date: DateTime) {
         Timber.d("Got date $date , comparing")
         // Todo: Move to string resources without requiring context
-        when {
-            // Today
-            date.isEqual(DateTime.now().withTimeAtStartOfDay()) -> {
-                if (date.isEqual(dateOfSymptomOnset)) {
-                    when (flowType) {
-                        // Todo: Find a better way to handle this, there's a lot of logic for a simple text
-                        SelfBcoConstants.COVID_CHECK_FLOW -> {
-                            setHeader(
-                                SubHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    )
-                                )
-                            )
-                        }
-                        SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
-                            setHeader(
-                                DuoHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    ),
-                                    "De eerste dag dat je klachten had"
-                                )
-                            )
-                        }
-                        SelfBcoConstants.NOT_SELECTED -> {
-                            setHeader(
-                                SubHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    )
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    setHeader(
-                        SubHeaderItem(
-                            String.format(
-                                "Vandaag (%s)",
-                                date.toString(DateFormats.selfBcoDateCheck)
-                            )
-                        )
-                    )
-                }
-            }
-            // Yesterday
-            date.isEqual(DateTime.now().minusDays(1).withTimeAtStartOfDay()) -> {
-                setHeader(
-                    SubHeaderItem(
-                        String.format(
-                            "Gisteren (%s)",
-                            date.toString(DateFormats.selfBcoDateCheck)
-                        )
-                    )
+        setHeader(
+            createHeader(
+                flowType = flowType,
+                today = DateTime.now(),
+                date = date,
+                dateOfSymptomOnset = dateOfSymptomOnset
+            )
+        )
+    }
+
+    private fun createHeader(
+        flowType: Int,
+        today: DateTime,
+        date: DateTime,
+        dateOfSymptomOnset: DateTime
+    ): BaseBindableItem<*> {
+
+        val subtitle = getSubtitle(flowType, date, dateOfSymptomOnset)
+        val title = when {
+            date.isEqual(today.withTimeAtStartOfDay()) -> {
+                String.format(
+                    "Vandaag (%s)",
+                    date.toString(DateFormats.selfBcoDateCheck)
                 )
             }
-            // Day before yesterday
-            date.isEqual(DateTime.now().minusDays(2).withTimeAtStartOfDay()) -> {
-                setHeader(
-                    SubHeaderItem(
-                        String.format(
-                            "Eergisteren (%s)",
-                            date.toString(DateFormats.selfBcoDateCheck)
-                        )
-                    )
+            date.isEqual(today.minusDays(1).withTimeAtStartOfDay()) -> {
+                String.format(
+                    "Gisteren (%s)",
+                    date.toString(DateFormats.selfBcoDateCheck)
                 )
             }
-            // Everything else
+            date.isEqual(today.minusDays(2).withTimeAtStartOfDay()) -> {
+                String.format(
+                    "Eergisteren (%s)",
+                    date.toString(DateFormats.selfBcoDateCheck)
+                )
+            }
             else -> {
-                setHeader(SubHeaderItem("" + date.toString(DateFormats.selfBcoDateCheck).capitalize()))
+                "" + date.toString(DateFormats.selfBcoDateCheck).capitalize()
             }
+        }
+
+        return if (subtitle != null) {
+            DuoHeaderItem(title, subtitle)
+        } else {
+            SubHeaderItem(title)
         }
     }
 
-
+    private fun getSubtitle(
+        flowType: Int,
+        date: DateTime,
+        dateOfSymptomOnset: DateTime
+    ): String? {
+        return if (date == dateOfSymptomOnset) when (flowType) {
+            SelfBcoConstants.SYMPTOM_CHECK_FLOW -> "De eerste dag dat je klachten had"
+            SelfBcoConstants.COVID_CHECK_FLOW -> "Op deze dag liet je jezelf testen"
+            else -> null
+        } else if (
+            flowType == SelfBcoConstants.SYMPTOM_CHECK_FLOW &&
+            date.isBefore(dateOfSymptomOnset)
+        ) {
+            "Deze dag was je mogelijk al besmettelijk"
+        } else {
+            null
+        }
+    }
 }
