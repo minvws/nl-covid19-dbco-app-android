@@ -22,7 +22,7 @@ import timber.log.Timber
 class TimelineSection(
     val date: DateTime,
     private val contactNames: Array<String>,
-    private val dateOfSymptomOnset: DateTime,
+    dateOfSymptomOnset: DateTime,
     private val flowType: Int
 ) : Section() {
 
@@ -30,7 +30,7 @@ class TimelineSection(
     val items = ArrayList<ContactInputItem>()
 
     init {
-        setSectionHeader(date)
+        setSectionHeader(dateOfSymptomOnset, date)
         setFooter(
             TimelineContactAddItem(
                 this,
@@ -55,8 +55,13 @@ class TimelineSection(
         )
     }
 
+    fun refreshHeader(newSymptomOnsetDate: DateTime) {
+        removeHeader()
+        setSectionHeader(newSymptomOnsetDate, date)
+    }
 
-    private fun setSectionHeader(date: DateTime) {
+
+    private fun setSectionHeader(dateOfSymptomOnset: DateTime, date: DateTime) {
         Timber.d("Got date $date , comparing")
         // Todo: Move to string resources without requiring context
         setHeader(

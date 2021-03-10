@@ -57,15 +57,13 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     private val contactsViewModel by viewModels<ContactsViewModel>()
     private var contactNames = ArrayList<String>()
     lateinit var binding: FragmentSelfbcoTimelineBinding
-    lateinit var firstDay: DateTime
+    lateinit var firstDayInTimeLine: DateTime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
 
-        firstDay = selfBcoViewModel.getDateOfSymptomOnset()
-        // Set First day to selected date minus 2 days
-        firstDay = firstDay.minusDays(2)
+        setupFirstDay(selfBcoViewModel.getDateOfSymptomOnset())
 
         // Add headers before sections get created
         content.addAll(
@@ -73,7 +71,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                 StringHeaderItem(
                     String.format(
                         getString(R.string.selfbco_timeline_title),
-                        firstDay.toString(DateFormats.selfBcoDateCheck)
+                        firstDayInTimeLine.toString(DateFormats.selfBcoDateCheck)
                     )
                 ),
                 ParagraphItem(
@@ -123,20 +121,33 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
     }
 
+    private fun setupFirstDay(symptomOnsetDate: DateTime) {
+        firstDayInTimeLine = if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            symptomOnsetDate.minusDays(2)
+        } else {
+            symptomOnsetDate
+        }
+    }
+
     private fun addExtraDay() {
+
         // Add day to the bottom of the list
-        val newDate = firstDay.minusDays(1).withTimeAtStartOfDay()
-        firstDay = newDate
+        val newSymptomOnsetDate = selfBcoViewModel.getDateOfSymptomOnset().minusDays(1).withTimeAtStartOfDay()
 
         // Update date of first symptom when adding extra dates
-        selfBcoViewModel.updateDateOfSymptomOnset(newDate)
+        selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
+
+        setupFirstDay(newSymptomOnsetDate)
 
         val section = TimelineSection(
-            firstDay,
+            firstDayInTimeLine,
             contactNames.toTypedArray(),
-            selfBcoViewModel.getDateOfSymptomOnset(),
+            newSymptomOnsetDate,
             selfBcoViewModel.getTypeOfFlow()
         )
+        for (existingSection in sections) {
+            existingSection.refreshHeader(newSymptomOnsetDate)
+        }
         sections.add(section)
         content.add(section)
         binding.content.smoothScrollToPosition(adapter.itemCount)
@@ -144,7 +155,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     fun createTimelineSections() {
-        val interval = Interval(firstDay, DateTime.now())
+        val interval = Interval(firstDayInTimeLine, DateTime.now())
         var memoryItemAdded = false
         interval.toDateTimes().toList().reversed().forEachIndexed { index, dateTime ->
             Timber.d("Adding timeline item for $dateTime")
@@ -157,12 +168,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             sections.add(section)
             content.add(section)
             // Add tip after 4 days, or at the end if there are less than 4
-            if(index == 3) {
+            if (index == 3) {
                 content.add(MemoryTipGrayItem())
                 memoryItemAdded = true
             }
         }
-        if(!memoryItemAdded) {
+        if (!memoryItemAdded) {
             // Add memory tip after original timeline items
             content.add(MemoryTipGrayItem())
         }
@@ -171,12 +182,15 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     private fun setFooterForContent() {
         val groups = mutableListOf<Group>()
         if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
-            groups.add(SubHeaderItem(
-                getString(
-                    R.string.selfbco_timeline_extra_day_header,
-                    firstDay.toString(DateFormats.selfBcoDateOnly)
+            groups.add(
+                SubHeaderItem(
+                    getString(
+                        R.string.selfbco_timeline_extra_day_header,
+                        selfBcoViewModel.getDateOfSymptomOnset()
+                            .toString(DateFormats.selfBcoDateOnly)
+                    )
                 )
-            ))
+            )
             groups.add(
                 ButtonItem(
                     getString(R.string.selfbco_add_extra_day),
