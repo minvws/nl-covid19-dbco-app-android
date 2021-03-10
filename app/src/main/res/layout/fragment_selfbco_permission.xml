@@ -29,52 +29,26 @@
                 android:text="@string/previous"
                 android:textColor="@color/primary"
                 android:textSize="17sp"
+                app:accessibilityButton="@{true}"
                 app:drawableStartCompat="@drawable/ic_chevron_left"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/onboarding_header_image"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_permission_header"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/back_button"
-                app:layout_constraintVertical_bias="0.75" />
-
-            <TextView
-                android:id="@+id/onboarding_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_permission_header"
-                android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:textSize="@dimen/onboarding_title_textsize"
-                app:accessibilityHeading="@{true}"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/onboarding_subtext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/selfbco_permission_summary"
-                android:textSize="@dimen/onboarding_subtext_textsize"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 app:layout_constraintBottom_toTopOf="@+id/btn_manual"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/back_button" />
 
-
-            <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_manual"
+                style="@style/Widget.App.Button.Secondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -82,18 +56,21 @@
                 app:iconTint="@color/primary"
                 app:layout_constraintBottom_toTopOf="@id/btn_next"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="@string/seflco_permission_give_access"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_manual" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
+
 </layout>
