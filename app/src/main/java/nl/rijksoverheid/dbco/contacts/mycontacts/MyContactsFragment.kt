@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,6 +32,8 @@ import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.FooterItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
@@ -38,6 +41,9 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
 import timber.log.Timber
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -60,10 +66,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         )
     }
 
+    private val reversePairingViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            ReversePairingViewModel::class.java
+        )
+    }
+    private val pairingViewModel by lazy {
+        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
+            PairingViewModel::class.java
+        )
+    }
+
     private val contentSection = Section()
     private lateinit var footerSection: Section
     private var clicksBlocked = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,28 +116,17 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
-        binding.toolbar.visibility = View.GONE
+        binding.toolbar.isVisible = false
 
         binding.manualEntryButton.setOnClickListener {
             checkPermissionGoToTaskDetails()
         }
 
-        binding.sendButton.setOnClickListener {
-            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
-                if (!tasksViewModel.windowExpired.value!!) {
-                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
-                } else {
-                    showLocalDeletionDialog()
-                }
-            } else {
-                // User isn't paired yet, let them pair first
-                findNavController().navigate(MyContactsFragmentDirections.toReversePairingFragment())
-            }
-        }
+        setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
             // Don't have to refresh if the user isn't paired yet, only local data
-            if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
+            if (isUserPaired()) {
                 tasksViewModel.syncTasks()
             } else {
                 binding.swipeRefresh.isRefreshing = false
@@ -153,7 +158,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 fillContentSection(case)
 
 
-                if (userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)) {
+                if (isUserPaired()) {
                     binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
                     if (!tasksViewModel.ifCaseWasChanged()) {
                         binding.sendButtonHolder.visibility = View.GONE
@@ -173,6 +178,112 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
         }
+
+        if (!isUserPaired()) {
+            setUpPairingListeners()
+        }
+    }
+
+    private fun setupSendButton(
+        pairingCredentials: ReversePairingCredentials? = null,
+        initReversePairingWithInvalidState: Boolean = false
+    ) {
+        binding.sendButton.setOnClickListener {
+            binding.pairingContainer.isVisible = false
+            if (isUserPaired()) {
+                if (!tasksViewModel.windowExpired.value!!) {
+                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                } else {
+                    showLocalDeletionDialog()
+                }
+            } else {
+                // User isn't paired yet, let them pair first
+                findNavController()
+                    .navigate(
+                        MyContactsFragmentDirections.toReversePairingFragment(
+                            credentials = pairingCredentials,
+                            initWithInvalidCodeState = initReversePairingWithInvalidState
+                        )
+                    )
+            }
+        }
+    }
+
+    private fun setUpPairingListeners() {
+        reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
+            when (status) {
+                is ReversePairingStatus.Success -> {
+                    pairingViewModel.pair(status.code)
+                    setupSendButton()
+                }
+                is ReversePairingStatus.Error -> {
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_my_contacts_error_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_error_button_text)
+                    )
+                    setupSendButton(pairingCredentials = status.credentials)
+                }
+                ReversePairingStatus.Expired -> {
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
+                    )
+                    setupSendButton(initReversePairingWithInvalidState = true)
+                }
+                is ReversePairingStatus.Pairing -> {
+                    showPairingInProgress()
+                    setupSendButton(pairingCredentials = status.credentials)
+                }
+            }
+        })
+
+        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is PairingResult.Success -> {
+                    binding.pairingContainer.isVisible = false
+                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.isVisible = true
+                    tasksViewModel.syncTasks()
+                }
+                is PairingResult.Error, PairingResult.Invalid -> {
+                    showPairingError(
+                        errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
+                        buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
+                    )
+                    setupSendButton(initReversePairingWithInvalidState = true)
+                }
+            }
+        })
+    }
+
+    private fun showPairingInProgress() {
+        binding.pairingLoadingIndicator.isVisible = true
+        with(binding.pairingStateText) {
+            setTextColor(ContextCompat.getColor(context, R.color.purple))
+            text = getString(R.string.selfbco_reverse_pairing_pairing_waiting)
+            setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        }
+        binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
+        binding.pairingContainer.isVisible = true
+    }
+
+    private fun showPairingError(
+        errorText: String,
+        buttonText: String
+    ) {
+        binding.pairingLoadingIndicator.isVisible = false
+        with(binding.pairingStateText) {
+            text = errorText
+            setTextColor(ContextCompat.getColor(context, R.color.red))
+            setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(context, R.drawable.ic_error),
+                null,
+                null,
+                null
+            )
+        }
+        binding.sendButton.text = buttonText
+        binding.pairingContainer.isVisible = true
     }
 
     private fun fillContentSection(case: Case) {
@@ -239,8 +350,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
         clicksBlocked = true
         if (tasksViewModel.getCachedQuestionnaire() == null) {
-            // questionare is null, this could happen in questionary call failed
-            showErrorDialog(getString(R.string.error_questionarre_is_empty), {})
+            showErrorDialog(getString(R.string.error_questionarre_is_empty), {
+                // TODO: what?
+            })
             return
         }
         if (ContextCompat.checkSelfPermission(
@@ -265,19 +377,18 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         } else {
             if (task?.linkedContact != null) {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(
-                        task,
-                        task.linkedContact
-                    )
+                    MyContactsFragmentDirections.toContactDetails(task, task.linkedContact)
                 )
             } else {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerSelection(
-                        task
-                    )
+                    MyContactsFragmentDirections.toContactPickerSelection(task)
                 )
             }
         }
+    }
+
+    private fun isUserPaired(): Boolean {
+        return userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)
     }
 
     private fun handleQADataWipe() {

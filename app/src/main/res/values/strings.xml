@@ -161,6 +161,7 @@
 
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
+    <string name="reverse_pairing_try_again">Probeer opnieuw</string>
     <string name="add_contact">Contact toevoegen</string>
 
     <string name="finalize_appbar_title">Bijna klaar</string>
@@ -265,4 +266,19 @@
     <string name="no_add_manually">Nee, zelf toevoegen</string>
     <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
     <string name="this_contact">Dit contact</string>
+
+    <string name="selfbco_reverse_pairing_title">Koppel de app met de GGD om je gegevens te delen</string>
+    <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens en locaties delen.</string>
+    <string name="selfbco_reverse_pairing_step_1_title">Geef deze code door aan de GGD-medewerker:</string>
+    <string name="selfbco_reverse_pairing_step_2_title">Wacht tot de GGD-medewerker de code heeft ingevoerd</string>
+    <string name="selfbco_reverse_pairing_step_2_subtitle">Wil je ondertussen nog gegevens aanvullen? Dan kun je dit scherm sluiten.</string>
+    <string name="selfbco_reverse_pairing_pairing">Wachten op GGD-medewerker</string>
+    <string name="selfbco_reverse_pairing_pairing_waiting">Wachten op koppeling met de GGD</string>
+    <string name="selfbco_reverse_pairing_paired">Gekoppeld met GGD</string>
+    <string name="selfbco_reverse_pairing_share_message_title">Heb je de code gedeeld met de GGD-medewerker?</string>
+    <string name="selfbco_reverse_pairing_expired_code_message">Koppelen mislukt, De code is verlopen. Geef een nieuwe code door aan de GGD.</string>
+    <string name="selfbco_reverse_pairing_expired_code_button_text">Maak nieuwe code</string>
+    <string name="selfbco_reverse_pairing_my_contacts_error_message">Koppelen mislukt. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
+    <string name="selfbco_reverse_pairing_error_message">Er ging iets mis. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
+    <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
 </resources>

@@ -8,10 +8,6 @@
 
 package nl.rijksoverheid.dbco.selfbco.reverse
 
-import kotlinx.coroutines.flow.Flow
-import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
+import java.io.Serializable
 
-interface Poller {
-    fun poll(delay: Long, token : String): Flow<ReversePairingStatusResponse>
-    fun close()
-}
+data class ReversePairingCredentials(val token: String, val code: String): Serializable

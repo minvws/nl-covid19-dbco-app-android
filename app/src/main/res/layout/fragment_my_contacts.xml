@@ -50,8 +50,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/manual_entry_button"
+                style="@style/Widget.App.Button.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -81,8 +82,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
                     android:clipToPadding="false"
-                    android:paddingBottom="32dp"
                     android:paddingHorizontal="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="32dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -112,6 +113,38 @@
                     android:layout_margin="16dp"
                     android:text="@string/submit_window_ended_explanation"
                     android:visibility="gone" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/pairing_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:id="@+id/pairing_loading_indicator"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/pairing_state_text"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/pairing_state_text" />
+
+                    <TextView
+                        android:id="@+id/pairing_state_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:drawablePadding="8dp"
+                        android:text="@string/selfbco_reverse_pairing_pairing_waiting"
+                        android:textColor="@color/purple"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/pairing_loading_indicator"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/send_button"

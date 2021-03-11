@@ -19,10 +19,13 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
 import nl.rijksoverheid.dbco.util.*
 import retrofit2.HttpException
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
 
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
-    private val viewModel by viewModels<FillCodeViewModel>()
+    private val viewModel by viewModels<PairingViewModel>()
     private lateinit var binding: FragmentFillCodeBinding
     private var progressDialog: AlertDialog? = null
 
@@ -56,33 +59,33 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
         }
 
         // Setup pairing logic
-        viewModel.pairingResult.observe(viewLifecycleOwner, { resource ->
-            resource?.resolve(onError = { exception ->
-                progressDialog?.dismiss()
-
-                if (exception is HttpException && exception.code() == 400) {
+        viewModel.pairingResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    progressDialog?.dismiss()
+                    binding.nextButton.isEnabled = true
+                    binding.nextButton.hideKeyboard()
+                    binding.nextButton.postDelayed({
+                        findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
+                    }, KEYBOARD_DELAY)
+                }
+                is Invalid -> {
                     binding.inputErrorView.setText(R.string.fill_code_invalid)
                     binding.inputErrorView.accessibilityAnnouncement(R.string.fill_code_invalid)
-                } else {
+                    binding.inputErrorView.visibility = View.VISIBLE
+                    binding.scrollView.scrollTo(binding.inputErrorView)
+                    binding.nextButton.isEnabled = true
+                }
+                is Error -> {
                     binding.inputErrorView.setText(R.string.error_while_pairing)
-
                     showErrorDialog(getString(R.string.error_while_pairing), {
                         binding.codeEntry.requestFocus()
-                    }, exception)
+                    }, result.exception)
+                    binding.inputErrorView.visibility = View.VISIBLE
+                    binding.scrollView.scrollTo(binding.inputErrorView)
+                    binding.nextButton.isEnabled = true
                 }
-                binding.inputErrorView.visibility = View.VISIBLE
-                binding.scrollView.scrollTo(binding.inputErrorView)
-
-                binding.nextButton.isEnabled = true
-            }, onSuccess = {
-                progressDialog?.dismiss()
-
-                binding.nextButton.isEnabled = true
-                binding.nextButton.hideKeyboard()
-                binding.nextButton.postDelayed({
-                    findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
-                }, KEYBOARD_DELAY)
-            })
+            }
         })
     }
 
