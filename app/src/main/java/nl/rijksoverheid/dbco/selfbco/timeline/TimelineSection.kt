@@ -80,25 +80,11 @@ class TimelineSection(
     ): BaseBindableItem<*> {
 
         val subtitle = getSubtitle(flowType, date, dateOfSymptomOnset)
+        val formattedDate = date.toString(DateFormats.selfBcoDateCheck)
         val title = when {
-            date.isEqual(today.withTimeAtStartOfDay()) -> {
-                String.format(
-                    "Vandaag (%s)",
-                    date.toString(DateFormats.selfBcoDateCheck)
-                )
-            }
-            date.isEqual(today.minusDays(1).withTimeAtStartOfDay()) -> {
-                String.format(
-                    "Gisteren (%s)",
-                    date.toString(DateFormats.selfBcoDateCheck)
-                )
-            }
-            date.isEqual(today.minusDays(2).withTimeAtStartOfDay()) -> {
-                String.format(
-                    "Eergisteren (%s)",
-                    date.toString(DateFormats.selfBcoDateCheck)
-                )
-            }
+            date.isEqual(today.withTimeAtStartOfDay()) -> "Vandaag ($formattedDate)"
+            date.isEqual(today.minusDays(1).withTimeAtStartOfDay()) -> "Gisteren ($formattedDate)"
+            date.isEqual(today.minusDays(2).withTimeAtStartOfDay()) -> "Eergisteren ($formattedDate)"
             else -> {
                 "" + date.toString(DateFormats.selfBcoDateCheck).capitalize()
             }
