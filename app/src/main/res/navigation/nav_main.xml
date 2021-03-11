@@ -344,14 +344,6 @@
         tools:layout="@layout/fragment_selfbco_date_check"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckFragment"
         android:label="SelfBcoDateCheckFragment">
-        <argument
-            android:name="date_checking_flow"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="date"
-            app:argType="org.joda.time.DateTime"
-            app:nullable="true" />
         <action
             android:id="@+id/to_selfBcoDoubleCheckFragment"
             app:destination="@id/selfBcoDoubleCheckFragment" />
@@ -361,15 +353,6 @@
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
         android:label="SelfBcoDoubleCheckFragment"
         tools:layout="@layout/fragment_selfbco_doublecheck">
-        <argument
-            android:name="date_checking_flow"
-            app:argType="integer"
-            app:nullable="false" />
-
-        <argument
-            android:name="date_selected"
-            app:argType="long"
-            app:nullable="false" />
 
         <action
             android:id="@+id/to_selfBcoDateCheckFragment"

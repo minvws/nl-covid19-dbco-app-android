@@ -23,6 +23,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.DbcoApi
@@ -32,6 +33,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
+import org.joda.time.LocalDate
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 
@@ -81,6 +83,9 @@ class TasksRepository(
             val caseString = String(caseBodyBytes)
             val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
+            if (case.dateOfTest == null) {
+                case = case.copy(dateOfTest = remoteCase.dateOfTest)
+            }
             if (case.dateOfSymptomOnset == null) {
                 case = case.copy(dateOfSymptomOnset = remoteCase.dateOfSymptomOnset)
             }
@@ -119,10 +124,8 @@ class TasksRepository(
             if (shouldMerge(currentTask)) {
                 // Only update if the new date is either later or equal to the currently stored date
                 // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
-                if (task.getExposureDateAsDateTime()
-                        .isAfter(currentTask.getExposureDateAsDateTime()) ||
-                    currentTask.getExposureDateAsDateTime()
-                        .isEqual(task.getExposureDateAsDateTime())
+                if (task.getExposureDate().isAfter(currentTask.getExposureDate()) ||
+                    currentTask.getExposureDate().isEqual(task.getExposureDate())
                 ) {
                     tasks[index] = task
                 }
@@ -200,8 +203,25 @@ class TasksRepository(
 
     override fun getSymptomOnsetDate(): String? = case.dateOfSymptomOnset
 
+    override fun getTestDate(): String? = case.dateOfTest
+
+    override fun getStartOfContagiousPeriod(): LocalDate? {
+        return if (case.dateOfSymptomOnset == null && case.dateOfTest == null) {
+            null
+        } else {
+            case.dateOfSymptomOnset?.let {
+                LocalDate.parse(it, DateFormats.dateInputData).minusDays(2)
+            } ?: LocalDate.parse(case.dateOfTest, DateFormats.dateInputData)
+        }
+    }
+
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
         case = case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
+        persistCase()
+    }
+
+    override fun updateTestDate(testDate: String) {
+        case = case.copy(dateOfTest = testDate)
         persistCase()
     }
 

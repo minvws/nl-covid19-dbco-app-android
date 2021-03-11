@@ -14,12 +14,14 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.Defaults
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository.Companion.CASE_KEY
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import org.joda.time.LocalDate
 
 class UsertestTaskRepository(context: Context) : ITaskRepository {
 
@@ -71,9 +73,25 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
 
     override fun getSymptomOnsetDate(): String? = case.dateOfSymptomOnset
 
+    override fun getStartOfContagiousPeriod(): LocalDate? {
+        return if (case.dateOfSymptomOnset == null && case.dateOfTest == null) {
+            null
+        } else {
+            case.dateOfSymptomOnset?.let {
+                LocalDate.parse(it, DateFormats.dateInputData).minusDays(2)
+            } ?: LocalDate.parse(case.dateOfTest, DateFormats.dateInputData)
+        }
+    }
+
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
         case = case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
     }
+
+    override fun updateTestDate(testDate: String) {
+        case = case.copy(dateOfTest = testDate)
+    }
+
+    override fun getTestDate(): String? = case.dateOfTest
 
     override fun addSymptom(symptom: String) {
         val symptoms = case.symptoms.toMutableSet()

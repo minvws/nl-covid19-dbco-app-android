@@ -10,6 +10,8 @@ package nl.rijksoverheid.dbco.tasks
 
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import org.joda.time.DateTime
+import org.joda.time.LocalDate
 
 interface ITaskRepository {
 
@@ -20,7 +22,10 @@ interface ITaskRepository {
     fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
     fun getSymptomOnsetDate(): String?
+    fun getStartOfContagiousPeriod(): LocalDate?
     fun updateSymptomOnsetDate(dateOfSymptomOnset: String)
+    fun updateTestDate(testDate: String)
+    fun getTestDate(): String?
     fun addSymptom(symptom: String)
     fun removeSymptom(symptom: String)
     fun getSymptoms(): List<String>

@@ -250,7 +250,7 @@ class TaskDetailItemsStorage(
             QuestionType.Multiplechoice,
             Group.ContactDetails,
             mutableListOf<AnswerOption>().apply {
-                viewModel.getDateOfSymptomOnset()?.let {
+                viewModel.getStartOfContagiousPeriod()?.let {
 
                     add(
                         AnswerOption(
@@ -259,10 +259,9 @@ class TaskDetailItemsStorage(
                         )
                     )
 
-                    val twoDaysBeforeSymptoms = it.minusDays(2)
-                    val interval = Days.daysBetween(twoDaysBeforeSymptoms, LocalDate.now()).days
+                    val interval = Days.daysBetween(it, LocalDate.now()).days
                     for (i in 0..interval) {
-                        val date = twoDaysBeforeSymptoms.plusDays(i)
+                        val date = it.plusDays(i)
                         val label = date.toString(DateFormats.exposureUI)
                         val value = date.toString(DateFormats.dateInputData)
                         add(AnswerOption(label, value))
@@ -396,6 +395,7 @@ class TaskDetailItemsStorage(
 
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             if (it == ANSWER_EARLIER) {
+                contactDetailsSection.remove(noExposureRiskItem)
                 contactDetailsSection.add(
                     contactDetailsSection.getPosition(dateOfLastExposureItem),
                     noExposureRiskItem

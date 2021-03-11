@@ -12,18 +12,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDoublecheckBindingImpl
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
-import org.joda.time.DateTime
 
 class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_doublecheck) {
-
-    private val args: SelfBcoDoubleCheckFragmentArgs by navArgs()
 
     private val selfBcoViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
@@ -35,11 +31,22 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoDoublecheckBindingImpl.bind(view)
 
-        val selectedDate = DateTime(args.dateSelected).minusDays(1)
-        when(args.dateCheckingFlow){
+        val flow = selfBcoViewModel.getTypeOfFlow()
+
+        val newSymptomOnsetDate =
+            if (flow == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+                selfBcoViewModel.getDateOfSymptomOnset().minusDays(1)
+            } else {
+                selfBcoViewModel.getDateOfTest()
+            }
+
+        when (flow) {
             SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
-                binding.datecheckHeader.text = String.format(getString(R.string.selfbco_checkdate_symptoms_title), selectedDate.toString(
-                    DateFormats.selfBcoDateCheck))
+                binding.datecheckHeader.text = String
+                    .format(
+                        getString(R.string.selfbco_checkdate_symptoms_title),
+                        newSymptomOnsetDate.toString(DateFormats.selfBcoDateCheck)
+                    )
                 binding.datecheckSubtext.text = getString(R.string.selfbco_checkdate_summary)
             }
 
@@ -50,13 +57,11 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
         }
 
         binding.btnHadSymptoms.setOnClickListener {
+            selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
+            selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
             val symptoms = selfBcoViewModel.getSelectedSymptomsSize()
             val direction = if (symptoms > 0) {
-                // only change date
-                SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment(
-                    dateCheckingFlow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
-                    date = selectedDate
-                )
+                SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment()
             } else {
                 // select symptoms
                 SelfBcoDoubleCheckFragmentDirections.toSymptomSelectionFragment()
@@ -65,11 +70,10 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
         }
 
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(SelfBcoDoubleCheckFragmentDirections.toSelfBcoPermissionFragment())
+            findNavController()
+                .navigate(SelfBcoDoubleCheckFragmentDirections.toSelfBcoPermissionFragment())
         }
 
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

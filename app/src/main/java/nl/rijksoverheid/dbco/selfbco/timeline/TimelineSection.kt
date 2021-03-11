@@ -16,13 +16,13 @@ import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TimelineContactAddItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
-import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import timber.log.Timber
 
 class TimelineSection(
-    val date: DateTime,
+    val date: LocalDate,
     private val contactNames: Array<String>,
-    dateOfSymptomOnset: DateTime,
+    startDate: LocalDate,
     private val flowType: Int
 ) : Section() {
 
@@ -30,7 +30,7 @@ class TimelineSection(
     val items = ArrayList<ContactInputItem>()
 
     init {
-        setSectionHeader(dateOfSymptomOnset, date)
+        setSectionHeader(startDate, date)
         setFooter(
             TimelineContactAddItem(
                 this,
@@ -55,36 +55,36 @@ class TimelineSection(
         )
     }
 
-    fun refreshHeader(newSymptomOnsetDate: DateTime) {
+    fun refreshHeader(newStartDate: LocalDate) {
         removeHeader()
-        setSectionHeader(newSymptomOnsetDate, date)
+        setSectionHeader(newStartDate, date)
     }
 
-    private fun setSectionHeader(dateOfSymptomOnset: DateTime, date: DateTime) {
+    private fun setSectionHeader(startDate: LocalDate, date: LocalDate) {
         // Todo: Move to string resources without requiring context
         setHeader(
             createHeader(
                 flowType = flowType,
-                today = DateTime.now(),
+                today = LocalDate.now(),
                 date = date,
-                dateOfSymptomOnset = dateOfSymptomOnset
+                startDate = startDate
             )
         )
     }
 
     private fun createHeader(
         flowType: Int,
-        today: DateTime,
-        date: DateTime,
-        dateOfSymptomOnset: DateTime
+        today: LocalDate,
+        date: LocalDate,
+        startDate: LocalDate
     ): BaseBindableItem<*> {
 
-        val subtitle = getSubtitle(flowType, date, dateOfSymptomOnset)
+        val subtitle = getSubtitle(flowType, date, startDate)
         val formattedDate = date.toString(DateFormats.selfBcoDateCheck)
         val title = when {
-            date.isEqual(today.withTimeAtStartOfDay()) -> "Vandaag ($formattedDate)"
-            date.isEqual(today.minusDays(1).withTimeAtStartOfDay()) -> "Gisteren ($formattedDate)"
-            date.isEqual(today.minusDays(2).withTimeAtStartOfDay()) -> "Eergisteren ($formattedDate)"
+            date.isEqual(today) -> "Vandaag ($formattedDate)"
+            date.isEqual(today.minusDays(1)) -> "Gisteren ($formattedDate)"
+            date.isEqual(today.minusDays(2)) -> "Eergisteren ($formattedDate)"
             else -> {
                 "" + date.toString(DateFormats.selfBcoDateCheck).capitalize()
             }
@@ -99,16 +99,16 @@ class TimelineSection(
 
     private fun getSubtitle(
         flowType: Int,
-        date: DateTime,
-        dateOfSymptomOnset: DateTime
+        date: LocalDate,
+        startDate: LocalDate
     ): String? {
-        return if (date == dateOfSymptomOnset) when (flowType) {
+        return if (date == startDate) when (flowType) {
             SelfBcoConstants.SYMPTOM_CHECK_FLOW -> "De eerste dag dat je klachten had"
             SelfBcoConstants.COVID_CHECK_FLOW -> "Op deze dag liet je jezelf testen"
             else -> null
         } else if (
             flowType == SelfBcoConstants.SYMPTOM_CHECK_FLOW &&
-            date.isBefore(dateOfSymptomOnset)
+            date.isBefore(startDate)
         ) {
             "Deze dag was je mogelijk al besmettelijk"
         } else {

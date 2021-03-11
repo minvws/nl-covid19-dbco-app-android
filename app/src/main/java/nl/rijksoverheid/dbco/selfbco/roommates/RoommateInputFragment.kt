@@ -104,14 +104,14 @@ class RoommateInputFragment() :
         }
 
         binding.backButton.setOnClickListener {
-            findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment(selfBcoViewModel.getTypeOfFlow(), selfBcoViewModel.getDateOfSymptomOnset().millis))
+            findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment())
         }
 
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true /* enabled by default */) {
                 override fun handleOnBackPressed() {
                     // Handle the back button event
-                    findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment(selfBcoViewModel.getTypeOfFlow(), selfBcoViewModel.getDateOfSymptomOnset().millis))
+                    findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment())
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)

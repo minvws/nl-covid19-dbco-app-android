@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.tasks.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
@@ -53,12 +52,7 @@ class TasksDetailViewModel(
         updateRiskFlagsFromCategory(task)
     }
 
-    fun getDateOfSymptomOnset(): LocalDate? {
-        tasksRepository.getSymptomOnsetDate()?.let {
-            return LocalDate.parse(it, DateFormats.dateInputData)
-        }
-        return null
-    }
+    fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
 
     fun saveTask(task: Task) {
         tasksRepository.saveTask(task) { current -> current.uuid == task.uuid }
