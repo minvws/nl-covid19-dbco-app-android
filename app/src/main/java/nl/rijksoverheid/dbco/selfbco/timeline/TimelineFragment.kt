@@ -19,6 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -33,6 +34,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.toDateTimes
@@ -41,40 +43,35 @@ import org.joda.time.Interval
 import timber.log.Timber
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
-    val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val selfBcoViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             SelfBcoCaseViewModel::class.java
         )
     }
 
+    private val contactsViewModel by viewModels<ContactsViewModel>()
+
+    val adapter = GroupAdapter<GroupieViewHolder>()
+    val content = Section()
 
     private val sections = ArrayList<TimelineSection>()
-
-    val content = Section()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
     private var contactNames = ArrayList<String>()
+
+    lateinit var header: StringHeaderItem
     lateinit var binding: FragmentSelfbcoTimelineBinding
-    lateinit var firstDay: DateTime
+    lateinit var firstDayInTimeLine: DateTime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
         adapter.clear()
 
-        firstDay = selfBcoViewModel.getDateOfSymptomOnset()
-        // Set First day to selected date minus 2 days
-        firstDay = firstDay.minusDays(2)
+        setFirstDay(selfBcoViewModel.getDateOfSymptomOnset())
 
-        // Add headers before sections get created
         content.addAll(
             listOf(
-                StringHeaderItem(
-                    String.format(
-                        getString(R.string.selfbco_timeline_title),
-                        firstDay.toString(DateFormats.selfBcoDateCheck)
-                    )
-                ),
+                createHeader(),
                 ParagraphItem(
                     getString(R.string.selfbco_timeline_summary),
                     clickable = true
@@ -112,38 +109,62 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
 
         contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            {
+            viewLifecycleOwner, {
                 contactNames = contactsViewModel.getLocalContactNames()
-                Timber.d("Found names ${contactNames}")
-
                 createTimelineSections()
-            })
+            }
+        )
+    }
 
+    private fun createHeader(): StringHeaderItem {
+        return StringHeaderItem(
+            String.format(
+                getString(R.string.selfbco_timeline_title),
+                firstDayInTimeLine.toString(DateFormats.selfBcoDateCheck)
+            )
+        ).also {
+            header = it
+        }
+    }
+
+    private fun setFirstDay(symptomOnsetDate: DateTime) {
+        firstDayInTimeLine =
+            if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+                symptomOnsetDate.minusDays(2)
+            } else {
+                symptomOnsetDate
+            }
     }
 
     private fun addExtraDay() {
-        // Add day to the bottom of the list
-        val newDate = firstDay.minusDays(1).withTimeAtStartOfDay()
-        firstDay = newDate
 
-        // Update date of first symptom when adding extra dates
-        selfBcoViewModel.updateDateOfSymptomOnset(newDate)
+        val newSymptomOnsetDate = selfBcoViewModel
+            .getDateOfSymptomOnset()
+            .minusDays(1)
+            .withTimeAtStartOfDay()
+
+        selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
+
+        setFirstDay(newSymptomOnsetDate)
 
         val section = TimelineSection(
-            firstDay,
+            firstDayInTimeLine,
             contactNames.toTypedArray(),
-            selfBcoViewModel.getDateOfSymptomOnset(),
+            newSymptomOnsetDate,
             selfBcoViewModel.getTypeOfFlow()
         )
+        for (existingSection in sections) {
+            existingSection.refreshHeader(newSymptomOnsetDate)
+        }
         sections.add(section)
         content.add(section)
-        binding.content.smoothScrollToPosition(adapter.itemCount)
+        setHeaderForContent()
         setFooterForContent()
+        binding.content.smoothScrollToPosition(adapter.itemCount)
     }
 
     fun createTimelineSections() {
-        val interval = Interval(firstDay, DateTime.now())
+        val interval = Interval(firstDayInTimeLine, DateTime.now())
         var memoryItemAdded = false
         interval.toDateTimes().toList().reversed().forEachIndexed { index, dateTime ->
             Timber.d("Adding timeline item for $dateTime")
@@ -156,40 +177,50 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             sections.add(section)
             content.add(section)
             // Add tip after 4 days, or at the end if there are less than 4
-            if(index == 3) {
+            if (index == 3) {
                 content.add(MemoryTipGrayItem())
                 memoryItemAdded = true
             }
         }
-        if(!memoryItemAdded) {
+        if (!memoryItemAdded) {
             // Add memory tip after original timeline items
             content.add(MemoryTipGrayItem())
         }
     }
 
+    private fun setHeaderForContent() {
+        content.remove(header)
+        content.add(0, createHeader())
+    }
+
     private fun setFooterForContent() {
-        content.setFooter(
-            Section(
-                listOf(
-                    SubHeaderItem(
-                        getString(
-                            R.string.selfbco_timeline_extra_day_header,
-                            firstDay.toString(DateFormats.selfBcoDateOnly)
-                        )
-                    ),
-                    ButtonItem(
-                        getString(R.string.selfbco_add_extra_day),
-                        { addExtraDay() },
-                        type = ButtonType.LIGHT
-                    ),
-                    ButtonItem(
-                        getString(R.string.next), {
-                            checkInput()
-                        }, type = ButtonType.DARK
+        val groups = mutableListOf<Group>()
+        if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            groups.add(
+                SubHeaderItem(
+                    getString(
+                        R.string.selfbco_timeline_extra_day_header,
+                        selfBcoViewModel.getDateOfSymptomOnset()
+                            .toString(DateFormats.selfBcoDateOnly)
                     )
                 )
             )
+            groups.add(
+                ButtonItem(
+                    getString(R.string.selfbco_add_extra_day),
+                    { addExtraDay() },
+                    type = ButtonType.LIGHT
+                )
+            )
+        }
+        groups.add(
+            ButtonItem(
+                getString(R.string.ready), {
+                    checkInput()
+                }, type = ButtonType.DARK
+            )
         )
+        content.setFooter(Section(groups))
     }
 
     private fun checkInput() {

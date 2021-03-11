@@ -67,9 +67,9 @@
     <string name="onboarding_privacy_title">Zo gaat GGD Contact om met je gegevens</string>
     <string name="onboarding_privacy_summary"><![CDATA[In de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
     <string name="onboarding_privacy_item1">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
-    <string name="onboarding_privacy_item2">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
-    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invult worden gedeeld</string>
-    <string name="onboarding_privacy_item4">Je kunt na het delen de gegevens zelf verwijderen</string>
+    <string name="onboarding_privacy_item2">Alleen gegevens die je zelf invult worden gedeeld</string>
+    <string name="onboarding_privacy_item3">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
+    <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
 
 
@@ -92,8 +92,8 @@
     <string name="physical_risk_label">Hebben jullie één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
     <string name="physical_risk_description"><![CDATA[<ul><li>In het gezicht van de ander gehoest of geniesd</li><li>Gezoend</li><li>Seksueel contact</li><ul>]]></string>
     <string name="same_room_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
-    <string name="contact_section_typeofcontact_header">Soort contact</string>
-    <string name="contact_section_typeofcontact_subtext">Beantwoord vragen over ontmoeting</string>
+    <string name="contact_section_typeofcontact_header">Over de ontmoeting</string>
+    <string name="contact_section_typeofcontact_subtext">Beantwoord een paar vragen</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
 
@@ -228,7 +228,7 @@
     <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
     <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
     <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
-    <string name="selfbco_date_covid_summary">Kies de datum waarop de test bij je is afgenomen.</string>
+    <string name="selfbco_date_covid_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
@@ -253,14 +253,19 @@
     <string name="selfbco_memory_agenda">Agenda</string>
     <string name="selfbco_memory_pin">Pintransacties</string>
     <string name="selfbco_memory_socials">Social media</string>
-    <string name="selfbco_timeline_extra_day_header">Weet je zeker dat je voor %s nog geen klachten had?</string>
+    <string name="selfbco_timeline_extra_day_header">Ter controle: %s was de eerste dag dat je klachten had. Klopt dit?</string>
     <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
+
     <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
-    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt.</string>
+    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Bijvoorbeeld een achternaam of een telefoonnummer.</string>
+    <string name="selfbco_permission_item1">Alleen gegevens die je zelf invult worden gedeeld</string>
+    <string name="selfbco_permission_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
+    <string name="selfbco_permission_item3">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
     <string name="seflco_permission_give_access">Toegang geven</string>
-    <string name="selfbco_had_symptoms">Ik had toch klachten</string>
+
+    <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
-    <string name="finalize_check_contact_header">Kun je de gegevens van deze contacten controleren?</string>
+    <string name="finalize_check_contact_header">Bijna klaar, wil je dit nog doen?</string>
     <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>
     <string name="permission_summary">Zo kun je snel de gegevens van dit contact aanvullen. Je bepaalt altijd zelf welke gegevens je met de GGD deelt.</string>
     <string name="no_add_manually">Nee, zelf toevoegen</string>
