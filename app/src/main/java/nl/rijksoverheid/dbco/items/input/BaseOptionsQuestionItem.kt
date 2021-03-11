@@ -45,13 +45,6 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
                     }
                 }
             }
-            prevAnswer["trigger"]?.jsonPrimitive?.content?.let { trigger ->
-                question?.answerOptions?.forEach { option ->
-                    if (option?.trigger == trigger) {
-                        selectedAnswer = option
-                    }
-                }
-            }
         }
     }
 
