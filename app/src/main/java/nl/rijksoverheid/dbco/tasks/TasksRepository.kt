@@ -83,6 +83,9 @@ class TasksRepository(
             val caseString = String(caseBodyBytes)
             val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
+            if (case.dateOfTest == null) {
+                case = case.copy(dateOfTest = remoteCase.dateOfTest)
+            }
             if (case.dateOfSymptomOnset == null) {
                 case = case.copy(dateOfSymptomOnset = remoteCase.dateOfSymptomOnset)
             }
