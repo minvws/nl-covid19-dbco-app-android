@@ -9,9 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import org.joda.time.DateTime
 
 @Serializable
 data class Case(
