@@ -52,6 +52,10 @@ class TasksDetailViewModel(
         updateRiskFlagsFromCategory(task)
     }
 
+    fun getCaseReference(): String? = tasksRepository.getCaseReference()
+
+    fun hasCaseReference(): Boolean = tasksRepository.getCaseReference() != null
+
     fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
 
     fun saveTask(task: Task) {

@@ -499,6 +499,13 @@ class TaskDetailItemsStorage(
             }
         }
 
+        if (viewModel.hasCaseReference()) {
+            message += context.getString(
+                R.string.inform_contact_guidelines_case_number,
+                viewModel.getCaseReference()
+            )
+        }
+
         val link = when (viewModel.category.value) {
             Category.ONE -> context.getString(R.string.inform_contact_link_category1)
             Category.TWO_A -> context.getString(R.string.inform_contact_link_category2a)

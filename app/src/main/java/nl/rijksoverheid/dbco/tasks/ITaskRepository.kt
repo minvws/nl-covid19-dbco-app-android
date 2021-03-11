@@ -10,12 +10,12 @@ package nl.rijksoverheid.dbco.tasks
 
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import org.joda.time.DateTime
 import org.joda.time.LocalDate
 
 interface ITaskRepository {
 
     suspend fun fetchCase(): Case
+    fun getCaseReference(): String?
     fun saveTask(task: Task, shouldMerge: (Task) -> Boolean)
     fun deleteTask(taskToDelete: Task)
     fun getCase(): Case
