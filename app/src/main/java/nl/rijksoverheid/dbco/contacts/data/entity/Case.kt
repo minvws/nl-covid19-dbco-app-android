@@ -13,6 +13,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
 data class Case(
+    val reference: String? = null,
     val dateOfSymptomOnset: String? = null,
     val dateOfTest: String? = null,
     val windowExpiresAt: String? = null,

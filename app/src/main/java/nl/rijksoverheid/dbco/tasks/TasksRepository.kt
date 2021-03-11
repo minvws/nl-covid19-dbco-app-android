@@ -83,6 +83,8 @@ class TasksRepository(
             val caseString = String(caseBodyBytes)
             val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
+            case = case.copy(reference = remoteCase.reference)
+
             if (case.dateOfTest == null) {
                 case = case.copy(dateOfTest = remoteCase.dateOfTest)
             }
@@ -112,6 +114,8 @@ class TasksRepository(
         }
         return case
     }
+
+    override fun getCaseReference(): String? = case.reference
 
     override fun saveTask(task: Task, shouldMerge: (Task) -> Boolean) {
         caseChanged = true
