@@ -63,8 +63,8 @@ class TasksDetailViewModel(
     }
 
     fun deleteCurrentTask() {
-        task.value?.let {
-            tasksRepository.deleteTask(it)
+        task.value?.uuid?.let { uuid ->
+            tasksRepository.deleteTask(uuid)
         }
     }
 

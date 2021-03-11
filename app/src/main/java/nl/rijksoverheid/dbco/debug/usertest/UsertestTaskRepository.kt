@@ -17,10 +17,12 @@ import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.CaseBody
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository.Companion.CASE_KEY
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import org.joda.time.LocalDate
 
 class UsertestTaskRepository(context: Context) : ITaskRepository {
@@ -63,7 +65,13 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
         encryptedSharedPreferences.edit().putString(CASE_KEY, storeString).apply()
     }
 
-    override fun deleteTask(taskToDelete: Task) {
+    override fun getContactsByCategory(category: Category): List<Task> {
+        return case.tasks.filter { task ->
+            task.category == category && task.taskType == TaskType.Contact
+        }
+    }
+
+    override fun deleteTask(uuid: String) {
         // NO-OP
     }
 

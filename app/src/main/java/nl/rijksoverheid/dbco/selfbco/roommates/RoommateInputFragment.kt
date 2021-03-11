@@ -30,19 +30,18 @@ import nl.rijksoverheid.dbco.items.ui.ContactAddItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import timber.log.Timber
 
-class RoommateInputFragment() :
-    BaseFragment(R.layout.fragment_selfbco_roommates_input) {
+class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_input) {
 
-    private val adapter = GroupAdapter<GroupieViewHolder>()
     private val contactsViewModel by viewModels<ContactsViewModel>()
-    private var contactNames = ArrayList<String>()
+
     private val selfBcoViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             SelfBcoCaseViewModel::class.java
         )
     }
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private var contactNames = ArrayList<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,25 +61,27 @@ class RoommateInputFragment() :
         adapter.add(section)
         binding.content.adapter = adapter
 
-        adapter.setOnItemClickListener { item, view ->
-            if (item is ContactAddItem) {
-                section.add(ContactInputItem(contactNames.toTypedArray(), trashListener = object :
-                    ContactInputItem.OnTrashClickedListener {
-                    // Remove item from section if trashcan is clicked
-                    override fun onTrashClicked(item: ContactInputItem) {
-                        section.remove(item)
-                    }
+        // add existing roommates to list
+        for (roommate in selfBcoViewModel.getRoommates()) {
+            addContactToSection(
+                section = section,
+                contactUuid = roommate.uuid!!,
+                contactName = roommate.label!!
+            )
+        }
 
-                }))
+        adapter.setOnItemClickListener { item, contactItem ->
+            if (item is ContactAddItem) {
+                addContactToSection(
+                    section = section,
+                    withFocus = true
+                )
             }
-            if (item is ContactInputItem) {
-                when (view.id) {
-                    R.id.icon_trash -> {
-                        section.remove(item)
-                    }
-                }
+            if (item is ContactInputItem && contactItem.id == R.id.icon_trash) {
+                section.remove(item)
             }
         }
+
         // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -91,12 +92,10 @@ class RoommateInputFragment() :
         }
 
         contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            {
+            viewLifecycleOwner, {
                 contactNames = contactsViewModel.getLocalContactNames()
-                Timber.d("Found names ${contactNames}")
-            })
-
+            }
+        )
 
         binding.btnNext.setOnClickListener {
             grabInput()
@@ -110,7 +109,6 @@ class RoommateInputFragment() :
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true /* enabled by default */) {
                 override fun handleOnBackPressed() {
-                    // Handle the back button event
                     findNavController().navigate(RoommateInputFragmentDirections.toSelfBcoDoubleCheckFragment())
                 }
             }
@@ -118,21 +116,41 @@ class RoommateInputFragment() :
 
     }
 
+    private fun addContactToSection(
+        section: Section,
+        contactName: String = "",
+        contactUuid: String? = null,
+        withFocus: Boolean = false
+    ) {
+        val thrashListener = object : ContactInputItem.OnTrashClickedListener {
+            override fun onTrashClicked(item: ContactInputItem) {
+                section.remove(item)
+                item.contactUuid?.let { uuid ->
+                    // when a contact already has an uuid it means that it was already added
+                    // to the case before so it needs to be removed
+                    selfBcoViewModel.removeContact(uuid)
+                }
+            }
+        }
+        section.add(
+            ContactInputItem(
+                focusOnBind = withFocus,
+                contactNames = contactNames.toTypedArray(),
+                contactName = contactName,
+                contactUuid = contactUuid,
+                trashListener = thrashListener
+            )
+        )
+    }
+
     private fun grabInput() {
         for (groupIndex: Int in 0 until adapter.itemCount) {
             val item = adapter.getItem(groupIndex)
-            Timber.d("Found at $groupIndex an item of $item with input")
             if (item is ContactInputItem) {
-                Timber.d("Content is ${item.contactName}")
                 if (item.contactName.isNotEmpty()) {
-                    selfBcoViewModel.addSelfBcoContact(
-                        item.contactName,
-                        category = Category.ONE
-                    )
+                    selfBcoViewModel.addContact(item.contactName, category = Category.ONE)
                 }
             }
         }
     }
-
-
 }

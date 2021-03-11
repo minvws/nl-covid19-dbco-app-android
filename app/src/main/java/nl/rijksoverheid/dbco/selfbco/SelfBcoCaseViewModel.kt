@@ -33,7 +33,11 @@ class SelfBcoCaseViewModel(
 
     fun removeSymptom(symptom: String) = tasksRepository.removeSymptom(symptom)
 
-    fun addSelfBcoContact(
+    fun getRoommates(): List<Task> = tasksRepository.getContactsByCategory(Category.ONE)
+
+    fun removeContact(uuid: String) = tasksRepository.deleteTask(uuid)
+
+    fun addContact(
         name: String,
         dateOfLastExposure: String = LocalDate.now().toString(DateFormats.dateInputData),
         category: Category?

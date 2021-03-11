@@ -25,11 +25,13 @@ import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
@@ -143,12 +145,18 @@ class TasksRepository(
         persistCase()
     }
 
-    override fun deleteTask(taskToDelete: Task) {
+    override fun getContactsByCategory(category: Category): List<Task> {
+        return case.tasks.filter { task ->
+            task.category == category && task.taskType == TaskType.Contact
+        }
+    }
+
+    override fun deleteTask(uuid: String) {
         caseChanged = true
         val tasks = case.tasks.toMutableList()
         var indexToDelete = -1
         tasks.forEachIndexed { index, task ->
-            if (task.uuid == taskToDelete.uuid) {
+            if (task.uuid == uuid) {
                 indexToDelete = index
             }
         }

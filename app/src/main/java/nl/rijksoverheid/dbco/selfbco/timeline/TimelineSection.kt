@@ -17,7 +17,6 @@ import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TimelineContactAddItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import org.joda.time.LocalDate
-import timber.log.Timber
 
 class TimelineSection(
     val date: LocalDate,
@@ -40,10 +39,10 @@ class TimelineSection(
                         // Same principle only on a per section base
                         val item =
                             ContactInputItem(
-                                contactNames, "",
+                                focusOnBind = true,
+                                contactNames = contactNames,
                                 trashListener = object : ContactInputItem.OnTrashClickedListener {
                                     override fun onTrashClicked(item: ContactInputItem) {
-                                        Timber.d("Clicked trash for item with text ${item.contactName}")
                                         this@TimelineSection.remove(item)
                                         items.remove(item)
                                     }
