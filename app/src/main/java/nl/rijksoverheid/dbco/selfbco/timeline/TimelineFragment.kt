@@ -37,10 +37,8 @@ import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
-import nl.rijksoverheid.dbco.util.toDateTimes
-import org.joda.time.DateTime
-import org.joda.time.Interval
-import timber.log.Timber
+import org.joda.time.Days
+import org.joda.time.LocalDate
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
@@ -60,14 +58,14 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
     lateinit var header: StringHeaderItem
     lateinit var binding: FragmentSelfbcoTimelineBinding
-    lateinit var firstDayInTimeLine: DateTime
+    lateinit var firstDayInTimeLine: LocalDate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
         adapter.clear()
 
-        setFirstDay(selfBcoViewModel.getDateOfSymptomOnset())
+        firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
 
         content.addAll(
             listOf(
@@ -127,25 +125,13 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
     }
 
-    private fun setFirstDay(symptomOnsetDate: DateTime) {
-        firstDayInTimeLine =
-            if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
-                symptomOnsetDate.minusDays(2)
-            } else {
-                symptomOnsetDate
-            }
-    }
-
     private fun addExtraDay() {
 
-        val newSymptomOnsetDate = selfBcoViewModel
-            .getDateOfSymptomOnset()
-            .minusDays(1)
-            .withTimeAtStartOfDay()
+        val newSymptomOnsetDate = selfBcoViewModel.getDateOfSymptomOnset().minusDays(1)
 
         selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
 
-        setFirstDay(newSymptomOnsetDate)
+        firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
 
         val section = TimelineSection(
             firstDayInTimeLine,
@@ -164,20 +150,21 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     fun createTimelineSections() {
-        val interval = Interval(firstDayInTimeLine, DateTime.now())
+        val days = Days.daysBetween(firstDayInTimeLine, LocalDate.now())
         var memoryItemAdded = false
-        interval.toDateTimes().toList().reversed().forEachIndexed { index, dateTime ->
-            Timber.d("Adding timeline item for $dateTime")
+        var daysAdded = 0
+        for (i in days.days downTo 0) {
+            daysAdded++
             val section = TimelineSection(
-                dateTime.withTimeAtStartOfDay(),
-                contactNames.toTypedArray(),
-                selfBcoViewModel.getDateOfSymptomOnset(),
-                selfBcoViewModel.getTypeOfFlow()
+                date = firstDayInTimeLine.plusDays(i),
+                contactNames = contactNames.toTypedArray(),
+                startDate = selfBcoViewModel.getStartDate(),
+                flowType = selfBcoViewModel.getTypeOfFlow()
             )
             sections.add(section)
             content.add(section)
             // Add tip after 4 days, or at the end if there are less than 4
-            if (index == 3) {
+            if (daysAdded == 3) {
                 content.add(MemoryTipGrayItem())
                 memoryItemAdded = true
             }

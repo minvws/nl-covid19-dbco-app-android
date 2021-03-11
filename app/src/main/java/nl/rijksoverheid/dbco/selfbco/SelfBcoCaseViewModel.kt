@@ -17,7 +17,7 @@ import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
-import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import java.util.*
 
 class SelfBcoCaseViewModel(
@@ -35,9 +35,7 @@ class SelfBcoCaseViewModel(
 
     fun addSelfBcoContact(
         name: String,
-        dateOfLastExposure: String = DateTime.now()
-            .withTimeAtStartOfDay()
-            .toString(DateFormats.dateInputData),
+        dateOfLastExposure: String = LocalDate.now().toString(DateFormats.dateInputData),
         category: Category?
     ) {
         val task = Task(
@@ -51,15 +49,39 @@ class SelfBcoCaseViewModel(
         tasksRepository.saveTask(task) { current -> current.label!!.contentEquals(task.label!!) }
     }
 
-    fun getDateOfSymptomOnset(): DateTime {
-        return tasksRepository.getSymptomOnsetDate()?.let {
-            DateTime.parse(it, DateFormats.dateInputData)
-        } ?: DateTime.now().withTimeAtStartOfDay()
+    fun getStartOfContagiousPeriod(): LocalDate {
+        return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
     }
 
-    fun updateDateOfSymptomOnset(date: DateTime) {
+    fun getStartDate(): LocalDate {
+        return if (getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            getDateOfSymptomOnset()
+        } else {
+            getDateOfTest()
+        }
+    }
+
+    fun getDateOfSymptomOnset(): LocalDate {
+        return tasksRepository.getSymptomOnsetDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: LocalDate.now()
+    }
+
+    fun getDateOfTest(): LocalDate {
+        return tasksRepository.getTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: LocalDate.now()
+    }
+
+    fun updateDateOfSymptomOnset(date: LocalDate) {
         tasksRepository.updateSymptomOnsetDate(
-            date.withTimeAtStartOfDay().toString(DateFormats.dateInputData)
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    fun updateDateOfTest(date: LocalDate) {
+        tasksRepository.updateTestDate(
+            date.toString(DateFormats.dateInputData)
         )
     }
 

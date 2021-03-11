@@ -21,9 +21,14 @@ class QuestionMultipleOptionsItem(
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswer: JsonObject? = null,
-    private val isLocked : Boolean = false,
-    val isHidden : Boolean = false,
-) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(context, question, answerSelectedListener, previousAnswer) {
+    private val isLocked: Boolean = false,
+    val isHidden: Boolean = false,
+) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(
+    context,
+    question,
+    answerSelectedListener,
+    previousAnswer
+) {
 
     override fun getLayout() = R.layout.item_question_multiple_options
 
@@ -42,7 +47,10 @@ class QuestionMultipleOptionsItem(
         viewBinding.inputLabel.setAdapter(adapter) // Dropdown is shown when end icon is clicked
 
         viewBinding.inputLabel.setOnClickListener {
-            viewBinding.inputLabel.showDropDown() // Also show dropdown when inputLabel is clicked
+            if (viewBinding.inputLabel.text.isNotEmpty()) {
+                adapter.filter.filter(null) // Do not filter to show all options at all time
+            }
+            viewBinding.inputLabel.showDropDown()
         }
 
         // Listen to selections that happen in the dropdown
@@ -53,15 +61,17 @@ class QuestionMultipleOptionsItem(
             }
         }
 
-        viewBinding.inputLabel.setText(selectedAnswer?.label ?: "")
-        viewBinding.inputLabel.setOnKeyListener(null)
-
         if (selectedAnswer == null) {
             fillInPreviousAnswer()
         }
 
+        selectedAnswer?.let {
+            viewBinding.inputLabel.setText(it.label)
+        }
+        viewBinding.inputLabel.setOnKeyListener(null)
+
         // If values are set through the portal this item should be locked from input
-        if (isLocked){
+        if (isLocked) {
             viewBinding.inputLayout.isEnabled = false
             viewBinding.inputLabel.isEnabled = false
             viewBinding.questionLockedDescription.visibility = View.VISIBLE

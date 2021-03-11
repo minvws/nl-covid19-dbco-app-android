@@ -17,7 +17,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
-import org.joda.time.DateTime
+import org.joda.time.LocalDate
 
 @Serializable
 @Parcelize
@@ -45,23 +45,24 @@ class Task(
     fun getStatus(): Int {
         // check for essential data first, if any of these are missing always return 0
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
-        if(category == null || (linkedContact?.firstName.isNullOrEmpty() && linkedContact?.lastName.isNullOrEmpty()) || !hasEmailOrPhone || dateOfLastExposure == null ){
+        if (category == null || (linkedContact?.firstName.isNullOrEmpty() && linkedContact?.lastName.isNullOrEmpty()) || !hasEmailOrPhone || dateOfLastExposure == null) {
             return 0
         }
 
-        if(questionnaireResult != null && questionnaireResult?.answers != null){
-            val totalQuestions = questionnaireResult?.answers?.size ?: 1 // 1 to make sure we don't divide by 0
+        if (questionnaireResult != null && questionnaireResult?.answers != null) {
+            val totalQuestions =
+                questionnaireResult?.answers?.size ?: 1 // 1 to make sure we don't divide by 0
             var filledInAnswers = 0
             questionnaireResult?.answers?.forEach {
-                if(it.value!!.size > 0) { // isNotEmpty with a nullable JsonObject seems to always return false, hence checking size instead
-                   filledInAnswers++
+                if (it.value!!.size > 0) { // isNotEmpty with a nullable JsonObject seems to always return false, hence checking size instead
+                    filledInAnswers++
                 }
             }
 
             // Calculate percentage filled out of 100%
             val filledDouble = filledInAnswers.toDouble()
             val totalDouble = totalQuestions.toDouble()
-            val percentageFilled : Double = (filledDouble / totalDouble) * 100
+            val percentageFilled: Double = (filledDouble / totalDouble) * 100
 
             return percentageFilled.toInt()
         }
@@ -70,13 +71,12 @@ class Task(
         return 0
     }
 
-    fun getExposureDateAsDateTime() : DateTime{
-        return if(dateOfLastExposure != null){
-            DateTime.parse(dateOfLastExposure, DateFormats.dateInputData).withTimeAtStartOfDay()
-        }else{
-            DateTime.now().withTimeAtStartOfDay()
+    fun getExposureDate(): LocalDate {
+        return if (dateOfLastExposure != null) {
+            LocalDate.parse(dateOfLastExposure, DateFormats.dateInputData)
+        } else {
+            LocalDate.now()
         }
-
     }
 
     override fun toString(): String {

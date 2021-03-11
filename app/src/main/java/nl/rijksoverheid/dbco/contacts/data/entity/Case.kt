@@ -9,11 +9,14 @@
 package nl.rijksoverheid.dbco.contacts.data.entity
 
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import org.joda.time.DateTime
 
 @Serializable
 data class Case(
     val dateOfSymptomOnset: String? = null,
+    val dateOfTest: String? = null,
     val windowExpiresAt: String? = null,
     val tasks: List<Task> = mutableListOf(),
     val symptoms: Set<String> = mutableSetOf()
