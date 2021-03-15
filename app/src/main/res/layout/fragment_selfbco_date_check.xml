@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
   ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
   ~
@@ -35,42 +34,53 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:textAppearance="@style/TextAppearance.App.Headline5"
                 android:id="@+id/self_bco_date_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:textSize="@dimen/onboarding_title_textsize"
                 android:text="@string/selfbco_date_covid_title"
-                app:layout_constraintTop_toBottomOf="@id/back_button"
+                android:textAppearance="@style/TextAppearance.App.Headline5"
+                android:textSize="@dimen/onboarding_title_textsize"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/back_button" />
 
             <TextView
                 android:id="@+id/self_bco_date_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:textSize="@dimen/onboarding_subtext_textsize"
                 android:text="@string/selfbco_date_covid_summary"
-                app:layout_constraintTop_toBottomOf="@id/self_bco_date_header"
+                android:textSize="@dimen/onboarding_subtext_textsize"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/self_bco_date_header" />
 
             <DatePicker
                 android:id="@+id/date_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
                 android:minDate="12/01/2020"
-                app:layout_constraintBottom_toTopOf="@+id/btn_next"
+                app:layout_constraintBottom_toTopOf="@+id/btn_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/self_bco_date_summary" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_info"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_not_sure"
+                app:layout_constraintBottom_toTopOf="@+id/btn_next"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
