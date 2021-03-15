@@ -251,7 +251,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     private fun handleInput() {
         sections.forEach { section ->
             section.items.forEach { contact ->
-                selfBcoViewModel.addSelfBcoContact(
+                selfBcoViewModel.addContact(
                     contact.contactName,
                     section.date.toString(DateFormats.dateInputData),
                     category = null
