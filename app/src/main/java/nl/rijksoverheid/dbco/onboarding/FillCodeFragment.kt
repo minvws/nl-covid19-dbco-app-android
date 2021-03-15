@@ -14,6 +14,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
@@ -23,6 +24,7 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
 
+@ExperimentalSerializationApi
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
     private val viewModel by viewModels<PairingViewModel>()
@@ -66,7 +68,15 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                     binding.nextButton.isEnabled = true
                     binding.nextButton.hideKeyboard()
                     binding.nextButton.postDelayed({
-                        findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
+                        if (result.case.tasks.isEmpty()) {
+                            // User needs to go in self bco flow
+                            findNavController()
+                                .navigate(FillCodeFragmentDirections.toSelfBcoExplanationFragment())
+                        } else {
+                            // User can use regular flow
+                            findNavController()
+                                .navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
+                        }
                     }, KEYBOARD_DELAY)
                 }
                 is Invalid -> {
