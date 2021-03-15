@@ -243,6 +243,12 @@
     <string name="selfbco_timeline_explanation_step3">Twijfel je? Voeg de persoon dan toch toe</string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>hierna</b> niet nog een keer toe te voegen]]></string>
 
+    <string name="selfbco_symptoms_explanation_title">Ziektedag bepalen</string>
+    <string name="selfbco_symptoms_explanation_header_1">Je hebt chronische klachten</string>
+    <string name="selfbco_symptoms_explanation_description_1">Werden je klachten erger voordat je de coronatest deed? Zo ja, wanneer kreeg je de klachten? Kies die dag als eerste ziektedag.</string>
+    <string name="selfbco_symptoms_explanation_header_2">Je bent al eerder getest</string>
+    <string name="selfbco_symptoms_explanation_description_2"><![CDATA[Kreeg je ergere klachten tussen de laatste test en de test ervoor? Kies dan de dag waarop je die dag klachten kreeg als eerste ziektedag.<br/><br/> Als je het echt niet weet, dan kies je de datum waarop je de coronatest hebt gedaan]]></string>
+
     <string name="selfbco_timeline_title">Wie heb je ontmoet tussen %s en vandaag?</string>
     <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>

@@ -70,6 +70,12 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             )
         }
 
+        binding.btnInfo.setOnClickListener {
+            findNavController().navigate(
+                SelfBcoDateCheckFragmentDirections.toSelfBcoSymptomsExplanationFragment()
+            )
+        }
+
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()

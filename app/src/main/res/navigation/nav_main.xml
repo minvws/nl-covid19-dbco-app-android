@@ -347,7 +347,16 @@
         <action
             android:id="@+id/to_selfBcoDoubleCheckFragment"
             app:destination="@id/selfBcoDoubleCheckFragment" />
+
+        <action
+            android:id="@+id/to_selfBcoSymptomsExplanationFragment"
+            app:destination="@id/selfBcoSymptomsExplanationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/selfBcoSymptomsExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_symptoms_explanation"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoSymptomsExplanationFragment"
+        android:label="SelfBcoSymptomsExplanationFragment"/>
     <fragment
         android:id="@+id/selfBcoDoubleCheckFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
