@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Handler
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
@@ -24,19 +23,15 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
-import org.joda.time.Interval
 import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
     Handler().postDelayed(Runnable(block), milliseconds)
 }
 
-fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
-fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
-
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    imm.showSoftInput(this, 0)
 }
 
 fun View.hideKeyboard() {
@@ -135,7 +130,4 @@ fun DatePicker.getDate(): Date {
     calendar.set(year, month, dayOfMonth)
     return calendar.time
 }
-
-fun Interval.toDateTimes() = generateSequence(start) { it.plusDays(1) }
-    .takeWhile(::contains)
 
