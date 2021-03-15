@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
@@ -26,12 +27,14 @@ class ContactInputItem(
     val trashListener: OnTrashClickedListener
 ) : BaseBindableItem<ItemContactInputBinding>() {
 
+    private lateinit var binding: ItemContactInputBinding
+
     private val onClickListener = View.OnClickListener {
         trashListener.onTrashClicked(this@ContactInputItem)
     }
 
     override fun bind(viewBinding: ItemContactInputBinding, position: Int) {
-
+        binding = viewBinding
         viewBinding.contactInput.setText(contactName)
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -66,11 +69,7 @@ class ContactInputItem(
 
         viewBinding.iconTrash.setOnClickListener(onClickListener)
 
-        if (focusOnBind) {
-            viewBinding.contactInput.requestFocus()
-            viewBinding.contactInput.showKeyboard()
-            focusOnBind = false
-        }
+
         viewBinding.contactInput.setOnItemClickListener { _, _, _, _ ->
             viewBinding.contactInput.clearFocus()
             viewBinding.contactInput.hideKeyboard()
@@ -78,6 +77,15 @@ class ContactInputItem(
     }
 
     override fun getLayout(): Int = R.layout.item_contact_input
+
+    override fun onViewAttachedToWindow(viewHolder: GroupieViewHolder<ItemContactInputBinding>) {
+        super.onViewAttachedToWindow(viewHolder)
+        if (focusOnBind) {
+            binding.contactInput.requestFocus()
+            binding.contactInput.showKeyboard()
+            focusOnBind = false
+        }
+    }
 
     override fun isClickable(): Boolean = true
 
