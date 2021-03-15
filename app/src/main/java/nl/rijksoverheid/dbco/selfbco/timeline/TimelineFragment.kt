@@ -71,9 +71,9 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             listOf(
                 createHeader(),
                 ParagraphItem(
-                    getString(R.string.selfbco_timeline_summary),
-                    clickable = true
+                    getString(R.string.selfbco_timeline_summary), clickable = true
                 ),
+                LinkItem(getString(R.string.selfbco_timeline_summary_more), ::onMoreInfoClicked),
                 MemoryTipOrangeItem()
             )
         )
@@ -208,6 +208,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             )
         )
         content.setFooter(Section(groups))
+    }
+
+    private fun onMoreInfoClicked() {
+        findNavController().navigate(
+            TimelineFragmentDirections.toSelfBcoPermissionExplanationFragment()
+        )
     }
 
     private fun checkInput() {
