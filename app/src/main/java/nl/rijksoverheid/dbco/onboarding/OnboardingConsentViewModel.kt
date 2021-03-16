@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.onboarding
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
