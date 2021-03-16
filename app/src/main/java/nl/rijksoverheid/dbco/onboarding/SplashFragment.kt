@@ -16,9 +16,8 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 
-class SplashFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
+class SplashFragment : BaseFragment(R.layout.fragment_splash) {
 
-    private val viewModel by viewModels<OnboardingHelpViewModel>()
     private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,10 +26,6 @@ class SplashFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection)
         appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, {
             findNavController().navigate(SplashFragmentDirections.toOnboarding())
         })
-
         appLifecycleViewModel.checkForForcedAppUpdate()
-
-
     }
-
 }

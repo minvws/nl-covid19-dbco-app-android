@@ -203,14 +203,8 @@
             app:popUpTo="@+id/nav_main"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/toOnboardingPrivacyConsentFragment"
-            app:destination="@id/onboardingPrivacyConsentFragment" />
-        <action
-            android:id="@+id/toSelfBcoExplanationFragment"
-            app:destination="@id/selfBcoExplanationFragment" />
-        <action
-            android:id="@+id/toCodeFillFragment"
-            app:destination="@id/fillCodeFragment" />
+            android:id="@+id/toExplanationFragment"
+            app:destination="@id/ExplanationFragment" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
@@ -312,12 +306,21 @@
             app:destination="@id/symptomSelectionFragment" />
     </fragment>
     <fragment
-        android:id="@+id/selfBcoExplanationFragment"
-        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
-        android:label="SelfBcoExplanationFragment" >
+        android:id="@+id/ExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment"
+        android:label="ExplanationFragment" >
+
+        <argument
+            android:name="flow"
+            app:argType="integer"
+            app:nullable="false" />
+
         <action
             android:id="@+id/toPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment" />
+        <action
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"

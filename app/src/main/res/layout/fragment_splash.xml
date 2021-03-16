@@ -6,7 +6,7 @@
   ~
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="4dp" />
-    <solid android:color="@color/gray_lighter" />
-</shape>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"/>
