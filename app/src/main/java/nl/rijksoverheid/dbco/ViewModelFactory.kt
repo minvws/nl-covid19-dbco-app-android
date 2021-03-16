@@ -20,7 +20,7 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
-import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
@@ -52,7 +52,7 @@ class ViewModelFactory(
                     questionnareRepository
             ) as T
             PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
-            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
+            SplashViewModel::class.java -> SplashViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,

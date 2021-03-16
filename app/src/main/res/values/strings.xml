@@ -54,8 +54,8 @@
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->
-    <string name="onboarding_help_title">Waarschuw mensen die je misschien hebt besmet</string>
-    <string name="onboarding_help_subtext">Je kunt via deze app bepalen wie van je contacten een grote kans op besmetting heeft gelopen. Ook kun je contactgegevens met de GGD delen voor het contactonderzoek.</string>
+    <string name="onboarding_flow_selection_title">Waarschuw mensen die je misschien hebt besmet</string>
+    <string name="onboarding_flow_selection_subtext">Je kunt via deze app bepalen wie van je contacten een grote kans op besmetting heeft gelopen. Ook kun je contactgegevens met de GGD delen voor het contactonderzoek.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
     <string name="fill_code_placeholder">0000-0000-0000</string>

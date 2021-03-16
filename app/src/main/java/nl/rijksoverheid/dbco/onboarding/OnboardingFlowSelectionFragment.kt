@@ -21,18 +21,13 @@ import nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment
 
 class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 
-    private val viewModel by viewModels<OnboardingHelpViewModel>()
-
     private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingFlowSelectionBinding.bind(view)
-        binding.viewmodel = appLifecycleViewModel
 
-        if (viewModel.skipOnboarding) {
-            findNavController().navigate(OnboardingFlowSelectionFragmentDirections.toMyContacts())
-        }
+        binding.btnNoCode.isVisible = appLifecycleViewModel.getFeatureFlags().enableSelfBCO
 
         binding.btnNext.setOnClickListener {
             findNavController().navigate(
@@ -42,16 +37,12 @@ class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboardin
             )
         }
 
-        if (appLifecycleViewModel.getFeatureFlags().enableSelfBCO) { // TODO ??
-            binding.btnNoCode.setOnClickListener {
-                findNavController().navigate(
-                    OnboardingFlowSelectionFragmentDirections.toExplanationFragment(
-                        ExplanationFragment.SELF_BCO_FLOW
-                    )
+        binding.btnNoCode.setOnClickListener {
+            findNavController().navigate(
+                OnboardingFlowSelectionFragmentDirections.toExplanationFragment(
+                    ExplanationFragment.SELF_BCO_FLOW
                 )
-            }
-        } else {
-            binding.btnNoCode.isVisible = false
+            )
         }
     }
 }

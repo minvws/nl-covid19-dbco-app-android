@@ -191,16 +191,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/onboardingFragmentHelp"
+        android:id="@+id/onboardingFlowSelectionFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFlowSelectionFragment"
-        android:label="OnboardingHelpFragment"
+        android:label="OnboardingFlowSelectionFragment"
         tools:layout="@layout/fragment_onboarding_flow_selection">
-        <action
-            android:id="@+id/toMyContacts"
-            app:destination="@id/myContactsFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/toExplanationFragment"
             app:destination="@id/ExplanationFragment" />
@@ -312,11 +306,17 @@
         android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
         android:label="SplashFragment" >
         <action
-            android:id="@+id/toOnboarding"
-            app:destination="@id/onboardingFragmentHelp"
+            android:id="@+id/toOnboardingFlowSelectionFragment"
+            app:destination="@id/onboardingFlowSelectionFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/toMyContacts"
+            app:destination="@id/myContactsFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/symptomSelectionFragment"
