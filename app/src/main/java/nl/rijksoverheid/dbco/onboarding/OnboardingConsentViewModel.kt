@@ -8,6 +8,8 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,12 +17,22 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
+import nl.rijksoverheid.dbco.Constants
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.user.IUserRepository
 
 @ExperimentalSerializationApi
 class OnboardingConsentViewModel(
-    private val tasksRepository: ITaskRepository
+    private val tasksRepository: ITaskRepository,
+    userRepository: IUserRepository,
+    context: Context
 ) : ViewModel() {
+
+    val isPaired = userRepository.getToken() != null ||
+            LocalStorageRepository.getInstance(context).getSharedPreferences().getBoolean(
+                Constants.USER_COMPLETED_ONBOARDING, false
+            )
 
     val termsAgreed = MutableLiveData(false)
 
@@ -29,14 +41,17 @@ class OnboardingConsentViewModel(
 
     fun onNextClicked() {
         viewModelScope.launch {
-            val contagiousPeriodKnown = true // TODO: will come from API
             val case = tasksRepository.getCase()
-            if (case.tasks.isEmpty() && !contagiousPeriodKnown) {
+            if (case.tasks.isNotEmpty() && isPaired) {
+                navigationChannel.send(Navigation.MyTasks)
+            } else if (case.tasks.isNotEmpty() && !isPaired && case.contagiousPeriodKnown) {
+                navigationChannel.send(Navigation.AddContacts)
+            } else if (case.tasks.isNotEmpty() && !isPaired && !case.contagiousPeriodKnown) {
                 navigationChannel.send(Navigation.Symptoms)
-            } else if (case.tasks.isEmpty() && contagiousPeriodKnown) {
+            } else if (case.tasks.isEmpty() && isPaired && case.contagiousPeriodKnown) {
                 navigationChannel.send(Navigation.AddContacts)
             } else {
-                navigationChannel.send(Navigation.MyTasks)
+                navigationChannel.send(Navigation.Symptoms)
             }
         }
     }

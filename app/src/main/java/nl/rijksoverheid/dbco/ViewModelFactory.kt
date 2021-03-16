@@ -48,8 +48,8 @@ class ViewModelFactory(
                 questionnareRepository
             ) as T
             TasksDetailViewModel::class.java -> TasksDetailViewModel(
-                    tasksRepository,
-                    questionnareRepository
+                tasksRepository,
+                questionnareRepository
             ) as T
             PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
             SplashViewModel::class.java -> SplashViewModel(userRepository, context) as T
@@ -60,8 +60,15 @@ class ViewModelFactory(
                     AppUpdateManagerFactory.create(context)
                 ), appConfigRepository
             ) as T
-            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(tasksRepository) as T
-            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository, appConfigRepository) as T
+            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(
+                tasksRepository,
+                userRepository,
+                context
+            ) as T
+            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(
+                tasksRepository,
+                appConfigRepository
+            ) as T
             ReversePairingViewModel::class.java -> ReversePairingViewModel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }

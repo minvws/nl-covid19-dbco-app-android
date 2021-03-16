@@ -18,5 +18,6 @@ data class Case(
     val dateOfTest: String? = null,
     val windowExpiresAt: String? = null,
     val tasks: List<Task> = mutableListOf(),
-    val symptoms: Set<String> = mutableSetOf()
+    val symptoms: Set<String> = mutableSetOf(),
+    val contagiousPeriodKnown: Boolean = false
 )
