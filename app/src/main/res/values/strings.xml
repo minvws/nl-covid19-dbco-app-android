@@ -251,6 +251,7 @@
 
     <string name="selfbco_timeline_title">Wie heb je ontmoet tussen %s en vandaag?</string>
     <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
+    <string name="selfbco_timeline_summary_more">Wat deel ik precies met de GGD?</string>
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
     <string name="selfbco_timeline_error_message">Klopt het dat je op %s niemand hebt ontmoet?</string>
     <string name="str_continue">Ga verder</string>
@@ -265,6 +266,7 @@
     <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
 
     <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
+    <string name="selfbco_permission_explanation_header">Wat deel ik precies?</string>
     <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Bijvoorbeeld een achternaam of een telefoonnummer.</string>
     <string name="selfbco_permission_item1">Alleen gegevens die je zelf invult worden gedeeld</string>
     <string name="selfbco_permission_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>

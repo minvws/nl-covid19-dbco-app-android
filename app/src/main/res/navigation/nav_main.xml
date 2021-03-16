@@ -358,6 +358,11 @@
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoSymptomsExplanationFragment"
         android:label="SelfBcoSymptomsExplanationFragment"/>
     <fragment
+        android:id="@+id/selfBcoPermissionExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_permission_explanation"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionExplanationFragment"
+        android:label="SelfBcoPermissionExplanationFragment"/>
+    <fragment
         android:id="@+id/selfBcoDoubleCheckFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
         android:label="SelfBcoDoubleCheckFragment"
@@ -408,6 +413,9 @@
         <action
             android:id="@+id/to_myContactsFragment"
             app:destination="@id/myContactsFragment" />
+        <action
+            android:id="@+id/to_selfBcoPermissionExplanationFragment"
+            app:destination="@id/selfBcoPermissionExplanationFragment" />
     </fragment>
     <fragment
         android:id="@+id/selfBcoPermissionFragment"
