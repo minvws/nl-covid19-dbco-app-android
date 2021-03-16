@@ -12,6 +12,7 @@
     <color name="primary_dark">@color/purple_dark</color>
     <color name="secondary">@color/gray_lighter</color>
     <color name="secondary_dark">@color/gray</color>
+    <color name="secondary_text">#CC3C3C43</color>
     <color name="secondary_variant">@color/gray_light</color>
     <color name="control_highlight">#240047FF</color>
 

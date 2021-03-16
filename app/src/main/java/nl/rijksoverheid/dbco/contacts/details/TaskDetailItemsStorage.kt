@@ -414,12 +414,12 @@ class TaskDetailItemsStorage(
             R.string.contact_section_inform_header,
             R.string.contact_section_inform_subtext,
             3
-        ), true
+        ), false
     )
 
     fun refreshInformSection() {
 
-        val isEnabled = viewModel.category.value != Category.NO_RISK
+        val isEnabled = viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
         val contactName =
             if (!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else context.getString(
                 R.string.inform_header_this_person

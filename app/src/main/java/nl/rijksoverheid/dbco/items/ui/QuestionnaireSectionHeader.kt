@@ -52,14 +52,14 @@ class QuestionnaireSectionHeader(
         viewBinding.root.setOnClickListener {
             if (enabled && !blocked) {
                 expandableGroup.onToggleExpanded()
-                updateChevron(binding)
+                updateChevron()
             }
         }
 
         viewBinding.sectionHeader.setText(sectionTitle)
         viewBinding.sectionSubtext.setText(sectionSubtext)
 
-        updateChevron(binding)
+        updateChevron()
         updateSectionStatus(viewBinding)
     }
 
@@ -88,7 +88,7 @@ class QuestionnaireSectionHeader(
         }
     }
 
-    private fun updateChevron(binding: ItemQuestionnaireSectionBinding?) {
+    fun updateChevron() {
         val chevron = getChevron()
         binding?.sectionChevron?.setImageResource(chevron.imageId, chevron.stringId)
     }
