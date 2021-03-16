@@ -210,42 +210,16 @@
         android:name="nl.rijksoverheid.dbco.onboarding.FillCodeFragment"
         android:label="FillCodeFragment"
         tools:layout="@layout/fragment_fill_code">
-        <action
-            android:id="@+id/toOnboardingAddDataFragment"
-            app:destination="@+id/onboardingAddDataFragment"
-            app:popUpTo="@+id/onboardingFragmentHelp"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/to_selfBcoExplanationFragment"
-            app:destination="@+id/selfBcoExplanationFragment"
+            android:id="@+id/to_onboardingPrivacyConsentFragment"
+            app:destination="@+id/onboardingPrivacyConsentFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
-    <fragment
-        android:id="@+id/onboardingAddDataFragment"
-        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingAddDataFragment"
-        android:label="OnboardingAddDataFragment"
-        tools:layout="@layout/fragment_onboarding_add_data">
-        <action
-            android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-
     <fragment
         android:id="@+id/finalizeCheckFragment"
         tools:layout="@layout/fragment_finalizing_check"
@@ -307,11 +281,14 @@
         tools:layout="@layout/fragment_onboarding_privacy"
         android:label="OnboardingPrivacyConsentFragment" >
         <action
-            android:id="@+id/toFillCodeFragment"
-            app:destination="@id/fillCodeFragment" />
-        <action
             android:id="@+id/toSymptomSelectionFragment"
             app:destination="@id/symptomSelectionFragment" />
+        <action
+            android:id="@+id/to_selfBcoPermissionFragment"
+            app:destination="@id/selfBcoPermissionFragment" />
+        <action
+            android:id="@+id/to_myContactsFragment"
+            app:destination="@id/myContactsFragment" />
     </fragment>
     <fragment
         android:id="@+id/ExplanationFragment"

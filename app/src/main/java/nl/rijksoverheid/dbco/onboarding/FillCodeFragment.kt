@@ -19,7 +19,6 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
 import nl.rijksoverheid.dbco.util.*
-import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
@@ -68,15 +67,8 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                     binding.nextButton.isEnabled = true
                     binding.nextButton.hideKeyboard()
                     binding.nextButton.postDelayed({
-                        if (result.case.tasks.isEmpty()) {
-                            // User needs to go in self bco flow
-                            findNavController()
-                                .navigate(FillCodeFragmentDirections.toSelfBcoExplanationFragment())
-                        } else {
-                            // User can use regular flow
-                            findNavController()
-                                .navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
-                        }
+                        findNavController()
+                            .navigate(FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment())
                     }, KEYBOARD_DELAY)
                 }
                 is Invalid -> {
