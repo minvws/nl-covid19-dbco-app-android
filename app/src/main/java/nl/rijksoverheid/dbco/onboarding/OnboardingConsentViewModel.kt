@@ -41,14 +41,12 @@ class OnboardingConsentViewModel(
     fun onNextClicked() {
         viewModelScope.launch {
             val case = tasksRepository.getCase()
-            if (case.tasks.isNotEmpty() && isPaired) {
-                navigationChannel.send(Navigation.MyTasks)
-            } else if (case.tasks.isNotEmpty() && !isPaired && case.contagiousPeriodKnown) {
+            if (case.tasks.isEmpty() && isPaired && case.contagiousPeriodKnown) {
                 navigationChannel.send(Navigation.AddContacts)
-            } else if (case.tasks.isNotEmpty() && !isPaired && !case.contagiousPeriodKnown) {
+            } else if (case.tasks.isEmpty() && isPaired && !case.contagiousPeriodKnown) {
                 navigationChannel.send(Navigation.Symptoms)
-            } else if (case.tasks.isEmpty() && isPaired && case.contagiousPeriodKnown) {
-                navigationChannel.send(Navigation.AddContacts)
+            } else if (case.tasks.isNotEmpty() && isPaired) {
+                navigationChannel.send(Navigation.MyTasks)
             } else {
                 navigationChannel.send(Navigation.Symptoms)
             }
