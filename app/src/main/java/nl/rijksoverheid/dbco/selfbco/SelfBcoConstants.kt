@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.selfbco
 
 class SelfBcoConstants {
     companion object {
-        const val NOT_SELECTED = -1
         const val SYMPTOM_CHECK_FLOW = 0
         const val COVID_CHECK_FLOW = 1
     }

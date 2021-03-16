@@ -49,7 +49,7 @@ class ViewModelFactory(
                     tasksRepository,
                     questionnareRepository
             ) as T
-            PairingViewModel::class.java -> PairingViewModel(userRepository) as T
+            PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
             OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(

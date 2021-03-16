@@ -91,7 +91,6 @@
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
 
-
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -220,6 +219,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/to_selfBcoExplanationFragment"
+            app:destination="@+id/selfBcoExplanationFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+
     </fragment>
     <fragment
         android:id="@+id/onboardingAddDataFragment"

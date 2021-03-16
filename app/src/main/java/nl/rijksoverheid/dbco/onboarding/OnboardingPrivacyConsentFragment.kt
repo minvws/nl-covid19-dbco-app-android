@@ -58,9 +58,10 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         )
 
         binding.btnNext.setOnClickListener {
-            if(appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
+            if (appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
+                // TODO check if we already have test date or symptom onset date, in that case
                 findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment())
-            }else{
+            } else {
                 findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
             }
         }
