@@ -14,15 +14,16 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
 import nl.rijksoverheid.dbco.util.*
-import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
 
+@ExperimentalSerializationApi
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
     private val viewModel by viewModels<PairingViewModel>()
@@ -66,7 +67,8 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                     binding.nextButton.isEnabled = true
                     binding.nextButton.hideKeyboard()
                     binding.nextButton.postDelayed({
-                        findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
+                        findNavController()
+                            .navigate(FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment())
                     }, KEYBOARD_DELAY)
                 }
                 is Invalid -> {

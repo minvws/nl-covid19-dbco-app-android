@@ -25,7 +25,7 @@ class SelfBcoCaseViewModel(
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
 
-    private var testedOrSymptoms = SelfBcoConstants.NOT_SELECTED
+    private var testedOrSymptoms = SelfBcoConstants.COVID_CHECK_FLOW
 
     fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
 

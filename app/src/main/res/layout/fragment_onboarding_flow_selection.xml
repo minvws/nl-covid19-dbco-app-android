@@ -9,84 +9,76 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <variable
-            name="viewmodel"
-            type="nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel" />
-
-        <import type="android.view.View" />
-    </data>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/activity_horizontal_margin">
-
-        <ImageView
-            android:id="@+id/onboarding_header_image"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:src="@drawable/illustration_onboarding"
-            app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.75" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/activity_horizontal_margin">
 
-        <TextView
-            android:textAppearance="@style/TextAppearance.App.Headline5"
-            android:id="@+id/onboarding_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textSize="@dimen/onboarding_title_textsize"
-            android:text="@string/onboarding_help_title"
-            app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:accessibilityHeading="@{true}"/>
+            <ImageView
+                android:id="@+id/onboarding_header_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/illustration_onboarding"
+                app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.75" />
 
-        <TextView
-            android:id="@+id/onboarding_subtext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:textSize="@dimen/onboarding_subtext_textsize"
-            android:text="@string/onboarding_help_subtext"
-            app:layout_constraintBottom_toTopOf="@+id/btn_next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/onboarding_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/onboarding_flow_selection_title"
+                android:textAppearance="@style/TextAppearance.App.Headline5"
+                android:textSize="@dimen/onboarding_title_textsize"
+                app:accessibilityHeading="@{true}"
+                app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/onboarding_subtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@string/onboarding_flow_selection_subtext"
+                android:textSize="@dimen/onboarding_subtext_textsize"
+                app:layout_constraintBottom_toTopOf="@+id/btn_next"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@{viewmodel.featureFlags.enableSelfBCO ? @string/zelfbco_have_code : @string/next }"
-            app:layout_constraintBottom_toTopOf="@id/btn_no_code"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/zelfbco_have_code"
+                app:layout_constraintBottom_toTopOf="@id/btn_no_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.button.MaterialButton style="@style/Widget.App.Button.Secondary"
-            android:id="@+id/btn_no_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/zelfbco_no_code"
-            android:visibility="@{viewmodel.featureFlags.enableSelfBCO ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_no_code"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/zelfbco_no_code"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

@@ -91,7 +91,6 @@
             app:nullable="true"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
 
-
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
@@ -192,58 +191,29 @@
     </fragment>
 
     <fragment
-        android:id="@+id/onboardingFragmentHelp"
+        android:id="@+id/onboardingFlowSelectionFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFlowSelectionFragment"
-        android:label="OnboardingHelpFragment"
+        android:label="OnboardingFlowSelectionFragment"
         tools:layout="@layout/fragment_onboarding_flow_selection">
         <action
-            android:id="@+id/toMyContacts"
-            app:destination="@id/myContactsFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/toOnboardingPrivacyConsentFragment"
-            app:destination="@id/onboardingPrivacyConsentFragment" />
-        <action
-            android:id="@+id/toSelfBcoExplanationFragment"
-            app:destination="@id/selfBcoExplanationFragment" />
-        <action
-            android:id="@+id/toCodeFillFragment"
-            app:destination="@id/fillCodeFragment" />
+            android:id="@+id/toExplanationFragment"
+            app:destination="@id/ExplanationFragment" />
     </fragment>
     <fragment
         android:id="@+id/fillCodeFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.FillCodeFragment"
         android:label="FillCodeFragment"
         tools:layout="@layout/fragment_fill_code">
-        <action
-            android:id="@+id/toOnboardingAddDataFragment"
-            app:destination="@+id/onboardingAddDataFragment"
-            app:popUpTo="@+id/onboardingFragmentHelp"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/onboardingAddDataFragment"
-        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingAddDataFragment"
-        android:label="OnboardingAddDataFragment"
-        tools:layout="@layout/fragment_onboarding_add_data">
-        <action
-            android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
 
+        <action
+            android:id="@+id/to_onboardingPrivacyConsentFragment"
+            app:destination="@+id/onboardingPrivacyConsentFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
     <fragment
         android:id="@+id/finalizeCheckFragment"
         tools:layout="@layout/fragment_finalizing_check"
@@ -305,30 +275,48 @@
         tools:layout="@layout/fragment_onboarding_privacy"
         android:label="OnboardingPrivacyConsentFragment" >
         <action
-            android:id="@+id/toFillCodeFragment"
-            app:destination="@id/fillCodeFragment" />
-        <action
             android:id="@+id/toSymptomSelectionFragment"
             app:destination="@id/symptomSelectionFragment" />
+        <action
+            android:id="@+id/to_selfBcoPermissionFragment"
+            app:destination="@id/selfBcoPermissionFragment" />
+        <action
+            android:id="@+id/to_myContactsFragment"
+            app:destination="@id/myContactsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/selfBcoExplanationFragment"
-        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
-        android:label="SelfBcoExplanationFragment" >
+        android:id="@+id/ExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment"
+        android:label="ExplanationFragment" >
+
+        <argument
+            android:name="flow"
+            app:argType="integer"
+            app:nullable="false" />
+
         <action
             android:id="@+id/toPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment" />
+        <action
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
         android:label="SplashFragment" >
         <action
-            android:id="@+id/toOnboarding"
-            app:destination="@id/onboardingFragmentHelp"
+            android:id="@+id/toOnboardingFlowSelectionFragment"
+            app:destination="@id/onboardingFlowSelectionFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/toMyContacts"
+            app:destination="@id/myContactsFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/symptomSelectionFragment"

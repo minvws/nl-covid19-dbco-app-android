@@ -15,19 +15,25 @@ import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingPrivacyBinding
 import nl.rijksoverheid.dbco.items.input.PrivacyConsentItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.util.observeInLifecycle
+import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.MyTasks
+import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.Symptoms
+import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.AddContacts
 
+@ExperimentalSerializationApi
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
+
     private val viewModel by viewModels<OnboardingConsentViewModel>()
-    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,16 +63,19 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
             )
         )
 
-        binding.btnNext.setOnClickListener {
-            if(appLifecycleViewModel.getFeatureFlags().enableSelfBCO) {
-                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment())
-            }else{
-                findNavController().navigate(OnboardingPrivacyConsentFragmentDirections.toFillCodeFragment())
-            }
-        }
+        binding.btnNext.setOnClickListener { viewModel.onNextClicked() }
 
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+
+        viewModel.navigationFlow
+            .onEach {
+                val direction = when (it) {
+                    Symptoms -> OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment()
+                    AddContacts -> OnboardingPrivacyConsentFragmentDirections.toSelfBcoPermissionFragment()
+                    MyTasks -> OnboardingPrivacyConsentFragmentDirections.toMyContactsFragment()
+                }
+                findNavController().navigate(direction)
+            }
+            .observeInLifecycle(viewLifecycleOwner)
     }
 }

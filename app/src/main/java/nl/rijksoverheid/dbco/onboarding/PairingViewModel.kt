@@ -15,10 +15,18 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
+import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import retrofit2.HttpException
 
-class PairingViewModel(private val userRepository: IUserRepository) : ViewModel() {
+@ExperimentalSerializationApi
+class PairingViewModel(
+    private val userRepository: IUserRepository,
+    private val tasksRepository: ITaskRepository
+) : ViewModel() {
 
     private val _pairingResult = MutableLiveData<PairingResult>()
     val pairingResult: LiveData<PairingResult> = _pairingResult
@@ -28,7 +36,8 @@ class PairingViewModel(private val userRepository: IUserRepository) : ViewModel(
             withContext(Dispatchers.IO) {
                 try {
                     userRepository.pair(pin)
-                    _pairingResult.postValue(PairingResult.Success)
+                    val case = tasksRepository.fetchCase()
+                    _pairingResult.postValue(PairingResult.Success(case))
                 } catch (ex: Throwable) {
                     if (ex is HttpException && ex.code() == 400) {
                         _pairingResult.postValue(PairingResult.Invalid)
@@ -41,7 +50,7 @@ class PairingViewModel(private val userRepository: IUserRepository) : ViewModel(
     }
 
     sealed class PairingResult {
-        object Success : PairingResult()
+        data class Success(val case: Case) : PairingResult()
         object Invalid : PairingResult()
         data class Error(val exception: Throwable) : PairingResult()
     }

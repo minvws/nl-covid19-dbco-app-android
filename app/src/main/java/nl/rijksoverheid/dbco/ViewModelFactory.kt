@@ -12,6 +12,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
@@ -19,7 +20,7 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
-import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
@@ -28,6 +29,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.user.IUserRepository
 
+@ExperimentalSerializationApi
 class ViewModelFactory(
     private val context: Context,
     private val tasksRepository: ITaskRepository,
@@ -46,11 +48,11 @@ class ViewModelFactory(
                 questionnareRepository
             ) as T
             TasksDetailViewModel::class.java -> TasksDetailViewModel(
-                    tasksRepository,
-                    questionnareRepository
+                tasksRepository,
+                questionnareRepository
             ) as T
-            PairingViewModel::class.java -> PairingViewModel(userRepository) as T
-            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
+            PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
+            SplashViewModel::class.java -> SplashViewModel(userRepository, context) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,
@@ -58,8 +60,15 @@ class ViewModelFactory(
                     AppUpdateManagerFactory.create(context)
                 ), appConfigRepository
             ) as T
-            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
-            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository, appConfigRepository) as T
+            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(
+                tasksRepository,
+                userRepository,
+                context
+            ) as T
+            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(
+                tasksRepository,
+                appConfigRepository
+            ) as T
             ReversePairingViewModel::class.java -> ReversePairingViewModel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }

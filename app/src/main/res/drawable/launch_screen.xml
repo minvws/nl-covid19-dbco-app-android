@@ -11,18 +11,12 @@
     android:opacity="opaque">
 
     <!-- The background color, preferably the same as your normal theme -->
-    <item android:drawable="?attr/colorSurface" />
+    <item android:drawable="@color/purple" />
 
     <item
-        android:width="320dp"
-        android:height="82dp"
-        android:drawable="@drawable/illustration_launch_screen"
+        android:width="153dp"
+        android:height="190dp"
+        android:drawable="@drawable/ic_splash"
         android:gravity="center" />
-
-    <item
-        android:width="311dp"
-        android:height="109dp"
-        android:drawable="@drawable/illustration_splash_banner"
-        android:gravity="center_horizontal|top" />
 
 </layer-list>

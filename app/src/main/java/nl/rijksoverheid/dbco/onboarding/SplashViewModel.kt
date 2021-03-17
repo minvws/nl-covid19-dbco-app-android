@@ -15,7 +15,7 @@ import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 
-class OnboardingHelpViewModel(userRepository: IUserRepository, context : Context) : ViewModel() {
+class SplashViewModel(userRepository: IUserRepository, context : Context) : ViewModel() {
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
