@@ -126,8 +126,8 @@ class TasksRepository(
         caseChanged = true
         val tasks = case.tasks.toMutableList()
         var found = false
-        if (task.communication == null || task.communication == CommunicationType.None) {
-            task.communication = CommunicationType.Index
+        if (task.communication == null) {
+            task.communication = CommunicationType.None
         }
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
