@@ -40,12 +40,16 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
             SelfBcoCaseViewModel::class.java
         )
     }
+
     private val adapter = GroupAdapter<GroupieViewHolder>()
+
+    private lateinit var binding: FragmentSelfbcoRoommatesInputBinding
+
     private var contactNames = ArrayList<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
+        binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
 
         val section = Section()
         section.setHeader(
@@ -70,16 +74,14 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
             )
         }
 
-        adapter.setOnItemClickListener { item, contactItem ->
+        adapter.setOnItemClickListener { item, _ ->
             if (item is ContactAddItem) {
                 addContactToSection(
                     section = section,
                     withFocus = true
                 )
             }
-            if (item is ContactInputItem && contactItem.id == R.id.icon_trash) {
-                section.remove(item)
-            }
+            updateNextButton(section)
         }
 
         // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
@@ -96,6 +98,8 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
                 contactNames = contactsViewModel.getLocalContactNames()
             }
         )
+
+        updateNextButton(section)
 
         binding.btnNext.setOnClickListener {
             grabInput()
@@ -116,6 +120,14 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
 
     }
 
+    private fun updateNextButton(section: Section) {
+        binding.btnNext.text = if (section.groupCount > 2) {
+            getString(R.string.next)
+        } else {
+            getString(R.string.selfbco_roommates_alone_button_text)
+        }
+    }
+
     private fun addContactToSection(
         section: Section,
         contactName: String = "",
@@ -125,6 +137,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         val thrashListener = object : ContactInputItem.OnTrashClickedListener {
             override fun onTrashClicked(item: ContactInputItem) {
                 section.remove(item)
+                updateNextButton(section)
                 item.contactUuid?.let { uuid ->
                     // when a contact already has an uuid it means that it was already added
                     // to the case before so it needs to be removed

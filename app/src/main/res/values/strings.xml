@@ -236,6 +236,7 @@
     <string name="selfbco_not_sure">Ik weet het niet</string>
     <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
     <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
+    <string name="selfbco_roommates_alone_button_text">Ik woon alleen</string>
     <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
     <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
     <string name="selfbco_timeline_explanation_step1">Bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
