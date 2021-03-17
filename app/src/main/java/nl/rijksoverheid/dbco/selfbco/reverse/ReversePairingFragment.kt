@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
@@ -23,6 +24,7 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 
+@ExperimentalSerializationApi
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private val args: ReversePairingFragmentArgs by navArgs()
@@ -93,6 +95,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
                 is ReversePairingStatus.Error -> showPairingError(status.credentials)
                 is ReversePairingStatus.Expired -> showInvalidCode()
                 is ReversePairingStatus.Pairing -> showPairing()
+                else -> { /* NO-OP */ }
             }
         })
 
@@ -112,24 +115,21 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private fun setupBackButton() {
         binding.backButton.setOnClickListener {
-            if (hasUserSharedCode()) {
-                findNavController().popBackStack()
-            } else {
-                showShareCodeDialog()
-            }
+            handleBackPress()
         }
         val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true /* enabled by default */) {
-                override fun handleOnBackPressed() {
-                    // Handle the back button event
-                    if (hasUserSharedCode()) {
-                        findNavController().popBackStack()
-                    } else {
-                        showShareCodeDialog()
-                    }
-                }
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() { handleBackPress() }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun handleBackPress() {
+        if (hasUserSharedCode()) {
+            findNavController().popBackStack()
+        } else {
+            showShareCodeDialog()
+        }
     }
 
     private fun hasUserSharedCode(): Boolean {
@@ -145,7 +145,9 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             findNavController().popBackStack()
         }
         builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+            reversePairingViewModel.cancelPairing()
             dialog.dismiss()
+            findNavController().popBackStack()
         }
         builder.create().show()
     }

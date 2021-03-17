@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus.Success
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus.Pairing
+import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus.Stopped
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.user.IUserRepository
 
@@ -35,6 +36,7 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
     val pairingStatus: LiveData<ReversePairingStatus> = _pairingStatus
 
     private var pollingJob: Job? = null
+    private lateinit var poller: Poller
 
     fun start(credentials: ReversePairingCredentials? = null) {
         if (credentials != null) {
@@ -66,7 +68,7 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
     private fun startPairing(credentials: ReversePairingCredentials) {
         cancelPollingForChanges()
         pollingJob = viewModelScope.launch {
-            val poller = ReversePairingStatePoller(userRepository, Dispatchers.IO)
+            poller = ReversePairingStatePoller(userRepository, Dispatchers.IO)
             val flow = poller.poll(POLLING_DELAY, credentials).onEach { result ->
                 _pairingStatus.postValue(result)
                 if (result is Success) {
@@ -79,6 +81,12 @@ class ReversePairingViewModel(val userRepository: IUserRepository) : ViewModel()
             }
             flow.collect()
         }
+    }
+
+    fun cancelPairing() {
+        poller.close()
+        cancelPollingForChanges()
+        _pairingStatus.postValue(Stopped)
     }
 
     fun setUserHasSharedCode(hasShared: Boolean) {

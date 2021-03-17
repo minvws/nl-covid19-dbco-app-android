@@ -272,6 +272,7 @@
     <string name="selfbco_permission_item1">Alleen gegevens die je zelf invult worden gedeeld</string>
     <string name="selfbco_permission_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
     <string name="selfbco_permission_item3">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
+    <string name="selfbco_permission_item3_verbose">Gegevens worden pas met de GGD gedeeld als jij op ‘Deel gegevens met GGD’ klikt</string>
     <string name="seflco_permission_give_access">Toegang geven</string>
 
     <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>

@@ -70,6 +70,7 @@ class ReversePairingStatePoller(
         data class Pairing(val credentials: ReversePairingCredentials) : ReversePairingStatus()
         data class Success(val code: String) : ReversePairingStatus()
         object Expired : ReversePairingStatus()
+        object Stopped : ReversePairingStatus()
         data class Error(val credentials: ReversePairingCredentials) : ReversePairingStatus()
     }
 }

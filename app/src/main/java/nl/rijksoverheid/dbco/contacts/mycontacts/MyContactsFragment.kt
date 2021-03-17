@@ -22,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
@@ -49,6 +50,7 @@ import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
  * Overview fragment showing selected or suggested contacts of the user
  */
 
+@ExperimentalSerializationApi
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     lateinit var binding: FragmentMyContactsBinding
@@ -212,6 +214,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private fun setUpPairingListeners() {
         reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
+                is ReversePairingStatus.Stopped -> {
+                    binding.sendButton.text = getString(R.string.send_data)
+                    setupSendButton()
+                }
                 is ReversePairingStatus.Success -> {
                     pairingViewModel.pair(status.code)
                     setupSendButton()

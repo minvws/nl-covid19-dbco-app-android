@@ -34,7 +34,7 @@ class SelfBcoPermissionExplanationFragment :
                 HeaderItem(R.string.selfbco_permission_explanation_header),
                 ParagraphIconItem(getString(R.string.selfbco_permission_item1)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_item2)),
-                ParagraphIconItem(getString(R.string.selfbco_permission_item3))
+                ParagraphIconItem(getString(R.string.selfbco_permission_item3_verbose))
             )
         )
         val adapter = GroupAdapter<GroupieViewHolder>()
