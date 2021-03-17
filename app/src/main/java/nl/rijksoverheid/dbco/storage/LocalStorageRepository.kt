@@ -10,17 +10,31 @@ package nl.rijksoverheid.dbco.storage
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 
 class LocalStorageRepository(context: Context) {
 
-    private var sharedPreferences: SharedPreferences
-    private var masterKeyAlias: String
-    private var keyGenParameterSpec: KeyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+    private val prefs: SharedPreferences = EncryptedSharedPreferences.create(
+        context,
+        FILE_NAME,
+        getMasterKey(context),
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+
+    fun getSharedPreferences(): SharedPreferences = prefs
+
+    private fun getMasterKey(context: Context): MasterKey {
+        return MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setRequestStrongBoxBacked(true)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+    }
 
     companion object {
+
+        private const val FILE_NAME = "local_encrypted_storage"
+
         private var currentLocalStorageRepository: LocalStorageRepository? = null
 
         fun getInstance(context: Context): LocalStorageRepository {
@@ -30,22 +44,4 @@ class LocalStorageRepository(context: Context) {
             return currentLocalStorageRepository!!
         }
     }
-
-
-    init {
-        masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
-        sharedPreferences = EncryptedSharedPreferences.create(
-            "local_encrypted_storage",
-            masterKeyAlias,
-            context,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }
-
-    fun getSharedPreferences(): SharedPreferences {
-        return sharedPreferences
-    }
-
-
 }
