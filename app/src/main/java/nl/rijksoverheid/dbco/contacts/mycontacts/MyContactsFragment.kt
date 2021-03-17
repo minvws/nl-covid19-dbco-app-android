@@ -215,6 +215,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
                 is ReversePairingStatus.Stopped -> {
+                    toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
                     setupSendButton()
                 }
@@ -247,6 +248,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             when (result) {
                 is PairingResult.Success -> {
                     binding.pairingContainer.isVisible = false
+                    toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
                     binding.sendButton.isVisible = true
                     tasksViewModel.syncTasks()
@@ -269,6 +271,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             text = getString(R.string.selfbco_reverse_pairing_pairing_waiting)
             setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
+        toggleButtonStyle(isPairing = true)
         binding.sendButton.text = getString(R.string.reverse_pairing_try_again)
         binding.pairingContainer.isVisible = true
     }
@@ -288,8 +291,35 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 null
             )
         }
+        toggleButtonStyle(isPairing = true)
         binding.sendButton.text = buttonText
         binding.pairingContainer.isVisible = true
+    }
+
+    private fun toggleButtonStyle(isPairing: Boolean) {
+        if (isPairing) {
+            binding.sendButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_secondary
+            )
+            binding.sendButton.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.primary
+                )
+            )
+        } else {
+            binding.sendButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_primary
+            )
+            binding.sendButton.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.secondary
+                )
+            )
+        }
     }
 
     private fun fillContentSection(case: Case) {
