@@ -38,11 +38,10 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                    ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
                 )
             }
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +54,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             findNavController().navigate(
-                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
             )
         }
     }
@@ -129,9 +128,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
                 }
             }
         } else {
-            ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+            ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
         }
     }
-
-
 }

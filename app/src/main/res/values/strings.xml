@@ -10,6 +10,8 @@
     <string name="app_name">GGD Contact</string>
 
     <!--    Common words-->
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
     <string name="save">Opslaan</string>
     <string name="dont_save">Niet opslaan</string>
     <string name="next">Volgende</string>
@@ -22,6 +24,7 @@
     <string name="close">Sluiten</string>
     <string name="cancel">Annuleren</string>
     <string name="delete">Verwijderen</string>
+    <string name="delete_short">Verwijder</string>
     <string name="completed">Afgerond</string>
     <string name="collapsed">Ingeklapt</string>
     <string name="expanded">Uitgeklapt</string>
@@ -79,7 +82,8 @@
     <string name="contact_question_select_option">Kiezen</string>
 
     <!--    Contact details and questions-->
-    <string name="unsaved_changes_message">Wil je de aangepaste gegevens opslaan?</string>
+    <string name="unsaved_changes_title">Weet je zeker dat je wilt teruggaan?</string>
+    <string name="unsaved_changes_message">De gegevens die je hebt ingevuld worden niet opgeslagen.</string>
 
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
@@ -96,6 +100,8 @@
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
 
     <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
+    <string name="delete_contact_no_risk_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
+    <string name="delete_contact_no_risk_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent. Ook heeft de GGD geen gegevens van deze persoon nodig.</string>
 
     <string name="answer_no">Nee</string>
     <string name="answer_yes">Ja</string>
