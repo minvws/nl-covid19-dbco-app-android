@@ -304,4 +304,14 @@
     <string name="selfbco_reverse_pairing_my_contacts_error_message">Koppelen mislukt. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
     <string name="selfbco_reverse_pairing_error_message">Er ging iets mis. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
     <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
+
+
+    <string name="mycontacts_memory_header">Maak een compleet overzicht van mensen die je hebt ontmoet tussen 1 oktober en vandaag</string>
+    <string name="mycontacts_memory_summary">Het is belangrijk dat we weten wie kans hebben gelopen besmet te zijn geraakt. Zo kunnen deze mensen op tijd worden geïnformeerd. Dit helpt om verdere verspreiding van het coronavirus te stoppen.</string>
+    <string name="mycontacts_memory_sectionheader1">Bedenk wat je hebt gedaan</string>
+    <string name="mycontacts_memory_forgotten">Deze activiteiten worden vaak vergeten:</string>
+    <string name="mycontacts_memory_sectionheader2">Zet de contacten in de app</string>
+    <string name="mycontacts_memory_sectionheader3">Zet locaties waar het moeilijk was afstand te houden ook in de app</string>
+    <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
+    <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
 </resources>

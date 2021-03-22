@@ -171,6 +171,9 @@
         <action
             android:id="@+id/to_reversePairingFragment"
             app:destination="@id/reversePairingFragment" />
+        <action
+            android:id="@+id/to_myContactsMemoryTipFragment"
+            app:destination="@id/myContactsMemoryTipFragment" />
 
     </fragment>
     <fragment
@@ -431,6 +434,10 @@
             android:id="@+id/to_finalizeCheckFragment"
             app:destination="@id/finalizeCheckFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/myContactsMemoryTipFragment"
+        android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsMemoryTipFragment"
+        android:label="MyContactsMemoryTipFragment" />
 
 
 </navigation>
