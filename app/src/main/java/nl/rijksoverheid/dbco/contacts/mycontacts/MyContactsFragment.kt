@@ -85,7 +85,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         super.onCreate(savedInstanceState)
 
         headerSection = Section().apply {
-            add(MemoryTipMyContactsItem(tasksViewModel.getCachedCase().dateOfSymptomOnset ?: ""))
+            add(MemoryTipMyContactsItem(tasksViewModel.getStartOfContagiousPeriod()))
         }
 
         footerSection = Section().apply {

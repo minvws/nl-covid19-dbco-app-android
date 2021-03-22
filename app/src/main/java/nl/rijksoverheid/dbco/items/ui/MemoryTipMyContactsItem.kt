@@ -19,17 +19,16 @@ import org.joda.time.LocalDate
 /**
  * Simple class showing a static memory tip on My Contacts
  */
-class MemoryTipMyContactsItem(val date: String?) :
+class MemoryTipMyContactsItem(val date: LocalDate) :
     BaseBindableItem<ItemMemorytipMycontactsGrayBinding>() {
 
     override fun bind(viewBinding: ItemMemorytipMycontactsGrayBinding, position: Int) {
 
-        val onset = LocalDate.parse(date, DateFormats.dateInputData) ?: LocalDate.now()
         val context = viewBinding.root.context
         val spannableBuilder = HtmlHelper.buildSpannableFromHtml(
             String.format(
                 context.getString(R.string.mycontacts_memory_tip_summary),
-                onset.toString(DateFormats.selfBcoDateOnly)
+                date.toString(DateFormats.selfBcoDateOnly)
             ), context
         )
 
