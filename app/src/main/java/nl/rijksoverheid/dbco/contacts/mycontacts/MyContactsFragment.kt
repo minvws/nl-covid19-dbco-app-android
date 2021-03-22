@@ -29,10 +29,7 @@ import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PA
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
-import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
-import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
-import nl.rijksoverheid.dbco.items.ui.FooterItem
-import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -81,10 +78,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val contentSection = Section()
     private lateinit var footerSection: Section
+    private lateinit var headerSection: Section
     private var clicksBlocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        headerSection = Section().apply {
+            add(MemoryTipMyContactsItem(tasksViewModel.getCachedCase().dateOfSymptomOnset ?: ""))
+        }
 
         footerSection = Section().apply {
             add(
@@ -104,8 +106,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             )
         }
 
-        // pre-set footer section to show content even if no tasks are available
+        // pre-set header and footer section to show content even if no tasks are available
         contentSection.setFooter(footerSection)
+        contentSection.setHeader(headerSection)
 
         adapter.add(contentSection)
 
@@ -178,6 +181,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 if (BuildConfig.DEBUG) {
                     handleQADataWipe()
                 }
+            }
+            if (item is MemoryTipMyContactsItem) {
+                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment())
             }
         }
 
