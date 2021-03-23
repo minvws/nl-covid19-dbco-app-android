@@ -184,7 +184,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
             if (item is MemoryTipMyContactsItem) {
-                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment(tasksViewModel.getStartOfContagiousPeriod().toString(DateFormats.selfBcoDateOnly)))
+                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment(item.date.toString(DateFormats.selfBcoDateOnly)))
             }
         }
 

@@ -71,11 +71,7 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
                 ParagraphIconItem(
                     getString(R.string.selfbco_timeline_explanation_step3),
                     R.drawable.ic_questionmark_round
-                ),
-
-                // Section 3
-                //HeaderIconItem(getString(R.string.mycontacts_memory_sectionheader3), R.drawable.ic_section_three),
-                //ParagraphItem(getString(R.string.mycontacts_memory_section3_summary))
+                )
             )
         )
         val adapter = GroupAdapter<GroupieViewHolder>()
