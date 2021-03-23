@@ -119,8 +119,6 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
         return case.symptoms.toList()
     }
 
-    override fun ifCaseWasChanged(): Boolean = true
-
     companion object {
         const val MOCKED_CASE_BODY = "{\n" +
                 "  \"case\": {\n" +

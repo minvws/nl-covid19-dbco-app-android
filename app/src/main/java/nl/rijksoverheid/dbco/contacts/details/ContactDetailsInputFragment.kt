@@ -46,6 +46,7 @@ import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
 import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Index
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
 import java.util.*
 
 typealias QuestionValue = JsonObject
@@ -324,7 +325,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         itemsStorage.informSection.setCompleted(
             when (viewModel.communicationType.value) {
                 Index -> viewModel.task.value?.didInform == true
-                CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
+                Staff -> viewModel.hasEmailOrPhone.value == true
                 else -> false
             }
         )
@@ -409,7 +410,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
      * @return whether the index should be asked whether the contact was informed by the index
      */
     private fun indexShouldInform(): Boolean {
-        return viewModel.communicationType.value == Index && viewModel.task.value?.didInform == false
+        return viewModel.communicationType.value != Staff && viewModel.task.value?.didInform == false
     }
 
     private fun Task.isLocalAndSaved() = source == Source.App && isSaved()
@@ -433,7 +434,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         for (key in this!!.keys) {
             val value = if (this.contains(key)) this[key] else null
-            val oldValue = if (old!!.contains(key)) old[key] else null
+            val oldValue = if (old!!.contains(key)) old[key].toString() else null
 
             val oldNullOrEmpty = oldValue == null || oldValue.toString() == "\"\""
             val newNullOrEmpty = value == null || value.toString() == "\"\""

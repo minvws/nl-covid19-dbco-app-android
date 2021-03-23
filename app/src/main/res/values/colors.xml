@@ -35,5 +35,6 @@
     <color name="purple_dark">#2A0098</color>
     <color name="white">#fff</color>
     <color name="yellow_dark">#ff9d12</color>
+    <color name="orange">#E18B10</color>
     <color name="yellow_light">#FADD9D</color>
 </resources>

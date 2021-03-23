@@ -29,10 +29,7 @@ import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PA
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
-import nl.rijksoverheid.dbco.items.ui.BuildNumberItem
-import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
-import nl.rijksoverheid.dbco.items.ui.FooterItem
-import nl.rijksoverheid.dbco.items.ui.TaskItem
+import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -41,7 +38,6 @@ import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
-import timber.log.Timber
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
@@ -159,15 +155,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 binding.swipeRefresh.isRefreshing = false
                 fillContentSection(case)
 
-
                 if (isUserPaired()) {
-                    binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
-                    if (!tasksViewModel.ifCaseWasChanged()) {
-                        binding.sendButtonHolder.visibility = View.GONE
-                    }
+                    binding.sendButtonHolder.isVisible = case.canBeUploaded
                 }
             })
-
         })
 
         adapter.setOnItemClickListener { item, view ->
@@ -324,27 +315,52 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun fillContentSection(case: Case) {
         contentSection.clear()
-        val uninformedSection = Section().apply {
-            setHeader(
-                DuoHeaderItem(
-                    getString(R.string.mycontacts_uninformed_header),
-                    getString(R.string.mycontacts_uninformed_subtext)
-                )
-            )
-        }
-        val informedSection = Section()
-            .apply {
-                setHeader(
-                    DuoHeaderItem(
-                        getString(R.string.mycontacts_informed_header),
-                        getString(R.string.mycontacts_informed_subtext)
-                    )
-                )
-            }
 
+        val sections = if (case.isUploaded) {
+            createUploadedSections(case)
+        } else {
+            createNotUploadedSections(case)
+        }
+
+        for (section in sections) {
+            if (section.groupCount > 1) {
+                contentSection.add(section)
+            }
+        }
+        contentSection.setFooter(footerSection)
+    }
+
+    private fun createUploadedSections(case: Case): List<Section> {
+        val notUploadedSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_not_uploaded_header)))
+        }
+        val uploadedSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_uploaded_header)))
+        }
 
         case.tasks.forEach { task ->
-            Timber.d("Found task $task")
+            when (task.taskType) {
+                TaskType.Contact -> {
+                    if (task.canBeUploaded) {
+                        notUploadedSection.add(TaskItem(task))
+                    } else {
+                        uploadedSection.add(TaskItem(task))
+                    }
+                }
+            }
+        }
+        return listOf(notUploadedSection, uploadedSection)
+    }
+
+    private fun createNotUploadedSections(case: Case): List<Section> {
+        val inProgressSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_in_progress_header)))
+        }
+        val doneSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_done_header)))
+        }
+
+        case.tasks.forEach { task ->
             when (task.taskType) {
                 TaskType.Contact -> {
                     val informed = when (task.communication) {
@@ -353,24 +369,14 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                         else -> false
                     }
                     if (informed) {
-                        informedSection.add(TaskItem(task))
+                        doneSection.add(TaskItem(task))
                     } else {
-                        uninformedSection.add(TaskItem(task))
+                        inProgressSection.add(TaskItem(task))
                     }
                 }
             }
         }
-
-        if (uninformedSection.groupCount > 1) {
-            contentSection.add(uninformedSection)
-        }
-
-        if (informedSection.groupCount > 1) {
-            contentSection.add(informedSection)
-        }
-
-        // Re-add footer section after clearing content
-        contentSection.setFooter(footerSection)
+        return listOf(inProgressSection, doneSection)
     }
 
     override fun onResume() {

@@ -9,13 +9,15 @@
 package nl.rijksoverheid.dbco.items.ui
 
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.setImageResource
 import java.io.Serializable
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
 
 class TaskItem(
     val task: Task
@@ -30,52 +32,60 @@ class TaskItem(
             task.label?.isNotEmpty() == true -> task.label
             else -> viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
         }
-        if(!task.taskContext.isNullOrEmpty()){
+        if (!task.taskContext.isNullOrEmpty()) {
             labelToDisplay = "$labelToDisplay (${task.taskContext})"
         }
         viewBinding.indexContactName.text = labelToDisplay
 
-        viewBinding.indexContactSubtitle.setText(getCommunicationContext())
-
-        // completeness indicator
-        if (task.getStatus() == 0 || task.linkedContact == null || (task.communication == CommunicationType.Index && !task.didInform)) {
-            viewBinding.indexContactState.setImageResource(R.drawable.ic_warning_status, R.string.important)
-            viewBinding.indexTaskProgress.visibility = View.GONE
+        if (!task.hasEssentialData() || task.linkedContact == null) {
+            setWarningStatus(viewBinding)
+        } else if (task.communication != Staff && !task.didInform) {
+            setInformStatus(viewBinding)
         } else {
-            setStatus(task.getStatus() ,viewBinding)
+            setCompletionStatus(task.getPercentageCompletion(), viewBinding)
         }
     }
 
-    private fun setStatus(progress: Int, viewBinding: ItemTaskBinding) {
+    private fun setWarningStatus(viewBinding: ItemTaskBinding) {
+        viewBinding.indexContactState.setImageResource(
+            R.drawable.ic_warning_status,
+            R.string.important
+        )
+        viewBinding.indexTaskProgress.visibility = View.GONE
+        viewBinding.indexContactSubtitle.setText(R.string.communication_context_no_data)
+        viewBinding.indexContactSubtitle.setTextColor(
+            ContextCompat.getColor(viewBinding.root.context, R.color.secondary_text)
+        )
+    }
+
+    private fun setInformStatus(viewBinding: ItemTaskBinding) {
+        viewBinding.indexContactState.setImageResource(
+            R.drawable.ic_warning_status_filled,
+            R.string.important
+        )
+        viewBinding.indexTaskProgress.isVisible = false
+        viewBinding.indexContactSubtitle.setText(R.string.communication_context_index_not_informed)
+        viewBinding.indexContactSubtitle.setTextColor(
+            ContextCompat.getColor(viewBinding.root.context, R.color.orange)
+        )
+    }
+
+    private fun setCompletionStatus(progress: Int, viewBinding: ItemTaskBinding) {
         viewBinding.indexContactState.setImageResource(R.drawable.ic_check_icon, R.string.completed)
-        viewBinding.indexTaskProgress.visibility = View.VISIBLE
+        viewBinding.indexTaskProgress.isVisible = true
         viewBinding.indexTaskProgress.progress = progress
-    }
-
-    private fun getCommunicationContext() : Int{
-        // If status is not fully complete, always show the 'add more data' context
-        return if(task.getStatus() < 100) {
-            R.string.communication_context_no_data
-        }
-        // If fully filled in, and communication is staff, show staff-oriented message
-        else if(task.getStatus() == 100 && task.communication == CommunicationType.Staff){
+        val subtext = if (task.communication == Staff) {
             R.string.communication_context_staff_data
-        }
-        // If fully filled in, and communication is index, show index-oriented message based on inform state
-        else if(task.getStatus() == 100 && task.communication == CommunicationType.Index && !task.didInform) {
-            R.string.communication_context_index_not_informed
-        }else if (task.getStatus() == 100 && task.communication == CommunicationType.Index && task.didInform){
+        } else {
             R.string.communication_context_index_informed
-        }else{
-            // Catch-all, shouldn't arrive here
-            R.string.communication_context_blank
         }
-
+        viewBinding.indexContactSubtitle.setText(subtext)
+        viewBinding.indexContactSubtitle.setTextColor(
+            ContextCompat.getColor(viewBinding.root.context, R.color.secondary_text)
+        )
     }
 
     override fun getLayout() = R.layout.item_task
 
-    override fun isClickable(): Boolean {
-        return true
-    }
+    override fun isClickable(): Boolean = true
 }

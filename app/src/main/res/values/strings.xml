@@ -36,10 +36,10 @@
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
-    <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
-    <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
-    <string name="mycontacts_informed_header">Deze contacten zijn klaar</string>
-    <string name="mycontacts_informed_subtext">Jij hebt ze geïnformeerd of de GGD doet dit</string>
+    <string name="mycontacts_uploaded_header">Gedeeld met de GGD</string>
+    <string name="mycontacts_not_uploaded_header">Nog niet gedeeld met de GGD</string>
+    <string name="mycontacts_in_progress_header">Ga hiermee aan de slag</string>
+    <string name="mycontacts_done_header">Dit is al gedaan</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
     <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
     <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
@@ -214,7 +214,7 @@
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
     <string name="communication_context_staff_data">GGD gaat informeren</string>
     <string name="communication_context_no_data">Vul gegevens aan</string>
-    <string name="communication_context_index_not_informed">Jij informeert dit contact</string>
+    <string name="communication_context_index_not_informed">Informeer dit contact</string>
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>

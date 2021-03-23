@@ -52,8 +52,6 @@ class TasksRepository(
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
-    private var caseChanged = false
-
     init {
         val savedCase = encryptedSharedPreferences.getString(
             ITaskRepository.CASE_KEY,
@@ -123,7 +121,7 @@ class TasksRepository(
     override fun getCaseReference(): String? = case.reference
 
     override fun saveTask(task: Task, shouldMerge: (Task) -> Boolean) {
-        caseChanged = true
+
         val tasks = case.tasks.toMutableList()
         var found = false
         if (task.communication == null) {
@@ -136,7 +134,10 @@ class TasksRepository(
                 if (task.getExposureDate().isAfter(currentTask.getExposureDate()) ||
                     currentTask.getExposureDate().isEqual(task.getExposureDate())
                 ) {
-                    tasks[index] = task
+                    tasks[index] = task.apply {
+                        canBeUploaded = true
+                    }
+                    case = case.copy(canBeUploaded = true)
                 }
                 found = true
             }
@@ -155,7 +156,6 @@ class TasksRepository(
     }
 
     override fun deleteTask(uuid: String) {
-        caseChanged = true
         val tasks = case.tasks.toMutableList()
         var indexToDelete = -1
         tasks.forEachIndexed { index, task ->
@@ -166,7 +166,7 @@ class TasksRepository(
         if (indexToDelete != -1) {
             tasks.removeAt(indexToDelete)
         }
-        case = case.copy(tasks = tasks)
+        case = case.copy(tasks = tasks, canBeUploaded = true)
     }
 
     override fun getCase(): Case = case
@@ -209,12 +209,18 @@ class TasksRepository(
             val requestBody = UploadCaseBody(sealedCase)
             withContext(Dispatchers.IO) {
                 api.uploadCase(token, requestBody)
-                caseChanged = false
+                markCaseAsUploaded()
             }
         }
     }
 
-    override fun ifCaseWasChanged(): Boolean = caseChanged
+    private fun markCaseAsUploaded() {
+        case = case.copy(
+            canBeUploaded = false,
+            isUploaded = true,
+            tasks = case.tasks.map { it.apply { canBeUploaded = false } }
+        )
+    }
 
     override fun getSymptomOnsetDate(): String? = case.dateOfSymptomOnset
 

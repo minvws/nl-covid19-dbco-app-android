@@ -13,6 +13,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -22,6 +23,7 @@ import org.joda.time.LocalDate
 @Serializable
 @Parcelize
 class Task(
+    @IgnoredOnParcel var canBeUploaded: Boolean = true, // used only locally
     val taskType: TaskType? = null,
     var taskContext: String? = null,
     val source: Source? = null,
@@ -42,21 +44,25 @@ class Task(
     @Contextual
     var linkedContact: LocalContact? = null
 
-    fun getStatus(): Int {
-        // check for essential data first, if any of these are missing always return 0
+    fun hasEssentialData(): Boolean {
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
-        if (category == null || (linkedContact?.firstName.isNullOrEmpty() && linkedContact?.lastName.isNullOrEmpty()) || !hasEmailOrPhone || dateOfLastExposure == null) {
-            return 0
-        }
+        val hasNames = !linkedContact?.firstName.isNullOrEmpty() && !linkedContact?.lastName.isNullOrEmpty()
+        val hasExposureDate = dateOfLastExposure != null
+        val hasCategory = category != null
+        return hasCategory && hasNames && hasEmailOrPhone && hasExposureDate
+    }
 
+    @Suppress("ReplaceSizeCheckWithIsNotEmpty")
+    fun getPercentageCompletion(): Int {
         if (questionnaireResult != null && questionnaireResult?.answers != null) {
-            val totalQuestions =
-                questionnaireResult?.answers?.size ?: 1 // 1 to make sure we don't divide by 0
+            // 1 to make sure we don't divide by 0
+            val totalQuestions = questionnaireResult?.answers?.size ?: 1
+
             var filledInAnswers = 0
             questionnaireResult?.answers?.forEach {
-                if (it.value!!.size > 0) { // isNotEmpty with a nullable JsonObject seems to always return false, hence checking size instead
-                    filledInAnswers++
-                }
+                // isNotEmpty with a nullable JsonObject seems to always return false,
+                // hence checking size instead
+                if (it.value!!.size > 0) { filledInAnswers++ }
             }
 
             // Calculate percentage filled out of 100%
