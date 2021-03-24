@@ -26,6 +26,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
@@ -177,7 +178,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
             if (item is MemoryTipMyContactsItem) {
-                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment())
+                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment(item.date.toString(DateFormats.selfBcoDateOnly)))
             }
         }
 
