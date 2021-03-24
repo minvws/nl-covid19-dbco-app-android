@@ -32,7 +32,6 @@
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
-    <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
@@ -72,7 +71,6 @@
     <string name="onboarding_privacy_item3">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
     <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
-
 
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -168,7 +166,7 @@
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="reverse_pairing_try_again">Probeer opnieuw</string>
-    <string name="add_contact">Contact toevoegen</string>
+    <string name="add_contact">+ Contact toevoegen</string>
 
     <string name="finalize_appbar_title">Bijna klaar</string>
     <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
@@ -306,6 +304,8 @@
     <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
 
 
+    <string name="mycontacts_memory_title">Geen contacten vergeten?</string>
+    <string name="mycontacts_memory_link">Lees de tips</string>
     <string name="mycontacts_memory_header">Maak een compleet overzicht van mensen die je hebt ontmoet tussen %s en vandaag</string>
     <string name="mycontacts_memory_summary">Het is belangrijk dat we weten wie kans hebben gelopen besmet te zijn geraakt. Zo kunnen deze mensen op tijd worden geïnformeerd. Dit helpt om verdere verspreiding van het coronavirus te stoppen.</string>
     <string name="mycontacts_memory_sectionheader1">Bedenk wat je hebt gedaan</string>

@@ -30,6 +30,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.items.input.TextButtonItem
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
@@ -123,10 +124,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         binding.toolbar.isVisible = false
 
-        binding.manualEntryButton.setOnClickListener {
-            checkPermissionGoToTaskDetails(Task.createAppContact())
-        }
-
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -178,7 +175,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
             if (item is MemoryTipMyContactsItem) {
-                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment(item.date.toString(DateFormats.selfBcoDateOnly)))
+                findNavController().navigate(
+                    MyContactsFragmentDirections.toMyContactsMemoryTipFragment(
+                        item.date.toString(DateFormats.selfBcoDateOnly)
+                    )
+                )
             }
         }
 
@@ -332,11 +333,21 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             createNotUploadedSections(case)
         }
 
-        for (section in sections) {
-            if (section.groupCount > 1) {
-                contentSection.add(section)
-            }
+        val topSection = sections.first()
+        val bottomSection = sections.last()
+
+        if (topSection.groupCount == 1) {
+            contentSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
+        } else {
+            contentSection.add(topSection)
         }
+
+        if (bottomSection.groupCount > 1) {
+            contentSection.add(bottomSection)
+        }
+
         contentSection.setFooter(footerSection)
     }
 
@@ -358,6 +369,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     }
                 }
             }
+        }
+        if (notUploadedSection.groupCount > 1) {
+            notUploadedSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
         }
         return listOf(notUploadedSection, uploadedSection)
     }
