@@ -77,10 +77,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private val contentSection = Section()
     private lateinit var footerSection: Section
+    private lateinit var headerSection: Section
     private var clicksBlocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        headerSection = Section().apply {
+            add(MemoryTipMyContactsItem(tasksViewModel.getStartOfContagiousPeriod()))
+        }
 
         footerSection = Section().apply {
             add(
@@ -100,8 +105,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             )
         }
 
-        // pre-set footer section to show content even if no tasks are available
+        // pre-set header and footer section to show content even if no tasks are available
         contentSection.setFooter(footerSection)
+        contentSection.setHeader(headerSection)
 
         adapter.add(contentSection)
 
@@ -169,6 +175,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 if (BuildConfig.DEBUG) {
                     handleQADataWipe()
                 }
+            }
+            if (item is MemoryTipMyContactsItem) {
+                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment())
             }
         }
 

@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.util.Resource
+import org.joda.time.LocalDate
 import timber.log.Timber
 
 class TasksOverviewViewModel(
@@ -61,4 +62,8 @@ class TasksOverviewViewModel(
     }
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
+
+    fun getStartOfContagiousPeriod() : LocalDate {
+        return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
+    }
 }
