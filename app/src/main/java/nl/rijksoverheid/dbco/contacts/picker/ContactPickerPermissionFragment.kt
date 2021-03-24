@@ -27,6 +27,7 @@ import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
 
@@ -80,7 +81,9 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
                 true
             )?.apply()
             findNavController().navigate(
-                ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = args.indexTask)
+                ContactPickerPermissionFragmentDirections.toContactDetails(
+                    indexTask = args.indexTask ?: Task.createAppContact()
+                )
             )
         }
         binding.backButton.setOnClickListener {

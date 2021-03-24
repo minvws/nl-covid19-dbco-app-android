@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModel
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
-import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -37,20 +37,24 @@ class TasksDetailViewModel(
     val hasEmailOrPhone = MutableLiveData<Boolean>(null)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
-    val task: MutableLiveData<Task> = MutableLiveData<Task>()
-    var selectedContact: LocalContact? = null
-    var questionnaireResult: QuestionnaireResult? = null
+    private lateinit var _task: Task
 
-    fun setTask(task: Task) {
-        this.task.value = task
-        selectedContact = task.linkedContact?.copy()
-        questionnaireResult = task.questionnaireResult
-        hasEmailOrPhone.value = selectedContact?.hasValidEmailOrPhone()
+    val task: Task
+        get() = _task
+
+    fun init(task: Task) {
+        this._task = task
+        if (task.linkedContact == null) {
+            task.linkedContact = LocalContact.fromLabel(task.label)
+        }
+        hasEmailOrPhone.value = task.linkedContact?.hasValidEmailOrPhone()
         communicationType.value = task.communication
         dateOfLastExposure.value = task.dateOfLastExposure
         category.value = task.category
         updateRiskFlagsFromCategory(task)
     }
+
+    fun getQuestionnaireAnswers(): List<Answer> = _task.questionnaireResult?.answers ?: emptyList()
 
     fun getCaseReference(): String? = tasksRepository.getCaseReference()
 
@@ -58,15 +62,9 @@ class TasksDetailViewModel(
 
     fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
 
-    fun saveTask(task: Task) {
-        tasksRepository.saveTask(task) { current -> current.uuid == task.uuid }
-    }
+    fun saveTask() = tasksRepository.saveTask(task) { current -> current.uuid == task.uuid }
 
-    fun deleteCurrentTask() {
-        task.value?.uuid?.let { uuid ->
-            tasksRepository.deleteTask(uuid)
-        }
-    }
+    fun deleteCurrentTask() = task.uuid?.let { uuid -> tasksRepository.deleteTask(uuid) }
 
     private fun updateRiskFlagsFromCategory(task: Task) {
         when (task.category) {

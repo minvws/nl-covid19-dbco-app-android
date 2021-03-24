@@ -8,14 +8,15 @@
 
 package nl.rijksoverheid.dbco.questionnaire.data.entity
 
-
 import kotlinx.serialization.Serializable
 
+typealias JavaSerializable = java.io.Serializable
+
 @Serializable
-class QuestionnaireResult(
+data class QuestionnaireResult(
     val questionnaireUuid: String,
     var answers: List<Answer>?
-) {
+) : JavaSerializable {
 
     fun getAnswerByQuestionUuid(questionUuid: String?): Answer? {
         if (questionUuid == null) {
@@ -28,5 +29,4 @@ class QuestionnaireResult(
         }
         return null
     }
-
 }

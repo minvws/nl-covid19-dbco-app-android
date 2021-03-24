@@ -28,7 +28,6 @@ import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
-
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
     private val args: ContactPickerSelectionFragmentArgs by navArgs()
@@ -56,8 +55,7 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             // User chooses not to select an existing contact from their device, start fresh
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                    selectedTask,
-                    null
+                    selectedTask ?: Task.createAppContact()
                 )
             )
         }
@@ -101,11 +99,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                     when (item) {
                         is LocalContactItem -> {
                             Timber.d("Clicked contact $item")
+                            val task = selectedTask ?: Task.createAppContact()
+                            task.linkedContact = item.contact
                             findNavController().navigate(
-                                ContactPickerSelectionFragmentDirections.toContactDetails(
-                                    selectedTask,
-                                    item.contact
-                                )
+                                ContactPickerSelectionFragmentDirections.toContactDetails(task)
                             )
                         }
                     }

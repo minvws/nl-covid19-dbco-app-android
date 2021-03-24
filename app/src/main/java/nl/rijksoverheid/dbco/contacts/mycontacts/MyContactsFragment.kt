@@ -117,7 +117,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.toolbar.isVisible = false
 
         binding.manualEntryButton.setOnClickListener {
-            checkPermissionGoToTaskDetails()
+            checkPermissionGoToTaskDetails(Task.createAppContact())
         }
 
         setupSendButton()
@@ -364,9 +364,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             when (task.taskType) {
                 TaskType.Contact -> {
                     val informed = when (task.communication) {
-                        CommunicationType.Index -> task.didInform
                         CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
-                        else -> false
+                        else -> task.didInform
                     }
                     if (informed) {
                         doneSection.add(TaskItem(task))
@@ -386,7 +385,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.swipeRefresh.isRefreshing = true
     }
 
-    private fun checkPermissionGoToTaskDetails(task: Task? = null) {
+    private fun checkPermissionGoToTaskDetails(task: Task) {
         if (clicksBlocked) { // prevents from double click
             return
         }
@@ -408,7 +407,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             ) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
+                    ContactPickerPermissionFragmentDirections.toContactDetails(task)
                 )
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
@@ -417,9 +416,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             }
         } else {
-            if (task?.linkedContact != null) {
+            if (task.linkedContact != null) {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(task, task.linkedContact)
+                    MyContactsFragmentDirections.toContactDetails(task)
                 )
             } else {
                 findNavController().navigate(

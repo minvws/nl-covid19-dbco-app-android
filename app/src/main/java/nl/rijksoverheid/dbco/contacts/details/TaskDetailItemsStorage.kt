@@ -77,7 +77,7 @@ class TaskDetailItemsStorage(
                 put("value", JsonPrimitive(viewModel.sameHouseholdRisk.value))
             }
         ),
-        isLocked = viewModel.task.value?.source == Source.Portal
+        isLocked = viewModel.task.source == Source.Portal
     )
 
     private val distanceRiskItem = QuestionThreeOptionsItem(
@@ -116,7 +116,7 @@ class TaskDetailItemsStorage(
                 )
             }
         ),
-        isLocked = viewModel.task.value?.source == Source.Portal
+        isLocked = viewModel.task.source == Source.Portal
     )
 
     private val physicalContactRiskItem = QuestionTwoOptionsItem(
@@ -140,7 +140,7 @@ class TaskDetailItemsStorage(
                 put("value", JsonPrimitive(viewModel.physicalContactRisk.value))
             }
         ),
-        isLocked = viewModel.task.value?.source == Source.Portal
+        isLocked = viewModel.task.source == Source.Portal
     )
 
     private val sameRoomRiskItem = QuestionTwoOptionsItem(
@@ -285,7 +285,7 @@ class TaskDetailItemsStorage(
             }
         ),
         // Hide input if a date has been set through the GGD portal
-        isHidden = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
+        isHidden = viewModel.dateOfLastExposure.value != null && viewModel.task.source == Source.Portal
     )
 
     fun refreshContactDetailsSection() {
@@ -302,7 +302,9 @@ class TaskDetailItemsStorage(
                             SingleInputItem(
                                 context,
                                 question,
-                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                                viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
+                                    question.uuid
+                                )?.value
                             )
                         )
                     }
@@ -311,7 +313,9 @@ class TaskDetailItemsStorage(
                             DateInputItem(
                                 context,
                                 question,
-                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                                viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
+                                    question.uuid
+                                )?.value
                             )
                         )
                     }
@@ -335,7 +339,7 @@ class TaskDetailItemsStorage(
         val size = question.answerOptions?.size ?: return
         if (size == 1) return
         val previousValue =
-            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+            viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
         section.add(
             when (size) {
                 2 -> {
@@ -373,22 +377,22 @@ class TaskDetailItemsStorage(
         section.addAll(
             listOf(
                 ContactNameItem(
-                    viewModel.selectedContact?.firstName,
-                    viewModel.selectedContact?.lastName,
+                    viewModel.task.linkedContact?.firstName,
+                    viewModel.task.linkedContact?.lastName,
                     question
                 ) { newFirstName, newLastName ->
-                    viewModel.selectedContact?.firstName = newFirstName
-                    viewModel.selectedContact?.lastName = newLastName
+                    viewModel.task.linkedContact?.firstName = newFirstName
+                    viewModel.task.linkedContact?.lastName = newLastName
                 },
-                PhoneNumberItem(viewModel.selectedContact?.number, question) {
-                    viewModel.selectedContact?.number = it
+                PhoneNumberItem(viewModel.task.linkedContact?.number, question) {
+                    viewModel.task.linkedContact?.number = it
                     viewModel.hasEmailOrPhone.value =
-                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 },
-                EmailAddressItem(viewModel.selectedContact?.email, question) {
-                    viewModel.selectedContact?.email = it
+                EmailAddressItem(viewModel.task.linkedContact?.email, question) {
+                    viewModel.task.linkedContact?.email = it
                     viewModel.hasEmailOrPhone.value =
-                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 }
             )
         )
@@ -419,9 +423,10 @@ class TaskDetailItemsStorage(
 
     fun refreshInformSection() {
 
-        val isEnabled = viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
+        val isEnabled =
+            viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
         val contactName =
-            if (!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else context.getString(
+            if (!viewModel.task.linkedContact?.firstName.isNullOrEmpty()) viewModel.task.linkedContact?.firstName else context.getString(
                 R.string.inform_header_this_person
             )
         val header = context.getString(R.string.inform_header, contactName)
@@ -592,7 +597,7 @@ class TaskDetailItemsStorage(
                         },
                         // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
                         // Otherwise always light
-                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == false)) {
+                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == false)) {
                             ButtonType.DARK
                         } else {
                             ButtonType.LIGHT
@@ -602,17 +607,17 @@ class TaskDetailItemsStorage(
             }
 
             // add "Call $name" button if phone is set and config has calling on
-            if (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == true) {
+            if (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == true) {
                 add(
                     ButtonItem(
                         context.getString(
                             R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName ?: "contact"
+                            viewModel.task.linkedContact?.firstName ?: "contact"
                         ),
                         {
                             val intent = Intent(
                                 Intent.ACTION_DIAL,
-                                Uri.parse("tel:${viewModel.selectedContact?.number}")
+                                Uri.parse("tel:${viewModel.task.linkedContact?.number}")
                             )
                             context.startActivity(intent)
                         },
