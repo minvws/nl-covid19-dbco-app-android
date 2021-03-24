@@ -126,7 +126,7 @@ class TasksRepository(
         val old = _case
         val tasks = old.tasks.toMutableList()
         var found = false
-        var canCaseBeUploaded = false
+        var canCaseBeUploaded = old.canBeUploaded
         if (task.communication == null) {
             task.communication = CommunicationType.None
         }

@@ -52,9 +52,8 @@ class SingleInputItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        input?.let {
-            answers.put("value", it.toJsonPrimitive())
-        }
+        val input = input ?: ""
+        answers["value"] = input.toJsonPrimitive()
         return answers
     }
 

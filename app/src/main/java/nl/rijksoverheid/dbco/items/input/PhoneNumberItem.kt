@@ -111,9 +111,8 @@ class PhoneNumberItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        phoneNumber?.let {
-            answers.put("phoneNumber", it.toJsonPrimitive())
-        }
+        val phoneNumber = phoneNumber ?: ""
+        answers["phoneNumber"] = phoneNumber.toJsonPrimitive()
         return answers
     }
 }
