@@ -29,7 +29,7 @@ import nl.rijksoverheid.dbco.debug.usertest.UsertestQuestionnaireRepository
 import nl.rijksoverheid.dbco.debug.usertest.UsertestTaskRepository
 import nl.rijksoverheid.dbco.debug.usertest.UsertestUserRepository
 import nl.rijksoverheid.dbco.lifecycle.EventObserver
-import nl.rijksoverheid.dbco.questionnaire.QuestionnareRepository
+import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.UserRepository
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 baseContext,
                 TasksRepository(this, userRepository),
                 ContactsRepository(this),
-                QuestionnareRepository(this),
+                QuestionnaireRepository(this),
                 userRepository,
                 AppConfigRepository(this)
             )
