@@ -17,8 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="@dimen/activity_horizontal_margin"
-            android:paddingBottom="16dp">
+            android:paddingHorizontal="@dimen/activity_horizontal_margin">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/back_button"
@@ -38,7 +37,6 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 app:layout_constraintBottom_toBottomOf="parent"
