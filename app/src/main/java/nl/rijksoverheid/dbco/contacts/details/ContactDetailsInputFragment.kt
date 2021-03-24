@@ -369,7 +369,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
      * If values have not changed since the last time we can use the old answers
      * to preserve the lastModified information
      */
-    private fun compareAnswers(currentAnswers: MutableList<Answer>): List<Answer> {
+    private fun compareAnswers(currentAnswers: List<Answer>): List<Answer> {
         val finalAnswers = mutableListOf<Answer>()
         val oldAnswers = viewModel.getQuestionnaireAnswers()
         for (answer in currentAnswers) {
