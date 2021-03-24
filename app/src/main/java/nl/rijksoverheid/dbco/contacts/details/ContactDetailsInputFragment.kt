@@ -361,6 +361,15 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 }
             }
         }
+        return compareAnswers(currentAnswers)
+    }
+
+    /**
+     * Compare values which are entered by user
+     * If values have not changed since the last time we can use the old answers
+     * to preserve the lastModified information
+     */
+    private fun compareAnswers(currentAnswers: MutableList<Answer>): List<Answer> {
         val finalAnswers = mutableListOf<Answer>()
         val oldAnswers = viewModel.getQuestionnaireAnswers()
         for (answer in currentAnswers) {
