@@ -44,8 +44,7 @@ class TasksOverviewViewModel(
         viewModelScope.launch {
             try {
                 val case = tasksRepository.fetchCase()
-                val sorted = case.copy(tasks = sortTasks(case.tasks))
-                _fetchCase.postValue(Resource.success(sorted))
+                _fetchCase.postValue(Resource.success(case.copy(tasks = sortTasks(case.tasks))))
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
                 _fetchCase.postValue(Resource.failure(ex))
