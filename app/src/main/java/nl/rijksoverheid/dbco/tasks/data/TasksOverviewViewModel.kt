@@ -8,22 +8,29 @@
 
 package nl.rijksoverheid.dbco.tasks.data
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.Resource
+import nl.rijksoverheid.dbco.util.numeric
 import org.joda.time.LocalDate
 import timber.log.Timber
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
-    private val questionnaireRepository: IQuestionnaireRepository
+    private val questionnaireRepository: IQuestionnaireRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _fetchCase = MutableLiveData<Resource<Case>>()
@@ -37,10 +44,10 @@ class TasksOverviewViewModel(
     fun getCachedCase() = tasksRepository.getCase()
 
     fun syncTasks() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             try {
                 val case = tasksRepository.fetchCase()
-                _fetchCase.postValue(Resource.success(case))
+                _fetchCase.postValue(Resource.success(case.copy(tasks = sortTasks(case.tasks))))
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
                 _fetchCase.postValue(Resource.failure(ex))
@@ -50,7 +57,7 @@ class TasksOverviewViewModel(
                 }
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             questionnaireRepository.syncQuestionnaires()
         }
     }
@@ -63,7 +70,24 @@ class TasksOverviewViewModel(
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
 
-    fun getStartOfContagiousPeriod() : LocalDate {
+    fun getStartOfContagiousPeriod(): LocalDate {
         return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
+    }
+
+    private fun sortTasks(tasks: List<Task>): List<Task> {
+        val fallbackDate = "9999-01-01".numeric()
+        return tasks.sortedWith(Comparator<Task> { a, b ->
+            if (a.category == Category.ONE && b.category != Category.ONE) {
+                -1
+            } else if (b.category == Category.ONE && a.category != Category.ONE) {
+                1
+            } else {
+                0
+            }
+        }.thenByDescending {
+            it.dateOfLastExposure.numeric() ?: fallbackDate
+        }.thenBy {
+            it.getDisplayName("")
+        })
     }
 }

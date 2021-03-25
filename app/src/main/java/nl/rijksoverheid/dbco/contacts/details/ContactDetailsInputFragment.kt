@@ -246,7 +246,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
-    private fun hasMadeChanges(): Boolean = collectAnswers() != viewModel.getQuestionnaireAnswers()
+    private fun hasMadeChanges(): Boolean {
+        val updatedQuestionnaire = collectAnswers() != viewModel.getQuestionnaireAnswers()
+        return updatedQuestionnaire || viewModel.hasUpdatedExposureDate()
+    }
 
     private fun showDidYouInformDialog() {
         val builder = MaterialAlertDialogBuilder(requireContext())

@@ -77,6 +77,19 @@ data class Task(
         }
     }
 
+    fun getDisplayName(fallback: String): String {
+        val contactDisplayName = linkedContact?.getDisplayName()
+        var displayName: String = when {
+            contactDisplayName?.isNotEmpty() == true -> contactDisplayName
+            !label.isNullOrEmpty() -> label!!
+            else -> fallback
+        }
+        if (!taskContext.isNullOrEmpty()) {
+            displayName = "$displayName (${taskContext})"
+        }
+        return displayName
+    }
+
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
     }

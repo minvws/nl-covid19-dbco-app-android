@@ -117,7 +117,11 @@ class TasksRepository(
 
     override fun getCaseReference(): String? = _case.reference
 
-    override fun saveTask(task: Task, shouldMerge: (Task) -> Boolean) {
+    override fun saveTask(
+        task: Task,
+        shouldMerge: (Task) -> Boolean,
+        shouldUpdate: (Task) -> Boolean
+    ) {
         val old = _case
         val tasks = old.tasks.toMutableList()
         var found = false
@@ -130,13 +134,7 @@ class TasksRepository(
         }
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
-                // Only update if the new date is either later or equal to the currently stored date
-                // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
-                if (task != currentTask && (task.getExposureDate()
-                        .isAfter(currentTask.getExposureDate()) ||
-                            currentTask.getExposureDate().isEqual(task.getExposureDate()) ||
-                            currentTask.dateOfLastExposure == null)
-                ) {
+                if (shouldUpdate(currentTask)) {
                     tasks[index] = task.apply {
                         canBeUploaded = true
                     }

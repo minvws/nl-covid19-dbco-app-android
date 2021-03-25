@@ -181,6 +181,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 
     testImplementation "junit:junit:$junit_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
+    testImplementation "androidx.arch.core:core-testing:$androidx_lifecycle_testing_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitokotlin_version"
+
     androidTestImplementation "androidx.test.ext:junit:$androidx_test_ext_junit_version"
     androidTestImplementation("androidx.test:runner:1.3.0")
 
