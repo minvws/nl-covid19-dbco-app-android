@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/choice_button_background_unchecked"
             android:inputType="textMultiLine"
-            android:maxLength="255"
+            android:maxLength="25000"
             android:minHeight="@dimen/input_height"
             android:padding="@dimen/activity_horizontal_margin" />
 
