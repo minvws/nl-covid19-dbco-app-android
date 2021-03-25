@@ -41,18 +41,14 @@ class PhoneNumberItem(
             this.hint = this.context.getString(R.string.hint_phone_number)
         }
 
-        viewBinding.inputField.editText?.doAfterTextChanged {
-            phoneNumber = it.toString()
-
+        viewBinding.inputField.editText?.doAfterTextChanged { text ->
+            phoneNumber = text.toString()
+            phoneNumber?.let { changeListener.invoke(it) }
         }
 
-        viewBinding.inputField.editText?.setOnFocusChangeListener { v, hasFocus ->
+        viewBinding.inputField.editText?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
-                phoneNumber?.let {
-                    changeListener.invoke(it)
-                }
-
             }
         }
 
@@ -115,9 +111,8 @@ class PhoneNumberItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        phoneNumber?.let {
-            answers.put("phoneNumber", it.toJsonPrimitive())
-        }
+        val phoneNumber = phoneNumber ?: ""
+        answers["phoneNumber"] = phoneNumber.toJsonPrimitive()
         return answers
     }
 }

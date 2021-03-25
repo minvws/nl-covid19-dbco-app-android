@@ -99,6 +99,8 @@ fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinTo
 
 fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
 
+fun String.removeWhiteSpace(): String = this.filter { char -> !char.isWhitespace() }
+
 fun ExpandableGroup.removeAllChildren() {
     if (itemCount <= 1) {
         return

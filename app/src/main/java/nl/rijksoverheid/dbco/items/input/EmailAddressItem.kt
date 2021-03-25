@@ -44,15 +44,12 @@ class EmailAddressItem(
         viewBinding.inputField.editText?.setOnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
                 checkCompleted(viewBinding)
-                emailAddress?.let{
-                    changeListener.invoke(it.toString())
-                }
             }
         }
 
-        viewBinding.inputField.editText?.doAfterTextChanged {
-            emailAddress = it.toString()
-
+        viewBinding.inputField.editText?.doAfterTextChanged { text ->
+            emailAddress = text.toString()
+            emailAddress?.let { changeListener.invoke(it) }
         }
 
         checkCompleted(viewBinding)
@@ -74,7 +71,7 @@ class EmailAddressItem(
                 viewBinding.inputField.setCompleted(true)
                 changeListener.invoke(input)
             }
-        }else{
+        } else {
             viewBinding.inputField.setCompleted(false)
         }
     }
@@ -87,9 +84,8 @@ class EmailAddressItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        emailAddress?.let {
-            answers.put("email", it.toJsonPrimitive())
-        }
+        val email = emailAddress ?: ""
+        answers["email"] = email.toJsonPrimitive()
         return answers
     }
 }

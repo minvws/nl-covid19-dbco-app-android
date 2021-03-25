@@ -32,14 +32,13 @@
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
-    <string name="mycontacts_summary">Vul de contactgegevens aan van deze contacten die je samen met de GGD in kaart hebt gebracht. Doe dit snel.</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
-    <string name="mycontacts_uninformed_header">Ga hiermee aan de slag</string>
-    <string name="mycontacts_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
-    <string name="mycontacts_informed_header">Deze contacten zijn klaar</string>
-    <string name="mycontacts_informed_subtext">Jij hebt ze geïnformeerd of de GGD doet dit</string>
+    <string name="mycontacts_uploaded_header">Gedeeld met de GGD</string>
+    <string name="mycontacts_not_uploaded_header">Nog niet gedeeld met de GGD</string>
+    <string name="mycontacts_in_progress_header">Ga hiermee aan de slag</string>
+    <string name="mycontacts_done_header">Dit is al gedaan</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
     <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
     <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
@@ -72,7 +71,6 @@
     <string name="onboarding_privacy_item3">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent</string>
     <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
-
 
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -168,7 +166,7 @@
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="reverse_pairing_try_again">Probeer opnieuw</string>
-    <string name="add_contact">Contact toevoegen</string>
+    <string name="add_contact">+ Contact toevoegen</string>
 
     <string name="finalize_appbar_title">Bijna klaar</string>
     <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
@@ -214,7 +212,7 @@
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
     <string name="communication_context_staff_data">GGD gaat informeren</string>
     <string name="communication_context_no_data">Vul gegevens aan</string>
-    <string name="communication_context_index_not_informed">Jij informeert dit contact</string>
+    <string name="communication_context_index_not_informed">Informeer dit contact</string>
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
@@ -306,6 +304,8 @@
     <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
 
 
+    <string name="mycontacts_memory_title">Geen contacten vergeten?</string>
+    <string name="mycontacts_memory_link">Lees de tips</string>
     <string name="mycontacts_memory_header">Maak een compleet overzicht van mensen die je hebt ontmoet tussen %s en vandaag</string>
     <string name="mycontacts_memory_summary">Het is belangrijk dat we weten wie kans hebben gelopen besmet te zijn geraakt. Zo kunnen deze mensen op tijd worden geïnformeerd. Dit helpt om verdere verspreiding van het coronavirus te stoppen.</string>
     <string name="mycontacts_memory_sectionheader1">Bedenk wat je hebt gedaan</string>

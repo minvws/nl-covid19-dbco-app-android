@@ -8,10 +8,6 @@
 
 package nl.rijksoverheid.dbco.tasks.data.entity
 
-import android.os.Parcelable
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -19,9 +15,11 @@ import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import org.joda.time.LocalDate
 
+typealias JavaSerializable = java.io.Serializable
+
 @Serializable
-@Parcelize
-class Task(
+data class Task(
+    var canBeUploaded: Boolean = true, // used only locally
     val taskType: TaskType? = null,
     var taskContext: String? = null,
     val source: Source? = null,
@@ -30,31 +28,31 @@ class Task(
     var communication: CommunicationType? = null,
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
-) : Parcelable {
-
-    @IgnoredOnParcel
-    var questionnaireResult: QuestionnaireResult? = null
-
-    @IgnoredOnParcel
-    var didInform = false
-
-    @IgnoredOnParcel
-    @Contextual
+    var questionnaireResult: QuestionnaireResult? = null,
+    var didInform: Boolean = false,
     var linkedContact: LocalContact? = null
+) : JavaSerializable {
 
-    fun getStatus(): Int {
-        // check for essential data first, if any of these are missing always return 0
+    fun hasEssentialData(): Boolean {
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
-        if (category == null || (linkedContact?.firstName.isNullOrEmpty() && linkedContact?.lastName.isNullOrEmpty()) || !hasEmailOrPhone || dateOfLastExposure == null) {
-            return 0
-        }
+        val hasNames =
+            !linkedContact?.firstName.isNullOrEmpty() && !linkedContact?.lastName.isNullOrEmpty()
+        val hasExposureDate = dateOfLastExposure != null
+        val hasCategory = category != null
+        return hasCategory && hasNames && hasEmailOrPhone && hasExposureDate
+    }
 
+    @Suppress("ReplaceSizeCheckWithIsNotEmpty")
+    fun getPercentageCompletion(): Int {
         if (questionnaireResult != null && questionnaireResult?.answers != null) {
-            val totalQuestions =
-                questionnaireResult?.answers?.size ?: 1 // 1 to make sure we don't divide by 0
+            // 1 to make sure we don't divide by 0
+            val totalQuestions = questionnaireResult?.answers?.size ?: 1
+
             var filledInAnswers = 0
             questionnaireResult?.answers?.forEach {
-                if (it.value!!.size > 0) { // isNotEmpty with a nullable JsonObject seems to always return false, hence checking size instead
+                // isNotEmpty with a nullable JsonObject seems to always return false,
+                // hence checking size instead
+                if (it.value!!.size > 0) {
                     filledInAnswers++
                 }
             }
@@ -81,6 +79,10 @@ class Task(
 
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
+    }
+
+    companion object {
+        fun createAppContact(): Task = Task(taskType = TaskType.Contact, source = Source.App)
     }
 }
 

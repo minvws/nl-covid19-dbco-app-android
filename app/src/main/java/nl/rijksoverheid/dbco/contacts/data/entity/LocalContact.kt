@@ -8,23 +8,22 @@
 
 package nl.rijksoverheid.dbco.contacts.data.entity
 
-import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.Constants
 import java.util.*
 
-@Keep
+typealias JavaSerializable = java.io.Serializable
+
 @Serializable
-@Parcelize
+@Keep
 data class LocalContact(
     val id: String,
     var firstName: String? = null,
     var lastName: String? = null,
     var number: String? = null,
     var email: String? = null,
-) : Parcelable {
+) : JavaSerializable {
 
     fun hasValidEmailOrPhone(): Boolean {
         return (!number.isNullOrEmpty() && Constants.PHONE_VALIDATION_MATCHER.matcher(number!!).matches()) || (!email.isNullOrEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email!!)

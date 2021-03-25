@@ -45,8 +45,8 @@ class ContactNameItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        answers.put("firstName", (firstName ?: "").toJsonPrimitive())
-        answers.put("lastName", (lastName ?: "").toJsonPrimitive())
+        answers["firstName"] = (firstName ?: "").toJsonPrimitive()
+        answers["lastName"] = (lastName ?: "").toJsonPrimitive()
         return answers
     }
 }

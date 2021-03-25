@@ -21,7 +21,6 @@ interface ITaskRepository {
     fun getContactsByCategory(category: Category): List<Task>
     fun deleteTask(uuid: String)
     fun getCase(): Case
-    fun ifCaseWasChanged(): Boolean
     suspend fun uploadCase()
     fun getSymptomOnsetDate(): String?
     fun getStartOfContagiousPeriod(): LocalDate?

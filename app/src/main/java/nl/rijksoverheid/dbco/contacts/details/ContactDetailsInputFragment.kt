@@ -11,7 +11,6 @@ package nl.rijksoverheid.dbco.contacts.details
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -26,7 +25,6 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.contacts.details.TaskDetailItemsStorage.Companion.ANSWER_EARLIER
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
 import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
@@ -37,18 +35,15 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
 import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Index
+import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
 import java.util.*
-
-typealias QuestionValue = JsonObject
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
 
@@ -67,15 +62,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentContactInputBinding.bind(view)
 
-        val task = args.indexTask ?: createAppContact()
-        viewModel.setTask(task)
-        initToolbar(task)
+        viewModel.init(args.indexTask)
+        initToolbar()
         initContent()
-        initItemStorage(task)
-
-        if (viewModel.selectedContact == null) {
-            viewModel.selectedContact = args.selectedContact ?: LocalContact.fromLabel(task.label)
-        }
+        initItemStorage()
 
         viewModel.category.observe(viewLifecycleOwner, { cat -> onCategoryChanged(cat) })
         viewModel.communicationType.observe(viewLifecycleOwner, { onTypeChanged() })
@@ -83,15 +73,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, { onLastExposureChanged() })
     }
 
-    private fun createAppContact(): Task = Task(taskType = TaskType.Contact, source = Source.App)
-
-    private fun initToolbar(task: Task) {
-        val contactName = args.selectedContact?.getDisplayName()
+    private fun initToolbar() {
+        val contactName = viewModel.task.linkedContact?.getDisplayName()
             ?: getString(R.string.mycontacts_add_contact)
         binding.toolbar.title = contactName
         binding.toolbar.setNavigationOnClickListener { checkUnsavedChanges() }
 
-        if (task.isLocalAndSaved()) {
+        if (viewModel.task.isLocalAndSaved()) {
             binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
             binding.toolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.delete_contact_item) {
@@ -117,14 +105,14 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         updateButton()
     }
 
-    private fun initItemStorage(task: Task) {
+    private fun initItemStorage() {
         itemsStorage = TaskDetailItemsStorage(
             viewModel,
             requireContext(),
             viewLifecycleOwner,
             appLifecycleViewModel.getFeatureFlags()
         ).apply {
-            if (task.source != Source.Portal) {
+            if (viewModel.task.source != Source.Portal) {
                 adapter.add(classificationSection)
             } else {
                 contactDetailsSection.setSectionNumber(1)
@@ -154,11 +142,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
      * different scenario's
      */
     private fun updateButton() {
-        val task = viewModel.task.value!! // task should always exist
+        val task = viewModel.task
 
         val dateOfLastExposure = viewModel.dateOfLastExposure.value
         val category = viewModel.category.value
-        val communicationType = viewModel.communicationType.value
 
         val noRisk = category == NO_RISK
         val noExposure = dateOfLastExposure == ANSWER_EARLIER
@@ -180,20 +167,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     indexShouldInform() -> showDidYouInformDialog()
                     else -> saveContact()
                 }
-            }
-        }
-
-        if (communicationType == Index) {
-            binding.saveButton.apply {
-                backgroundTintList =
-                    ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.purple))
-            }
-        } else {
-            binding.saveButton.apply {
-                backgroundTintList =
-                    ContextCompat.getColorStateList(context, R.color.primary)
-                setTextColor(context.getColor(R.color.white))
             }
         }
     }
@@ -273,28 +246,18 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
     }
 
-    private fun hasMadeChanges(): Boolean {
-        val newAnswers = collectAnswers()
-        val oldAnswers = viewModel.task.value?.questionnaireResult?.answers ?: emptyList()
-        for (newAnswer in newAnswers) {
-            val oldAnswer = oldAnswers.find { it.questionUuid == newAnswer.questionUuid }
-            if (!newAnswer.value.equalTo(oldAnswer?.value)) {
-                return true
-            }
-        }
-        return false
-    }
+    private fun hasMadeChanges(): Boolean = collectAnswers() != viewModel.getQuestionnaireAnswers()
 
     private fun showDidYouInformDialog() {
         val builder = MaterialAlertDialogBuilder(requireContext())
         val string = getString(
             R.string.contact_inform_prompt_title,
-            viewModel.selectedContact?.getDisplayName() ?: ""
+            viewModel.task.linkedContact?.getDisplayName() ?: ""
         )
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
-            viewModel.task.value?.didInform = true
+            viewModel.task.didInform = true
             dialog.dismiss()
             checkIfInformSectionComplete()
             saveContact()
@@ -323,8 +286,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun checkIfInformSectionComplete() {
         itemsStorage.informSection.setCompleted(
             when (viewModel.communicationType.value) {
-                Index -> viewModel.task.value?.didInform == true
-                CommunicationType.Staff -> viewModel.hasEmailOrPhone.value == true
+                Index -> viewModel.task.didInform
+                Staff -> viewModel.hasEmailOrPhone.value == true
                 else -> false
             }
         )
@@ -332,26 +295,22 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun saveContact() {
         val answers = collectAnswers()
-        viewModel.task.value?.let { task ->
-            task.linkedContact = viewModel.selectedContact
-            task.questionnaireResult = QuestionnaireResult(
+        with(viewModel.task) {
+            questionnaireResult = QuestionnaireResult(
                 viewModel.questionnaire?.uuid ?: "",
                 answers
             )
-            if (task.uuid.isNullOrEmpty()) {
-                task.uuid = UUID.randomUUID().toString()
-            }
-            if (task.label.isNullOrEmpty()) {
-                if (!task.linkedContact?.getDisplayName().isNullOrEmpty()) {
-                    task.label = task.linkedContact?.getDisplayName()
+            if (label.isNullOrEmpty()) {
+                label = if (!linkedContact?.getDisplayName().isNullOrEmpty()) {
+                    linkedContact?.getDisplayName()
                 } else {
-                    task.label = getString(R.string.mycontacts_name_unknown)
+                    getString(R.string.mycontacts_name_unknown)
                 }
             }
-            task.communication = viewModel.communicationType.value
-            viewModel.dateOfLastExposure.value?.let { task.dateOfLastExposure = it }
-            viewModel.category.value?.let { newCategory -> task.category = newCategory }
-            viewModel.saveTask(task)
+            communication = viewModel.communicationType.value
+            viewModel.dateOfLastExposure.value?.let { dateOfLastExposure = it }
+            viewModel.category.value?.let { newCategory -> category = newCategory }
+            viewModel.saveTask()
         }
 
         view?.hideKeyboard()
@@ -361,7 +320,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun collectAnswers(): List<Answer> {
-        val answers = mutableListOf<Answer>()
+        val currentAnswers = mutableListOf<Answer>()
         for (groupIndex: Int in 0 until adapter.groupCount) {
             val item = adapter.getTopLevelGroup(groupIndex)
             (item as? QuestionnaireSection)?.let { section ->
@@ -387,11 +346,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                             question.uuid,
                             value
                         )
-                        val answersOnSameQuestion = answers.filter { predicate ->
+                        val answersOnSameQuestion = currentAnswers.filter { predicate ->
                             predicate.questionUuid == question.uuid
                         }
                         if (answersOnSameQuestion.isEmpty()) {
-                            answers.add(answer)
+                            currentAnswers.add(answer)
                         } else if (value != null) {
                             val newValue = answersOnSameQuestion.firstOrNull()?.value?.plus(value)
                             newValue?.let {
@@ -402,14 +361,35 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 }
             }
         }
-        return answers
+        return compareAnswers(currentAnswers)
+    }
+
+    /**
+     * Compare values which are entered by user
+     * If values have not changed since the last time we can use the old answers
+     * to preserve the lastModified information
+     */
+    private fun compareAnswers(currentAnswers: List<Answer>): List<Answer> {
+        val finalAnswers = mutableListOf<Answer>()
+        val oldAnswers = viewModel.getQuestionnaireAnswers()
+        for (answer in currentAnswers) {
+            val old = oldAnswers.find { it.questionUuid == answer.questionUuid }
+            if (old != null && old.value == answer.value) {
+                // entered info did not change, can use old answer to keep lastModified
+                finalAnswers.add(old)
+            } else {
+                // index has entered new information
+                finalAnswers.add(answer)
+            }
+        }
+        return finalAnswers
     }
 
     /**
      * @return whether the index should be asked whether the contact was informed by the index
      */
     private fun indexShouldInform(): Boolean {
-        return viewModel.communicationType.value == Index && viewModel.task.value?.didInform == false
+        return viewModel.communicationType.value != Staff && !viewModel.task.didInform
     }
 
     private fun Task.isLocalAndSaved() = source == Source.App && isSaved()
@@ -417,30 +397,4 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun Task.isLocalAndNotSaved() = source == Source.App && !isSaved()
 
     private fun Task.isSaved() = uuid != null
-
-    /**
-     * To check if user has made any changes in contact details
-     * we need to have this equals check on values inside [Answer]s.
-     * We can assume that the absence of an key in [QuestionValue] is the same as an empty string
-     * as a value for a given key.
-     *
-     * Example: { "foo1":"bar" } is equal to { "foo1":"bar", "foo2":"""" }
-     */
-    private fun QuestionValue?.equalTo(old: QuestionValue?): Boolean {
-        if (this == null && old == null) return true
-        if (this != null && old == null) return false
-        if (old != null && this == null) return false
-
-        for (key in this!!.keys) {
-            val value = if (this.contains(key)) this[key] else null
-            val oldValue = if (old!!.contains(key)) old[key] else null
-
-            val oldNullOrEmpty = oldValue == null || oldValue.toString() == "\"\""
-            val newNullOrEmpty = value == null || value.toString() == "\"\""
-            if (!(oldNullOrEmpty && newNullOrEmpty) && oldValue.toString() != value.toString()) {
-                return false
-            }
-        }
-        return true
-    }
 }

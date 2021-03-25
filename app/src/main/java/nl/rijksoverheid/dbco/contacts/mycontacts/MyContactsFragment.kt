@@ -30,6 +30,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
+import nl.rijksoverheid.dbco.items.input.TextButtonItem
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
@@ -39,7 +40,6 @@ import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.util.resolve
-import timber.log.Timber
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
@@ -124,10 +124,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         binding.toolbar.isVisible = false
 
-        binding.manualEntryButton.setOnClickListener {
-            checkPermissionGoToTaskDetails()
-        }
-
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -163,15 +159,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 binding.swipeRefresh.isRefreshing = false
                 fillContentSection(case)
 
-
                 if (isUserPaired()) {
-                    binding.sendButton.isEnabled = tasksViewModel.ifCaseWasChanged()
-                    if (!tasksViewModel.ifCaseWasChanged()) {
-                        binding.sendButtonHolder.visibility = View.GONE
-                    }
+                    binding.sendButtonHolder.isVisible = case.canBeUploaded
                 }
             })
-
         })
 
         adapter.setOnItemClickListener { item, view ->
@@ -184,7 +175,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
             if (item is MemoryTipMyContactsItem) {
-                findNavController().navigate(MyContactsFragmentDirections.toMyContactsMemoryTipFragment(item.date.toString(DateFormats.selfBcoDateOnly)))
+                findNavController().navigate(
+                    MyContactsFragmentDirections.toMyContactsMemoryTipFragment(
+                        item.date.toString(DateFormats.selfBcoDateOnly)
+                    )
+                )
             }
         }
 
@@ -331,53 +326,87 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun fillContentSection(case: Case) {
         contentSection.clear()
-        val uninformedSection = Section().apply {
-            setHeader(
-                DuoHeaderItem(
-                    getString(R.string.mycontacts_uninformed_header),
-                    getString(R.string.mycontacts_uninformed_subtext)
-                )
-            )
-        }
-        val informedSection = Section()
-            .apply {
-                setHeader(
-                    DuoHeaderItem(
-                        getString(R.string.mycontacts_informed_header),
-                        getString(R.string.mycontacts_informed_subtext)
-                    )
-                )
-            }
 
+        val sections = if (case.isUploaded) {
+            createUploadedSections(case)
+        } else {
+            createNotUploadedSections(case)
+        }
+
+        val topSection = sections.first()
+        val bottomSection = sections.last()
+
+        if (topSection.groupCount == 1) {
+            contentSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
+        } else {
+            contentSection.add(topSection)
+        }
+
+        if (bottomSection.groupCount > 1) {
+            contentSection.add(bottomSection)
+        }
+
+        contentSection.setFooter(footerSection)
+    }
+
+    private fun createUploadedSections(case: Case): List<Section> {
+        val notUploadedSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_not_uploaded_header)))
+        }
+        val uploadedSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_uploaded_header)))
+        }
 
         case.tasks.forEach { task ->
-            Timber.d("Found task $task")
             when (task.taskType) {
                 TaskType.Contact -> {
-                    val informed = when (task.communication) {
-                        CommunicationType.Index -> task.didInform
-                        CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
-                        else -> false
-                    }
-                    if (informed) {
-                        informedSection.add(TaskItem(task))
+                    if (task.canBeUploaded) {
+                        notUploadedSection.add(TaskItem(task))
                     } else {
-                        uninformedSection.add(TaskItem(task))
+                        uploadedSection.add(TaskItem(task))
                     }
                 }
             }
         }
+        if (notUploadedSection.groupCount > 1) {
+            notUploadedSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
+        }
+        return listOf(notUploadedSection, uploadedSection)
+    }
 
-        if (uninformedSection.groupCount > 1) {
-            contentSection.add(uninformedSection)
+    private fun createNotUploadedSections(case: Case): List<Section> {
+        val inProgressSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_in_progress_header)))
+        }
+        val doneSection = Section().apply {
+            setHeader(SubHeaderItem(getString(R.string.mycontacts_done_header)))
         }
 
-        if (informedSection.groupCount > 1) {
-            contentSection.add(informedSection)
+        case.tasks.forEach { task ->
+            when (task.taskType) {
+                TaskType.Contact -> {
+                    val informed = when (task.communication) {
+                        CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
+                        else -> task.didInform
+                    }
+                    if (informed) {
+                        doneSection.add(TaskItem(task))
+                    } else {
+                        inProgressSection.add(TaskItem(task))
+                    }
+                }
+            }
         }
-
-        // Re-add footer section after clearing content
-        contentSection.setFooter(footerSection)
+        if (inProgressSection.groupCount > 1) {
+            inProgressSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
+        }
+        return listOf(inProgressSection, doneSection)
     }
 
     override fun onResume() {
@@ -387,7 +416,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.swipeRefresh.isRefreshing = true
     }
 
-    private fun checkPermissionGoToTaskDetails(task: Task? = null) {
+    private fun checkPermissionGoToTaskDetails(task: Task) {
         if (clicksBlocked) { // prevents from double click
             return
         }
@@ -409,7 +438,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             ) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(indexTask = task)
+                    ContactPickerPermissionFragmentDirections.toContactDetails(task)
                 )
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
@@ -418,9 +447,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             }
         } else {
-            if (task?.linkedContact != null) {
+            if (task.linkedContact != null) {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(task, task.linkedContact)
+                    MyContactsFragmentDirections.toContactDetails(task)
                 )
             } else {
                 findNavController().navigate(

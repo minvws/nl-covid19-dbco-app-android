@@ -67,8 +67,10 @@
                     android:layout_gravity="top" />
 
                 <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.App.Button.Secondary"
                     android:id="@+id/save_button"
                     android:layout_width="match_parent"
+                    android:focusable="true"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:text="@string/save" />

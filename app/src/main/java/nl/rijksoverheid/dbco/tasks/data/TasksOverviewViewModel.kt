@@ -31,9 +31,8 @@ class TasksOverviewViewModel(
 
     var selfBcoCase = MutableLiveData<Resource<Case?>>()
 
-    private val _windowExpired = MutableLiveData<Boolean>(false)
+    private val _windowExpired = MutableLiveData(false)
     val windowExpired: LiveData<Boolean> = _windowExpired
-
 
     fun getCachedCase() = tasksRepository.getCase()
 
@@ -61,8 +60,6 @@ class TasksOverviewViewModel(
             tasksRepository.uploadCase()
         }
     }
-
-    fun ifCaseWasChanged(): Boolean = tasksRepository.ifCaseWasChanged()
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
 

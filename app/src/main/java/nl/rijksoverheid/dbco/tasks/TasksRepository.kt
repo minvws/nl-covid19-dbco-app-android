@@ -14,20 +14,15 @@ import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.DbcoApi
+import nl.rijksoverheid.dbco.network.request.CaseRequest
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -38,6 +33,7 @@ import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
 import org.joda.time.LocalDate
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
+import java.util.*
 
 @ExperimentalSerializationApi
 class TasksRepository(
@@ -47,24 +43,21 @@ class TasksRepository(
 
     private val api = DbcoApi.create(context)
 
-    private var case: Case
+    private val _case: Case
+        get() {
+            val savedCase = encryptedSharedPreferences.getString(
+                ITaskRepository.CASE_KEY,
+                null
+            )
+            return if (savedCase != null) {
+                Defaults.json.decodeFromString(savedCase)
+            } else {
+                Case()
+            }
+        }
 
     private var encryptedSharedPreferences: SharedPreferences =
         LocalStorageRepository.getInstance(context).getSharedPreferences()
-
-    private var caseChanged = false
-
-    init {
-        val savedCase = encryptedSharedPreferences.getString(
-            ITaskRepository.CASE_KEY,
-            null
-        )
-        case = if (savedCase != null) {
-            Defaults.json.decodeFromString(savedCase)
-        } else {
-            Case()
-        }
-    }
 
     override suspend fun fetchCase(): Case {
         userRepository.getToken()?.let {
@@ -85,24 +78,26 @@ class TasksRepository(
             val caseString = String(caseBodyBytes)
             val remoteCase: Case = Defaults.json.decodeFromString(caseString)
 
-            case = case.copy(
+            val old = _case
+
+            var new = old.copy(
                 reference = remoteCase.reference,
                 contagiousPeriodKnown = remoteCase.contagiousPeriodKnown
             )
 
-            if (case.dateOfTest == null) {
-                case = case.copy(dateOfTest = remoteCase.dateOfTest)
+            if (old.dateOfTest == null) {
+                new = new.copy(dateOfTest = remoteCase.dateOfTest)
             }
-            if (case.dateOfSymptomOnset == null) {
-                case = case.copy(dateOfSymptomOnset = remoteCase.dateOfSymptomOnset)
+            if (old.dateOfSymptomOnset == null) {
+                new = new.copy(dateOfSymptomOnset = remoteCase.dateOfSymptomOnset)
             }
-            if (case.symptoms.isEmpty()) {
-                case = case.copy(symptoms = remoteCase.symptoms)
+            if (old.symptoms.isEmpty()) {
+                new = new.copy(symptoms = remoteCase.symptoms)
             }
-            if (case.windowExpiresAt == null) {
-                case = case.copy(windowExpiresAt = remoteCase.windowExpiresAt)
+            if (old.windowExpiresAt == null) {
+                new = new.copy(windowExpiresAt = remoteCase.windowExpiresAt)
             }
-            val mergedTasks = case.tasks.toMutableList()
+            val mergedTasks = old.tasks.toMutableList()
             remoteCase.tasks.forEach { remoteTask ->
                 var found = false
                 mergedTasks.forEach { currentTask ->
@@ -114,29 +109,38 @@ class TasksRepository(
                     mergedTasks.add(remoteTask)
                 }
             }
-            case = case.copy(tasks = mergedTasks)
-            persistCase()
+            new = new.copy(tasks = mergedTasks)
+            persistCase(new)
         }
-        return case
+        return _case
     }
 
-    override fun getCaseReference(): String? = case.reference
+    override fun getCaseReference(): String? = _case.reference
 
     override fun saveTask(task: Task, shouldMerge: (Task) -> Boolean) {
-        caseChanged = true
-        val tasks = case.tasks.toMutableList()
+        val old = _case
+        val tasks = old.tasks.toMutableList()
         var found = false
+        var canCaseBeUploaded = old.canBeUploaded
         if (task.communication == null) {
             task.communication = CommunicationType.None
+        }
+        if (task.uuid.isNullOrEmpty()) {
+            task.uuid = UUID.randomUUID().toString()
         }
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
                 // Only update if the new date is either later or equal to the currently stored date
                 // Used for SelfBCO -> Roommates can be contacts on timeline too, but Roommate data takes priority in this case
-                if (task.getExposureDate().isAfter(currentTask.getExposureDate()) ||
-                    currentTask.getExposureDate().isEqual(task.getExposureDate())
+                if (task != currentTask && (task.getExposureDate()
+                        .isAfter(currentTask.getExposureDate()) ||
+                            currentTask.getExposureDate().isEqual(task.getExposureDate()) ||
+                            currentTask.dateOfLastExposure == null)
                 ) {
-                    tasks[index] = task
+                    tasks[index] = task.apply {
+                        canBeUploaded = true
+                    }
+                    canCaseBeUploaded = true
                 }
                 found = true
             }
@@ -144,19 +148,19 @@ class TasksRepository(
         if (!found) {
             tasks.add(task)
         }
-        case = case.copy(tasks = tasks)
-        persistCase()
+        val new = old.copy(tasks = tasks, canBeUploaded = canCaseBeUploaded)
+        persistCase(new)
     }
 
     override fun getContactsByCategory(category: Category): List<Task> {
-        return case.tasks.filter { task ->
+        return _case.tasks.filter { task ->
             task.category == category && task.taskType == TaskType.Contact
         }
     }
 
     override fun deleteTask(uuid: String) {
-        caseChanged = true
-        val tasks = case.tasks.toMutableList()
+        val old = _case
+        val tasks = old.tasks.toMutableList()
         var indexToDelete = -1
         tasks.forEachIndexed { index, task ->
             if (task.uuid == uuid) {
@@ -166,30 +170,14 @@ class TasksRepository(
         if (indexToDelete != -1) {
             tasks.removeAt(indexToDelete)
         }
-        case = case.copy(tasks = tasks)
+        val new = old.copy(tasks = tasks, canBeUploaded = true)
+        persistCase(new)
     }
 
-    override fun getCase(): Case = case
+    override fun getCase(): Case = _case
 
     override suspend fun uploadCase() {
-        val caseString = Json {
-            encodeDefaults = false
-            serializersModule = SerializersModule {
-                // we don't want to send LocalContact to server, so we nullify it. TODO would be perfect to remove key as well
-                contextual(LocalContact::class, object : KSerializer<LocalContact> {
-                    override val descriptor: SerialDescriptor
-                        get() = LocalContact.serializer().descriptor
-
-                    override fun deserialize(decoder: Decoder): LocalContact {
-                        return LocalContact.serializer().deserialize(decoder)
-                    }
-
-                    override fun serialize(encoder: Encoder, value: LocalContact) {
-                        encoder.encodeNull()
-                    }
-                })
-            }
-        }.encodeToString(case)
+        val caseString = Json { encodeDefaults = true }.encodeToString(CaseRequest.fromCase(_case))
         userRepository.getToken()?.let { token ->
             val caseBytes = caseString.toByteArray()
             val txBytes = Base64.decode(userRepository.getTx(), IUserRepository.BASE64_FLAGS)
@@ -209,18 +197,27 @@ class TasksRepository(
             val requestBody = UploadCaseBody(sealedCase)
             withContext(Dispatchers.IO) {
                 api.uploadCase(token, requestBody)
-                caseChanged = false
+                markCaseAsUploaded()
             }
         }
     }
 
-    override fun ifCaseWasChanged(): Boolean = caseChanged
+    private fun markCaseAsUploaded() {
+        val old = _case
+        val new = old.copy(
+            canBeUploaded = false,
+            isUploaded = true,
+            tasks = old.tasks.map { it.apply { canBeUploaded = false } }
+        )
+        persistCase(new)
+    }
 
-    override fun getSymptomOnsetDate(): String? = case.dateOfSymptomOnset
+    override fun getSymptomOnsetDate(): String? = _case.dateOfSymptomOnset
 
-    override fun getTestDate(): String? = case.dateOfTest
+    override fun getTestDate(): String? = _case.dateOfTest
 
     override fun getStartOfContagiousPeriod(): LocalDate? {
+        val case = _case
         return if (case.dateOfSymptomOnset == null && case.dateOfTest == null) {
             null
         } else {
@@ -231,32 +228,34 @@ class TasksRepository(
     }
 
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
-        case = case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
-        persistCase()
+        val new = _case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
+        persistCase(new)
     }
 
     override fun updateTestDate(testDate: String) {
-        case = case.copy(dateOfTest = testDate)
-        persistCase()
+        val new = _case.copy(dateOfTest = testDate)
+        persistCase(new)
     }
 
     override fun addSymptom(symptom: String) {
-        val symptoms = case.symptoms.toMutableSet()
+        val old = _case
+        val symptoms = old.symptoms.toMutableSet()
         symptoms.add(symptom)
-        case = case.copy(symptoms = symptoms)
-        persistCase()
+        val new = old.copy(symptoms = symptoms)
+        persistCase(new)
     }
 
     override fun removeSymptom(symptom: String) {
-        val symptoms = case.symptoms.toMutableSet()
+        val old = _case
+        val symptoms = _case.symptoms.toMutableSet()
         symptoms.remove(symptom)
-        case = case.copy(symptoms = symptoms)
-        persistCase()
+        val new = old.copy(symptoms = symptoms)
+        persistCase(new)
     }
 
-    override fun getSymptoms(): List<String> = case.symptoms.toList()
+    override fun getSymptoms(): List<String> = _case.symptoms.toList()
 
-    private fun persistCase() {
+    private fun persistCase(case: Case) {
         val storeString = Defaults.json.encodeToString(case)
         encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
     }
