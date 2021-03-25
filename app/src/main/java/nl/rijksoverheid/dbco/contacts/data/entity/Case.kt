@@ -13,8 +13,8 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
 data class Case(
-    val isUploaded: Boolean = false, // used only locally TODO how to not send to api
-    val canBeUploaded: Boolean = false, // used only locally TODO how to not send to api
+    val isUploaded: Boolean = false,
+    val canBeUploaded: Boolean = false,
     val reference: String? = null,
     val dateOfSymptomOnset: String? = null,
     val dateOfTest: String? = null,
