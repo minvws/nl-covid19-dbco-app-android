@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.tasks.data.entity
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -31,7 +30,7 @@ data class Task(
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
     var didInform: Boolean = false,
-    @Contextual var linkedContact: LocalContact? = null
+    var linkedContact: LocalContact? = null
 ) : JavaSerializable {
 
     fun hasEssentialData(): Boolean {

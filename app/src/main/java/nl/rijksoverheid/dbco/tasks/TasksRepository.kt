@@ -14,20 +14,15 @@ import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.network.DbcoApi
+import nl.rijksoverheid.dbco.network.request.CaseRequest
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -182,25 +177,7 @@ class TasksRepository(
     override fun getCase(): Case = _case
 
     override suspend fun uploadCase() {
-        val caseString = Json {
-            encodeDefaults = false
-            serializersModule = SerializersModule {
-                // TODO remove upload markers as well
-                // we don't want to send LocalContact to server, so we nullify it. TODO would be perfect to remove key as well
-                contextual(LocalContact::class, object : KSerializer<LocalContact> {
-                    override val descriptor: SerialDescriptor
-                        get() = LocalContact.serializer().descriptor
-
-                    override fun deserialize(decoder: Decoder): LocalContact {
-                        return LocalContact.serializer().deserialize(decoder)
-                    }
-
-                    override fun serialize(encoder: Encoder, value: LocalContact) {
-                        encoder.encodeNull()
-                    }
-                })
-            }
-        }.encodeToString(_case)
+        val caseString = Json { encodeDefaults = true }.encodeToString(CaseRequest.fromCase(_case))
         userRepository.getToken()?.let { token ->
             val caseBytes = caseString.toByteArray()
             val txBytes = Base64.decode(userRepository.getTx(), IUserRepository.BASE64_FLAGS)

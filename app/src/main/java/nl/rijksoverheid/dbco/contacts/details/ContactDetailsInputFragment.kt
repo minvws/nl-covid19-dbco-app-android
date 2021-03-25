@@ -333,7 +333,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                         val question: Question = child.question
                         var value: JsonObject? = JsonObject(child.getUserAnswers())
                         // override logic for classification questions
-                        if (question.uuid == itemsStorage.classificationQuestion?.uuid) { // TODO: check why not in request
+                        if (question.uuid == itemsStorage.classificationQuestion?.uuid) {
                             val map = HashMap<String, JsonElement>()
                             viewModel.category.value?.let { category ->
                                 map["value"] = JsonPrimitive(category.label)

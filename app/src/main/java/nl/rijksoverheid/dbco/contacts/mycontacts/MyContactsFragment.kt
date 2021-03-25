@@ -401,6 +401,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
         }
+        if (inProgressSection.groupCount > 1) {
+            inProgressSection.add(TextButtonItem(getString(R.string.add_contact)) {
+                checkPermissionGoToTaskDetails(Task.createAppContact())
+            })
+        }
         return listOf(inProgressSection, doneSection)
     }
 
