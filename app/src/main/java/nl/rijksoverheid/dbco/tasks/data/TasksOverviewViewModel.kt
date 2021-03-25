@@ -13,6 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
@@ -27,7 +29,8 @@ import timber.log.Timber
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
-    private val questionnaireRepository: IQuestionnaireRepository
+    private val questionnaireRepository: IQuestionnaireRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _fetchCase = MutableLiveData<Resource<Case>>()
@@ -41,7 +44,7 @@ class TasksOverviewViewModel(
     fun getCachedCase() = tasksRepository.getCase()
 
     fun syncTasks() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             try {
                 val case = tasksRepository.fetchCase()
                 _fetchCase.postValue(Resource.success(case.copy(tasks = sortTasks(case.tasks))))
@@ -54,7 +57,7 @@ class TasksOverviewViewModel(
                 }
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             questionnaireRepository.syncQuestionnaires()
         }
     }
@@ -71,8 +74,7 @@ class TasksOverviewViewModel(
         return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
     }
 
-    @VisibleForTesting
-    fun sortTasks(tasks: List<Task>): List<Task> {
+    private fun sortTasks(tasks: List<Task>): List<Task> {
         val fallbackDate = "9999-01-01".numeric()
         return tasks.sortedWith(Comparator<Task> { a, b ->
             if (a.category == Category.ONE && b.category != Category.ONE) {
