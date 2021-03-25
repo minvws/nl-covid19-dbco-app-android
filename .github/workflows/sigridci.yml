@@ -1,5 +1,5 @@
 name: Sigrid CI
-
+ 
 on: [pull_request]
 
 jobs:
