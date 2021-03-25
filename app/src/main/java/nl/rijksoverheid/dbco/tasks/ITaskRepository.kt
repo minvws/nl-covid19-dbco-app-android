@@ -17,7 +17,11 @@ interface ITaskRepository {
 
     suspend fun fetchCase(): Case
     fun getCaseReference(): String?
-    fun saveTask(task: Task, shouldMerge: (Task) -> Boolean)
+    fun saveTask(
+        task: Task,
+        shouldMerge: (Task) -> Boolean,
+        shouldUpdate: (Task) -> Boolean
+    )
     fun getContactsByCategory(category: Category): List<Task>
     fun deleteTask(uuid: String)
     fun getCase(): Case

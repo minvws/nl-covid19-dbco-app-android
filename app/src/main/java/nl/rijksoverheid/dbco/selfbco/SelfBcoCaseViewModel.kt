@@ -50,7 +50,11 @@ class SelfBcoCaseViewModel(
             uuid = UUID.randomUUID().toString(),
             dateOfLastExposure = dateOfLastExposure
         )
-        tasksRepository.saveTask(task) { current -> current.label!!.contentEquals(task.label!!) }
+        tasksRepository.saveTask(
+            task = task,
+            shouldMerge = { current -> current.label!!.contentEquals(task.label!!) },
+            shouldUpdate = { current -> task.getExposureDate().isAfter(current.getExposureDate()) }
+        )
     }
 
     fun getStartOfContagiousPeriod(): LocalDate {

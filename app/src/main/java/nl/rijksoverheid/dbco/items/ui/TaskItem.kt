@@ -25,17 +25,9 @@ class TaskItem(
 
     override fun bind(viewBinding: ItemTaskBinding, position: Int) {
         viewBinding.task = task
-
-        val displayName = task.linkedContact?.getDisplayName()
-        var labelToDisplay = when {
-            displayName?.isNotEmpty() == true -> displayName
-            task.label?.isNotEmpty() == true -> task.label
-            else -> viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
-        }
-        if (!task.taskContext.isNullOrEmpty()) {
-            labelToDisplay = "$labelToDisplay (${task.taskContext})"
-        }
-        viewBinding.indexContactName.text = labelToDisplay
+        viewBinding.indexContactName.text = task.getDisplayName(
+            viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
+        )
 
         if (!task.hasEssentialData() || task.linkedContact == null) {
             setWarningStatus(viewBinding)

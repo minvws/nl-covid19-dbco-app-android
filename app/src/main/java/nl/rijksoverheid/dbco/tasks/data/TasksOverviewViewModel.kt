@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.tasks.data
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,9 +16,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.Resource
+import nl.rijksoverheid.dbco.util.numeric
 import org.joda.time.LocalDate
 import timber.log.Timber
 
@@ -40,7 +44,8 @@ class TasksOverviewViewModel(
         viewModelScope.launch {
             try {
                 val case = tasksRepository.fetchCase()
-                _fetchCase.postValue(Resource.success(case))
+                val sorted = case.copy(tasks = sortTasks(case.tasks))
+                _fetchCase.postValue(Resource.success(sorted))
             } catch (ex: Exception) {
                 Timber.e(ex, "Error while retrieving case")
                 _fetchCase.postValue(Resource.failure(ex))
@@ -63,7 +68,25 @@ class TasksOverviewViewModel(
 
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
 
-    fun getStartOfContagiousPeriod() : LocalDate {
+    fun getStartOfContagiousPeriod(): LocalDate {
         return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
+    }
+
+    @VisibleForTesting
+    fun sortTasks(tasks: List<Task>): List<Task> {
+        val fallbackDate = "9999-01-01".numeric()
+        return tasks.sortedWith(Comparator<Task> { a, b ->
+            if (a.category == Category.ONE && b.category != Category.ONE) {
+                -1
+            } else if (b.category == Category.ONE && a.category != Category.ONE) {
+                1
+            } else {
+                0
+            }
+        }.thenByDescending {
+            it.dateOfLastExposure.numeric() ?: fallbackDate
+        }.thenBy {
+            it.getDisplayName("")
+        })
     }
 }

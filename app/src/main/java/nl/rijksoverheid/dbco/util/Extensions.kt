@@ -101,6 +101,11 @@ fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
 
 fun String.removeWhiteSpace(): String = this.filter { char -> !char.isWhitespace() }
 
+fun String?.numeric(): Int? {
+    if (this == null) return null
+    return filter { char -> char.isDigit() }.toInt()
+}
+
 fun ExpandableGroup.removeAllChildren() {
     if (itemCount <= 1) {
         return

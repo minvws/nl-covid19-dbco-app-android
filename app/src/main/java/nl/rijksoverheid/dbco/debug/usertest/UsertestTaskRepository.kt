@@ -48,17 +48,21 @@ class UsertestTaskRepository(context: Context) : ITaskRepository {
 
     override fun getCaseReference(): String? = case.reference
 
-    override fun saveTask(updatedTask: Task, shouldMerge: (Task) -> Boolean) {
+    override fun saveTask(
+        task: Task,
+        shouldMerge: (Task) -> Boolean,
+        shouldUpdate: (Task) -> Boolean,
+    ) {
         val tasks = case.tasks.toMutableList()
         var found = false
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
-                tasks[index] = updatedTask
+                tasks[index] = task
                 found = true
             }
         }
         if (!found) {
-            tasks.add(updatedTask)
+            tasks.add(task)
         }
         case = case.copy(tasks = tasks)
         val storeString = Defaults.json.encodeToString(CaseBody(case))

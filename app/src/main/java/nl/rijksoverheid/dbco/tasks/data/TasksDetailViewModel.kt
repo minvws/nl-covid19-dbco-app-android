@@ -56,13 +56,21 @@ class TasksDetailViewModel(
 
     fun getQuestionnaireAnswers(): List<Answer> = _task.questionnaireResult?.answers ?: emptyList()
 
+    fun hasUpdatedExposureDate(): Boolean = _task.dateOfLastExposure != dateOfLastExposure.value
+
     fun getCaseReference(): String? = tasksRepository.getCaseReference()
 
     fun hasCaseReference(): Boolean = tasksRepository.getCaseReference() != null
 
     fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
 
-    fun saveTask() = tasksRepository.saveTask(task) { current -> current.uuid == task.uuid }
+    fun saveTask() {
+        tasksRepository.saveTask(
+            task = task,
+            shouldMerge = { current -> current.uuid == task.uuid },
+            shouldUpdate = { current -> task != current }
+        )
+    }
 
     fun deleteCurrentTask() = task.uuid?.let { uuid -> tasksRepository.deleteTask(uuid) }
 
