@@ -33,7 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <nl.rijksoverheid.dbco.util.AccessibleImageView
                 android:id="@+id/onboarding_header_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
