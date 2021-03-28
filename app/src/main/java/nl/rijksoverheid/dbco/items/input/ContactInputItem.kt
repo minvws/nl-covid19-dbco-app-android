@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.databinding.ItemContactInputBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.showKeyboard
+import java.util.*
 
 class ContactInputItem(
     private var focusOnBind: Boolean = false,
@@ -25,16 +26,13 @@ class ContactInputItem(
     var contactName: String = "",
     var contactUuid: String? = null,
     val trashListener: OnTrashClickedListener
-) : BaseBindableItem<ItemContactInputBinding>() {
-
-    private lateinit var binding: ItemContactInputBinding
+) : BaseBindableItem<ItemContactInputBinding>(), TextWatcher {
 
     private val onClickListener = View.OnClickListener {
         trashListener.onTrashClicked(this@ContactInputItem)
     }
 
     override fun bind(viewBinding: ItemContactInputBinding, position: Int) {
-        binding = viewBinding
         viewBinding.contactInput.setText(contactName)
 
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -44,31 +42,9 @@ class ContactInputItem(
 
         viewBinding.contactInput.setAdapter(adapter)
 
-        viewBinding.contactInput.addTextChangedListener(object : TextWatcher {
-
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) { /* NO-OP */
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) { /* NO- OP */
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                contactName = s.toString()
-            }
-        })
+        viewBinding.contactInput.addTextChangedListener(this)
 
         viewBinding.iconTrash.setOnClickListener(onClickListener)
-
 
         viewBinding.contactInput.setOnItemClickListener { _, _, _, _ ->
             viewBinding.contactInput.clearFocus()
@@ -81,15 +57,28 @@ class ContactInputItem(
     override fun onViewAttachedToWindow(viewHolder: GroupieViewHolder<ItemContactInputBinding>) {
         super.onViewAttachedToWindow(viewHolder)
         if (focusOnBind) {
-            binding.contactInput.requestFocus()
-            binding.contactInput.showKeyboard()
+            viewHolder.binding.contactInput.requestFocus()
+            viewHolder.binding.contactInput.showKeyboard()
             focusOnBind = false
         }
+    }
+
+    override fun onViewDetachedFromWindow(viewHolder: GroupieViewHolder<ItemContactInputBinding>) {
+        super.onViewDetachedFromWindow(viewHolder)
+        viewHolder.binding.contactInput.removeTextChangedListener(this)
     }
 
     override fun isClickable(): Boolean = true
 
     interface OnTrashClickedListener {
         fun onTrashClicked(item: ContactInputItem)
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* */ }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* */ }
+
+    override fun afterTextChanged(s: Editable?) {
+        contactName = s.toString()
     }
 }
