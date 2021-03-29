@@ -19,7 +19,7 @@ data class TaskRequest(
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
-    var didInform: Boolean = false,
+    var informedByIndexAt: String? = null,
 ) {
 
     companion object {
@@ -34,7 +34,7 @@ data class TaskRequest(
             uuid = task.uuid,
             dateOfLastExposure = task.dateOfLastExposure,
             questionnaireResult = task.questionnaireResult,
-            didInform = task.didInform
+            informedByIndexAt = task.informedByIndexAt
         )
     }
 }

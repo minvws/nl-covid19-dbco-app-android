@@ -260,7 +260,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
-            viewModel.task.didInform = true
+            val date = LocalDateTime.now().toString(DateFormats.questionData)
+            viewModel.task.informedByIndexAt = date
             dialog.dismiss()
             checkIfInformSectionComplete()
             saveContact()

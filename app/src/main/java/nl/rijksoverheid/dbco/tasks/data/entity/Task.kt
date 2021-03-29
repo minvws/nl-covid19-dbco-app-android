@@ -29,9 +29,12 @@ data class Task(
     var uuid: String? = null,
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
-    var didInform: Boolean = false,
+    var informedByIndexAt: String? = null,
     var linkedContact: LocalContact? = null
 ) : JavaSerializable {
+
+    val didInform: Boolean
+        get() = informedByIndexAt != null
 
     fun hasEssentialData(): Boolean {
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
