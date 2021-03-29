@@ -394,14 +394,14 @@ class TaskDetailItemsStorage(
 
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             if (it == ANSWER_EARLIER) {
-                contactDetailsSection.remove(noExposureRiskItem)
-                contactDetailsSection.add(
-                    contactDetailsSection.getPosition(dateOfLastExposureItem),
+                classificationSection.remove(noExposureRiskItem)
+                classificationSection.add(
+                    classificationSection.getPosition(dateOfLastExposureItem),
                     noExposureRiskItem
                 )
                 informSection.setEnabled(false)
             } else {
-                contactDetailsSection.remove(noExposureRiskItem)
+                classificationSection.remove(noExposureRiskItem)
             }
         })
     }
