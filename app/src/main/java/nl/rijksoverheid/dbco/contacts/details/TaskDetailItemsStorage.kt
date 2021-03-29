@@ -378,6 +378,7 @@ class TaskDetailItemsStorage(
                 ) { newFirstName, newLastName ->
                     viewModel.task.linkedContact?.firstName = newFirstName
                     viewModel.task.linkedContact?.lastName = newLastName
+                    viewModel.name.value = newFirstName
                 },
                 PhoneNumberItem(viewModel.task.linkedContact?.number, question) {
                     viewModel.task.linkedContact?.number = it
@@ -420,10 +421,11 @@ class TaskDetailItemsStorage(
 
         val isEnabled =
             viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
-        val contactName =
-            if (!viewModel.task.linkedContact?.firstName.isNullOrEmpty()) viewModel.task.linkedContact?.firstName else context.getString(
-                R.string.inform_header_this_person
-            )
+        val contactName = if (!viewModel.name.value.isNullOrEmpty()) {
+            viewModel.name.value
+        } else {
+            context.getString(R.string.inform_header_this_person)
+        }
         val header = context.getString(R.string.inform_header, contactName)
         val footer = when (viewModel.communicationType.value) {
             CommunicationType.Staff -> context.getString(

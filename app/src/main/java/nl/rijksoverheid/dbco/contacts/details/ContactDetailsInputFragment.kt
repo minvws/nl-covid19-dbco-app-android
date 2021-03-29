@@ -71,6 +71,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.communicationType.observe(viewLifecycleOwner, { onTypeChanged() })
         viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, { onHasEmailOrPhoneChanged() })
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, { onLastExposureChanged() })
+        viewModel.name.observe(viewLifecycleOwner, { onNameChanged() })
     }
 
     private fun initToolbar() {
@@ -136,6 +137,16 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun onLastExposureChanged() {
         itemsStorage.refreshInformSection()
         updateButton()
+    }
+
+    private fun onNameChanged() {
+        // This value can be broadcast again while the app is scrolling due to views re-binding.
+        // If this happens, the app can crash due to the RV not accepting changes during layout computes
+        // Adding this check makes sure the section is only refreshed when the user is actively filling
+        // in their data rather than during a scroll.
+        if (!binding.content.isComputingLayout) {
+            itemsStorage.refreshInformSection()
+        }
     }
 
     /**

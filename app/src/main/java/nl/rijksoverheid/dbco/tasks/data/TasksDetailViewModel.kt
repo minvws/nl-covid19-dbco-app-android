@@ -35,6 +35,7 @@ class TasksDetailViewModel(
 
     val communicationType = MutableLiveData<CommunicationType?>(null)
     val hasEmailOrPhone = MutableLiveData<Boolean>(null)
+    val name = MutableLiveData<String?>(null)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
     private lateinit var _task: Task
@@ -48,6 +49,7 @@ class TasksDetailViewModel(
             task.linkedContact = LocalContact.fromLabel(task.label)
         }
         hasEmailOrPhone.value = task.linkedContact?.hasValidEmailOrPhone()
+        name.value = task.linkedContact?.firstName
         communicationType.value = task.communication
         dateOfLastExposure.value = task.dateOfLastExposure
         category.value = task.category
