@@ -134,7 +134,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun onLastExposureChanged() {
-        checkIfContactDetailsSectionComplete()
         itemsStorage.refreshInformSection()
         updateButton()
     }
@@ -284,8 +283,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun checkIfContactDetailsSectionComplete() {
         itemsStorage.contactDetailsSection.setCompleted(
             viewModel.hasEmailOrPhone.value == true &&
-                    viewModel.communicationType.value != null &&
-                    viewModel.dateOfLastExposure.value != null
+                    viewModel.communicationType.value != null
         )
     }
 
