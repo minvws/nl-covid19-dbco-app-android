@@ -283,9 +283,7 @@ class TaskDetailItemsStorage(
             HashMap<String, JsonElement>().apply {
                 put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
             }
-        ),
-        // Hide input if a date has been set through the GGD portal
-        isHidden = viewModel.dateOfLastExposure.value != null && viewModel.task.source == Source.Portal
+        )
     )
 
     fun refreshContactDetailsSection() {
@@ -326,9 +324,6 @@ class TaskDetailItemsStorage(
                     }
                 }
             }
-        }
-        if (!dateOfLastExposureItem.isHidden) {
-            contactDetailsSection.add(dateOfLastExposureItem)
         }
     }
 
@@ -399,14 +394,14 @@ class TaskDetailItemsStorage(
 
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             if (it == ANSWER_EARLIER) {
-                contactDetailsSection.remove(noExposureRiskItem)
-                contactDetailsSection.add(
-                    contactDetailsSection.getPosition(dateOfLastExposureItem),
+                classificationSection.remove(noExposureRiskItem)
+                classificationSection.add(
+                    classificationSection.getPosition(dateOfLastExposureItem),
                     noExposureRiskItem
                 )
                 informSection.setEnabled(false)
             } else {
-                contactDetailsSection.remove(noExposureRiskItem)
+                classificationSection.remove(noExposureRiskItem)
             }
         })
     }

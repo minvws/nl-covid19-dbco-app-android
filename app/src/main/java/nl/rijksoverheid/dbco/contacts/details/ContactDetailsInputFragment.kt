@@ -118,10 +118,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 contactDetailsSection.setSectionNumber(1)
                 informSection.setSectionNumber(2)
             }
+
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
 
             classificationSection.removeAllChildren()
+            classificationSection.add(dateOfLastExposureItem)
             val questions = viewModel.questionnaire?.questions?.filterNotNull() ?: emptyList()
             questions.forEach { question ->
                 if (question.group == Group.Classification) {
@@ -132,7 +134,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun onLastExposureChanged() {
-        checkIfContactDetailsSectionComplete()
         itemsStorage.refreshInformSection()
         updateButton()
     }
@@ -282,8 +283,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun checkIfContactDetailsSectionComplete() {
         itemsStorage.contactDetailsSection.setCompleted(
             viewModel.hasEmailOrPhone.value == true &&
-                    viewModel.communicationType.value != null &&
-                    viewModel.dateOfLastExposure.value != null
+                    viewModel.communicationType.value != null
         )
     }
 
