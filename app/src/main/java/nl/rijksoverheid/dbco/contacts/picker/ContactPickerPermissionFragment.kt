@@ -64,11 +64,8 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentPermissionBinding.bind(view)
 
-        val nameToShow = if (args.indexTask != null) {
-            "'${args.indexTask?.label}'"
-        } else {
-            getString(R.string.this_contact)
-        }
+        val nameToShow = args.indexTask?.label ?: getString(R.string.this_contact)
+
         binding.onboardingHeader.text =
             String.format(getString(R.string.permission_name_header), nameToShow)
         binding.btnNext.setOnClickListener {
