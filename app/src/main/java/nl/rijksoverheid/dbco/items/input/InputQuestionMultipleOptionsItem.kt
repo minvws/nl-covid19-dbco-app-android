@@ -51,12 +51,10 @@ abstract class InputQuestionMultipleOptionsItem(
             inputType = type
             imeOptions = EditorInfo.IME_ACTION_DONE
             doAfterTextChanged { text ->
+                items = setOf(text.toString()).also { changeListener(it) }
                 if (state == SINGLE_EDIT && text.isNullOrEmpty() && hasMultipleItems) {
                     state = MULTIPLE_OPTIONS
                     initInput(viewBinding = viewBinding)
-                } else {
-                    items = setOf(text.toString())
-                    changeListener(items)
                 }
             }
         }
