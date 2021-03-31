@@ -52,10 +52,6 @@ abstract class InputQuestionMultipleOptionsItem(
             imeOptions = EditorInfo.IME_ACTION_DONE
             doAfterTextChanged { text ->
                 items = setOf(text.toString()).also { changeListener(it) }
-                if (state == SINGLE_EDIT && text.isNullOrEmpty() && hasMultipleItems) {
-                    state = MULTIPLE_OPTIONS
-                    initInput(viewBinding = viewBinding)
-                }
             }
         }
         initInput(viewBinding = viewBinding)
@@ -134,8 +130,8 @@ abstract class InputQuestionMultipleOptionsItem(
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
-        val email = if (items.size == 1) items.first() else ""
-        answers[key] = email.toJsonPrimitive()
+        val item = if (items.size == 1) items.first() else ""
+        answers[key] = item.toJsonPrimitive()
         return answers
     }
 
