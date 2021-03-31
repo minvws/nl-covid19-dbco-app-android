@@ -14,12 +14,12 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 
 class PhoneNumberItem(
-    emailAddresses: Set<String>,
+    numbers: Set<String>,
     question: Question?,
     changeListener: (Set<String>) -> Unit
 ) : InputQuestionMultipleOptionsItem(
     question = question,
-    items = emailAddresses,
+    items = numbers,
     validator = PhoneNumberValidator(),
     changeListener = changeListener,
     key = ANSWER_KEY,
