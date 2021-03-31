@@ -380,13 +380,19 @@ class TaskDetailItemsStorage(
                     viewModel.task.linkedContact?.lastName = newLastName
                     viewModel.name.value = newFirstName
                 },
-                PhoneNumberItem(viewModel.task.linkedContact?.number, question) {
-                    viewModel.task.linkedContact?.number = it
+                PhoneNumberItem(
+                    viewModel.task.linkedContact?.numbers ?: emptySet(),
+                    question
+                ) {
+                    viewModel.task.linkedContact?.numbers = it
                     viewModel.hasEmailOrPhone.value =
                         viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 },
-                EmailAddressItem(viewModel.task.linkedContact?.email, question) {
-                    viewModel.task.linkedContact?.email = it
+                EmailAddressItem(
+                    viewModel.task.linkedContact?.emails ?: emptySet(),
+                    question
+                ) {
+                    viewModel.task.linkedContact?.emails = it
                     viewModel.hasEmailOrPhone.value =
                         viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 }
@@ -614,7 +620,7 @@ class TaskDetailItemsStorage(
                         {
                             val intent = Intent(
                                 Intent.ACTION_DIAL,
-                                Uri.parse("tel:${viewModel.task.linkedContact?.number}")
+                                Uri.parse("tel:${viewModel.task.linkedContact?.numbers?.first()}")
                             )
                             context.startActivity(intent)
                         },

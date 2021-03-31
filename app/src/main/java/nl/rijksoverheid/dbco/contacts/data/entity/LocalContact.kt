@@ -21,17 +21,20 @@ data class LocalContact(
     val id: String,
     var firstName: String? = null,
     var lastName: String? = null,
-    var number: String? = null,
-    var email: String? = null,
+    var numbers: Set<String> = emptySet(),
+    var emails: Set<String> = emptySet(),
 ) : JavaSerializable {
 
     fun hasValidEmailOrPhone(): Boolean {
-        return (!number.isNullOrEmpty() && Constants.PHONE_VALIDATION_MATCHER.matcher(number!!).matches()) || (!email.isNullOrEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email!!)
-            .matches())
+        return hasValidPhoneNumber() || hasValidEmailAddress()
     }
 
     fun hasValidPhoneNumber() : Boolean {
-        return (!number.isNullOrEmpty() && Constants.PHONE_VALIDATION_MATCHER.matcher(number!!).matches())
+        return numbers.count { Constants.PHONE_VALIDATION_MATCHER.matcher(it).matches() } > 0
+    }
+
+    fun hasValidEmailAddress() : Boolean {
+        return emails.count { android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() } > 0
     }
 
     fun getDisplayName(): String {

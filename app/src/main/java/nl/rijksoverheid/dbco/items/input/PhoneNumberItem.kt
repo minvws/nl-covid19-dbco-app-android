@@ -9,110 +9,58 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
-import android.text.TextUtils
-import androidx.core.widget.doAfterTextChanged
-import com.xwray.groupie.Item
-import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemPhoneInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.util.setCompleted
-import nl.rijksoverheid.dbco.util.toJsonPrimitive
-import java.util.*
 
 class PhoneNumberItem(
-    private var phoneNumber: String?,
+    emailAddresses: Set<String>,
     question: Question?,
-    private val changeListener: (String) -> Unit
-) :
-    BaseQuestionItem<ItemPhoneInputBinding>(question) {
-    override fun getLayout() = R.layout.item_phone_input
-    private var binding: ItemPhoneInputBinding? = null
+    changeListener: (Set<String>) -> Unit
+) : InputQuestionMultipleOptionsItem(
+    question = question,
+    items = emailAddresses,
+    validator = PhoneNumberValidator(),
+    changeListener = changeListener,
+    key = ANSWER_KEY,
+    type = InputType.TYPE_CLASS_PHONE,
+    singleHint = R.string.hint_phone_number,
+    multipleHint = R.string.hint_phone_number_multiple,
+) {
 
-    override fun bind(viewBinding: ItemPhoneInputBinding, position: Int) {
-        binding = viewBinding
-        viewBinding.inputField.editText?.apply {
-            inputType = InputType.TYPE_CLASS_PHONE
-            setText(phoneNumber)
-        }
+    companion object {
 
-        viewBinding.inputField.apply {
-            this.hint = this.context.getString(R.string.hint_phone_number)
-        }
-
-        viewBinding.inputField.editText?.doAfterTextChanged { text ->
-            phoneNumber = text.toString()
-            phoneNumber?.let { changeListener.invoke(it) }
-        }
-
-        viewBinding.inputField.editText?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                checkCompleted(viewBinding)
-            }
-        }
-
-        checkCompleted(viewBinding)
+        private const val ANSWER_KEY = "phoneNumber"
     }
+}
 
-    private fun checkCompleted(viewBinding: ItemPhoneInputBinding) {
-        // Replace whitespace and parentheses as these shouldn't count towards the character limit
-        val input = viewBinding.inputField.editText?.text.toString().replace(Regex("[\\s)(]"), "")
-        if (!TextUtils.isEmpty(input)) {
-            if (!Constants.PHONE_VALIDATION_MATCHER.matcher(input).matches()) {
-                // If the matcher fails for whatever reason, check if input was too long or too short
-                when {
-                    input.length < 10 -> {
-                        viewBinding.inputField.error =
-                            viewBinding.inputField.context.getString(R.string.error_valid_phone_too_short)
-                    }
-                    input.length > 11 -> {
-                        viewBinding.inputField.error =
-                            viewBinding.inputField.context.getString(R.string.error_valid_phone_too_long)
-                    }
-                    else -> {
-                        // general error if the length was 10, but it failed for another reason
-                        viewBinding.inputField.error =
-                            viewBinding.inputField.context.getString(R.string.error_valid_phone)
-                    }
-                }
+class PhoneNumberValidator : InputQuestionMultipleOptionsItemValidator {
 
-                viewBinding.inputField.setCompleted(false)
-            } else {
-                // Special case for numbers of length 11 to 13 but with valid syntax
-                if (input.length in 11..13) {
-                    // If its not a number starting with our valid prefixes, don't allow it
-                    if (!Constants.VALID_PHONENUMER_PREFIXES.any { input.startsWith(it) }) {
-                        viewBinding.inputField.error =
-                            viewBinding.inputField.context.getString(R.string.error_valid_phone)
-                        viewBinding.inputField.setCompleted(false)
-                    } else {
-                        viewBinding.inputField.error = null
-                        viewBinding.inputField.setCompleted(true)
-                        changeListener.invoke(input)
-                    }
-                    // Branch for length = 10, all others fall outside of the matcher
-                } else {
-                    viewBinding.inputField.error = null
-                    viewBinding.inputField.setCompleted(true)
-                    changeListener.invoke(input)
-                }
+    override fun validate(input: String?): Pair<Boolean, Int?> {
+        if (input.isNullOrEmpty()) return Pair(false, null)
+
+        val replaced = input.replace(Regex("[\\s)(]"), "")
+
+        if (!Constants.PHONE_VALIDATION_MATCHER.matcher(replaced).matches()) {
+            // If the matcher fails for whatever reason, check if input was too long or too short
+            return when {
+                replaced.length < 10 -> Pair(false, R.string.error_valid_phone_too_short)
+                replaced.length > 11 -> Pair(false, R.string.error_valid_phone_too_long)
+                else -> Pair(false, R.string.error_valid_phone)
             }
+
         } else {
-            viewBinding.inputField.setCompleted(false)
+            // Special case for numbers of length 11 to 13 but with valid syntax
+            return if (replaced.length in 11..13) {
+                // If its not a number starting with our valid prefixes, don't allow it
+                if (!Constants.VALID_PHONENUMER_PREFIXES.any { input.startsWith(it) }) {
+                    Pair(false, R.string.error_valid_phone)
+                } else {
+                    Pair(true, null)
+                }
+            } else {
+                Pair(true, null)
+            }
         }
-    }
-
-    override fun isSameAs(other: Item<*>): Boolean =
-        other is PhoneNumberItem && other.phoneNumber == phoneNumber
-
-    override fun hasSameContentAs(other: Item<*>) =
-        other is PhoneNumberItem && other.phoneNumber == phoneNumber
-
-    override fun getUserAnswers(): Map<String, JsonElement> {
-        val answers = HashMap<String, JsonElement>()
-        val phoneNumber = phoneNumber ?: ""
-        answers["phoneNumber"] = phoneNumber.toJsonPrimitive()
-        return answers
     }
 }
