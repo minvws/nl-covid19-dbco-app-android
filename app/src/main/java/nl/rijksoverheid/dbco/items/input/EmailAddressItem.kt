@@ -28,20 +28,21 @@ class EmailAddressItem(
     multipleHint = R.string.hint_email_address_multiple,
 ) {
 
+    internal class EmailAddressValidator : InputQuestionMultipleOptionsItemValidator {
+
+        override fun validate(input: String?): Pair<Boolean, Int?> {
+            return if (input.isNullOrEmpty()) {
+                return Pair(false, null)
+            } else {
+                val matches = Patterns.EMAIL_ADDRESS.matcher(input).matches()
+                if (matches) Pair(true, null) else Pair(false, R.string.error_valid_email)
+            }
+        }
+    }
+
     companion object {
 
         private const val ANSWER_KEY = "email"
     }
 }
 
-class EmailAddressValidator : InputQuestionMultipleOptionsItemValidator {
-
-    override fun validate(input: String?): Pair<Boolean, Int?> {
-        return if (input.isNullOrEmpty()) {
-            return Pair(false, null)
-        } else {
-            val matches = Patterns.EMAIL_ADDRESS.matcher(input).matches()
-            if (matches) Pair(true, null) else Pair(false, R.string.error_valid_email)
-        }
-    }
-}
