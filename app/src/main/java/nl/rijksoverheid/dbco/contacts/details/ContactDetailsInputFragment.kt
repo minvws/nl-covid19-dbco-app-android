@@ -85,7 +85,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         binding.toolbar.title = contactName
         binding.toolbar.setNavigationOnClickListener { checkUnsavedChanges() }
 
-        if (viewModel.task.isLocalAndSaved()) {
+        if (viewModel.task.isLocalAndSaved() && args.enabled) {
             binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
             binding.toolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.delete_contact_item) {
