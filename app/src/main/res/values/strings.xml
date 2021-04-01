@@ -28,6 +28,7 @@
     <string name="completed">Afgerond</string>
     <string name="collapsed">Ingeklapt</string>
     <string name="expanded">Uitgeklapt</string>
+    <string name="other">Anders</string>
 
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
@@ -109,7 +110,9 @@
 
     <!--    Fields-->
     <string name="hint_phone_number">Telefoonnummer</string>
+    <string name="hint_phone_number_multiple">Selecteer telefoonnummer</string>
     <string name="hint_email_address">E-mailadres</string>
+    <string name="hint_email_address_multiple">Selecteer e-mailadres</string>
     <string name="hint_first_name">Voornaam</string>
     <string name="hint_last_name">Achternaam</string>
     <string name="contact_information_last_exposure_label">Wanneer was de laatste ontmoeting?</string>
