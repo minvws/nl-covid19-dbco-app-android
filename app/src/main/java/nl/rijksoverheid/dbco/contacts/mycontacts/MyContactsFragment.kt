@@ -44,6 +44,8 @@ import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Success
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Error
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -115,8 +117,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         adapter.add(contentSection)
 
-        // Load data from backend
-        tasksViewModel.syncTasks()
+        syncData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -129,6 +130,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
+            tasksViewModel.syncQuestionnaire()
             // Don't have to refresh if the user isn't paired yet, only local data
             if (isUserPaired()) {
                 tasksViewModel.syncTasks()
@@ -137,7 +139,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
 
-        tasksViewModel.case.observe(viewLifecycleOwner, { result -> handleCaseResult(result) })
+        tasksViewModel.case.observe(viewLifecycleOwner, { result ->
+            handleCaseResult(result)
+        })
+        tasksViewModel.questionnaire.observe(viewLifecycleOwner, { result ->
+            handleQuestionnaireResult(result)
+        })
 
         adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
@@ -159,6 +166,19 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         if (!isUserPaired()) {
             setUpPairingListeners()
+        }
+    }
+
+    private fun syncData() {
+        tasksViewModel.syncTasks()
+        tasksViewModel.syncQuestionnaire()
+    }
+
+    private fun handleQuestionnaireResult(result: QuestionnaireResult) {
+        if (result is QuestionnaireError) {
+            showErrorDialog(getString(R.string.generic_error_prompt_message), {
+                tasksViewModel.syncQuestionnaire()
+            })
         }
     }
 
@@ -432,9 +452,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         if (tasksViewModel.getCachedQuestionnaire() == null) {
-            showErrorDialog(getString(R.string.error_questionarre_is_empty), {
-                // TODO: what?
-            })
+            showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
             return
         }
         if (ContextCompat.checkSelfPermission(

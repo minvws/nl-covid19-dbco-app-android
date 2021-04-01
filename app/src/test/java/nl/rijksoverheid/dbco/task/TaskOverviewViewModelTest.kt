@@ -32,6 +32,9 @@ import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Succes
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Error
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 import java.lang.IllegalStateException
@@ -376,6 +379,41 @@ class TaskOverviewViewModelTest {
             Assert.assertTrue(result != null)
             Assert.assertTrue(result is Success)
             Assert.assertEquals((result as Success).case, new)
+        }
+
+    @Test
+    fun `given questionnaire throws error, when questionnaire is synced, then pass error state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            coEvery { questionnaireMock.syncQuestionnaires() } throws IllegalStateException("test")
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncQuestionnaire()
+
+            // then
+            val result: QuestionnaireResult? = viewModel.questionnaire.value
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is QuestionnaireError)
+        }
+
+    @Test
+    fun `given questionnaire throws no error, when questionnaire is synced, then pass success state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncQuestionnaire()
+
+            // then
+            val result: QuestionnaireResult? = viewModel.questionnaire.value
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is QuestionnaireSuccess)
         }
 
     private fun createViewModel(

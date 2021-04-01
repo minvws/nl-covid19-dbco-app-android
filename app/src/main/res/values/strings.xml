@@ -30,6 +30,9 @@
     <string name="expanded">Uitgeklapt</string>
     <string name="other">Anders</string>
 
+    <!--    Generic error-->
+    <string name="generic_error_prompt_message">Controleer de internetverbinding en probeer het opnieuw.</string>
+
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
@@ -211,7 +214,7 @@
     <string name="error_try_again">Probeer het opnieuw</string>
     <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
     <string name="error_while_pairing">Fout tijdens het koppelen:</string>
-    <string name="error_questionarre_is_empty">Vragenlijst is leeg. Probeer het later nog eens</string>
+    <string name="error_questionnaire_is_empty">Er missen wat gegevens, ververs de pagina en probeer opnieuw.</string>
     <string name="rooted_device_warning">Je telefoon lijkt jailbroken of rooted. Dit betekent dat het besturingssysteem gekraakt is. Hierdoor is je telefoon mogelijk minder goed beveiligd.</string>
     <string name="qa_clear_data_summary">Weet je zeker dat je alle opgeslagen gegevens wilt wissen? De applicatie wordt hierbij afgesloten.</string>
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>

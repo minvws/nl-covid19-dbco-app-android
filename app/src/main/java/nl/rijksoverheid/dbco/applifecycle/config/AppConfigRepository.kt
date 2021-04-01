@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.network.DbcoApi
+import kotlin.Exception
 
 class AppConfigRepository(val context: Context) {
 
@@ -22,19 +23,24 @@ class AppConfigRepository(val context: Context) {
 
     suspend fun getAppConfig(): AppConfig {
         return if (storedAppConfig == null) {
-            val data = withContext(Dispatchers.IO) { api.getAppConfig() }
-            storedAppConfig = data.body()
-            data.body()!!
+            try {
+                val data = withContext(Dispatchers.IO) { api.getAppConfig() }
+                storedAppConfig = data.body()
+                data.body()!!
+            } catch (ex: Exception) {
+                AppConfig()
+            }
         } else {
             storedAppConfig!!
         }
     }
 
     fun getUpdateMessage(): String {
+        val fallback = context.getString(R.string.update_app_description)
         return if (storedAppConfig != null) {
-            storedAppConfig?.androidMinimumVersionMessage ?: ""
+            storedAppConfig?.androidMinimumVersionMessage ?: fallback
         } else {
-            context.getString(R.string.update_app_description)
+            fallback
         }
     }
 

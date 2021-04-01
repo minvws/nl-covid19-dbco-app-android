@@ -25,6 +25,8 @@ import nl.rijksoverheid.dbco.util.numeric
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
@@ -34,6 +36,9 @@ class TasksOverviewViewModel(
 
     private val _case = MutableLiveData<CaseResult>()
     val case: LiveData<CaseResult> = _case
+
+    private val _questionnaire = MutableLiveData<QuestionnaireResult>()
+    val questionnaire: LiveData<QuestionnaireResult> = _questionnaire
 
     fun getCachedCase() = tasksRepository.getCase()
 
@@ -57,8 +62,16 @@ class TasksOverviewViewModel(
                 _case.postValue(CaseResult.Error(getCachedCase()))
             }
         }
+    }
+
+    fun syncQuestionnaire() {
         viewModelScope.launch(coroutineDispatcher) {
-            questionnaireRepository.syncQuestionnaires()
+            try {
+                questionnaireRepository.syncQuestionnaires()
+                _questionnaire.value = QuestionnaireSuccess
+            } catch (ex: Exception) {
+                _questionnaire.value = QuestionnaireError
+            }
         }
     }
 
@@ -96,5 +109,11 @@ class TasksOverviewViewModel(
         data class Success(val case: Case) : CaseResult()
         data class CaseExpired(val cachedCase: Case) : CaseResult()
         data class Error(val cachedCase: Case) : CaseResult()
+    }
+
+    sealed class QuestionnaireResult {
+
+        object QuestionnaireSuccess : QuestionnaireResult()
+        object QuestionnaireError : QuestionnaireResult()
     }
 }
