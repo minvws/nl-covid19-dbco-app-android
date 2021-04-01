@@ -55,7 +55,8 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             // User chooses not to select an existing contact from their device, start fresh
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                    selectedTask ?: Task.createAppContact()
+                    indexTask = selectedTask ?: Task.createAppContact(),
+                    enabled = true
                 )
             )
         }
@@ -102,7 +103,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                             val task = selectedTask ?: Task.createAppContact()
                             task.linkedContact = item.contact
                             findNavController().navigate(
-                                ContactPickerSelectionFragmentDirections.toContactDetails(task)
+                                ContactPickerSelectionFragmentDirections.toContactDetails(
+                                    indexTask = task,
+                                    enabled = true
+                                )
                             )
                         }
                     }

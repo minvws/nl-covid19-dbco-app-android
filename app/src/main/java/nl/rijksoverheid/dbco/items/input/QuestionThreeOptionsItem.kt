@@ -11,6 +11,7 @@ import android.content.Context
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.RadioGroup
+import androidx.core.view.isVisible
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
@@ -26,8 +27,14 @@ class QuestionThreeOptionsItem(
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswerValue: JsonObject? = null,
-    private val isLocked : Boolean = false
-) : BaseOptionsQuestionItem<ItemQuestion3OptionsBinding>(context, question, answerSelectedListener, previousAnswerValue) {
+    private val isLocked: Boolean = false,
+    private val isEnabled: Boolean
+) : BaseOptionsQuestionItem<ItemQuestion3OptionsBinding>(
+    context,
+    question,
+    answerSelectedListener,
+    previousAnswerValue
+) {
 
     override fun getLayout() = R.layout.item_question_3_options
     private lateinit var answerGroup: RadioGroup
@@ -50,7 +57,7 @@ class QuestionThreeOptionsItem(
             viewBinding.answerGroup.clearCheck()
         }
 
-        question?.answerOptions?.indexOf(selectedAnswer)?.let {index ->
+        question?.answerOptions?.indexOf(selectedAnswer)?.let { index ->
             when (index) {
                 0 -> viewBinding.option1.isChecked = true
                 1 -> viewBinding.option2.isChecked = true
@@ -83,7 +90,7 @@ class QuestionThreeOptionsItem(
         }
 
         // If the input it locked due to the combination of task source and risk, disable the buttons but show the selection based on GGD input
-        if(isLocked){
+        if (isLocked) {
             viewBinding.answerGroup.isEnabled = false
             viewBinding.option1.isEnabled = false
             viewBinding.option2.isEnabled = false
@@ -92,32 +99,35 @@ class QuestionThreeOptionsItem(
             viewBinding.option2.setOnCheckedChangeListener(null)
             viewBinding.option3.setOnCheckedChangeListener(null)
 
-            viewBinding.questionLockedDescription.visibility = View.VISIBLE
+            viewBinding.questionLockedDescription.isVisible = true
 
-            if(viewBinding.option1.isChecked){
-                viewBinding.option2.visibility = View.GONE
-                viewBinding.option3.visibility = View.GONE
-                viewBinding.option1.visibility = View.VISIBLE
-            } else if (viewBinding.option2.isChecked) {
-                viewBinding.option1.visibility = View.GONE
-                viewBinding.option3.visibility = View.GONE
-                viewBinding.option2.visibility = View.VISIBLE
-            } else {
-                viewBinding.option1.visibility = View.GONE
-                viewBinding.option3.visibility = View.VISIBLE
-                viewBinding.option2.visibility = View.GONE
+            when {
+                viewBinding.option1.isChecked -> {
+                    viewBinding.option2.isVisible = false
+                    viewBinding.option3.isVisible = false
+                    viewBinding.option1.isVisible = true
+                }
+                viewBinding.option2.isChecked -> {
+                    viewBinding.option1.isVisible = false
+                    viewBinding.option3.isVisible = false
+                    viewBinding.option2.isVisible = true
+                }
+                else -> {
+                    viewBinding.option1.isVisible = false
+                    viewBinding.option3.isVisible = true
+                    viewBinding.option2.isVisible = false
+                }
             }
 
         } else {
-            viewBinding.answerGroup.isEnabled = true
-            viewBinding.option1.isEnabled = true
-            viewBinding.option2.isEnabled = true
-            viewBinding.option3.isEnabled = true
-            viewBinding.option1.visibility = View.VISIBLE
-            viewBinding.option2.visibility = View.VISIBLE
-            viewBinding.option3.visibility = View.VISIBLE
-            viewBinding.questionLockedDescription.visibility = View.GONE
-
+            viewBinding.answerGroup.isEnabled = isEnabled
+            viewBinding.option1.isEnabled = isEnabled
+            viewBinding.option2.isEnabled = isEnabled
+            viewBinding.option3.isEnabled = isEnabled
+            viewBinding.option1.isVisible = true
+            viewBinding.option2.isVisible = true
+            viewBinding.option3.isVisible = true
+            viewBinding.questionLockedDescription.isVisible = false
         }
     }
 

@@ -166,6 +166,10 @@
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
     <string name="contact_inform_action_inform_now">Nu doen</string>
 
+    <string name="contact_disabled_prompt_title">Je kunt geen gegevens meer in de app aanpassen</string>
+    <string name="contact_disabled_prompt_message">Neem contact op met de GGD om aanpassingen door te geven</string>
+    <string name="contact_disabled_prompt_button">Ik snap het</string>
+
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="reverse_pairing_try_again">Probeer opnieuw</string>

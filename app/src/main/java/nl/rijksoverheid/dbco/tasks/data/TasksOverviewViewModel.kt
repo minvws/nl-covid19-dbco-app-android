@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.tasks.data
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,16 +15,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.util.Resource
 import nl.rijksoverheid.dbco.util.numeric
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
-import timber.log.Timber
+import org.joda.time.LocalDateTime
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
@@ -33,28 +32,29 @@ class TasksOverviewViewModel(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
-    private val _fetchCase = MutableLiveData<Resource<Case>>()
-    val fetchCase: LiveData<Resource<Case>> = _fetchCase
-
-    var selfBcoCase = MutableLiveData<Resource<Case?>>()
-
-    private val _windowExpired = MutableLiveData(false)
-    val windowExpired: LiveData<Boolean> = _windowExpired
+    private val _case = MutableLiveData<CaseResult>()
+    val case: LiveData<CaseResult> = _case
 
     fun getCachedCase() = tasksRepository.getCase()
 
     fun syncTasks() {
         viewModelScope.launch(coroutineDispatcher) {
             try {
-                val case = tasksRepository.fetchCase()
-                _fetchCase.postValue(Resource.success(case.copy(tasks = sortTasks(case.tasks))))
-            } catch (ex: Exception) {
-                Timber.e(ex, "Error while retrieving case")
-                _fetchCase.postValue(Resource.failure(ex))
-                // Window expired
-                if (ex is SerializationException) {
-                    _windowExpired.postValue(true)
+                val cachedCase = getCachedCase()
+                val now = LocalDateTime.now(DateTimeZone.UTC)
+                val expiredDate = cachedCase.windowExpiresAt?.let {
+                    LocalDateTime.parse(cachedCase.windowExpiresAt, DateFormats.expiryData)
+                } ?: now
+                if (expiredDate.isBefore(now)) {
+                    val sorted = cachedCase.copy(tasks = sortTasks(cachedCase.tasks))
+                    _case.postValue(CaseResult.CaseExpired(sorted))
+                } else {
+                    val case = tasksRepository.fetchCase()
+                    val sorted = case.copy(tasks = sortTasks(case.tasks))
+                    _case.postValue(CaseResult.Success(sorted))
                 }
+            } catch (ex: Exception) {
+                _case.postValue(CaseResult.Error(getCachedCase()))
             }
         }
         viewModelScope.launch(coroutineDispatcher) {
@@ -89,5 +89,12 @@ class TasksOverviewViewModel(
         }.thenBy {
             it.getDisplayName("")
         })
+    }
+
+    sealed class CaseResult {
+
+        data class Success(val case: Case) : CaseResult()
+        data class CaseExpired(val cachedCase: Case) : CaseResult()
+        data class Error(val cachedCase: Case) : CaseResult()
     }
 }

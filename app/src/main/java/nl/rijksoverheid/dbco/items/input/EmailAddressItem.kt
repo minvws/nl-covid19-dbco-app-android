@@ -16,6 +16,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 class EmailAddressItem(
     emailAddresses: Set<String>,
     question: Question?,
+    isEnabled: Boolean,
     changeListener: (Set<String>) -> Unit
 ) : InputQuestionMultipleOptionsItem(
     question = question,
@@ -26,6 +27,7 @@ class EmailAddressItem(
     type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
     singleHint = R.string.hint_email_address,
     multipleHint = R.string.hint_email_address_multiple,
+    isEnabled = isEnabled
 ) {
 
     internal class EmailAddressValidator : InputQuestionMultipleOptionsItemValidator {

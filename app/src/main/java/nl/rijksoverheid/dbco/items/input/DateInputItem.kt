@@ -26,7 +26,8 @@ import org.joda.time.LocalDate
 class DateInputItem(
     val context: Context,
     question: Question?,
-    private val previousAnswerValue: JsonObject? = null
+    private val previousAnswerValue: JsonObject? = null,
+    private val isEnabled: Boolean
 ) :
     BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
 
@@ -53,6 +54,8 @@ class DateInputItem(
         date?.let {
             viewBinding.inputLabel.setText(it.toString(dateInputUI))
         }
+
+        viewBinding.inputLayout.isEnabled = isEnabled
     }
 
     private fun showDatePicker() {

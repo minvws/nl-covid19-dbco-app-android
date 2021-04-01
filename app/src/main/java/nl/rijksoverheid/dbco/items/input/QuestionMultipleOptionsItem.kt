@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.items.input
 import android.content.Context
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
@@ -22,7 +23,7 @@ class QuestionMultipleOptionsItem(
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswer: JsonObject? = null,
     private val isLocked: Boolean = false,
-    val isHidden: Boolean = false,
+    val isEnabled: Boolean,
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(
     context,
     question,
@@ -74,11 +75,11 @@ class QuestionMultipleOptionsItem(
         if (isLocked) {
             viewBinding.inputLayout.isEnabled = false
             viewBinding.inputLabel.isEnabled = false
-            viewBinding.questionLockedDescription.visibility = View.VISIBLE
+            viewBinding.questionLockedDescription.isVisible = false
         } else {
-            viewBinding.inputLayout.isEnabled = true
-            viewBinding.inputLabel.isEnabled = true
-            viewBinding.questionLockedDescription.visibility = View.GONE
+            viewBinding.inputLayout.isEnabled = isEnabled
+            viewBinding.inputLabel.isEnabled = isEnabled
+            viewBinding.questionLockedDescription.isVisible = false
         }
     }
 }

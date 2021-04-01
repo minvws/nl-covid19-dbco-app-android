@@ -82,32 +82,32 @@
     </fragment>
     <fragment
         android:id="@+id/contactPickerPermission"
-        tools:layout="@layout/fragment_permission"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
-        android:label="ContactPickerPermissionFragment">
+        android:label="ContactPickerPermissionFragment"
+        tools:layout="@layout/fragment_permission">
         <argument
             android:name="indexTask"
             android:defaultValue="@null"
-            app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
+            app:nullable="true" />
 
         <action
             android:id="@+id/toContactPicker"
             app:destination="@id/contactPickerSelectionFragment"
-            app:popUpTo="@+id/myContactsFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/myContactsFragment" />
 
         <action
             android:id="@+id/toContactDetails"
             app:destination="@id/contactDetailsInputFragment"
-            app:popUpTo="@+id/myContactsFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/myContactsFragment" />
 
         <action
             android:id="@+id/to_roommateInputFragment"
@@ -116,43 +116,43 @@
     <fragment
         android:id="@+id/contactPickerSelectionFragment"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerSelectionFragment"
-        tools:layout="@layout/fragment_contact_selection"
-        android:label="ContactPickerSelectionFragment">
+        android:label="ContactPickerSelectionFragment"
+        tools:layout="@layout/fragment_contact_selection">
         <argument
             android:name="indexTask"
             android:defaultValue="@null"
-            app:nullable="true"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
+            app:nullable="true" />
         <action
             android:id="@+id/toContactDetails"
-            app:popUpTo="@id/myContactsFragment"
             app:destination="@id/contactDetailsInputFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/myContactsFragment" />
     </fragment>
     <fragment
         android:id="@+id/myContactsFragment"
         android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsFragment"
-        tools:layout="@layout/fragment_my_contacts"
-        android:label="MyContactsFragment">
+        android:label="MyContactsFragment"
+        tools:layout="@layout/fragment_my_contacts">
         <action
             android:id="@+id/toContactPickerPermission"
             app:destination="@id/contactPickerPermission"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
-            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/myContactsFragment" />
         <action
             android:id="@+id/toContactPickerSelection"
             app:destination="@id/contactPickerSelectionFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
-            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/myContactsFragment" />
 
         <action
             android:id="@+id/toFinalizeCheck"
@@ -178,9 +178,14 @@
     </fragment>
     <fragment
         android:id="@+id/contactDetailsInputFragment"
-        tools:layout="@layout/fragment_contact_input"
         android:name="nl.rijksoverheid.dbco.contacts.details.ContactDetailsInputFragment"
-        android:label="ContactDetailsInputFragment">
+        android:label="ContactDetailsInputFragment"
+        tools:layout="@layout/fragment_contact_input">
+        <argument
+            android:name="enabled"
+            android:defaultValue="true"
+            app:nullable="false"
+            app:argType="boolean" />
         <argument
             android:name="indexTask"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
@@ -212,26 +217,26 @@
     </fragment>
     <fragment
         android:id="@+id/finalizeCheckFragment"
-        tools:layout="@layout/fragment_finalizing_check"
         android:name="nl.rijksoverheid.dbco.finalizing.FinalizeCheckFragment"
-        android:label="FinalizeCheckFragment">
+        android:label="FinalizeCheckFragment"
+        tools:layout="@layout/fragment_finalizing_check">
         <action
             android:id="@+id/toFinalizeSentFragment"
             app:destination="@id/finalizeSentFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/toContactDetailsInputFragment"
+            app:destination="@id/contactDetailsInputFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"
-            android:id="@+id/toContactDetailsInputFragment"
-            app:destination="@id/contactDetailsInputFragment" />
     </fragment>
 
     <fragment
@@ -241,13 +246,13 @@
         <action
             android:id="@+id/toMyContactsFragment"
             app:destination="@id/myContactsFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
@@ -268,8 +273,8 @@
     <fragment
         android:id="@+id/onboardingPrivacyConsentFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingPrivacyConsentFragment"
-        tools:layout="@layout/fragment_onboarding_privacy"
-        android:label="OnboardingPrivacyConsentFragment" >
+        android:label="OnboardingPrivacyConsentFragment"
+        tools:layout="@layout/fragment_onboarding_privacy">
         <action
             android:id="@+id/toSymptomSelectionFragment"
             app:destination="@id/symptomSelectionFragment" />
@@ -283,7 +288,7 @@
     <fragment
         android:id="@+id/ExplanationFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment"
-        android:label="ExplanationFragment" >
+        android:label="ExplanationFragment">
 
         <argument
             android:name="flow"
@@ -300,13 +305,13 @@
     <fragment
         android:id="@+id/splashFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.SplashFragment"
-        android:label="SplashFragment" >
+        android:label="SplashFragment">
         <action
             android:id="@+id/toOnboardingFlowSelectionFragment"
             app:destination="@id/onboardingFlowSelectionFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/toMyContacts"
             app:destination="@id/myContactsFragment"
@@ -325,9 +330,9 @@
     </fragment>
     <fragment
         android:id="@+id/selfBcoDateCheckFragment"
-        tools:layout="@layout/fragment_selfbco_date_check"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckFragment"
-        android:label="SelfBcoDateCheckFragment">
+        android:label="SelfBcoDateCheckFragment"
+        tools:layout="@layout/fragment_selfbco_date_check">
         <action
             android:id="@+id/to_selfBcoDoubleCheckFragment"
             app:destination="@id/selfBcoDoubleCheckFragment" />
@@ -338,14 +343,14 @@
     </fragment>
     <fragment
         android:id="@+id/selfBcoSymptomsExplanationFragment"
-        tools:layout="@layout/fragment_selfbco_symptoms_explanation"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoSymptomsExplanationFragment"
-        android:label="SelfBcoSymptomsExplanationFragment"/>
+        android:label="SelfBcoSymptomsExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_symptoms_explanation" />
     <fragment
         android:id="@+id/selfBcoPermissionExplanationFragment"
-        tools:layout="@layout/fragment_selfbco_permission_explanation"
         android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionExplanationFragment"
-        android:label="SelfBcoPermissionExplanationFragment"/>
+        android:label="SelfBcoPermissionExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_permission_explanation" />
     <fragment
         android:id="@+id/selfBcoDoubleCheckFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDoubleCheckFragment"
@@ -361,9 +366,9 @@
             app:destination="@id/selfBcoPermissionFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
-            app:popUpTo="@id/myContactsFragment"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit"/>
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/myContactsFragment" />
 
         <action
             android:id="@+id/to_symptomSelectionFragment"
@@ -383,9 +388,9 @@
     </fragment>
     <fragment
         android:id="@+id/timelineExplanationFragment"
-        tools:layout="@layout/fragment_selfbco_timeline_explanation"
         android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineExplanationFragment"
-        android:label="TimelineExplanationFragment" >
+        android:label="TimelineExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_timeline_explanation">
         <action
             android:id="@+id/to_timelineFragment"
             app:destination="@id/timelineFragment" />
@@ -393,7 +398,7 @@
     <fragment
         android:id="@+id/timelineFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.timeline.TimelineFragment"
-        android:label="TimelineFragment" >
+        android:label="TimelineFragment">
         <action
             android:id="@+id/to_myContactsFragment"
             app:destination="@id/myContactsFragment" />
@@ -403,18 +408,18 @@
     </fragment>
     <fragment
         android:id="@+id/selfBcoPermissionFragment"
-        tools:layout="@layout/fragment_selfbco_permission"
         android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragment"
-        android:label="SelfBcoPermissionFragment" >
+        android:label="SelfBcoPermissionFragment"
+        tools:layout="@layout/fragment_selfbco_permission">
         <action
             android:id="@+id/to_roommateInputFragment"
             app:destination="@id/roommateInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/reversePairingFragment"
-        tools:layout="@layout/fragment_selfbco_pairing"
         android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingFragment"
-        android:label="ReversePairingFragment" >
+        android:label="ReversePairingFragment"
+        tools:layout="@layout/fragment_selfbco_pairing">
         <argument
             android:name="credentials"
             app:argType="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials"
@@ -430,7 +435,7 @@
     <fragment
         android:id="@+id/myContactsMemoryTipFragment"
         android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsMemoryTipFragment"
-        android:label="MyContactsMemoryTipFragment" >
+        android:label="MyContactsMemoryTipFragment">
         <argument
             android:name="date"
             app:argType="string"
