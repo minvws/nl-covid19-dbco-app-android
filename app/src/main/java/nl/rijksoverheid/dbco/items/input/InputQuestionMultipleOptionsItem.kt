@@ -36,6 +36,7 @@ abstract class InputQuestionMultipleOptionsItem(
     private val type: Int,
     @StringRes private val singleHint: Int,
     @StringRes private val multipleHint: Int,
+    private val isEnabled: Boolean,
 ) : BaseQuestionItem<ItemInputWithOptionsBinding>(question) {
 
     private val hasMultipleItems: Boolean
@@ -78,12 +79,13 @@ abstract class InputQuestionMultipleOptionsItem(
         if (state == SINGLE_EDIT) {
             checkCompleted(viewBinding)
         }
-        if (forceFocus) {
+        if (forceFocus && isEnabled) {
             editText.postDelayed({
                 editText.requestFocus()
                 editText.showKeyboard()
             }, 100)
         }
+        layout.isEnabled = isEnabled
     }
 
     private fun showOptionsPicker(viewBinding: ItemInputWithOptionsBinding, context: Context) {

@@ -16,6 +16,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 class PhoneNumberItem(
     numbers: Set<String>,
     question: Question?,
+    isEnabled: Boolean,
     changeListener: (Set<String>) -> Unit
 ) : InputQuestionMultipleOptionsItem(
     question = question,
@@ -26,6 +27,7 @@ class PhoneNumberItem(
     type = InputType.TYPE_CLASS_PHONE,
     singleHint = R.string.hint_phone_number,
     multipleHint = R.string.hint_phone_number_multiple,
+    isEnabled = isEnabled
 ) {
 
     internal class PhoneNumberValidator : InputQuestionMultipleOptionsItemValidator {

@@ -89,7 +89,10 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         adapter.setOnItemClickListener { item, view ->
             if (item is TaskItem) {
                 findNavController().navigate(
-                    FinalizeCheckFragmentDirections.toContactDetailsInputFragment(item.task)
+                    FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
+                        indexTask = item.task,
+                        enabled = true
+                    )
                 )
             }
         }
