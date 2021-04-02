@@ -19,15 +19,13 @@ import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.install.model.AppUpdateType
 import com.scottyab.rootbeer.RootBeer
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragmentDirections
 import nl.rijksoverheid.dbco.applifecycle.EndOfLifeFragmentDirections
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.debug.usertest.UsertestQuestionnaireRepository
-import nl.rijksoverheid.dbco.debug.usertest.UsertestTaskRepository
-import nl.rijksoverheid.dbco.debug.usertest.UsertestUserRepository
 import nl.rijksoverheid.dbco.lifecycle.EventObserver
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -35,14 +33,16 @@ import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
-
 private const val RC_UPDATE_APP = 1
 
+@ExperimentalSerializationApi
 class MainActivity : AppCompatActivity() {
 
-    private var factory: ViewModelFactory? = null
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
+
     private var userPrefs: SharedPreferences? = null
+
+    private var factory: ViewModelFactory? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Set FLAG_SECURE to hide content on non-debug builds
-        if(!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -124,34 +124,20 @@ class MainActivity : AppCompatActivity() {
         currentFocus?.clearFocus()
     }
 
-
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         if (factory != null) {
             return factory as ViewModelFactory
         }
-        if (BuildConfig.USER_TEST) {
-            val userRepository = UsertestUserRepository(this)
-            factory = ViewModelFactory(
-                baseContext,
-                UsertestTaskRepository(this),
-                ContactsRepository(this),
-                UsertestQuestionnaireRepository(this),
-                userRepository,
-                AppConfigRepository(this)
-            )
-        } else {
-            val userRepository = UserRepository(this)
-            factory = ViewModelFactory(
-                baseContext,
-                TasksRepository(this, userRepository),
-                ContactsRepository(this),
-                QuestionnaireRepository(this),
-                userRepository,
-                AppConfigRepository(this)
-            )
+        val userRepository = UserRepository(this)
+        return ViewModelFactory(
+            baseContext,
+            TasksRepository(this, userRepository),
+            ContactsRepository(this),
+            QuestionnaireRepository(this),
+            userRepository,
+            AppConfigRepository(this)
+        ).also {
+            factory = it
         }
-        return factory as ViewModelFactory
-
     }
-
 }
