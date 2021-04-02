@@ -45,8 +45,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/datecheck_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.75" />
+                app:layout_constraintTop_toBottomOf="@+id/back_button" />
 
             <TextView
                 android:textAppearance="@style/TextAppearance.App.Headline5"

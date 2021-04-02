@@ -59,7 +59,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
         binding.btnNext.setOnClickListener {
             val selectedDate = LocalDate(binding.datePicker.getDate().time)
-            if (state.flow == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
                 selfBcoViewModel.updateDateOfSymptomOnset(selectedDate)
             } else {
                 selfBcoViewModel.updateDateOfTest(selectedDate)

@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.content.Context
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import org.joda.time.LocalDate
 import java.io.Serializable
 
@@ -18,7 +17,6 @@ import java.io.Serializable
  * State for [SelfBcoDateCheckFragment]
  */
 data class SelfBcoDateCheckState(
-    val flow: Int,
     val title: String,
     val summary: String,
     val showExplanation: Boolean = false,
@@ -33,7 +31,6 @@ data class SelfBcoDateCheckState(
          * State when selecting EZD after choosing symptoms
          */
         fun createSymptomState(context: Context): SelfBcoDateCheckState = SelfBcoDateCheckState(
-            flow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
             title = context.getString(R.string.selfbco_date_symptoms_title),
             summary = context.getString(R.string.selfbco_date_symptoms_summary),
             showExplanation = true,
@@ -50,7 +47,6 @@ data class SelfBcoDateCheckState(
          * State when selecting test date after specifying a lack of symptoms
          */
         fun createTestState(context: Context): SelfBcoDateCheckState = SelfBcoDateCheckState(
-            flow = SelfBcoConstants.COVID_CHECK_FLOW,
             title = context.getString(R.string.selfbco_date_covid_title),
             summary = context.getString(R.string.selfbco_date_covid_summary),
             nextAction = { _, _ -> SelfBcoDateCheckNavigation.SymptomDateDoubleCheck }
@@ -61,7 +57,6 @@ data class SelfBcoDateCheckState(
          */
         fun createNegativeTestState(context: Context): SelfBcoDateCheckState =
             SelfBcoDateCheckState(
-                flow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
                 title = context.getString(R.string.selfbco_date_negative_covid_title),
                 summary = context.getString(R.string.selfbco_date_negative_covid_summary),
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
@@ -87,7 +82,6 @@ data class SelfBcoDateCheckState(
          * has chronic symptoms
          */
         fun createSymptomTestState(context: Context): SelfBcoDateCheckState = SelfBcoDateCheckState(
-            flow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
             title = context.getString(R.string.selfbco_date_symptoms_positive_test_title),
             summary = context.getString(R.string.selfbco_date_symptoms_positive_test_summary),
             nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
@@ -99,7 +93,6 @@ data class SelfBcoDateCheckState(
          */
         fun createSymptomIncreasedState(context: Context): SelfBcoDateCheckState =
             SelfBcoDateCheckState(
-                flow = SelfBcoConstants.SYMPTOM_CHECK_FLOW,
                 title = context.getString(R.string.selfbco_date_symptoms_increased_title),
                 summary = context.getString(R.string.selfbco_date_symptoms_increased_summary),
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
