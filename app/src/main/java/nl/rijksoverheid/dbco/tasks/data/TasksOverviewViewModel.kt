@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.tasks.data
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,6 +26,9 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
+import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
@@ -34,17 +36,17 @@ class TasksOverviewViewModel(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
-    private val _case = MutableLiveData<CaseResult>()
-    val case: LiveData<CaseResult> = _case
+    private val _viewData = SingleLiveEvent<ViewData>()
+    val viewData: LiveData<ViewData> = _viewData
 
-    private val _questionnaire = MutableLiveData<QuestionnaireResult>()
-    val questionnaire: LiveData<QuestionnaireResult> = _questionnaire
+    private val _uploadStatus = SingleLiveEvent<UploadStatus>()
+    val uploadStatus: LiveData<UploadStatus> = _uploadStatus
 
     fun getCachedCase() = tasksRepository.getCase()
 
-    fun syncTasks() {
+    fun syncData() {
         viewModelScope.launch(coroutineDispatcher) {
-            try {
+            val caseResult = try {
                 val cachedCase = getCachedCase()
                 val now = LocalDateTime.now(DateTimeZone.UTC)
                 val expiredDate = cachedCase.windowExpiresAt?.let {
@@ -52,32 +54,34 @@ class TasksOverviewViewModel(
                 } ?: now
                 if (expiredDate.isBefore(now)) {
                     val sorted = cachedCase.copy(tasks = sortTasks(cachedCase.tasks))
-                    _case.postValue(CaseResult.CaseExpired(sorted))
+                    CaseResult.CaseExpired(sorted)
                 } else {
                     val case = tasksRepository.fetchCase()
                     val sorted = case.copy(tasks = sortTasks(case.tasks))
-                    _case.postValue(CaseResult.Success(sorted))
+                    CaseResult.CaseSuccess(sorted)
                 }
             } catch (ex: Exception) {
-                _case.postValue(CaseResult.Error(getCachedCase()))
+                CaseResult.CaseError(getCachedCase())
             }
-        }
-    }
 
-    fun syncQuestionnaire() {
-        viewModelScope.launch(coroutineDispatcher) {
-            try {
+            val questionnaireResult = try {
                 questionnaireRepository.syncQuestionnaires()
-                _questionnaire.value = QuestionnaireSuccess
+                QuestionnaireSuccess
             } catch (ex: Exception) {
-                _questionnaire.value = QuestionnaireError
+                QuestionnaireError
             }
+            _viewData.value = ViewData(caseResult, questionnaireResult)
         }
     }
 
     fun uploadCurrentCase() {
-        viewModelScope.launch {
-            tasksRepository.uploadCase()
+        viewModelScope.launch(coroutineDispatcher) {
+            try {
+                tasksRepository.uploadCase()
+                _uploadStatus.value = UploadSuccess
+            } catch (ex: Exception) {
+                _uploadStatus.value = UploadError
+            }
         }
     }
 
@@ -104,16 +108,24 @@ class TasksOverviewViewModel(
         })
     }
 
+    data class ViewData(val caseResult: CaseResult, val questionnaireResult: QuestionnaireResult)
+
     sealed class CaseResult {
 
-        data class Success(val case: Case) : CaseResult()
+        data class CaseSuccess(val case: Case) : CaseResult()
         data class CaseExpired(val cachedCase: Case) : CaseResult()
-        data class Error(val cachedCase: Case) : CaseResult()
+        data class CaseError(val cachedCase: Case) : CaseResult()
     }
 
     sealed class QuestionnaireResult {
 
         object QuestionnaireSuccess : QuestionnaireResult()
         object QuestionnaireError : QuestionnaireResult()
+    }
+
+    sealed class UploadStatus {
+
+        object UploadSuccess : UploadStatus()
+        object UploadError : UploadStatus()
     }
 }
