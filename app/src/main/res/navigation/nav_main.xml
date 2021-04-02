@@ -221,8 +221,8 @@
         android:label="FinalizeCheckFragment"
         tools:layout="@layout/fragment_finalizing_check">
         <action
-            android:id="@+id/toFinalizeSentFragment"
-            app:destination="@id/finalizeSentFragment"
+            android:id="@+id/toFinalizeLoadingFragment"
+            app:destination="@id/finalizeLoadingFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:launchSingleTop="true"
@@ -237,6 +237,32 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/finalizeLoadingFragment"
+        android:name="nl.rijksoverheid.dbco.finalizing.FinalizeLoadingFragment"
+        android:label="FinalizeLoadingFragment">
+        <action
+            android:id="@+id/toFinalizeSentFragment"
+            app:destination="@id/finalizeSentFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

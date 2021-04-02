@@ -28,10 +28,16 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Success
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Error
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseError
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 import java.lang.IllegalStateException
@@ -86,14 +92,14 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Success)
+            Assert.assertTrue(result is CaseSuccess)
 
-            Assert.assertEquals((result as Success).case.tasks.first(), case.tasks.last())
+            Assert.assertEquals((result as CaseSuccess).case.tasks.first(), case.tasks.last())
         }
 
     @Test
@@ -125,14 +131,14 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Success)
+            Assert.assertTrue(result is CaseSuccess)
 
-            Assert.assertEquals((result as Success).case.tasks.first(), case.tasks.last())
+            Assert.assertEquals((result as CaseSuccess).case.tasks.first(), case.tasks.last())
         }
 
     @Test
@@ -164,14 +170,14 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Success)
+            Assert.assertTrue(result is CaseSuccess)
 
-            Assert.assertEquals((result as Success).case.tasks.first(), case.tasks.last())
+            Assert.assertEquals((result as CaseSuccess).case.tasks.first(), case.tasks.last())
         }
 
     @Test
@@ -203,13 +209,13 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Success)
-            Assert.assertEquals((result as Success).case, case)
+            Assert.assertTrue(result is CaseSuccess)
+            Assert.assertEquals((result as CaseSuccess).case, case)
         }
 
     @Test
@@ -241,10 +247,10 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
             Assert.assertTrue(result is CaseExpired)
             Assert.assertEquals((result as CaseExpired).cachedCase, case)
@@ -279,10 +285,10 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
             Assert.assertTrue(result is CaseExpired)
             Assert.assertEquals((result as CaseExpired).cachedCase, case)
@@ -317,13 +323,13 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Error)
-            Assert.assertEquals((result as Error).cachedCase, case)
+            Assert.assertTrue(result is CaseError)
+            Assert.assertEquals((result as CaseError).cachedCase, case)
         }
 
     @Test
@@ -369,13 +375,87 @@ class TaskOverviewViewModelTest {
 
             // when
             val viewModel = createViewModel(tasksMock, questionnaireMock)
-            viewModel.syncTasks()
+            viewModel.syncData()
 
             // then
-            val result: CaseResult? = viewModel.case.value
+            val result: CaseResult? = viewModel.viewData.value?.caseResult
             Assert.assertTrue(result != null)
-            Assert.assertTrue(result is Success)
-            Assert.assertEquals((result as Success).case, new)
+            Assert.assertTrue(result is CaseSuccess)
+            Assert.assertEquals((result as CaseSuccess).case, new)
+        }
+
+    @Test
+    fun `given questionnaire throws error, when questionnaire is synced, then pass error state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            coEvery { questionnaireMock.syncQuestionnaires() } throws IllegalStateException("test")
+            every { tasksMock.getCase() } returns Case()
+            coEvery { tasksMock.fetchCase() } returns Case()
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncData()
+
+            // then
+            val result: QuestionnaireResult? = viewModel.viewData.value?.questionnaireResult
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is QuestionnaireError)
+        }
+
+    @Test
+    fun `given questionnaire throws no error, when questionnaire is synced, then pass CaseSuccess state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            every { tasksMock.getCase() } returns Case()
+            coEvery { tasksMock.fetchCase() } returns Case()
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncData()
+
+            // then
+            val result: QuestionnaireResult? = viewModel.viewData.value?.questionnaireResult
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is QuestionnaireSuccess)
+        }
+
+    @Test
+    fun `given upload fails, when case is uploaded, then pass error state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            coEvery { tasksMock.uploadCase() } throws IllegalStateException("test")
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.uploadCurrentCase()
+
+            // then
+            val result: UploadStatus? = viewModel.uploadStatus.value
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is UploadError)
+        }
+
+    @Test
+    fun `given upload succeeds, when case is uploaded, then pass success state`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ITaskRepository>(relaxed = true)
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.uploadCurrentCase()
+
+            // then
+            val result: UploadStatus? = viewModel.uploadStatus.value
+            Assert.assertTrue(result != null)
+            Assert.assertTrue(result is UploadSuccess)
         }
 
     private fun createViewModel(

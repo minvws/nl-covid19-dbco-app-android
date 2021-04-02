@@ -42,8 +42,10 @@ import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePa
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Success
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.Error
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.ViewData
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -114,9 +116,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         contentSection.setHeader(headerSection)
 
         adapter.add(contentSection)
-
-        // Load data from backend
-        tasksViewModel.syncTasks()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -129,15 +128,13 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
-            // Don't have to refresh if the user isn't paired yet, only local data
-            if (isUserPaired()) {
-                tasksViewModel.syncTasks()
-            } else {
-                binding.swipeRefresh.isRefreshing = false
-            }
+            tasksViewModel.syncData()
+            binding.swipeRefresh.isRefreshing = true
         }
 
-        tasksViewModel.case.observe(viewLifecycleOwner, { result -> handleCaseResult(result) })
+        tasksViewModel.viewData.observe(viewLifecycleOwner, { data ->
+            handleViewData(data)
+        })
 
         adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
@@ -162,27 +159,34 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
-    private fun handleCaseResult(result: TasksOverviewViewModel.CaseResult) {
+    private fun handleViewData(data: ViewData) {
         binding.swipeRefresh.isRefreshing = false
-        when (result) {
+        val caseResult = data.caseResult
+        val questionnaireResult = data.questionnaireResult
+        var error = false
+        when (caseResult) {
             is CaseExpired -> {
                 binding.windowClosedView.visibility = View.VISIBLE
                 binding.sendButton.visibility = View.VISIBLE
                 binding.sendButton.setText(R.string.mycontacts_delete_data_button)
-                fillContentSection(result.cachedCase)
+                fillContentSection(caseResult.cachedCase)
             }
-            is Error -> {
-                showErrorDialog(getString(R.string.error_while_fetching_case), {
-                    tasksViewModel.syncTasks()
-                })
-                fillContentSection(result.cachedCase)
+            is CaseError -> {
+                error = true
+                fillContentSection(caseResult.cachedCase)
             }
-            is Success -> {
-                fillContentSection(result.case)
+            is CaseSuccess -> {
+                fillContentSection(caseResult.case)
                 if (isUserPaired()) {
-                    binding.sendButtonHolder.isVisible = result.case.canBeUploaded
+                    binding.sendButtonHolder.isVisible = caseResult.case.canBeUploaded
                 }
             }
+        }
+        if (error || questionnaireResult is QuestionnaireError) {
+            showErrorDialog(getString(R.string.generic_error_prompt_message), {
+                binding.swipeRefresh.isRefreshing = true
+                tasksViewModel.syncData()
+            })
         }
     }
 
@@ -193,7 +197,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.sendButton.setOnClickListener {
             binding.pairingContainer.isVisible = false
             if (isUserPaired()) {
-                if (tasksViewModel.case.value !is CaseExpired) {
+                if (tasksViewModel.viewData.value?.caseResult !is CaseExpired) {
                     findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
                 } else {
                     showLocalDeletionDialog()
@@ -251,7 +255,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
                     binding.sendButton.isVisible = true
-                    tasksViewModel.syncTasks()
+                    tasksViewModel.syncData()
                 }
                 is PairingResult.Error, PairingResult.Invalid -> {
                     showPairingError(
@@ -410,7 +414,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onResume() {
         super.onResume()
         clicksBlocked = false
-        tasksViewModel.syncTasks()
+        tasksViewModel.syncData()
         binding.swipeRefresh.isRefreshing = true
     }
 
@@ -420,7 +424,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
         clicksBlocked = true
 
-        if (tasksViewModel.case.value is CaseExpired) {
+        if (tasksViewModel.viewData.value?.caseResult is CaseExpired) {
             // no need to check permissions, just show the task but disabled
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
@@ -432,9 +436,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         if (tasksViewModel.getCachedQuestionnaire() == null) {
-            showErrorDialog(getString(R.string.error_questionarre_is_empty), {
-                // TODO: what?
-            })
+            showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
             return
         }
         if (ContextCompat.checkSelfPermission(
