@@ -241,10 +241,22 @@
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
     <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
     <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
+    <string name="selfbco_chronic_symptoms_worsened_title">Was er een moment na %s dat je klachten erger werden?</string>
+    <string name="selfbco_chronic_symptoms_title">Is een van deze zaken van toepassing?</string>
+    <string name="selfbco_chronic_symptoms_earlier_tested">Ik ben eerder getest (geen corona)</string>
+    <string name="selfbco_chronic_symptoms_always_symptoms">Ik heb deze klachten altijd</string>
+    <string name="selfbco_chronic_symptoms_all">Beide</string>
+    <string name="selfbco_chronic_symptoms_next">Nee, volgende</string>
     <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
     <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
     <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
     <string name="selfbco_date_covid_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
+    <string name="selfbco_date_symptoms_positive_test_title">Wanneer was de test waaruit bleek dat je corona hebt?</string>
+    <string name="selfbco_date_symptoms_positive_test_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
+    <string name="selfbco_date_symptoms_increased_title">Wanneer namen je klachten toe?</string>
+    <string name="selfbco_date_symptoms_increased_summary">Kies de datum voor je (laatste) coronatest. Dit is de test waaruit bleek dat je corona hebt.</string>
+    <string name="selfbco_date_negative_covid_title">Wanneer was je laatste negatieve coronatest?</string>
+    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een test waaruit bleek dat je <b>geen</b> corona had.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
@@ -290,6 +302,7 @@
     <string name="seflco_permission_give_access">Toegang geven</string>
 
     <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>
+    <string name="selfbco_covid_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
     <string name="finalize_check_contact_header">Bijna klaar, wil je dit nog doen?</string>
     <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>

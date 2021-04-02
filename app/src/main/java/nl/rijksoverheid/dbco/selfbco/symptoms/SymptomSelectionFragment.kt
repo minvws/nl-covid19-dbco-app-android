@@ -47,14 +47,18 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val content = Section()
         val nextButton = ButtonItem(getString(R.string.next), {
             findNavController().navigate(
-                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment()
+                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                    state = SelfBcoDateCheckState.createSymptomState(requireContext())
+                )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
         }, type = ButtonType.DARK)
 
         val noSymptomButton = ButtonItem(getString(R.string.selfbco_symptoms_nosymptoms), {
             findNavController().navigate(
-                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment()
+                SymptomSelectionFragmentDirections.toSelfBcoDateCheckFragment(
+                    state = SelfBcoDateCheckState.createTestState(requireContext())
+                )
             )
             selfBcoViewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
         }, type = ButtonType.LIGHT)
