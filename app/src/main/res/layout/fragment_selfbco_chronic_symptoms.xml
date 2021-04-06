@@ -48,17 +48,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_checkdate_symptoms_title"
+                android:text="@string/selfbco_chronic_symptoms_title"
                 android:textAppearance="@style/TextAppearance.App.Headline5"
                 android:textSize="@dimen/onboarding_title_textsize" />
-
-            <TextView
-                android:id="@+id/datecheck_subtext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/selfbco_checkdate_summary"
-                android:textSize="@dimen/onboarding_subtext_textsize" />
 
             <Space
                 android:layout_width="match_parent"
@@ -66,20 +58,37 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_had_symptoms"
+                android:id="@+id/btn_earlier_tested"
                 style="@style/Widget.App.Button.Secondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_had_symptoms"
+                android:text="@string/selfbco_chronic_symptoms_earlier_tested"
+                app:iconTint="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_always_symptoms"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_chronic_symptoms_always_symptoms"
+                app:iconTint="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_both"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_chronic_symptoms_all"
                 app:iconTint="@color/primary" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/selfbco_no_symptoms" />
+                android:text="@string/selfbco_chronic_symptoms_next" />
 
         </LinearLayout>
 

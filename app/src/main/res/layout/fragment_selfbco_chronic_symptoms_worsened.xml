@@ -7,17 +7,17 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="match_parent"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:paddingBottom="16dp">
 
@@ -25,64 +25,50 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="48dp"
                 android:drawablePadding="5dp"
                 android:paddingVertical="16dp"
                 android:text="@string/previous"
                 android:textColor="@color/primary"
                 android:textSize="17sp"
-                app:drawableStartCompat="@drawable/ic_chevron_left" />
-
-            <ImageView
-                android:id="@+id/onboarding_header_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/illustration_user_calendar" />
+                app:drawableStartCompat="@drawable/ic_chevron_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/datecheck_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_checkdate_symptoms_title"
+                android:layout_marginBottom="48dp"
+                tools:text="@string/selfbco_chronic_symptoms_worsened_title"
                 android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:textSize="@dimen/onboarding_title_textsize" />
-
-            <TextView
-                android:id="@+id/datecheck_subtext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/selfbco_checkdate_summary"
-                android:textSize="@dimen/onboarding_subtext_textsize" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:textSize="@dimen/onboarding_title_textsize"
+                app:layout_constraintBottom_toTopOf="@+id/btn_yes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_had_symptoms"
+                android:id="@+id/btn_yes"
                 style="@style/Widget.App.Button.Secondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_had_symptoms"
-                app:iconTint="@color/primary" />
+                android:text="@string/yes"
+                app:iconTint="@color/primary"
+                app:layout_constraintBottom_toTopOf="@id/btn_no"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_next"
+                android:id="@+id/btn_no"
+                style="@style/Widget.App.Button.Secondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/selfbco_no_symptoms" />
+                android:text="@string/no"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        </LinearLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 </layout>

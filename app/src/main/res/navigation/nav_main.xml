@@ -184,8 +184,8 @@
         <argument
             android:name="enabled"
             android:defaultValue="true"
-            app:nullable="false"
-            app:argType="boolean" />
+            app:argType="boolean"
+            app:nullable="false" />
         <argument
             android:name="indexTask"
             app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
@@ -359,6 +359,7 @@
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckFragment"
         android:label="SelfBcoDateCheckFragment"
         tools:layout="@layout/fragment_selfbco_date_check">
+
         <action
             android:id="@+id/to_selfBcoDoubleCheckFragment"
             app:destination="@id/selfBcoDoubleCheckFragment" />
@@ -366,12 +367,58 @@
         <action
             android:id="@+id/to_selfBcoSymptomsExplanationFragment"
             app:destination="@id/selfBcoSymptomsExplanationFragment" />
+        <action
+            android:id="@+id/to_selfBcoChronicSymptomsFragment"
+            app:destination="@id/selfBcoChronicSymptomsFragment" />
+
+        <action
+            android:id="@+id/to_selfBcoChronicSymptomsWorsenedFragment"
+            app:destination="@id/selfBcoChronicSymptomsWorsenedFragment" />
+
+        <action
+            android:id="@+id/to_selfBcoPermissionFragment"
+            app:destination="@id/selfBcoPermissionFragment"/>
+
+        <argument
+            android:name="state"
+            app:argType="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState"
+            app:nullable="false" />
     </fragment>
     <fragment
         android:id="@+id/selfBcoSymptomsExplanationFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoSymptomsExplanationFragment"
         android:label="SelfBcoSymptomsExplanationFragment"
         tools:layout="@layout/fragment_selfbco_symptoms_explanation" />
+    <fragment
+        android:id="@+id/selfBcoChronicSymptomsFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoChronicSymptomsFragment"
+        android:label="SelfBcoChronicSymptomsFragment"
+        tools:layout="@layout/fragment_selfbco_chronic_symptoms">
+
+        <action
+            android:id="@+id/to_selfBcoDoubleCheckFragment"
+            app:destination="@id/selfBcoDoubleCheckFragment" />
+
+        <action
+            android:id="@+id/to_selfBcoDateCheckFragment"
+            app:destination="@id/selfBcoDateCheckFragment" />
+
+        <action
+            android:id="@+id/to_selfBcoChronicSymptomsWorsenedFragment"
+            app:destination="@id/selfBcoChronicSymptomsWorsenedFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/selfBcoChronicSymptomsWorsenedFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoChronicSymptomsWorsenedFragment"
+        android:label="SelfBcoChronicSymptomsWorsenedFragment"
+        tools:layout="@layout/fragment_selfbco_chronic_symptoms_worsened" >
+
+        <action
+            android:id="@+id/to_selfBcoDateCheckFragment"
+            app:destination="@id/selfBcoDateCheckFragment" />
+
+    </fragment>
     <fragment
         android:id="@+id/selfBcoPermissionExplanationFragment"
         android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionExplanationFragment"
