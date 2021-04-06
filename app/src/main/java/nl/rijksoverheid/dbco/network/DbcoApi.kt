@@ -28,28 +28,28 @@ import retrofit2.http.*
 
 interface DbcoApi {
 
-    @GET("v1/questionnaires")
+    @GET("v2/questionnaires")
     @Streaming
     suspend fun getQuestionnaires(): QuestionnairyResponse
 
-    @GET("v1/cases/{token}")
+    @GET("v2/cases/{token}")
     @Streaming
     suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
 
-    @PUT("v1/cases/{token}")
+    @PUT("v2/cases/{token}")
     suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody): Response<Unit>
 
-    @POST("v1/pairings")
+    @POST("v2/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse
 
-    @GET("v1/config")
+    @GET("v2/config")
     @Streaming
     suspend fun getAppConfig(): Response<AppConfig>
 
-    @POST("v1/pairingrequests")
+    @POST("v2/pairingrequests")
     suspend fun retrievePairingCode() : Response<ReversePairingResponse>
 
-    @GET("v1/pairingrequests/{token}")
+    @GET("v2/pairingrequests/{token}")
     suspend fun checkReversePairingStatus(@Path("token") token: String) : Response<ReversePairingStatusResponse>
 
 
