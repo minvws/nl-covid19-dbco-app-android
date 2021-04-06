@@ -68,7 +68,11 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                     binding.nextButton.hideKeyboard()
                     binding.nextButton.postDelayed({
                         findNavController()
-                            .navigate(FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment())
+                            .navigate(
+                                FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment(
+                                    canGoBack = false
+                                )
+                            )
                     }, KEYBOARD_DELAY)
                 }
                 is Invalid -> {
@@ -102,7 +106,11 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
             // Update placeholder
             if (text.length >= 0) {
                 if (text.length <= PLACEHOLDER.length) {
-                    binding.codePlaceholder.text = String.format("%s%s", text, PLACEHOLDER.subSequence(text.length, PLACEHOLDER.length))
+                    binding.codePlaceholder.text = String.format(
+                        "%s%s",
+                        text,
+                        PLACEHOLDER.subSequence(text.length, PLACEHOLDER.length)
+                    )
                 } else {
                     binding.codePlaceholder.text = text
                 }

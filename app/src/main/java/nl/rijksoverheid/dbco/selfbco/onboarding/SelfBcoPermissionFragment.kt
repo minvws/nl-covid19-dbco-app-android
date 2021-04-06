@@ -27,7 +27,6 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
-import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
@@ -39,7 +38,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                    SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
                 )
             }
         }

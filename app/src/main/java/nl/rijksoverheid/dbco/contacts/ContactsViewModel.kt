@@ -9,22 +9,20 @@
 package nl.rijksoverheid.dbco.contacts
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
+import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 
 class ContactsViewModel(private val repository: ContactsRepository) : ViewModel() {
 
-    private val _localContactsLiveData = MutableLiveData<ArrayList<LocalContact>>()
+    private val _localContactsLiveData = SingleLiveEvent<ArrayList<LocalContact>>()
     val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
-
-    private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList<LocalContact>()
-
+    private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList()
 
     fun fetchLocalContacts() {
         viewModelScope.launch {
@@ -51,10 +49,8 @@ class ContactsViewModel(private val repository: ContactsRepository) : ViewModel(
 
 
     fun getLocalContactNames(): ArrayList<String> {
-        return fullLocalContactItems.map{
+        return fullLocalContactItems.map {
             it.getDisplayName()
         } as ArrayList<String>
     }
-
-
 }
