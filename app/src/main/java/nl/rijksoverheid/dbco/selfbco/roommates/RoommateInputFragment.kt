@@ -192,7 +192,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         data class Roommate(
             val name: String,
             val uuid: String?
-        )
+        ) : Serializable
 
         companion object {
             private const val STATE_KEY = "RoommateInputFragment_State"

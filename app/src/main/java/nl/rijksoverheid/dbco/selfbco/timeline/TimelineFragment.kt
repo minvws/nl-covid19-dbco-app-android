@@ -360,7 +360,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             val name: String,
             val uuid: String?,
             val date: String
-        )
+        ) : Serializable
 
         companion object {
             private const val STATE_KEY = "TimelineFragment_State"
