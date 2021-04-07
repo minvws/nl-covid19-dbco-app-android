@@ -14,8 +14,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.Group
@@ -31,23 +31,22 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
+import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
+import nl.rijksoverheid.dbco.selfbco.roommates.RoommateInputFragment
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.Days
 import org.joda.time.LocalDate
+import java.io.Serializable
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
+    private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
-    private val contactsViewModel by viewModels<ContactsViewModel>()
+    private val contactsViewModel: ContactsViewModel by viewModels()
 
     val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -62,10 +61,58 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
         adapter.clear()
+        sections.clear()
+        contactNames.clear()
         val content = Section()
 
         firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
 
+        val state: State = State.fromBundle(savedInstanceState) ?: State(
+            selfBcoViewModel.getTimelineContacts().map {
+                State.Contact(
+                    name = it.label!!,
+                    uuid = it.uuid,
+                    date = it.dateOfLastExposure!!
+                )
+            }
+        )
+
+        initToolbar()
+        initContent(content)
+
+        // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            contactsViewModel.fetchLocalContacts()
+        } else {
+            // If no contacts can be found no sections are made (no callback), so we add them manually
+            createTimelineSections(content, state.contacts)
+        }
+
+        contactsViewModel.localContactsLiveDataItem.observe(
+            viewLifecycleOwner, {
+                contactNames = contactsViewModel.getLocalContactNames()
+                createTimelineSections(content, state.contacts)
+            }
+        )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        getState().addToBundle(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun initToolbar() {
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+            it.hideKeyboard()
+        }
+    }
+
+    private fun initContent(content: Section) {
         content.addAll(
             listOf(
                 createHeader(),
@@ -87,30 +134,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         )
 
         setFooterForContent(content)
-
-        // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            contactsViewModel.fetchLocalContacts()
-        } else {
-            // If no contacts can be found no sections are made (no callback), so we add them manually
-            createTimelineSections(content)
-        }
-
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-            it.hideKeyboard()
-        }
-
-        contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner, {
-                contactNames = contactsViewModel.getLocalContactNames()
-                createTimelineSections(content)
-            }
-        )
     }
 
     private fun createHeader(): StringHeaderItem {
@@ -132,11 +155,10 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
 
-        val section = TimelineSection(
-            firstDayInTimeLine,
-            contactNames.toTypedArray(),
-            newSymptomOnsetDate,
-            selfBcoViewModel.getTypeOfFlow()
+        val section = createTimelineSection(
+            date = firstDayInTimeLine,
+            startDate = newSymptomOnsetDate,
+            flowType = selfBcoViewModel.getTypeOfFlow()
         )
         for (existingSection in sections) {
             existingSection.refreshHeader(newSymptomOnsetDate)
@@ -148,18 +170,29 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         binding.content.smoothScrollToPosition(adapter.itemCount)
     }
 
-    fun createTimelineSections(content: Section) {
+    private fun createTimelineSections(content: Section, contacts: List<State.Contact>) {
         val days = Days.daysBetween(firstDayInTimeLine, LocalDate.now())
         var memoryItemAdded = false
         var daysAdded = 0
         for (i in days.days downTo 0) {
             daysAdded++
-            val section = TimelineSection(
-                date = firstDayInTimeLine.plusDays(i),
-                contactNames = contactNames.toTypedArray(),
+            val date = firstDayInTimeLine.plusDays(i)
+            val section = createTimelineSection(
+                date = date,
                 startDate = selfBcoViewModel.getStartDate(),
                 flowType = selfBcoViewModel.getTypeOfFlow()
             )
+
+            val contactsForSection = contacts.filter {
+                it.date == date.toString(DateFormats.dateInputData)
+            }
+            for (contact in contactsForSection) {
+                section.addContactToTimeline(
+                    name = contact.name,
+                    uuid = contact.uuid,
+                    focusOnBind = false
+                )
+            }
             sections.add(section)
             content.add(section)
             // Add tip after 4 days, or at the end if there are less than 4
@@ -171,6 +204,25 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         if (!memoryItemAdded) {
             // Add memory tip after original timeline items
             content.add(MemoryTipGrayItem())
+        }
+    }
+
+    private fun createTimelineSection(
+        date: LocalDate,
+        startDate: LocalDate,
+        flowType: Int
+    ): TimelineSection {
+        return TimelineSection(
+            date = date,
+            contactNames = contactNames.toTypedArray(),
+            startDate = startDate,
+            flowType = flowType
+        ) { uuid ->
+            uuid?.let {
+                // when a contact already has an uuid it means that it was already added
+                // to the case before so it needs to be removed
+                selfBcoViewModel.removeContact(it)
+            }
         }
     }
 
@@ -210,6 +262,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     private fun onMoreInfoClicked() {
+        saveInput()
         findNavController().navigate(
             TimelineFragmentDirections.toSelfBcoPermissionExplanationFragment()
         )
@@ -219,56 +272,102 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         var filledInAll = true
         val dates = ArrayList<String>()
         sections.forEach {
-            if (it.items.size == 0) {
+            if (it.getContactItems().isEmpty()) {
                 dates.add(it.date.toString(DateFormats.selfBcoDateCheck))
                 filledInAll = false
             }
         }
-
         if (!filledInAll) {
-
-            val builder = MaterialAlertDialogBuilder(requireContext())
-            builder.setTitle(getString(R.string.selfbco_timeline_error_header))
-            builder.setCancelable(false)
-            builder.setMessage(
-                String.format(
-                    getString(R.string.selfbco_timeline_error_message),
-                    dates.asReversed().joinToString()
-                )
-            )
-            builder.setPositiveButton(
-                getString(R.string.str_continue)
-            ) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                handleInput()
-
-            }
-            builder.setNegativeButton(R.string.back) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            val alert: AlertDialog = builder.create()
-            alert.show()
+            showEmptySectionsWarning(dates)
         } else {
             handleInput()
         }
     }
 
-    private fun handleInput() {
-        sections.forEach { section ->
-            section.items.forEach { contact ->
-                selfBcoViewModel.addContact(
-                    contact.contactName,
-                    section.date.toString(DateFormats.dateInputData),
-                    category = null
-                )
-            }
-        }
+    private fun showEmptySectionsWarning(dates: List<String>) {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.selfbco_timeline_error_header))
+        builder.setCancelable(false)
+        builder.setMessage(
+            String.format(
+                getString(R.string.selfbco_timeline_error_message),
+                dates.asReversed().joinToString()
+            )
+        )
+        builder.setPositiveButton(
+            getString(R.string.str_continue)
+        ) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            handleInput()
 
+        }
+        builder.setNegativeButton(R.string.back) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+        val alert: AlertDialog = builder.create()
+        alert.show()
+    }
+
+    private fun handleInput() {
+        markOnboardingAsComplete()
+        saveInput()
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
+    }
+
+    private fun markOnboardingAsComplete() {
         LocalStorageRepository.getInstance(requireContext())
             .getSharedPreferences()
             .edit()
             .putBoolean(Constants.USER_COMPLETED_ONBOARDING, true)
             .apply()
+    }
+
+    private fun saveInput() {
+        getState().contacts.forEach { contact ->
+            selfBcoViewModel.addContact(
+                contact.name,
+                contact.date,
+                category = null
+            )
+        }
+    }
+
+    private fun getState(): State {
+        val contacts = mutableListOf<State.Contact>()
+        sections.forEach { section ->
+            for (contact in section.getContactItems()) {
+                contacts.add(
+                    State.Contact(
+                        contact.contactName,
+                        contact.contactUuid,
+                        section.date.toString(DateFormats.dateInputData),
+                    )
+                )
+            }
+        }
+        return State(contacts)
+    }
+
+    private data class State(
+        val contacts: List<Contact>
+    ) : Serializable {
+
+        fun addToBundle(bundle: Bundle) {
+            bundle.putSerializable(STATE_KEY, this)
+        }
+
+        data class Contact(
+            val name: String,
+            val uuid: String?,
+            val date: String
+        )
+
+        companion object {
+            private const val STATE_KEY = "TimelineFragment_State"
+
+            fun fromBundle(bundle: Bundle?): State? {
+                return bundle?.getSerializable(STATE_KEY) as? State
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ import nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment
 
 class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 
-    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
+    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

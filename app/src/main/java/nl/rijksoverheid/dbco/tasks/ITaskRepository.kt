@@ -22,7 +22,7 @@ interface ITaskRepository {
         shouldMerge: (Task) -> Boolean,
         shouldUpdate: (Task) -> Boolean
     )
-    fun getContactsByCategory(category: Category): List<Task>
+    fun getContactsByCategory(category: Category?): List<Task>
     fun deleteTask(uuid: String)
     fun getCase(): Case
     suspend fun uploadCase()

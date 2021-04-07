@@ -26,8 +26,10 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
 @ExperimentalSerializationApi
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
-    private val viewModel by viewModels<PairingViewModel>()
+    private val viewModel: PairingViewModel by viewModels()
+
     private lateinit var binding: FragmentFillCodeBinding
+
     private var progressDialog: AlertDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

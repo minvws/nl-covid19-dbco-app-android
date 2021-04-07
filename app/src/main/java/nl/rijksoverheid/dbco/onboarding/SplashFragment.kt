@@ -22,8 +22,9 @@ import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation
 
 class SplashFragment : BaseFragment(R.layout.fragment_splash) {
 
-    private val viewModel by viewModels<SplashViewModel>()
-    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
+    private val viewModel: SplashViewModel by viewModels()
+
+    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

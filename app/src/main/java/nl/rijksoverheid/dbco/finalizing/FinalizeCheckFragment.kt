@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.finalizing
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -28,11 +28,8 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
-    private val tasksViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksOverviewViewModel::class.java
-        )
-    }
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
+
     private val contentSection = Section()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -29,9 +29,13 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
+
     private val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val args: ContactPickerSelectionFragmentArgs by navArgs()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
+
+    private val contactsViewModel: ContactsViewModel by viewModels()
+
     private var selectedTask: Task? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

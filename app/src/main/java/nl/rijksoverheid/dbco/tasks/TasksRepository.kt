@@ -153,7 +153,7 @@ class TasksRepository(
         persistCase(new)
     }
 
-    override fun getContactsByCategory(category: Category): List<Task> {
+    override fun getContactsByCategory(category: Category?): List<Task> {
         return _case.tasks.filter { task ->
             task.category == category && task.taskType == TaskType.Contact
         }

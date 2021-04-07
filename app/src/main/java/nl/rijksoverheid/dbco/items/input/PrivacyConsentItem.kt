@@ -8,16 +8,19 @@
 
 package nl.rijksoverheid.dbco.items.input
 
-import android.widget.CheckBox
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemPrivacyConsentBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 
-class PrivacyConsentItem(private val viewModel : OnboardingConsentViewModel)  : BaseBindableItem<ItemPrivacyConsentBinding>() {
+class PrivacyConsentItem(
+    private val isChecked: Boolean,
+    private val checkedListener: (Boolean) -> Unit
+) : BaseBindableItem<ItemPrivacyConsentBinding>() {
+
     override fun bind(viewBinding: ItemPrivacyConsentBinding, position: Int) {
-        viewBinding.termsAgree.setOnClickListener {
-            viewModel.termsAgreed.postValue((it as CheckBox).isChecked)
+        viewBinding.termsAgree.isChecked = isChecked
+        viewBinding.termsAgree.setOnCheckedChangeListener { _, isChecked ->
+            checkedListener(isChecked)
         }
     }
 
