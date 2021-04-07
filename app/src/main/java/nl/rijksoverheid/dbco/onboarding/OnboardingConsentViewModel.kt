@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.onboarding
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,22 +17,30 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
-import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
+import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
+import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
 
 @ExperimentalSerializationApi
 class OnboardingConsentViewModel(
     private val tasksRepository: ITaskRepository,
-    userRepository: IUserRepository,
+    private val userRepository: IUserRepository,
     context: Context
 ) : ViewModel() {
 
-    val isPaired = userRepository.getToken() != null ||
-            LocalStorageRepository.getInstance(context).getSharedPreferences().getBoolean(
-                Constants.USER_COMPLETED_ONBOARDING, false
+    private val storage: SharedPreferences by lazy {
+        LocalStorageRepository.getInstance(context).getSharedPreferences()
+    }
+
+    val isPaired: Boolean
+        get() {
+            return userRepository.getToken() != null || storage.getBoolean(
+                USER_COMPLETED_ONBOARDING,
+                false
             )
+        }
 
     val termsAgreed = MutableLiveData(false)
 
@@ -39,6 +48,7 @@ class OnboardingConsentViewModel(
     val navigationFlow = navigationChannel.receiveAsFlow()
 
     fun onNextClicked() {
+        storage.edit().putBoolean(USER_GAVE_CONSENT, true).apply()
         viewModelScope.launch {
             val case = tasksRepository.getCase()
             if (case.tasks.isEmpty() && isPaired && case.contagiousPeriodKnown) {

@@ -15,23 +15,34 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation
 
 class SplashFragment : BaseFragment(R.layout.fragment_splash) {
 
     private val viewModel by viewModels<SplashViewModel>()
-
     private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, {
-            if (viewModel.skipOnboarding) {
-                findNavController().navigate(SplashFragmentDirections.toMyContacts())
-            } else {
-                findNavController().navigate(SplashFragmentDirections.toOnboardingFlowSelectionFragment())
-            }
+        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+            handleNavigation(navigation)
         })
+        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, { viewModel.onConfigLoaded() })
         appLifecycleViewModel.checkForForcedAppUpdate()
+    }
+
+    private fun handleNavigation(navigation: Navigation) {
+        val direction = when (navigation) {
+            is MyTasks -> SplashFragmentDirections.toMyContacts()
+            is Consent -> SplashFragmentDirections.toOnboardingPrivacyConsentFragment(
+                canGoBack = false
+            )
+            is FlowSelection -> SplashFragmentDirections.toOnboardingFlowSelectionFragment()
+        }
+        findNavController().navigate(direction)
     }
 }

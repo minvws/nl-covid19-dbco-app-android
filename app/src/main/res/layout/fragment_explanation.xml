@@ -14,9 +14,10 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:paddingBottom="16dp">
 
@@ -24,62 +25,53 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="48dp"
                 android:drawablePadding="5dp"
                 android:paddingVertical="16dp"
                 android:text="@string/previous"
                 android:textColor="@color/primary"
                 android:textSize="17sp"
-                app:drawableStartCompat="@drawable/ic_chevron_left"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:drawableStartCompat="@drawable/ic_chevron_left" />
 
             <ImageView
                 android:id="@+id/onboarding_header_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:layout_marginBottom="24dp"
-                android:src="@drawable/illustration_general_user"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_header"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.75" />
+                android:src="@drawable/illustration_general_user" />
 
             <TextView
-                android:textAppearance="@style/TextAppearance.App.Headline5"
                 android:id="@+id/onboarding_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:textSize="@dimen/onboarding_title_textsize"
                 android:text="@string/selfbco_explanation_title"
-                app:layout_constraintBottom_toTopOf="@+id/onboarding_subtext"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textAppearance="@style/TextAppearance.App.Headline5"
+                android:textSize="@dimen/onboarding_title_textsize" />
 
             <TextView
                 android:id="@+id/onboarding_subtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:textSize="@dimen/onboarding_subtext_textsize"
                 android:text="@string/selfbco_explanation_summary"
-                app:layout_constraintBottom_toTopOf="@+id/btn_next"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textSize="@dimen/onboarding_subtext_textsize" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/next"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:text="@string/next" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 </layout>
