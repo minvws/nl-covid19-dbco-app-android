@@ -75,16 +75,13 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         binding.datePicker.maxDate = System.currentTimeMillis()
 
         binding.btnNext.setOnClickListener {
-            val selectedDate = getState()!!.date
-            if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
-                selfBcoViewModel.updateDateOfSymptomOnset(selectedDate)
-            } else {
-                selfBcoViewModel.updateDateOfTest(selectedDate)
-            }
+            val selectedDate = requireDate()
+            saveDate(selectedDate)
             handleNavigation(state.nextAction(selectedDate, LocalDate.now()))
         }
 
         binding.btnInfo.setOnClickListener {
+            saveDate(requireDate())
             findNavController().navigate(
                 SelfBcoDateCheckFragmentDirections.toSelfBcoSymptomsExplanationFragment()
             )
@@ -92,6 +89,16 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
         binding.btnInfo.isVisible = state.showExplanation
     }
+
+    private fun saveDate(date: LocalDate) {
+        if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            selfBcoViewModel.updateDateOfSymptomOnset(date)
+        } else {
+            selfBcoViewModel.updateDateOfTest(date)
+        }
+    }
+
+    private fun requireDate(): LocalDate = getState()!!.date
 
     private fun getState(): State? {
         return if (::binding.isInitialized) {
