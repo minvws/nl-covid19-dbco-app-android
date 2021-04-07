@@ -78,6 +78,8 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
                 contactNames = contactsViewModel.getLocalContactNames()
             }
         )
+
+        updateNextButton(content)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,7 +123,6 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
                 RoommateInputFragmentDirections.toTimelineExplanationFragment()
             )
         }
-        updateNextButton(content)
     }
 
     private fun updateNextButton(section: Section) {
