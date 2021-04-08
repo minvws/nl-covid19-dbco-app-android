@@ -150,7 +150,7 @@ class PairingViewModel(
 
     fun cancelPollingForChanges() = pollingJob?.cancel()
 
-    fun reversePairingStarted() = _reversePairingStatus.value != null
+    fun reversePairingStarted() = _reversePairingStatus.value is ReversePairing
 
     companion object {
         private const val POLLING_DELAY = 10_000L
