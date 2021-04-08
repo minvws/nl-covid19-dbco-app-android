@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.selfbco.timeline
 
 import android.Manifest
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -51,7 +50,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     private val contactsViewModel by viewModels<ContactsViewModel>()
 
     val adapter = GroupAdapter<GroupieViewHolder>()
-    val content = Section()
 
     private val sections = ArrayList<TimelineSection>()
     private var contactNames = ArrayList<String>()
@@ -64,6 +62,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoTimelineBinding.bind(view)
         adapter.clear()
+        val content = Section()
 
         firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
 
@@ -87,7 +86,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             )
         )
 
-        setFooterForContent()
+        setFooterForContent(content)
 
         // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
         if (ContextCompat.checkSelfPermission(
@@ -98,7 +97,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             contactsViewModel.fetchLocalContacts()
         } else {
             // If no contacts can be found no sections are made (no callback), so we add them manually
-            createTimelineSections()
+            createTimelineSections(content)
         }
 
         binding.backButton.setOnClickListener {
@@ -109,7 +108,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner, {
                 contactNames = contactsViewModel.getLocalContactNames()
-                createTimelineSections()
+                createTimelineSections(content)
             }
         )
     }
@@ -125,7 +124,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
     }
 
-    private fun addExtraDay() {
+    private fun addExtraDay(content: Section) {
 
         val newSymptomOnsetDate = selfBcoViewModel.getDateOfSymptomOnset().minusDays(1)
 
@@ -144,12 +143,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
         sections.add(section)
         content.add(section)
-        setHeaderForContent()
-        setFooterForContent()
+        setHeaderForContent(content)
+        setFooterForContent(content)
         binding.content.smoothScrollToPosition(adapter.itemCount)
     }
 
-    fun createTimelineSections() {
+    fun createTimelineSections(content: Section) {
         val days = Days.daysBetween(firstDayInTimeLine, LocalDate.now())
         var memoryItemAdded = false
         var daysAdded = 0
@@ -175,12 +174,12 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
     }
 
-    private fun setHeaderForContent() {
+    private fun setHeaderForContent(content: Section) {
         content.remove(header)
         content.add(0, createHeader())
     }
 
-    private fun setFooterForContent() {
+    private fun setFooterForContent(content: Section) {
         val groups = mutableListOf<Group>()
         if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
             groups.add(
@@ -195,7 +194,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             groups.add(
                 ButtonItem(
                     getString(R.string.selfbco_add_extra_day),
-                    { addExtraDay() },
+                    { addExtraDay(content) },
                     type = ButtonType.LIGHT
                 )
             )
@@ -266,10 +265,10 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         }
 
         findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
-        val encryptedSharedPreferences: SharedPreferences =
-            LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-        encryptedSharedPreferences.edit().putBoolean(Constants.USER_COMPLETED_ONBOARDING, true)
+        LocalStorageRepository.getInstance(requireContext())
+            .getSharedPreferences()
+            .edit()
+            .putBoolean(Constants.USER_COMPLETED_ONBOARDING, true)
             .apply()
-        encryptedSharedPreferences.edit().putBoolean(Constants.USER_LOCAL_CASE, true).apply()
     }
 }

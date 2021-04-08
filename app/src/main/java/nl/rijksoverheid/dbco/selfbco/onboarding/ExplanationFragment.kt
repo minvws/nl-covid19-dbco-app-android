@@ -40,7 +40,9 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
             if (args.flow == REGULAR_FLOW) {
                 findNavController().navigate(ExplanationFragmentDirections.toCodeFillFragment())
             } else {
-                findNavController().navigate(ExplanationFragmentDirections.toPrivacyConsentFragment())
+                findNavController().navigate(ExplanationFragmentDirections.toPrivacyConsentFragment(
+                    canGoBack = true
+                ))
             }
         }
 
