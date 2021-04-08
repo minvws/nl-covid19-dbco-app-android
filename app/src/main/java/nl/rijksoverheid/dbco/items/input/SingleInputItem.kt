@@ -22,7 +22,8 @@ import nl.rijksoverheid.dbco.util.toJsonPrimitive
 class SingleInputItem(
     val context: Context,
     question: Question,
-    private val previousAnswerValue: JsonObject? = null
+    private val previousAnswerValue: JsonObject? = null,
+    private val isEnabled: Boolean
 ) :
     BaseQuestionItem<ItemSingleInputBinding>(question) {
 
@@ -42,6 +43,7 @@ class SingleInputItem(
         viewBinding.editText.doAfterTextChanged {
             input = it.toString()
         }
+        viewBinding.editText.isEnabled = isEnabled
     }
 
     override fun isSameAs(other: Item<*>): Boolean =

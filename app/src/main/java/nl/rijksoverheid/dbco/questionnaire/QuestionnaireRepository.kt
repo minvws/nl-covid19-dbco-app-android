@@ -29,14 +29,9 @@ class QuestionnaireRepository(context: Context) : IQuestionnaireRepository {
 
     override suspend fun syncQuestionnaires() {
         if (sharedPrefs.getString(KEY_QUESTIONNAIRE, null) == null) {
-            try {
-                val cachedQuestionnaire = api.getQuestionnaires().questionnaires?.firstOrNull()
-                val questionnaireString = Defaults.json.encodeToString(cachedQuestionnaire)
-                sharedPrefs.edit().putString(KEY_QUESTIONNAIRE, questionnaireString)
-                    .apply()
-            } catch (ex: Exception) {
-                Timber.e(ex, "Error while fetching or parsing questionnaire")
-            }
+            val cachedQuestionnaire = api.getQuestionnaires().questionnaires?.firstOrNull()
+            val questionnaireString = Defaults.json.encodeToString(cachedQuestionnaire)
+            sharedPrefs.edit().putString(KEY_QUESTIONNAIRE, questionnaireString).apply()
         }
     }
 

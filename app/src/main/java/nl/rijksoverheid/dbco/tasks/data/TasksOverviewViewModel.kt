@@ -8,24 +8,27 @@
 
 package nl.rijksoverheid.dbco.tasks.data
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.util.Resource
 import nl.rijksoverheid.dbco.util.numeric
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
-import timber.log.Timber
+import org.joda.time.LocalDateTime
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
+import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 class TasksOverviewViewModel(
     private val tasksRepository: ITaskRepository,
@@ -33,38 +36,52 @@ class TasksOverviewViewModel(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
-    private val _fetchCase = MutableLiveData<Resource<Case>>()
-    val fetchCase: LiveData<Resource<Case>> = _fetchCase
+    private val _viewData = SingleLiveEvent<ViewData>()
+    val viewData: LiveData<ViewData> = _viewData
 
-    var selfBcoCase = MutableLiveData<Resource<Case?>>()
-
-    private val _windowExpired = MutableLiveData(false)
-    val windowExpired: LiveData<Boolean> = _windowExpired
+    private val _uploadStatus = SingleLiveEvent<UploadStatus>()
+    val uploadStatus: LiveData<UploadStatus> = _uploadStatus
 
     fun getCachedCase() = tasksRepository.getCase()
 
-    fun syncTasks() {
+    fun syncData() {
         viewModelScope.launch(coroutineDispatcher) {
-            try {
-                val case = tasksRepository.fetchCase()
-                _fetchCase.postValue(Resource.success(case.copy(tasks = sortTasks(case.tasks))))
-            } catch (ex: Exception) {
-                Timber.e(ex, "Error while retrieving case")
-                _fetchCase.postValue(Resource.failure(ex))
-                // Window expired
-                if (ex is SerializationException) {
-                    _windowExpired.postValue(true)
+            val caseResult = try {
+                val cachedCase = getCachedCase()
+                val now = LocalDateTime.now(DateTimeZone.UTC)
+                val expiredDate = cachedCase.windowExpiresAt?.let {
+                    LocalDateTime.parse(cachedCase.windowExpiresAt, DateFormats.expiryData)
+                } ?: now
+                if (expiredDate.isBefore(now)) {
+                    val sorted = cachedCase.copy(tasks = sortTasks(cachedCase.tasks))
+                    CaseResult.CaseExpired(sorted)
+                } else {
+                    val case = tasksRepository.fetchCase()
+                    val sorted = case.copy(tasks = sortTasks(case.tasks))
+                    CaseResult.CaseSuccess(sorted)
                 }
+            } catch (ex: Exception) {
+                CaseResult.CaseError(getCachedCase())
             }
-        }
-        viewModelScope.launch(coroutineDispatcher) {
-            questionnaireRepository.syncQuestionnaires()
+
+            val questionnaireResult = try {
+                questionnaireRepository.syncQuestionnaires()
+                QuestionnaireSuccess
+            } catch (ex: Exception) {
+                QuestionnaireError
+            }
+            _viewData.value = ViewData(caseResult, questionnaireResult)
         }
     }
 
     fun uploadCurrentCase() {
-        viewModelScope.launch {
-            tasksRepository.uploadCase()
+        viewModelScope.launch(coroutineDispatcher) {
+            try {
+                tasksRepository.uploadCase()
+                _uploadStatus.value = UploadSuccess
+            } catch (ex: Exception) {
+                _uploadStatus.value = UploadError
+            }
         }
     }
 
@@ -89,5 +106,26 @@ class TasksOverviewViewModel(
         }.thenBy {
             it.getDisplayName("")
         })
+    }
+
+    data class ViewData(val caseResult: CaseResult, val questionnaireResult: QuestionnaireResult)
+
+    sealed class CaseResult {
+
+        data class CaseSuccess(val case: Case) : CaseResult()
+        data class CaseExpired(val cachedCase: Case) : CaseResult()
+        data class CaseError(val cachedCase: Case) : CaseResult()
+    }
+
+    sealed class QuestionnaireResult {
+
+        object QuestionnaireSuccess : QuestionnaireResult()
+        object QuestionnaireError : QuestionnaireResult()
+    }
+
+    sealed class UploadStatus {
+
+        object UploadSuccess : UploadStatus()
+        object UploadError : UploadStatus()
     }
 }

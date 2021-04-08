@@ -21,13 +21,13 @@ import nl.rijksoverheid.dbco.databinding.FragmentFinalizingCheckBinding
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import timber.log.Timber
 
 class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val tasksViewModel by lazy {
         ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
             TasksOverviewViewModel::class.java
@@ -81,24 +81,23 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
             // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
             if (noPhoneOrEmailSection.groupCount <= 1) {
-                tasksViewModel.uploadCurrentCase()
-                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
+                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
             }
         }
 
         adapter.setOnItemClickListener { item, view ->
             if (item is TaskItem) {
                 findNavController().navigate(
-                    FinalizeCheckFragmentDirections.toContactDetailsInputFragment(item.task)
+                    FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
+                        indexTask = item.task,
+                        enabled = true
+                    )
                 )
             }
         }
 
         binding.sendButton.setOnClickListener {
-            tasksViewModel.uploadCurrentCase()
-            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
+            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
         }
     }
-
-
 }

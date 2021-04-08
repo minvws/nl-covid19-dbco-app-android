@@ -23,7 +23,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerializationException
 import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -39,10 +38,14 @@ import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
-import nl.rijksoverheid.dbco.util.resolve
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseSuccess
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.ViewData
 
 /**
  * Overview fragment showing selected or suggested contacts of the user
@@ -54,6 +57,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     lateinit var binding: FragmentMyContactsBinding
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val userPrefs by lazy {
         LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
     }
@@ -112,9 +116,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         contentSection.setHeader(headerSection)
 
         adapter.add(contentSection)
-
-        // Load data from backend
-        tasksViewModel.syncTasks()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,45 +128,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
-            // Don't have to refresh if the user isn't paired yet, only local data
-            if (isUserPaired()) {
-                tasksViewModel.syncTasks()
-            } else {
-                binding.swipeRefresh.isRefreshing = false
-            }
+            tasksViewModel.syncData()
+            binding.swipeRefresh.isRefreshing = true
         }
 
-        tasksViewModel.fetchCase.observe(viewLifecycleOwner, { resource ->
-            resource.resolve(onError = {
-                binding.swipeRefresh.isRefreshing = false
-                // If we get a JSON Serialization error the case window has expired
-                if (it is SerializationException) {
-                    binding.windowClosedView.visibility = View.VISIBLE
-                    binding.sendButton.visibility = View.VISIBLE
-                    binding.sendButton.setText(R.string.mycontacts_delete_data_button)
-                    // turn off click listener if window is expired
-                    adapter.setOnItemClickListener { _, _ -> {} }
-                    binding.content.isEnabled = false
-                } else {
-                    // Generic error
-                    showErrorDialog(getString(R.string.error_while_fetching_case), {
-                        tasksViewModel.syncTasks()
-                    }, it)
-                }
-                // Show cached data when error occurs
-                val cachedCase = tasksViewModel.getCachedCase()
-                fillContentSection(cachedCase)
-            }, onSuccess = { case ->
-                binding.swipeRefresh.isRefreshing = false
-                fillContentSection(case)
-
-                if (isUserPaired()) {
-                    binding.sendButtonHolder.isVisible = case.canBeUploaded
-                }
-            })
+        tasksViewModel.viewData.observe(viewLifecycleOwner, { data ->
+            handleViewData(data)
         })
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
                 checkPermissionGoToTaskDetails(item.task)
             }
@@ -188,6 +159,37 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
     }
 
+    private fun handleViewData(data: ViewData) {
+        binding.swipeRefresh.isRefreshing = false
+        val caseResult = data.caseResult
+        val questionnaireResult = data.questionnaireResult
+        var error = false
+        when (caseResult) {
+            is CaseExpired -> {
+                binding.windowClosedView.visibility = View.VISIBLE
+                binding.sendButton.visibility = View.VISIBLE
+                binding.sendButton.setText(R.string.mycontacts_delete_data_button)
+                fillContentSection(caseResult.cachedCase)
+            }
+            is CaseError -> {
+                error = true
+                fillContentSection(caseResult.cachedCase)
+            }
+            is CaseSuccess -> {
+                fillContentSection(caseResult.case)
+                if (isUserPaired()) {
+                    binding.sendButtonHolder.isVisible = caseResult.case.canBeUploaded
+                }
+            }
+        }
+        if (error || questionnaireResult is QuestionnaireError) {
+            showErrorDialog(getString(R.string.generic_error_prompt_message), {
+                binding.swipeRefresh.isRefreshing = true
+                tasksViewModel.syncData()
+            })
+        }
+    }
+
     private fun setupSendButton(
         pairingCredentials: ReversePairingCredentials? = null,
         initReversePairingWithInvalidState: Boolean = false
@@ -195,7 +197,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.sendButton.setOnClickListener {
             binding.pairingContainer.isVisible = false
             if (isUserPaired()) {
-                if (!tasksViewModel.windowExpired.value!!) {
+                if (tasksViewModel.viewData.value?.caseResult !is CaseExpired) {
                     findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
                 } else {
                     showLocalDeletionDialog()
@@ -253,7 +255,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
                     binding.sendButton.isVisible = true
-                    tasksViewModel.syncTasks()
+                    tasksViewModel.syncData()
                 }
                 is PairingResult.Error, PairingResult.Invalid -> {
                     showPairingError(
@@ -412,7 +414,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     override fun onResume() {
         super.onResume()
         clicksBlocked = false
-        tasksViewModel.syncTasks()
+        tasksViewModel.syncData()
         binding.swipeRefresh.isRefreshing = true
     }
 
@@ -421,10 +423,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             return
         }
         clicksBlocked = true
+
+        if (tasksViewModel.viewData.value?.caseResult is CaseExpired) {
+            // no need to check permissions, just show the task but disabled
+            findNavController().navigate(
+                ContactPickerPermissionFragmentDirections.toContactDetails(
+                    indexTask = task,
+                    enabled = false
+                )
+            )
+            return
+        }
+
         if (tasksViewModel.getCachedQuestionnaire() == null) {
-            showErrorDialog(getString(R.string.error_questionarre_is_empty), {
-                // TODO: what?
-            })
+            showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
             return
         }
         if (ContextCompat.checkSelfPermission(
@@ -438,7 +450,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 )
             ) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(task)
+                    ContactPickerPermissionFragmentDirections.toContactDetails(
+                        indexTask = task,
+                        enabled = true
+                    )
                 )
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
@@ -449,7 +464,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         } else {
             if (task.linkedContact != null) {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(task)
+                    MyContactsFragmentDirections.toContactDetails(
+                        indexTask = task,
+                        enabled = true
+                    )
                 )
             } else {
                 findNavController().navigate(

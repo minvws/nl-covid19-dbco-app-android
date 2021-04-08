@@ -32,10 +32,10 @@ class ContactsRepository(val context: Context) {
 
             contacts.forEach {
                 contactNumbers[it.id]?.let { numbers ->
-                    it.number = numbers[0].removeWhiteSpace()
+                    it.numbers = numbers.map { number -> number.removeWhiteSpace() }.toSet()
                 }
                 contactEmails[it.id]?.let { emails ->
-                    it.email = emails[0]
+                    it.emails = emails.toSet()
                 }
             }
 

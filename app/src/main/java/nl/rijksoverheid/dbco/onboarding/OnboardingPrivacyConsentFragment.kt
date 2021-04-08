@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -34,6 +35,8 @@ import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.Ad
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
 
     private val viewModel by viewModels<OnboardingConsentViewModel>()
+
+    private val args: OnboardingPrivacyConsentFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,6 +69,12 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         binding.btnNext.setOnClickListener { viewModel.onNextClicked() }
 
         binding.backButton.setOnClickListener { findNavController().popBackStack() }
+
+        binding.backButton.visibility = if (args.canGoBack) {
+            View.VISIBLE
+        } else {
+            View.INVISIBLE
+        }
 
         viewModel.navigationFlow
             .onEach {

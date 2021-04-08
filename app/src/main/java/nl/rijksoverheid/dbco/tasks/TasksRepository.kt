@@ -144,7 +144,10 @@ class TasksRepository(
             }
         }
         if (!found) {
-            tasks.add(task)
+            tasks.add(task.apply {
+                canBeUploaded = true
+            })
+            canCaseBeUploaded = true
         }
         val new = old.copy(tasks = tasks, canBeUploaded = canCaseBeUploaded)
         persistCase(new)

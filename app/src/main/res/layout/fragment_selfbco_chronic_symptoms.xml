@@ -33,7 +33,7 @@
                 android:textSize="17sp"
                 app:drawableStartCompat="@drawable/ic_chevron_left" />
 
-            <nl.rijksoverheid.dbco.util.AccessibleImageView
+            <ImageView
                 android:id="@+id/onboarding_header_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,24 +41,16 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="fitCenter"
-                android:src="@drawable/illustration_general_user" />
+                android:src="@drawable/illustration_user_calendar" />
 
             <TextView
-                android:id="@+id/onboarding_header"
+                android:id="@+id/datecheck_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_explanation_title"
+                android:text="@string/selfbco_chronic_symptoms_title"
                 android:textAppearance="@style/TextAppearance.App.Headline5"
                 android:textSize="@dimen/onboarding_title_textsize" />
-
-            <TextView
-                android:id="@+id/onboarding_subtext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/selfbco_explanation_summary"
-                android:textSize="@dimen/onboarding_subtext_textsize" />
 
             <Space
                 android:layout_width="match_parent"
@@ -66,12 +58,40 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_earlier_tested"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_chronic_symptoms_earlier_tested"
+                app:iconTint="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_always_symptoms"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_chronic_symptoms_always_symptoms"
+                app:iconTint="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_both"
+                style="@style/Widget.App.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/selfbco_chronic_symptoms_all"
+                app:iconTint="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/next" />
+                android:text="@string/selfbco_chronic_symptoms_next" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
 </layout>

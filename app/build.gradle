@@ -62,7 +62,6 @@ android {
     productFlavors {
         localDev {
             dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
@@ -75,7 +74,6 @@ android {
 
         dbcoTest {
             dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
@@ -89,7 +87,6 @@ android {
 
         dbcoAcc {
             dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
@@ -104,7 +101,6 @@ android {
 
         dbcoProd {
             dimension "environment"
-            buildConfigField "boolean", "USER_TEST", "false"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
@@ -183,7 +179,7 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
     testImplementation "androidx.arch.core:core-testing:$androidx_lifecycle_testing_version"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitokotlin_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
 
     androidTestImplementation "androidx.test.ext:junit:$androidx_test_ext_junit_version"
     androidTestImplementation("androidx.test:runner:1.3.0")

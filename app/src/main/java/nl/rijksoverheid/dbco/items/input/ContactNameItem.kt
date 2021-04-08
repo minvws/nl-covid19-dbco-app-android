@@ -19,6 +19,7 @@ class ContactNameItem(
     private var firstName: String?,
     private var lastName: String?,
     question: Question?,
+    private val isEnabled: Boolean,
     private val changeListener: (String?, String?) -> Unit
 ) : BaseQuestionItem<ItemContactNameBinding>(question) {
 
@@ -41,6 +42,9 @@ class ContactNameItem(
             lastName = it.toString()
             changeListener.invoke(firstName, lastName)
         }
+
+        viewBinding.firstName.isEnabled = isEnabled
+        viewBinding.lastName.isEnabled = isEnabled
     }
 
     override fun getUserAnswers(): Map<String, JsonElement> {

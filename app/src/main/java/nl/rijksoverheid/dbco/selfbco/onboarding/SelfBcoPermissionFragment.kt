@@ -25,26 +25,20 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
-import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
-import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permission) {
 
-    private val userPrefs by lazy {
-        LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-    }
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                    SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
                 )
             }
         }
@@ -95,10 +89,6 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
         }
 
         binding.btnManual.setOnClickListener {
-            userPrefs.edit()?.putBoolean(
-                Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
-                true
-            )?.apply()
             findNavController().navigate(
                 SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
             )

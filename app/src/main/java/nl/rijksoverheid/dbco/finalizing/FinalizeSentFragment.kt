@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.finalizing
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -25,5 +26,13 @@ class FinalizeSentFragment : BaseFragment(R.layout.fragment_finalizing_sent) {
         binding.btnNext.setOnClickListener {
             findNavController().navigate(FinalizeSentFragmentDirections.toMyContactsFragment())
         }
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(FinalizeSentFragmentDirections.toMyContactsFragment())
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 }

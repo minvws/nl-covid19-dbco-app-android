@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.contacts.details
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -65,12 +66,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         viewModel.init(args.indexTask)
         initToolbar()
         initContent()
-        initItemStorage()
+        initItemStorage(args.enabled)
 
         viewModel.category.observe(viewLifecycleOwner, { cat -> onCategoryChanged(cat) })
         viewModel.communicationType.observe(viewLifecycleOwner, { onTypeChanged() })
         viewModel.hasEmailOrPhone.observe(viewLifecycleOwner, { onHasEmailOrPhoneChanged() })
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, { onLastExposureChanged() })
+        viewModel.name.observe(viewLifecycleOwner, { onNameChanged() })
+
+        if (!args.enabled) {
+            showDisabledDialog()
+        }
     }
 
     private fun initToolbar() {
@@ -79,7 +85,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         binding.toolbar.title = contactName
         binding.toolbar.setNavigationOnClickListener { checkUnsavedChanges() }
 
-        if (viewModel.task.isLocalAndSaved()) {
+        if (viewModel.task.isLocalAndSaved() && args.enabled) {
             binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
             binding.toolbar.setOnMenuItemClickListener {
                 if (it.itemId == R.id.delete_contact_item) {
@@ -105,8 +111,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         updateButton()
     }
 
-    private fun initItemStorage() {
+    private fun initItemStorage(enabled: Boolean) {
         itemsStorage = TaskDetailItemsStorage(
+            enabled,
             viewModel,
             requireContext(),
             viewLifecycleOwner,
@@ -118,10 +125,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 contactDetailsSection.setSectionNumber(1)
                 informSection.setSectionNumber(2)
             }
+
             adapter.add(contactDetailsSection)
             adapter.add(informSection)
 
             classificationSection.removeAllChildren()
+            classificationSection.add(dateOfLastExposureItem)
             val questions = viewModel.questionnaire?.questions?.filterNotNull() ?: emptyList()
             questions.forEach { question ->
                 if (question.group == Group.Classification) {
@@ -132,9 +141,18 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun onLastExposureChanged() {
-        checkIfContactDetailsSectionComplete()
         itemsStorage.refreshInformSection()
         updateButton()
+    }
+
+    private fun onNameChanged() {
+        // This value can be broadcast again while the app is scrolling due to views re-binding.
+        // If this happens, the app can crash due to the RV not accepting changes during layout computes
+        // Adding this check makes sure the section is only refreshed when the user is actively filling
+        // in their data rather than during a scroll.
+        if (!binding.content.isComputingLayout) {
+            itemsStorage.refreshInformSection()
+        }
     }
 
     /**
@@ -150,20 +168,21 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         val noRisk = category == NO_RISK
         val noExposure = dateOfLastExposure == ANSWER_EARLIER
 
-        val shouldClose = (noExposure || noRisk) && task.isLocalAndSaved()
+        val shouldClose = !args.enabled
+        val shouldCloseWithWarning = (noExposure || noRisk) && task.isLocalAndSaved()
         val shouldCancel = category == null
         val shouldCancelWithWarning = ((noExposure || noRisk) && task.isLocalAndNotSaved())
 
         with(binding.saveButton) {
             text = when {
-                shouldClose -> getString(R.string.close)
+                shouldClose || shouldCloseWithWarning -> getString(R.string.close)
                 shouldCancel || shouldCancelWithWarning -> getString(R.string.cancel)
                 else -> getString(R.string.save)
             }
             setOnClickListener {
                 when {
-                    shouldClose || shouldCancelWithWarning -> showDeleteItemDialog(noRisk = true)
-                    shouldCancel -> findNavController().popBackStack()
+                    shouldCloseWithWarning || shouldCancelWithWarning -> showDeleteItemDialog(noRisk = true)
+                    shouldCancel || shouldClose -> findNavController().popBackStack()
                     indexShouldInform() -> showDidYouInformDialog()
                     else -> saveContact()
                 }
@@ -229,7 +248,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun checkUnsavedChanges() {
-        if (hasMadeChanges()) {
+        if (args.enabled && hasMadeChanges()) {
             val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setTitle(getString(R.string.unsaved_changes_title))
             builder.setMessage(getString(R.string.unsaved_changes_message))
@@ -260,7 +279,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.setTitle(string)
         builder.setMessage(R.string.contact_inform_prompt_message)
         builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
-            viewModel.task.didInform = true
+            val date = LocalDateTime.now().toString(DateFormats.informDate)
+            viewModel.task.informedByIndexAt = date
             dialog.dismiss()
             checkIfInformSectionComplete()
             saveContact()
@@ -278,11 +298,23 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         builder.create().show()
     }
 
+    private fun showDisabledDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(R.string.contact_disabled_prompt_title)
+        builder.setMessage(R.string.contact_disabled_prompt_message)
+        builder.setPositiveButton(
+            R.string.contact_disabled_prompt_button
+        ) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+        val alert: AlertDialog = builder.create()
+        alert.show()
+    }
+
     private fun checkIfContactDetailsSectionComplete() {
         itemsStorage.contactDetailsSection.setCompleted(
             viewModel.hasEmailOrPhone.value == true &&
-                    viewModel.communicationType.value != null &&
-                    viewModel.dateOfLastExposure.value != null
+                    viewModel.communicationType.value != null
         )
     }
 

@@ -48,11 +48,13 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
                         newSymptomOnsetDate.toString(DateFormats.selfBcoDateCheck)
                     )
                 binding.datecheckSubtext.text = getString(R.string.selfbco_checkdate_summary)
+                binding.btnHadSymptoms.text = getString(R.string.selfbco_had_symptoms)
             }
 
             SelfBcoConstants.COVID_CHECK_FLOW -> {
                 binding.datecheckHeader.text = getString(R.string.selfbco_checkdate_covid_title)
                 binding.datecheckSubtext.text = getString(R.string.selfbco_checkdate_summary)
+                binding.btnHadSymptoms.text = getString(R.string.selfbco_covid_had_symptoms)
             }
         }
 
@@ -61,7 +63,9 @@ class SelfBcoDoubleCheckFragment : BaseFragment(R.layout.fragment_selfbco_double
             selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
             val symptoms = selfBcoViewModel.getSelectedSymptomsSize()
             val direction = if (symptoms > 0) {
-                SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment()
+                SelfBcoDoubleCheckFragmentDirections.toSelfBcoDateCheckFragment(
+                    state = SelfBcoDateCheckState.createSymptomState(requireContext())
+                )
             } else {
                 // select symptoms
                 SelfBcoDoubleCheckFragmentDirections.toSymptomSelectionFragment()
