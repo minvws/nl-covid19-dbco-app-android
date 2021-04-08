@@ -101,7 +101,10 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        getState().addToBundle(outState)
+        val state = getState()
+        if (state.contacts.isNotEmpty()) {
+            state.addToBundle(outState)
+        }
         super.onSaveInstanceState(outState)
     }
 
