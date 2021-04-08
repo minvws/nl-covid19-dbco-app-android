@@ -9,8 +9,8 @@
 package nl.rijksoverheid.dbco.contacts.mycontacts
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -477,15 +477,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             builder.setMessage(getString(R.string.qa_clear_data_summary))
             builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
                 dataWipeClickedAmount = 0
-
-                // Clear locally stored data & remove tokens from UserRepository
-                val encryptedSharedPreferences: SharedPreferences =
-                    LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-                encryptedSharedPreferences.edit().clear().commit()
                 dialog.dismiss()
-                // Start activity to restart the onboarding flow before killing the original activity
-                activity?.startActivity(Intent(activity, MainActivity::class.java))
-                activity?.finish()
+                wipeStorageAndRestart()
             }
             builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
                 dialog.dismiss()
@@ -500,18 +493,22 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         builder.setTitle(getString(R.string.mycontacts_delete_data_title))
         builder.setMessage(getString(R.string.mycontacts_delete_data_summary))
         builder.setPositiveButton(R.string.mycontacts_delete_data_ok) { dialog, _ ->
-            // Clear locally stored data & remove tokens from UserRepository
-            val encryptedSharedPreferences: SharedPreferences =
-                LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-            encryptedSharedPreferences.edit().clear().commit()
             dialog.dismiss()
-            // Start activity to restart the onboarding flow before killing the original activity
-            activity?.startActivity(Intent(activity, MainActivity::class.java))
-            activity?.finish()
+            wipeStorageAndRestart()
         }
         builder.setNegativeButton(R.string.mycontacts_delete_data_cancel) { dialog, _ ->
             dialog.dismiss()
         }
         builder.create().show()
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun wipeStorageAndRestart() {
+        val storage = LocalStorageRepository
+            .getInstance(requireContext())
+            .getSharedPreferences()
+        storage.edit().clear().commit()
+        requireActivity().startActivity(Intent(activity, MainActivity::class.java))
+        requireActivity().finish()
     }
 }

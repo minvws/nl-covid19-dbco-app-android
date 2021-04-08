@@ -13,6 +13,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 
 @Serializable
 data class Case(
+    val lastEdited: String? = null,
     val isUploaded: Boolean = false,
     val canBeUploaded: Boolean = false,
     val reference: String? = null,

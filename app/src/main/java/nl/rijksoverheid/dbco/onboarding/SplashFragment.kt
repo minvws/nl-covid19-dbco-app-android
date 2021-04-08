@@ -32,7 +32,9 @@ class SplashFragment : BaseFragment(R.layout.fragment_splash) {
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
             handleNavigation(navigation)
         })
-        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, { viewModel.onConfigLoaded() })
+        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, { config ->
+            viewModel.onConfigLoaded(config)
+        })
         appLifecycleViewModel.checkForForcedAppUpdate()
     }
 
