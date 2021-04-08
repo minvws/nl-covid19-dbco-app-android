@@ -11,7 +11,7 @@ package nl.rijksoverheid.dbco.finalizing
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -23,11 +23,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.Uplo
 
 class FinalizeLoadingFragment : BaseFragment(R.layout.fragment_finalizing_loading) {
 
-    private val tasksViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksOverviewViewModel::class.java
-        )
-    }
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

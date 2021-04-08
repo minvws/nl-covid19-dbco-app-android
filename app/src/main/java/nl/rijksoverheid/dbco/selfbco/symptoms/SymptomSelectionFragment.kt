@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -32,11 +32,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
+    private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

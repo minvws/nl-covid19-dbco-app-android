@@ -22,11 +22,9 @@ class TimelineSection(
     val date: LocalDate,
     private val contactNames: Array<String>,
     startDate: LocalDate,
-    private val flowType: Int
+    private val flowType: Int,
+    private val deleteListener: (String?) -> Unit
 ) : Section() {
-
-    // Track items added per section, easier than parsing section adapter manually for now
-    val items = ArrayList<ContactInputItem>()
 
     init {
         setSectionHeader(startDate, date)
@@ -37,26 +35,46 @@ class TimelineSection(
                     override fun onAddClicked(section: TimelineSection) {
                         // Add new item, add trashcan listener like we did with roommates.
                         // Same principle only on a per section base
-                        val item =
-                            ContactInputItem(
-                                focusOnBind = true,
-                                contactNames = contactNames,
-                                trashListener = object : ContactInputItem.OnTrashClickedListener {
-                                    override fun onTrashClicked(item: ContactInputItem) {
-                                        this@TimelineSection.remove(item)
-                                        items.remove(item)
-                                    }
-                                })
-                        this@TimelineSection.add(item)
-                        items.add(item)
+                        addContactToTimeline()
                     }
                 })
         )
     }
 
+    fun addContactToTimeline(
+        name: String = "",
+        uuid: String? = null,
+        focusOnBind: Boolean = true
+    ): ContactInputItem {
+        val item = ContactInputItem(
+            contactName = name,
+            contactUuid = uuid,
+            focusOnBind = focusOnBind,
+            contactNames = contactNames,
+            trashListener = object : ContactInputItem.OnTrashClickedListener {
+                override fun onTrashClicked(item: ContactInputItem) {
+                    this@TimelineSection.remove(item)
+                    deleteListener(item.contactUuid)
+                }
+            })
+        add(item)
+        return item
+    }
+
     fun refreshHeader(newStartDate: LocalDate) {
         removeHeader()
         setSectionHeader(newStartDate, date)
+    }
+
+    fun getContactItems(): List<ContactInputItem> {
+        val items = mutableListOf<ContactInputItem>()
+        for (groupIndex: Int in 0 until groupCount) {
+            val item = getItem(groupIndex)
+            if (item is ContactInputItem) {
+                items.add(item)
+            }
+        }
+        return items
     }
 
     private fun setSectionHeader(startDate: LocalDate, date: LocalDate) {

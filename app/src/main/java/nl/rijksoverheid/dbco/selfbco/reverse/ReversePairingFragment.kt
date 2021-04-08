@@ -12,7 +12,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,16 +31,9 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     lateinit var binding: FragmentSelfbcoPairingBinding
 
-    private val reversePairingViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            ReversePairingViewModel::class.java
-        )
-    }
-    private val pairingViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            PairingViewModel::class.java
-        )
-    }
+    private val reversePairingViewModel: ReversePairingViewModel by activityViewModels()
+
+    private val pairingViewModel: PairingViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

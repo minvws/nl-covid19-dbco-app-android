@@ -16,7 +16,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
@@ -64,22 +64,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private var dataWipeClickedAmount = 0
 
-    private val tasksViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksOverviewViewModel::class.java
-        )
-    }
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
 
-    private val reversePairingViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            ReversePairingViewModel::class.java
-        )
-    }
-    private val pairingViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            PairingViewModel::class.java
-        )
-    }
+    private val reversePairingViewModel: ReversePairingViewModel by activityViewModels()
+
+    private val pairingViewModel: PairingViewModel by activityViewModels()
 
     private val contentSection = Section()
     private lateinit var footerSection: Section

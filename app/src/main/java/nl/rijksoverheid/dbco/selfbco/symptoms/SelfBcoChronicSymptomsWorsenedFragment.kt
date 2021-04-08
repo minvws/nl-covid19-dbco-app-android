@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
@@ -21,11 +21,7 @@ import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 class SelfBcoChronicSymptomsWorsenedFragment :
     BaseFragment(R.layout.fragment_selfbco_chronic_symptoms_worsened) {
 
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
+    private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

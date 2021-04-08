@@ -13,8 +13,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -29,16 +29,13 @@ import nl.rijksoverheid.dbco.items.ui.ContactAddItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import java.io.Serializable
 
 class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_input) {
 
-    private val contactsViewModel by viewModels<ContactsViewModel>()
+    private val contactsViewModel: ContactsViewModel by viewModels()
 
-    private val selfBcoViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            SelfBcoCaseViewModel::class.java
-        )
-    }
+    private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -50,37 +47,21 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
 
-        val section = Section()
-        section.setHeader(
-            Section(
-                listOf(
-                    HeaderItem(R.string.selfbco_roommates_header),
-                    ParagraphItem(getString(R.string.selfbco_roommates_summary))
-                )
-            )
+        val content = Section()
+
+        val state: State = State.fromBundle(savedInstanceState) ?: State(
+            selfBcoViewModel.getRoommates().map { State.Roommate(it.label!!, it.uuid) }
         )
-        section.setFooter(ContactAddItem())
-        adapter.clear()
-        adapter.add(section)
-        binding.content.adapter = adapter
 
-        // add existing roommates to list
-        for (roommate in selfBcoViewModel.getRoommates()) {
+        initToolbar()
+        initContent(content)
+
+        for (roommate in state.roommates) {
             addContactToSection(
-                section = section,
-                contactUuid = roommate.uuid!!,
-                contactName = roommate.label!!
+                section = content,
+                contactName = roommate.name,
+                contactUuid = roommate.uuid
             )
-        }
-
-        adapter.setOnItemClickListener { item, _ ->
-            if (item is ContactAddItem) {
-                addContactToSection(
-                    section = section,
-                    withFocus = true
-                )
-            }
-            updateNextButton(section)
         }
 
         // Only check for contacts if we have the permission, otherwise we'll use the empty list instead
@@ -98,15 +79,49 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
             }
         )
 
-        updateNextButton(section)
+        updateNextButton(content)
+    }
 
-        binding.btnNext.setOnClickListener {
-            grabInput()
-            findNavController().navigate(RoommateInputFragmentDirections.toTimelineExplanationFragment())
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        getState().addToBundle(outState)
+        super.onSaveInstanceState(outState)
+    }
 
+    private fun initToolbar() {
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun initContent(content: Section) {
+        content.setHeader(
+            Section(
+                listOf(
+                    HeaderItem(R.string.selfbco_roommates_header),
+                    ParagraphItem(getString(R.string.selfbco_roommates_summary))
+                )
+            )
+        )
+        content.setFooter(ContactAddItem())
+        adapter.clear()
+        adapter.add(content)
+        binding.content.adapter = adapter
+
+        adapter.setOnItemClickListener { item, _ ->
+            if (item is ContactAddItem) {
+                addContactToSection(
+                    section = content,
+                    withFocus = true
+                )
+            }
+            updateNextButton(content)
+        }
+
+        binding.btnNext.setOnClickListener {
+            saveInput()
+            findNavController().navigate(
+                RoommateInputFragmentDirections.toTimelineExplanationFragment()
+            )
         }
     }
 
@@ -146,13 +161,44 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         )
     }
 
-    private fun grabInput() {
+    private fun saveInput() {
+        getState().roommates.forEach { roommate ->
+            if (roommate.name.isNotEmpty()) {
+                selfBcoViewModel.addContact(roommate.name, category = Category.ONE)
+            }
+        }
+    }
+
+    private fun getState(): State {
+        val list = ArrayList<State.Roommate>()
         for (groupIndex: Int in 0 until adapter.itemCount) {
             val item = adapter.getItem(groupIndex)
             if (item is ContactInputItem) {
-                if (item.contactName.isNotEmpty()) {
-                    selfBcoViewModel.addContact(item.contactName, category = Category.ONE)
-                }
+                list.add(State.Roommate(item.contactName, item.contactUuid))
+            }
+        }
+        return State(list)
+    }
+
+
+    private data class State(
+        val roommates: List<Roommate>
+    ) : Serializable {
+
+        fun addToBundle(bundle: Bundle) {
+            bundle.putSerializable(STATE_KEY, this)
+        }
+
+        data class Roommate(
+            val name: String,
+            val uuid: String?
+        ) : Serializable
+
+        companion object {
+            private const val STATE_KEY = "RoommateInputFragment_State"
+
+            fun fromBundle(bundle: Bundle?): State? {
+                return bundle?.getSerializable(STATE_KEY) as? State
             }
         }
     }

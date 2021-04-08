@@ -30,20 +30,53 @@ import nl.rijksoverheid.dbco.util.observeInLifecycle
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.Symptoms
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.AddContacts
+import java.io.Serializable
 
 @ExperimentalSerializationApi
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
 
-    private val viewModel by viewModels<OnboardingConsentViewModel>()
+    private lateinit var binding: FragmentOnboardingPrivacyBinding
+
+    private val viewModel: OnboardingConsentViewModel by viewModels()
 
     private val args: OnboardingPrivacyConsentFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentOnboardingPrivacyBinding.bind(view)
-        binding.viewmodel = viewModel
-        binding.lifecycleOwner = this
+        binding = FragmentOnboardingPrivacyBinding.bind(view)
 
+        val isChecked = State.fromBundle(savedInstanceState)?.isChecked ?: false
+
+        initToolbar()
+        initContent(isChecked)
+
+        viewModel.navigationFlow
+            .onEach {
+                val direction = when (it) {
+                    Symptoms -> OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment()
+                    AddContacts -> OnboardingPrivacyConsentFragmentDirections.toSelfBcoPermissionFragment()
+                    MyTasks -> OnboardingPrivacyConsentFragmentDirections.toMyContactsFragment()
+                }
+                findNavController().navigate(direction)
+            }
+            .observeInLifecycle(viewLifecycleOwner)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        getState()?.addToBundle(outState)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun initToolbar() {
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.backButton.visibility = if (args.canGoBack) {
+            View.VISIBLE
+        } else {
+            View.INVISIBLE
+        }
+    }
+
+    private fun initContent(isChecked: Boolean) {
         val content = Section(
             listOf(
                 HeaderItem(R.string.onboarding_privacy_title),
@@ -52,7 +85,9 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item2)),
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item3)),
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item4)),
-                PrivacyConsentItem(viewModel)
+                PrivacyConsentItem(isChecked) { checked ->
+                    binding.btnNext.isEnabled = checked
+                }
             )
         )
         val adapter = GroupAdapter<GroupieViewHolder>()
@@ -67,24 +102,29 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         )
 
         binding.btnNext.setOnClickListener { viewModel.onNextClicked() }
+        binding.btnNext.isEnabled = isChecked
+    }
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+    private fun getState(): State? {
+        return if (::binding.isInitialized) {
+            State(binding.btnNext.isEnabled)
+        } else null
+    }
 
-        binding.backButton.visibility = if (args.canGoBack) {
-            View.VISIBLE
-        } else {
-            View.INVISIBLE
+    private data class State(
+        val isChecked: Boolean
+    ) : Serializable {
+
+        fun addToBundle(bundle: Bundle) {
+            bundle.putSerializable(STATE_KEY, this)
         }
 
-        viewModel.navigationFlow
-            .onEach {
-                val direction = when (it) {
-                    Symptoms -> OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment()
-                    AddContacts -> OnboardingPrivacyConsentFragmentDirections.toSelfBcoPermissionFragment()
-                    MyTasks -> OnboardingPrivacyConsentFragmentDirections.toMyContactsFragment()
-                }
-                findNavController().navigate(direction)
+        companion object {
+            private const val STATE_KEY = "OnboardingPrivacyConsentFragment_State"
+
+            fun fromBundle(bundle: Bundle?): State? {
+                return bundle?.getSerializable(STATE_KEY) as? State
             }
-            .observeInLifecycle(viewLifecycleOwner)
+        }
     }
 }

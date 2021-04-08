@@ -35,6 +35,10 @@ class SelfBcoCaseViewModel(
 
     fun getRoommates(): List<Task> = tasksRepository.getContactsByCategory(Category.ONE)
 
+    fun getTimelineContacts(): List<Task> {
+        return tasksRepository.getContactsByCategory(category = null)
+    }
+
     fun removeContact(uuid: String) = tasksRepository.deleteTask(uuid)
 
     fun addContact(

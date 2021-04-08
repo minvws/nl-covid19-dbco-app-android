@@ -48,7 +48,7 @@ import java.util.*
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
 
-    private val viewModel by viewModels<TasksDetailViewModel>()
+    private val viewModel: TasksDetailViewModel by viewModels()
 
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
 
