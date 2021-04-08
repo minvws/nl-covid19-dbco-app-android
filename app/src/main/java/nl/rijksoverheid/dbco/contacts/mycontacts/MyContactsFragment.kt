@@ -32,14 +32,12 @@ import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.input.TextButtonItem
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseSuccess
@@ -65,8 +63,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private var dataWipeClickedAmount = 0
 
     private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
-
-    private val reversePairingViewModel: ReversePairingViewModel by activityViewModels()
 
     private val pairingViewModel: PairingViewModel by activityViewModels()
 
@@ -205,53 +201,38 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private fun setUpPairingListeners() {
-        reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
+        pairingViewModel.reversePairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
-                is ReversePairingStatus.Stopped -> {
+                is ReversePairingSuccess -> {
+                    binding.pairingContainer.isVisible = false
+                    toggleButtonStyle(isPairing = false)
+                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.isVisible = true
+                    tasksViewModel.syncData()
+                    setupSendButton()
+                }
+                is ReversePairingStopped -> {
                     toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
                     setupSendButton()
                 }
-                is ReversePairingStatus.Success -> {
-                    pairingViewModel.pair(status.code)
-                    setupSendButton()
-                }
-                is ReversePairingStatus.Error -> {
+                is ReversePairingError -> {
                     showPairingError(
                         errorText = getString(R.string.selfbco_reverse_pairing_my_contacts_error_message),
                         buttonText = getString(R.string.selfbco_reverse_pairing_error_button_text)
                     )
                     setupSendButton(pairingCredentials = status.credentials)
                 }
-                ReversePairingStatus.Expired -> {
+                ReversePairingExpired -> {
                     showPairingError(
                         errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
                         buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
                     )
                     setupSendButton(initReversePairingWithInvalidState = true)
                 }
-                is ReversePairingStatus.Pairing -> {
+                is ReversePairing -> {
                     showPairingInProgress()
                     setupSendButton(pairingCredentials = status.credentials)
-                }
-            }
-        })
-
-        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is PairingResult.Success -> {
-                    binding.pairingContainer.isVisible = false
-                    toggleButtonStyle(isPairing = false)
-                    binding.sendButton.text = getString(R.string.send_data)
-                    binding.sendButton.isVisible = true
-                    tasksViewModel.syncData()
-                }
-                is PairingResult.Error, PairingResult.Invalid -> {
-                    showPairingError(
-                        errorText = getString(R.string.selfbco_reverse_pairing_expired_code_message),
-                        buttonText = getString(R.string.selfbco_reverse_pairing_expired_code_button_text)
-                    )
-                    setupSendButton(initReversePairingWithInvalidState = true)
                 }
             }
         })
