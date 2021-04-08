@@ -15,264 +15,269 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:paddingVertical="16dp"
-                android:text="@string/previous"
-                android:textColor="@color/primary"
-                android:textSize="17sp"
-                app:drawableStartCompat="@drawable/ic_chevron_left"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/pairing_header"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/selfbco_reverse_pairing_title"
-                android:textAppearance="@style/TextAppearance.App.Headline5"
-                android:textSize="@dimen/onboarding_title_textsize"
-                app:accessibilityHeading="@{true}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/back_button" />
-
-            <TextView
-                android:id="@+id/pairing_subtext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/selfbco_reverse_pairing_subtitle"
-                android:textSize="@dimen/onboarding_subtext_textsize"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pairing_header" />
-
-            <View
-                android:layout_width="4dp"
                 android:layout_height="0dp"
-                android:background="@color/gray_lighter"
-                app:layout_constraintBottom_toTopOf="@+id/step2_header_icon"
-                app:layout_constraintEnd_toEndOf="@+id/step1_header_icon"
-                app:layout_constraintStart_toStartOf="@+id/step1_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/step1_header_icon" />
+                android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/step1_header_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_section_one"
-                app:layout_constraintBottom_toBottomOf="@+id/step1_header"
-                app:layout_constraintEnd_toStartOf="@+id/step1_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/step1_header" />
-
-            <TextView
-                android:id="@+id/step1_header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/selfbco_reverse_pairing_step_1_title"
-                android:textAppearance="@style/TextAppearance.App.Subtitle1"
-                android:textSize="@dimen/onboarding_title_textsize"
-                app:accessibilityHeading="@{true}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/step1_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/pairing_subtext" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/pairing_code_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/memorytip_background_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/step1_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/step1_header">
-
-                <LinearLayout
-                    android:id="@+id/pairing_expired_code_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center_horizontal"
-                        android:text="@string/selfbco_reverse_pairing_expired_code_message"
-                        android:textSize="17sp" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/retry_with_new_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/selfbco_reverse_pairing_expired_code_button_text"
-                        android:textColor="@color/primary"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/pairing_code"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:letterSpacing="0.4"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="324-342" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <ImageView
-                android:id="@+id/step2_header_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_section_two"
-                app:layout_constraintBottom_toBottomOf="@+id/step2_header"
-                app:layout_constraintEnd_toStartOf="@+id/step2_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/step2_header" />
-
-            <TextView
-                android:id="@+id/step2_header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/selfbco_reverse_pairing_step_2_title"
-                android:textAppearance="@style/TextAppearance.App.Subtitle1"
-                android:textSize="@dimen/onboarding_title_textsize"
-                app:accessibilityHeading="@{true}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/pairing_code_container" />
-
-            <TextView
-                android:id="@+id/step2_subtext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/selfbco_reverse_pairing_step_2_subtitle"
-                android:textSize="@dimen/onboarding_subtext_textsize"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
-                app:layout_constraintTop_toBottomOf="@id/step2_header" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/state_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/memorytip_background_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/step2_subtext"
-                app:layout_constraintBottom_toTopOf="@+id/btn_next">
-
-                <LinearLayout
-                    android:id="@+id/pairing_error_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center_horizontal"
-                        android:text="@string/selfbco_reverse_pairing_error_message"
-                        android:textSize="17sp" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/retry_pairing"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/selfbco_reverse_pairing_error_button_text"
-                        android:textColor="@color/primary"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/pairing_loading_indicator"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/state_text"
-                    app:layout_constraintEnd_toStartOf="@+id/state_text"
-                    app:layout_constraintTop_toTopOf="@+id/state_text" />
-
-                <ImageView
-                    android:id="@+id/paired_indicator"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_checkmark_round"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/state_text"
-                    app:layout_constraintEnd_toStartOf="@+id/state_text"
-                    app:layout_constraintTop_toTopOf="@+id/state_text" />
-
-                <TextView
-                    android:id="@+id/state_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="24dp"
-                    android:text="@string/selfbco_reverse_pairing_pairing"
+                    android:drawablePadding="5dp"
+                    android:paddingVertical="16dp"
+                    android:text="@string/previous"
+                    android:textColor="@color/primary"
                     android:textSize="17sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:drawableStartCompat="@drawable/ic_chevron_left"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/pairing_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/selfbco_reverse_pairing_title"
+                    android:textAppearance="@style/TextAppearance.App.Headline5"
+                    android:textSize="@dimen/onboarding_title_textsize"
+                    app:accessibilityHeading="@{true}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/back_button" />
+
+                <TextView
+                    android:id="@+id/pairing_subtext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/selfbco_reverse_pairing_subtitle"
+                    android:textSize="@dimen/onboarding_subtext_textsize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pairing_header" />
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:background="@color/gray_lighter"
+                    app:layout_constraintBottom_toTopOf="@+id/step2_header_icon"
+                    app:layout_constraintEnd_toEndOf="@+id/step1_header_icon"
+                    app:layout_constraintStart_toStartOf="@+id/step1_header_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/step1_header_icon" />
+
+                <ImageView
+                    android:id="@+id/step1_header_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_section_one"
+                    app:layout_constraintBottom_toBottomOf="@+id/step1_header"
+                    app:layout_constraintEnd_toStartOf="@+id/step1_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/step1_header" />
+
+                <TextView
+                    android:id="@+id/step1_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/selfbco_reverse_pairing_step_1_title"
+                    android:textAppearance="@style/TextAppearance.App.Subtitle1"
+                    android:textSize="@dimen/onboarding_title_textsize"
+                    app:accessibilityHeading="@{true}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/step1_header_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/pairing_subtext" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/pairing_code_container"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/memorytip_background_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/step1_header_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/step1_header">
+
+                    <LinearLayout
+                        android:id="@+id/pairing_expired_code_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:gravity="center_horizontal"
+                            android:text="@string/selfbco_reverse_pairing_expired_code_message"
+                            android:textSize="17sp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/retry_with_new_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/selfbco_reverse_pairing_expired_code_button_text"
+                            android:textColor="@color/primary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/pairing_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:letterSpacing="0.4"
+                        android:textColor="@color/black"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="324-342" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/step2_header_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_section_two"
+                    app:layout_constraintBottom_toBottomOf="@+id/step2_header"
+                    app:layout_constraintEnd_toStartOf="@+id/step2_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/step2_header" />
+
+                <TextView
+                    android:id="@+id/step2_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/selfbco_reverse_pairing_step_2_title"
+                    android:textAppearance="@style/TextAppearance.App.Subtitle1"
+                    android:textSize="@dimen/onboarding_title_textsize"
+                    app:accessibilityHeading="@{true}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/pairing_code_container" />
+
+                <TextView
+                    android:id="@+id/step2_subtext"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/selfbco_reverse_pairing_step_2_subtitle"
+                    android:textSize="@dimen/onboarding_subtext_textsize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
+                    app:layout_constraintTop_toBottomOf="@id/step2_header" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/state_container"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/memorytip_background_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/step2_subtext">
+
+                    <LinearLayout
+                        android:id="@+id/pairing_error_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:gravity="center_horizontal"
+                            android:text="@string/selfbco_reverse_pairing_error_message"
+                            android:textSize="17sp" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/retry_pairing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/selfbco_reverse_pairing_error_button_text"
+                            android:textColor="@color/primary"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pairing_loading_indicator"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/state_text"
+                        app:layout_constraintEnd_toStartOf="@+id/state_text"
+                        app:layout_constraintTop_toTopOf="@+id/state_text" />
+
+                    <ImageView
+                        android:id="@+id/paired_indicator"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_checkmark_round"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/state_text"
+                        app:layout_constraintEnd_toStartOf="@+id/state_text"
+                        app:layout_constraintTop_toTopOf="@+id/state_text" />
+
+                    <TextView
+                        android:id="@+id/state_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="24dp"
+                        android:text="@string/selfbco_reverse_pairing_pairing"
+                        android:textSize="17sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -285,8 +290,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.core.widget.NestedScrollView>
 
