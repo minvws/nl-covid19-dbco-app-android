@@ -197,10 +197,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/memorytip_background_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/step2_header_icon"
-                app:layout_constraintTop_toBottomOf="@+id/step2_subtext">
+                app:layout_constraintTop_toBottomOf="@+id/step2_subtext"
+                app:layout_constraintBottom_toTopOf="@+id/btn_next">
 
                 <LinearLayout
                     android:id="@+id/pairing_error_container"
@@ -250,6 +252,7 @@
                     android:id="@+id/paired_indicator"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_checkmark_round"
                     android:visibility="gone"
@@ -261,8 +264,8 @@
                     android:id="@+id/state_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp"
                     android:text="@string/selfbco_reverse_pairing_pairing"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"

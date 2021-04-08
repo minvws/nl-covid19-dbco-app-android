@@ -29,7 +29,7 @@
                 android:orientation="vertical"
                 android:paddingVertical="32dp">
 
-                <ImageView
+                <nl.rijksoverheid.dbco.util.AccessibleImageView
                     android:id="@+id/onboarding_header_image"
                     style="@style/LandscapeHidden"
                     android:layout_width="match_parent"
