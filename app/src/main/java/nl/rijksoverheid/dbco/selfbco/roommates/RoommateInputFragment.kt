@@ -83,7 +83,10 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        getState().addToBundle(outState)
+        val state = getState()
+        if (state.roommates.isNotEmpty()) {
+            state.addToBundle(outState)
+        }
         super.onSaveInstanceState(outState)
     }
 
