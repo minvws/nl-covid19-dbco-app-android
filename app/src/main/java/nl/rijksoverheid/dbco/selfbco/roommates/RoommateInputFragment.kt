@@ -163,9 +163,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
 
     private fun saveInput() {
         getState().roommates.forEach { roommate ->
-            if (roommate.name.isNotEmpty()) {
-                selfBcoViewModel.addContact(roommate.name, category = Category.ONE)
-            }
+            selfBcoViewModel.addContact(roommate.name, category = Category.ONE)
         }
     }
 
