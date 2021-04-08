@@ -46,19 +46,23 @@ class SelfBcoCaseViewModel(
         dateOfLastExposure: String = LocalDate.now().toString(DateFormats.dateInputData),
         category: Category?
     ) {
-        val task = Task(
-            taskType = TaskType.Contact,
-            source = Source.App,
-            category = category,
-            label = name,
-            uuid = UUID.randomUUID().toString(),
-            dateOfLastExposure = dateOfLastExposure
-        )
-        tasksRepository.saveTask(
-            task = task,
-            shouldMerge = { current -> current.label!!.contentEquals(task.label!!) },
-            shouldUpdate = { current -> task.getExposureDate().isAfter(current.getExposureDate()) }
-        )
+        if (name.isNotEmpty()) {
+            val task = Task(
+                taskType = TaskType.Contact,
+                source = Source.App,
+                category = category,
+                label = name,
+                uuid = UUID.randomUUID().toString(),
+                dateOfLastExposure = dateOfLastExposure
+            )
+            tasksRepository.saveTask(
+                task = task,
+                shouldMerge = { current -> current.label!!.contentEquals(task.label!!) },
+                shouldUpdate = { current ->
+                    task.getExposureDate().isAfter(current.getExposureDate())
+                }
+            )
+        }
     }
 
     fun getStartOfContagiousPeriod(): LocalDate {
