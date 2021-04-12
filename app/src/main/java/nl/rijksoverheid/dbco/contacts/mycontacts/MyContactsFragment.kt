@@ -29,7 +29,8 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
-import nl.rijksoverheid.dbco.items.input.TextButtonItem
+import nl.rijksoverheid.dbco.items.input.ButtonItem
+import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
@@ -93,6 +94,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                         "${BuildConfig.VERSION_CODE}-${BuildConfig.GIT_VERSION}"
                     ), clickable = true
                 )
+            )
+            add(
+                ButtonItem(getString(R.string.mycontacts_delete_data), {
+                    showLocalDeletionDialog()
+                }, type = ButtonType.DANGER)
             )
         }
 
@@ -309,9 +315,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         val bottomSection = sections.last()
 
         if (topSection.groupCount == 1) {
-            contentSection.add(TextButtonItem(getString(R.string.add_contact)) {
+            contentSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(Task.createAppContact())
-            })
+            }, type = ButtonType.BORDERLESS))
         } else {
             contentSection.add(topSection)
         }
@@ -343,9 +349,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
         if (notUploadedSection.groupCount > 1) {
-            notUploadedSection.add(TextButtonItem(getString(R.string.add_contact)) {
+            notUploadedSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(Task.createAppContact())
-            })
+            }, type = ButtonType.BORDERLESS))
         }
         return listOf(notUploadedSection, uploadedSection)
     }
@@ -374,9 +380,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             }
         }
         if (inProgressSection.groupCount > 1) {
-            inProgressSection.add(TextButtonItem(getString(R.string.add_contact)) {
+            inProgressSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(Task.createAppContact())
-            })
+            }, type = ButtonType.BORDERLESS))
         }
         return listOf(inProgressSection, doneSection)
     }

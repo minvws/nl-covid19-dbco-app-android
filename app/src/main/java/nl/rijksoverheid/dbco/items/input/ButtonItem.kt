@@ -35,18 +35,35 @@ class ButtonItem(
 
     override fun getLayout() = R.layout.item_button
 
-
     override fun bind(viewBinding: ItemButtonBinding, position: Int) {
         viewBinding.viewState = viewState
-        if (type == ButtonType.DARK) {
-            viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
-                setTextColor(context.getColor(R.color.white))
+        when (type) {
+            ButtonType.DARK -> {
+                viewBinding.button.apply {
+                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
+                    setTextColor(context.getColor(R.color.white))
+                }
             }
-        } else if (type == ButtonType.LIGHT) {
-            viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.purple))
+            ButtonType.LIGHT -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.gray_lighter)
+                    setTextColor(context.getColor(R.color.purple))
+                }
+            }
+            ButtonType.DANGER -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.white)
+                    viewBinding.button.setTextColor(context.getColor(R.color.red_danger))
+                }
+            }
+            ButtonType.BORDERLESS -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.white)
+                    setTextColor(context.getColor(R.color.purple))
+                }
             }
         }
     }
@@ -58,4 +75,4 @@ class ButtonItem(
 }
 
 @Keep
-enum class ButtonType { LIGHT, DARK }
+enum class ButtonType { LIGHT, DARK, BORDERLESS, DANGER }

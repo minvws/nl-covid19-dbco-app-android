@@ -337,4 +337,5 @@
     <string name="mycontacts_memory_sectionheader3">Zet locaties waar het moeilijk was afstand te houden ook in de app</string>
     <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
+    <string name="mycontacts_delete_data">Verwijder gegevens</string>
 </resources>
