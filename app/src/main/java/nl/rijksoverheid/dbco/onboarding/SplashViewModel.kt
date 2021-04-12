@@ -8,6 +8,7 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
@@ -16,12 +17,22 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
+import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalDateTime
 
-class SplashViewModel(private val userRepository: IUserRepository, context: Context) : ViewModel() {
+class SplashViewModel(
+    context: Context,
+    private val userRepository: IUserRepository,
+    private val tasksRepository: ITaskRepository,
+    private val appConfigRepository: AppConfigRepository
+) : ViewModel() {
 
     private val storage: SharedPreferences by lazy {
         LocalStorageRepository.getInstance(context).getSharedPreferences()
@@ -30,11 +41,20 @@ class SplashViewModel(private val userRepository: IUserRepository, context: Cont
     private val _navigation = SingleLiveEvent<Navigation>()
     val navigation: LiveData<Navigation> = _navigation
 
-    fun onConfigLoaded() {
+    fun onConfigLoaded(config: AppConfig) {
+
+        val lastEdited = tasksRepository.getLastEdited()
+        val now = LocalDateTime.now(DateTimeZone.UTC)
+
         val skipOnboarding = storage.getBoolean(USER_COMPLETED_ONBOARDING, false)
         val gaveConsent = storage.getBoolean(USER_GAVE_CONSENT, false)
         val isPaired = userRepository.getToken() != null
-        if (skipOnboarding) {
+
+        if (lastEdited.isBefore(now.minusDays(TWO_WEEKS))) {
+            wipeStorage()
+            appConfigRepository.setConfig(config)
+            _navigation.value = FlowSelection
+        } else if (skipOnboarding) {
             _navigation.value = MyTasks
         } else if (isPaired && !gaveConsent) {
             _navigation.value = Consent
@@ -43,6 +63,14 @@ class SplashViewModel(private val userRepository: IUserRepository, context: Cont
         } else {
             _navigation.value = FlowSelection
         }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun wipeStorage() = storage.edit().clear().commit()
+
+    companion object {
+
+        private const val TWO_WEEKS = 7 * 2
     }
 
     sealed class Navigation {

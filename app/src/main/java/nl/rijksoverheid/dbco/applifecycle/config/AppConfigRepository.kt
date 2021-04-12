@@ -16,8 +16,6 @@ import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.network.DbcoApi
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import kotlin.Exception
 
@@ -34,12 +32,16 @@ class AppConfigRepository(val context: Context) {
     suspend fun getAppConfig(): AppConfig {
         return try {
             val config = withContext(Dispatchers.IO) { api.getAppConfig() }.body()!!
-            val configString = Defaults.json.encodeToString(config)
-            sharedPrefs.edit().putString(KEY_CONFIG, configString).apply()
+            setConfig(config)
             config
         } catch (ex: Exception) {
             AppConfig()
         }
+    }
+
+    fun setConfig(config: AppConfig) {
+        val configString = Defaults.json.encodeToString(config)
+        sharedPrefs.edit().putString(KEY_CONFIG, configString).apply()
     }
 
     fun getUpdateMessage(): String {

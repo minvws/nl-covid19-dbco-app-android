@@ -12,6 +12,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 
 interface ITaskRepository {
 
@@ -34,6 +35,7 @@ interface ITaskRepository {
     fun addSymptom(symptom: String)
     fun removeSymptom(symptom: String)
     fun getSymptoms(): List<String>
+    fun getLastEdited(): LocalDateTime
 
     companion object {
         const val CASE_KEY = "case"

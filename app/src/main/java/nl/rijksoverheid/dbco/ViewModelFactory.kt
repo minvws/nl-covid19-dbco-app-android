@@ -33,7 +33,7 @@ class ViewModelFactory(
     private val context: Context,
     private val tasksRepository: ITaskRepository,
     private val contactsRepository: ContactsRepository,
-    private val questionnareRepository: IQuestionnaireRepository,
+    private val questionnaireRepository: IQuestionnaireRepository,
     private val userRepository: IUserRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModelProvider.Factory {
@@ -44,14 +44,19 @@ class ViewModelFactory(
             ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
             TasksOverviewViewModel::class.java -> TasksOverviewViewModel(
                 tasksRepository,
-                questionnareRepository
+                questionnaireRepository
             ) as T
             TasksDetailViewModel::class.java -> TasksDetailViewModel(
                 tasksRepository,
-                questionnareRepository
+                questionnaireRepository
             ) as T
             PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
-            SplashViewModel::class.java -> SplashViewModel(userRepository, context) as T
+            SplashViewModel::class.java -> SplashViewModel(
+                context,
+                userRepository,
+                tasksRepository,
+                appConfigRepository
+            ) as T
             AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
                 AppLifecycleManager(
                     context,

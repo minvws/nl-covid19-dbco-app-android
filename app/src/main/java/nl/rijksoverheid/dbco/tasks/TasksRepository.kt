@@ -30,7 +30,9 @@ import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import java.util.*
@@ -150,7 +152,10 @@ class TasksRepository(
             canCaseBeUploaded = true
         }
         val new = old.copy(tasks = tasks, canBeUploaded = canCaseBeUploaded)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = canCaseBeUploaded
+        )
     }
 
     override fun getContactsByCategory(category: Category?): List<Task> {
@@ -172,7 +177,10 @@ class TasksRepository(
             tasks.removeAt(indexToDelete)
         }
         val new = old.copy(tasks = tasks, canBeUploaded = true)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
     }
 
     override fun getCase(): Case = _case
@@ -230,12 +238,18 @@ class TasksRepository(
 
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
         val new = _case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
     }
 
     override fun updateTestDate(testDate: String) {
         val new = _case.copy(dateOfTest = testDate)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
     }
 
     override fun addSymptom(symptom: String) {
@@ -243,7 +257,10 @@ class TasksRepository(
         val symptoms = old.symptoms.toMutableSet()
         symptoms.add(symptom)
         val new = old.copy(symptoms = symptoms)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
     }
 
     override fun removeSymptom(symptom: String) {
@@ -251,13 +268,32 @@ class TasksRepository(
         val symptoms = _case.symptoms.toMutableSet()
         symptoms.remove(symptom)
         val new = old.copy(symptoms = symptoms)
-        persistCase(new)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
     }
 
     override fun getSymptoms(): List<String> = _case.symptoms.toList()
 
-    private fun persistCase(case: Case) {
-        val storeString = Defaults.json.encodeToString(case)
-        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, storeString).apply()
+    override fun getLastEdited(): LocalDateTime {
+        val lastEdited = _case.lastEdited
+        return if (lastEdited != null) {
+            LocalDateTime.parse(lastEdited, DateFormats.expiryData)
+        } else {
+            LocalDateTime.now(DateTimeZone.UTC)
+        }
+    }
+
+    private fun persistCase(case: Case, localChanges: Boolean = false) {
+        val new = if (localChanges) {
+            case.copy(
+                lastEdited = LocalDateTime.now(DateTimeZone.UTC).toString(DateFormats.expiryData)
+            )
+        } else {
+            case
+        }
+        val caseString = Defaults.json.encodeToString(new)
+        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, caseString).apply()
     }
 }
