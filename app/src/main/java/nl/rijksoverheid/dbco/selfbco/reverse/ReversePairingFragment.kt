@@ -45,12 +45,11 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
         binding.retryWithNewCode.setOnClickListener { pairingViewModel.startReversePairing() }
 
-        if (!pairingViewModel.reversePairingStarted()) {
-            if (args.initWithInvalidCodeState) {
-                showInvalidCode()
-            } else {
-                pairingViewModel.startReversePairing(args.credentials)
-            }
+        if (savedInstanceState != null) return
+        if (args.initWithInvalidCodeState) {
+            showInvalidCode()
+        } else {
+            pairingViewModel.startReversePairing(args.credentials)
         }
     }
 
