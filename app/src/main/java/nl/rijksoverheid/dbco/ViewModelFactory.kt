@@ -23,7 +23,6 @@ import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewModel
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
@@ -74,7 +73,6 @@ class ViewModelFactory(
                 tasksRepository,
                 appConfigRepository
             ) as T
-            ReversePairingViewModel::class.java -> ReversePairingViewModel(userRepository) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }

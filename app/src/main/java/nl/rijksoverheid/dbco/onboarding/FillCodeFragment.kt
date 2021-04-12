@@ -19,9 +19,9 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
 import nl.rijksoverheid.dbco.util.*
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Error
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Success
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult.Invalid
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingError
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingSuccess
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingInvalid
 
 @ExperimentalSerializationApi
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
@@ -62,10 +62,10 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
         }
 
         // Setup pairing logic
-        viewModel.pairingResult.observe(viewLifecycleOwner, { result ->
+        viewModel.pairingStatus.observe(viewLifecycleOwner, { result ->
             progressDialog?.dismiss()
             when (result) {
-                is Success -> {
+                is PairingSuccess -> {
                     binding.nextButton.isEnabled = true
                     binding.nextButton.hideKeyboard()
                     binding.nextButton.postDelayed({
@@ -77,14 +77,14 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                             )
                     }, KEYBOARD_DELAY)
                 }
-                is Invalid -> {
+                is PairingInvalid -> {
                     binding.inputErrorView.setText(R.string.fill_code_invalid)
                     binding.inputErrorView.accessibilityAnnouncement(R.string.fill_code_invalid)
                     binding.inputErrorView.visibility = View.VISIBLE
                     binding.scrollView.scrollTo(binding.inputErrorView)
                     binding.nextButton.isEnabled = true
                 }
-                is Error -> {
+                is PairingError -> {
                     binding.inputErrorView.setText(R.string.error_while_pairing)
                     showErrorDialog(getString(R.string.error_while_pairing), {
                         binding.codeEntry.requestFocus()
