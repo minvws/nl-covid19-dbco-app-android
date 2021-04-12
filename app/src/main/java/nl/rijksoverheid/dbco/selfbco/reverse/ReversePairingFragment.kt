@@ -21,8 +21,7 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
-import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingResult
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller.ReversePairingStatus
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 
 @ExperimentalSerializationApi
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
@@ -30,8 +29,6 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     private val args: ReversePairingFragmentArgs by navArgs()
 
     lateinit var binding: FragmentSelfbcoPairingBinding
-
-    private val reversePairingViewModel: ReversePairingViewModel by activityViewModels()
 
     private val pairingViewModel: PairingViewModel by activityViewModels()
 
@@ -46,12 +43,13 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
             findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
         }
 
-        binding.retryWithNewCode.setOnClickListener { reversePairingViewModel.start() }
+        binding.retryWithNewCode.setOnClickListener { pairingViewModel.startReversePairing() }
 
+        if (savedInstanceState != null) return
         if (args.initWithInvalidCodeState) {
             showInvalidCode()
         } else {
-            reversePairingViewModel.start(args.credentials)
+            pairingViewModel.startReversePairing(args.credentials)
         }
     }
 
@@ -61,7 +59,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     }
 
     private fun showPairingError(credentials: ReversePairingCredentials) {
-        binding.retryPairing.setOnClickListener { reversePairingViewModel.start(credentials) }
+        binding.retryPairing.setOnClickListener { pairingViewModel.startReversePairing(credentials) }
         binding.pairingLoadingIndicator.isVisible = false
         binding.stateText.isVisible = false
         binding.pairingErrorContainer.isVisible = true
@@ -74,7 +72,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     }
 
     private fun setUpListeners() {
-        reversePairingViewModel.pairingCode.observe(viewLifecycleOwner, { code ->
+        pairingViewModel.pairingCode.observe(viewLifecycleOwner, { code ->
             binding.pairingExpiredCodeContainer.isVisible = false
             binding.pairingCode.isVisible = true
             binding.pairingCode.text = StringBuilder(code)
@@ -82,26 +80,19 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
                 .toString()
         })
 
-        reversePairingViewModel.pairingStatus.observe(viewLifecycleOwner, { status ->
+        pairingViewModel.reversePairingStatus.observe(viewLifecycleOwner, { status ->
             when (status) {
-                is ReversePairingStatus.Success -> pairingViewModel.pair(status.code)
-                is ReversePairingStatus.Error -> showPairingError(status.credentials)
-                is ReversePairingStatus.Expired -> showInvalidCode()
-                is ReversePairingStatus.Pairing -> showPairing()
-                else -> { /* NO-OP */ }
-            }
-        })
-
-        pairingViewModel.pairingResult.observe(viewLifecycleOwner, { result ->
-            reversePairingViewModel.cancelPollingForChanges()
-            when (result) {
-                is PairingResult.Success -> {
+                is ReversePairingSuccess -> {
                     binding.pairingLoadingIndicator.isVisible = false
                     binding.pairedIndicator.isVisible = true
                     binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
                     binding.btnNext.isEnabled = true
                 }
-                is PairingResult.Error, PairingResult.Invalid -> showInvalidCode()
+                is ReversePairingError -> showPairingError(status.credentials)
+                is ReversePairingExpired -> showInvalidCode()
+                is ReversePairing -> showPairing()
+                else -> { /* NO-OP */
+                }
             }
         })
     }
@@ -112,7 +103,9 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
         }
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() { handleBackPress() }
+                override fun handleOnBackPressed() {
+                    handleBackPress()
+                }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
@@ -126,19 +119,19 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     }
 
     private fun hasUserSharedCode(): Boolean {
-        return reversePairingViewModel.userHasSharedCode.value == true
+        return pairingViewModel.userHasSharedCode.value == true
     }
 
     private fun showShareCodeDialog() {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(R.string.selfbco_reverse_pairing_share_message_title)
         builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
-            reversePairingViewModel.setUserHasSharedCode(true)
+            pairingViewModel.setUserHasSharedCode(true)
             dialog.dismiss()
             findNavController().popBackStack()
         }
         builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
-            reversePairingViewModel.cancelPairing()
+            pairingViewModel.cancelPairing()
             dialog.dismiss()
             findNavController().popBackStack()
         }

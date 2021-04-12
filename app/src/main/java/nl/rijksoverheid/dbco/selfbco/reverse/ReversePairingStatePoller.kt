@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState.COMPLETED
@@ -19,25 +20,28 @@ import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState.PEN
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 import org.joda.time.Seconds
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus
 
 class ReversePairingStatePoller(
     private val repository: IUserRepository,
     private val dispatcher: CoroutineDispatcher
 ) : Poller {
 
+    @ExperimentalSerializationApi
     override fun poll(
         delay: Long,
         credentials: ReversePairingCredentials
     ): Flow<ReversePairingStatus> {
         return channelFlow {
-            send(ReversePairingStatus.Pairing(credentials))
+            send(ReversePairing(credentials))
             var refreshDelay = delay
             while (!isClosedForSend) {
                 try {
                     val response = repository.checkReversePairingStatus(credentials.token)
                     val body = response.body()
                     if (!response.isSuccessful || body == null) {
-                        send(ReversePairingStatus.Error(credentials))
+                        send(ReversePairingError(credentials))
                     } else if (body.status == PENDING) {
                         val refresh = body.refreshDelay!!
 
@@ -45,16 +49,16 @@ class ReversePairingStatePoller(
                         val expiry = LocalDateTime.parse(body.expiresAt!!, DateFormats.pairingData)
                         val secondsLeft = Seconds.secondsBetween(now, expiry).seconds
                         if (now.isAfter(expiry) || secondsLeft <= refresh) {
-                            send(ReversePairingStatus.Expired)
+                            send(ReversePairingExpired)
                         }
                         refreshDelay = refresh * 1_000L
                     } else if (body.status == COMPLETED) {
-                        send(ReversePairingStatus.Success(body.pairingCode!!))
+                        send(ReversePairingSuccess(body.pairingCode!!))
                     }
                     delay(refreshDelay)
                 } catch (ex: Exception) {
                     if (ex !is CancellationException) {
-                        send(ReversePairingStatus.Error(credentials))
+                        send(ReversePairingError(credentials))
                     }
                 }
             }
@@ -64,13 +68,5 @@ class ReversePairingStatePoller(
     override fun close() {
         dispatcher.cancel()
         dispatcher.cancelChildren()
-    }
-
-    sealed class ReversePairingStatus {
-        data class Pairing(val credentials: ReversePairingCredentials) : ReversePairingStatus()
-        data class Success(val code: String) : ReversePairingStatus()
-        object Expired : ReversePairingStatus()
-        object Stopped : ReversePairingStatus()
-        data class Error(val credentials: ReversePairingCredentials) : ReversePairingStatus()
     }
 }
