@@ -43,7 +43,12 @@ class SelfBcoChronicSymptomsWorsenedFragment :
         binding.btnYes.setOnClickListener {
             findNavController().navigate(
                 SelfBcoChronicSymptomsWorsenedFragmentDirections.toSelfBcoDateCheckFragment(
-                    state = SelfBcoDateCheckState.createSymptomIncreasedState(requireContext())
+                    state = SelfBcoDateCheckState.createSymptomIncreasedState(
+                        context = requireContext(),
+                        date = selfBcoViewModel
+                            .getDateOfSymptomOnset()
+                            .toString(DateFormats.selfBcoDateCheck)
+                    )
                 )
             )
         }

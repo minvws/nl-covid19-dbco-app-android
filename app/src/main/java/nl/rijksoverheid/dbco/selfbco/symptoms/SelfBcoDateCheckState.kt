@@ -91,10 +91,10 @@ data class SelfBcoDateCheckState(
          * State when selecting the date symptoms started increasing with the knowledge that the index
          * has chronic symptoms
          */
-        fun createSymptomIncreasedState(context: Context): SelfBcoDateCheckState =
+        fun createSymptomIncreasedState(context: Context, date: String): SelfBcoDateCheckState =
             SelfBcoDateCheckState(
                 title = context.getString(R.string.selfbco_date_symptoms_increased_title),
-                summary = context.getString(R.string.selfbco_date_symptoms_increased_summary),
+                summary = String.format(context.getString(R.string.selfbco_date_symptoms_increased_summary), date),
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
             )
     }
