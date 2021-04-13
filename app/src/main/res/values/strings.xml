@@ -236,7 +236,7 @@
     <string name="zelfbco_have_code">Ik heb al een code</string>
     <string name="zelfbco_no_code">Ik heb nog geen code</string>
     <string name="zelfbco_zipcode_support_title">Wat zijn de eerste vier cijfers van je postcode?</string>
-    <string name="zelfbco_zipcode_support_summary">Zo kunnen we bepalen in welke GGD-regio je woont. Wat je precies in de app kunt doen, verschilt per regio</string>
+    <string name="zelfbco_zipcode_support_summary">Zo kunnen we bepalen in welke GGD-regio je woont. Wat je precies in de app kunt doen, verschilt per regio.</string>
     <string name="zelfbco_zipcode_support_placeholder">0000</string>
     <string name="selfbco_explanation_title">Bepaal wie van je contacten misschien zijn besmet en informeer hen</string>
     <string name="selfbco_explanation_supported_summary"><![CDATA[We gaan een overzicht maken van mensen die je hebt ontmoet. Goed om te weten: niet iedereen hoeft direct in quarantaine.<br/><br/>Ook kun je in jouw GGD-regio contactgegevens met de GGD delen voor het contactonderzoek.]]></string>
