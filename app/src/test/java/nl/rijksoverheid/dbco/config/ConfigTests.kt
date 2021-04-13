@@ -23,7 +23,7 @@ class ConfigTests {
     }
 
     @Test
-    fun `given a zipcode, when exist is start of range range, then return self bco supported`() {
+    fun `given a zipcode, when it is start of range range, then return self bco supported`() {
         // given
         val config = AppConfig(
             supportedZipRanges = listOf(
@@ -38,7 +38,7 @@ class ConfigTests {
     }
 
     @Test
-    fun `given a zipcode, when exist is end of range range, then return self bco supported`() {
+    fun `given a zipcode, when it is end of range, then return self bco supported`() {
         // given
         val config = AppConfig(
             supportedZipRanges = listOf(
@@ -53,7 +53,7 @@ class ConfigTests {
     }
 
     @Test
-    fun `given a zipcode, when does not exist range, then return self bco not supported`() {
+    fun `given a zipcode, when does not exist in range, then return self bco not supported`() {
         // given
         val config = AppConfig(
             supportedZipRanges = listOf(
