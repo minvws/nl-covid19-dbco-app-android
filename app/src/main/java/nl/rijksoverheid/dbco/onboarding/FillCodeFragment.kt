@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -38,13 +37,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
 
         // Setup code entry
         binding.codeEntry.callback = this
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // Only auto show keyboard in portrait because it takes up the whole screen in landscape.
-            binding.codeEntry.postDelayed({
-                binding.codeEntry.requestFocus()
-                binding.codeEntry.showKeyboard()
-            }, KEYBOARD_DELAY)
-        }
+        binding.codeEntry.showKeyboardWhenInPortrait(delay = KEYBOARD_DELAY)
 
         // Setup back button
         binding.backButton.setOnClickListener {

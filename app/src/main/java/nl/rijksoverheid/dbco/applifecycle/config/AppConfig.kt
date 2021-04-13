@@ -36,8 +36,16 @@ data class AppConfig(
         Symptom(label = "Buikpijn", value = "stomach-ache"),
         Symptom(label = "Rode prikkende ogen (oogontsteking)", value = "pink-eye"),
         Symptom(label = "Huidafwijkingen", value = "skin-condition")
+    ),
+    val supportedZipRanges: List<ZipRange> = listOf(
+        ZipRange(start = 1400, end = 1500)
     )
-)
+) {
+
+    fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
+        return supportedZipRanges.any { it.contains(zipCode) }
+    }
+}
 
 @Serializable
 data class FeatureFlags(
@@ -52,3 +60,14 @@ data class Symptom(
     val label: String,
     val value: String
 )
+
+@Serializable
+data class ZipRange(
+    val start: Int,
+    val end: Int
+) {
+
+    fun contains(zipCode: Int): Boolean {
+        return zipCode in start..end
+    }
+}

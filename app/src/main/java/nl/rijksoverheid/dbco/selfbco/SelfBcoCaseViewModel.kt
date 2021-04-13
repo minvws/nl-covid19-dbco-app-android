@@ -29,6 +29,10 @@ class SelfBcoCaseViewModel(
 
     fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
 
+    fun isZipCodeSupported(zipCode: Int): Boolean {
+        return appConfigRepository.isSelfBcoSupportedForZipCode(zipCode)
+    }
+
     fun addSymptom(symptom: String) = tasksRepository.addSymptom(symptom)
 
     fun removeSymptom(symptom: String) = tasksRepository.removeSymptom(symptom)

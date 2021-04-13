@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:text="@string/selfbco_explanation_summary"
+                android:text="@string/selfbco_explanation_supported_summary"
                 android:textSize="@dimen/onboarding_subtext_textsize" />
 
             <Space

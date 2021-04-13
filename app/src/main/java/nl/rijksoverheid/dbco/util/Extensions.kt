@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.util
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Handler
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
@@ -37,6 +38,16 @@ fun View.showKeyboard() {
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun View.showKeyboardWhenInPortrait(delay: Long = 0) {
+    if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // Only auto show keyboard in portrait because it takes up the whole screen in landscape.
+        postDelayed({
+            requestFocus()
+            showKeyboard()
+        }, delay)
+    }
 }
 
 fun View.setContentResource(stringId: Int) {
@@ -69,7 +80,8 @@ fun View.accessibilityAnnouncement(stringId: Int) {
 }
 
 fun Context.accessibilityAnnouncement(stringId: Int) {
-    val accessibilityManager = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val accessibilityManager =
+        getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
     if (accessibilityManager.isEnabled) {
         val event = AccessibilityEvent.obtain(AccessibilityEvent.TYPE_ANNOUNCEMENT)
         event.text.add(getString(stringId))
@@ -83,16 +95,16 @@ fun NestedScrollView.scrollTo(view: View, delay: Long = 0) {
     }, delay)
 }
 
-fun String.removeHtmlTags(): String{
+fun String.removeHtmlTags(): String {
     return this.replace("<br/>", "\n")
-            .replace("<b>", "")
-            .replace("</b>", "")
-            .replace("<ul>", "")
-            .replace("</ul>", "")
-            .replace("</li>", "")
-            .replace("<li>", "\n• ")
-            .replace("<a href=\"", "")
-            .replace(Regex("\">(.*)</a>"), "")
+        .replace("<b>", "")
+        .replace("</b>", "")
+        .replace("<ul>", "")
+        .replace("</ul>", "")
+        .replace("</li>", "")
+        .replace("<li>", "\n• ")
+        .replace("<a href=\"", "")
+        .replace(Regex("\">(.*)</a>"), "")
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")

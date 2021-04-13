@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentExplanationBinding
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
 
@@ -30,19 +31,32 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
             getString(R.string.selfbco_explanation_title)
         }
 
-        binding.onboardingSubtext.text = if (args.flow == REGULAR_FLOW) {
-            getString(R.string.normal_flow_explanation_summary)
-        } else {
-            getString(R.string.selfbco_explanation_summary)
+        val summary = when (args.flow) {
+            REGULAR_FLOW -> getString(R.string.normal_flow_explanation_summary)
+            SELF_BCO_FLOW_SUPPORTED_REGION -> getString(R.string.selfbco_explanation_supported_summary)
+            else -> getString(R.string.selfbco_explanation_unsupported_summary)
         }
+        binding.onboardingSubtext.text = HtmlHelper.buildSpannableFromHtml(
+            summary,
+            requireContext()
+        )
 
-        binding.btnNext.setOnClickListener {
-            if (args.flow == REGULAR_FLOW) {
-                findNavController().navigate(ExplanationFragmentDirections.toCodeFillFragment())
+        with(binding.btnNext) {
+            text = if (args.flow == SELF_BCO_FLOW_UNSUPPORTED_REGION) {
+                getString(R.string.selfbco_explanation_unsupported_button)
             } else {
-                findNavController().navigate(ExplanationFragmentDirections.toPrivacyConsentFragment(
-                    canGoBack = true
-                ))
+                getString(R.string.next)
+            }
+            setOnClickListener {
+                if (args.flow == REGULAR_FLOW) {
+                    findNavController().navigate(ExplanationFragmentDirections.toCodeFillFragment())
+                } else {
+                    findNavController().navigate(
+                        ExplanationFragmentDirections.toPrivacyConsentFragment(
+                            canGoBack = true
+                        )
+                    )
+                }
             }
         }
 
@@ -52,6 +66,7 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
     companion object {
 
         const val REGULAR_FLOW = 0
-        const val SELF_BCO_FLOW = 1
+        const val SELF_BCO_FLOW_SUPPORTED_REGION = 1
+        const val SELF_BCO_FLOW_UNSUPPORTED_REGION = 2
     }
 }
