@@ -18,6 +18,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.Defaults
+import nl.rijksoverheid.dbco.applifecycle.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -252,22 +253,9 @@ class TasksRepository(
         )
     }
 
-    override fun addSymptom(symptom: String) {
+    override fun setSymptoms(symptoms: List<Symptom>) {
         val old = _case
-        val symptoms = old.symptoms.toMutableSet()
-        symptoms.add(symptom)
-        val new = old.copy(symptoms = symptoms)
-        persistCase(
-            case = new,
-            localChanges = true
-        )
-    }
-
-    override fun removeSymptom(symptom: String) {
-        val old = _case
-        val symptoms = _case.symptoms.toMutableSet()
-        symptoms.remove(symptom)
-        val new = old.copy(symptoms = symptoms)
+        val new = old.copy(symptoms = symptoms.map { it.value }.toSet())
         persistCase(
             case = new,
             localChanges = true

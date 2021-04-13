@@ -33,9 +33,7 @@ class SelfBcoCaseViewModel(
         return appConfigRepository.isSelfBcoSupportedForZipCode(zipCode)
     }
 
-    fun addSymptom(symptom: String) = tasksRepository.addSymptom(symptom)
-
-    fun removeSymptom(symptom: String) = tasksRepository.removeSymptom(symptom)
+    fun setSelectedSymptoms(symptoms: List<Symptom>) = tasksRepository.setSymptoms(symptoms)
 
     fun getRoommates(): List<Task> = tasksRepository.getContactsByCategory(Category.ONE)
 

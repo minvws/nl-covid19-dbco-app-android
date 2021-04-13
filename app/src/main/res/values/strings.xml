@@ -245,6 +245,7 @@
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
     <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
+    <string name="selfbco_symptoms_show_more">Toon meer klachten</string>
     <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
     <string name="selfbco_chronic_symptoms_worsened_title">Was er een moment na %s dat je klachten erger werden?</string>
     <string name="selfbco_chronic_symptoms_title">Is een van deze zaken van toepassing?</string>
