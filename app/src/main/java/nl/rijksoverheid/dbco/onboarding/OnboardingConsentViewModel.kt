@@ -10,7 +10,6 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -42,8 +41,6 @@ class OnboardingConsentViewModel(
             )
         }
 
-    val termsAgreed = MutableLiveData(false)
-
     private val navigationChannel = Channel<Navigation>(Channel.BUFFERED)
     val navigationFlow = navigationChannel.receiveAsFlow()
 
@@ -51,9 +48,9 @@ class OnboardingConsentViewModel(
         storage.edit().putBoolean(USER_GAVE_CONSENT, true).apply()
         viewModelScope.launch {
             val case = tasksRepository.getCase()
-            if (case.tasks.isEmpty() && isPaired && case.contagiousPeriodKnown) {
+            if (case.tasks.isEmpty() && isPaired && case.symptomsKnown) {
                 navigationChannel.send(Navigation.AddContacts)
-            } else if (case.tasks.isEmpty() && isPaired && !case.contagiousPeriodKnown) {
+            } else if (case.tasks.isEmpty() && isPaired && !case.symptomsKnown) {
                 navigationChannel.send(Navigation.Symptoms)
             } else if (case.tasks.isNotEmpty() && isPaired) {
                 navigationChannel.send(Navigation.MyTasks)

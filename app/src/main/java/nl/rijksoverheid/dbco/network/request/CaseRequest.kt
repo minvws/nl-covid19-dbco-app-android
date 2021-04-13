@@ -11,7 +11,7 @@ data class CaseRequest(
     val windowExpiresAt: String?,
     val tasks: List<TaskRequest> = mutableListOf(),
     val symptoms: Set<String> = mutableSetOf(),
-    val contagiousPeriodKnown: Boolean = false
+    val symptomsKnown: Boolean = false
 ) {
 
     companion object {
@@ -23,7 +23,7 @@ data class CaseRequest(
             windowExpiresAt = case.windowExpiresAt,
             tasks = case.tasks.map { TaskRequest.fromTask(it) },
             symptoms = case.symptoms,
-            contagiousPeriodKnown = case.contagiousPeriodKnown
+            symptomsKnown = case.symptomsKnown
         )
     }
 }

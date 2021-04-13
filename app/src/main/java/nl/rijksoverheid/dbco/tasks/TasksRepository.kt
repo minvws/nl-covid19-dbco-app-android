@@ -84,7 +84,7 @@ class TasksRepository(
 
             var new = old.copy(
                 reference = remoteCase.reference,
-                contagiousPeriodKnown = remoteCase.contagiousPeriodKnown
+                symptomsKnown = remoteCase.symptomsKnown
             )
 
             if (old.dateOfTest == null) {
