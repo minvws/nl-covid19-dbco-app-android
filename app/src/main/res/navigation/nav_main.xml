@@ -234,6 +234,14 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
 
+        <action
+            android:id="@+id/toZipCodeSupportedFragment"
+            app:destination="@id/zipCodeSupportFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+
     </fragment>
 
     <fragment
@@ -251,6 +259,22 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/nav_main"
             app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/zipCodeSupportFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ZipCodeSupportFragment"
+        android:label="ZipCodeSupportFragment"
+        tools:layout="@layout/fragment_zipcode_support">
+
+        <action
+            android:id="@+id/to_ExplanationFragment"
+            app:destination="@id/ExplanationFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
 

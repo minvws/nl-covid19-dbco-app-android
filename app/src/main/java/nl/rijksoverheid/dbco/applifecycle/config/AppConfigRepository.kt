@@ -55,6 +55,10 @@ class AppConfigRepository(val context: Context) {
 
     fun getSymptoms(): List<Symptom> = getCachedConfig()?.symptoms ?: emptyList()
 
+    fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
+        return getCachedConfig()?.isSelfBcoSupportedForZipCode(zipCode) ?: false
+    }
+
     private fun getCachedConfig(): AppConfig? {
         return sharedPrefs.getString(KEY_CONFIG, null)?.let { config ->
             Defaults.json.decodeFromString(config)
