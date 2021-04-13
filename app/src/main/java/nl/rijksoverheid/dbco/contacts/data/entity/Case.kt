@@ -22,5 +22,5 @@ data class Case(
     val windowExpiresAt: String? = null,
     val tasks: List<Task> = mutableListOf(),
     val symptoms: Set<String> = mutableSetOf(),
-    val contagiousPeriodKnown: Boolean = false
+    val symptomsKnown: Boolean = false
 )
