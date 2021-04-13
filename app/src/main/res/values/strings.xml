@@ -259,7 +259,7 @@
     <string name="selfbco_date_symptoms_positive_test_title">Wanneer was de test waaruit bleek dat je corona hebt?</string>
     <string name="selfbco_date_symptoms_positive_test_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
     <string name="selfbco_date_symptoms_increased_title">Wanneer namen je klachten toe?</string>
-    <string name="selfbco_date_symptoms_increased_summary">Kies de datum voor je (laatste) coronatest. Dit is de test waaruit bleek dat je corona hebt.</string>
+    <string name="selfbco_date_symptoms_increased_summary">Kies de datum na %s, maar die voor je (laatste) coronatest was.</string>
     <string name="selfbco_date_negative_covid_title">Wanneer was je laatste negatieve coronatest?</string>
     <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een test waaruit bleek dat je <b>geen</b> corona had.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
