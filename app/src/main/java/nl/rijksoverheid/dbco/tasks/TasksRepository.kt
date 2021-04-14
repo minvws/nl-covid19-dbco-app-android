@@ -13,7 +13,6 @@ import android.content.SharedPreferences
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,7 +36,6 @@ import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import java.util.*
 
-@ExperimentalSerializationApi
 class TasksRepository(
     context: Context,
     private val userRepository: IUserRepository

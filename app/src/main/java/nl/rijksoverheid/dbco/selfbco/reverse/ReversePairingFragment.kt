@@ -16,14 +16,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 
-@ExperimentalSerializationApi
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private val args: ReversePairingFragmentArgs by navArgs()

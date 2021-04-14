@@ -13,7 +13,6 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
@@ -22,7 +21,6 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingEr
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingSuccess
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingInvalid
 
-@ExperimentalSerializationApi
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
     private val viewModel: PairingViewModel by viewModels()
