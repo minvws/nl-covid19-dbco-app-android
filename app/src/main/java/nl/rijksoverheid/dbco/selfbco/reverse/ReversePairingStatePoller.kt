@@ -12,7 +12,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState.COMPLETED
@@ -28,7 +27,6 @@ class ReversePairingStatePoller(
     private val dispatcher: CoroutineDispatcher
 ) : Poller {
 
-    @ExperimentalSerializationApi
     override fun poll(
         delay: Long,
         credentials: ReversePairingCredentials

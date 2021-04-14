@@ -17,7 +17,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import kotlinx.coroutines.flow.onEach
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
@@ -32,7 +31,6 @@ import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.Sy
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel.Navigation.AddContacts
 import java.io.Serializable
 
-@ExperimentalSerializationApi
 class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboarding_privacy) {
 
     private lateinit var binding: FragmentOnboardingPrivacyBinding
