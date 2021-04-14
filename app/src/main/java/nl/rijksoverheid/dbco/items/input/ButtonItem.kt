@@ -16,7 +16,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 class ButtonItem(
     private val text: String,
-    buttonClickListener: () -> Unit,
+    buttonClickListener: (ButtonItem) -> Unit,
     private val enabled: Boolean = true,
     private val type: ButtonType = ButtonType.LIGHT
 ) : BaseBindableItem<ItemButtonBinding>() {
@@ -30,8 +30,7 @@ class ButtonItem(
         ViewState(
             text,
             enabled,
-            buttonClickListener,
-        )
+        ) { buttonClickListener(this) }
 
     override fun getLayout() = R.layout.item_button
 
