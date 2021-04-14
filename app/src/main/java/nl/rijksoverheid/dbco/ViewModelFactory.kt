@@ -12,7 +12,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
@@ -28,7 +27,6 @@ import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.user.IUserRepository
 
-@ExperimentalSerializationApi
 class ViewModelFactory(
     private val context: Context,
     private val tasksRepository: ITaskRepository,

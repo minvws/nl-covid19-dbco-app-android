@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.selfbco.reverse.Poller
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
@@ -29,7 +28,6 @@ import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.*
 
-@ExperimentalSerializationApi
 class PairingViewModel(
     private val userRepository: IUserRepository,
     private val tasksRepository: ITaskRepository

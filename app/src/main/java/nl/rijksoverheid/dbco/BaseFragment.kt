@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -17,12 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.view_loading.view.*
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
-abstract class BaseFragment @JvmOverloads constructor(
-    @LayoutRes layout: Int
-) : Fragment(layout) {
+abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layout) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,13 +58,13 @@ abstract class BaseFragment @JvmOverloads constructor(
         return showProgressDialog(getString(message), dismissAction)
     }
 
-    fun showProgressDialog(message: String, dismissAction: (() -> Unit)? = null): AlertDialog {
+    private fun showProgressDialog(message: String, dismissAction: (() -> Unit)? = null): AlertDialog {
         val builder = MaterialAlertDialogBuilder(requireContext())
 
         builder.setCancelable(false)
 
         val view = layoutInflater.inflate(R.layout.view_loading, null)
-        view.message.text = message
+        view.findViewById<TextView>(R.id.message).text = message
         builder.setView(view)
 
         builder.setOnDismissListener {

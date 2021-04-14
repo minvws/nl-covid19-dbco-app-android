@@ -19,7 +19,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.install.model.AppUpdateType
 import com.scottyab.rootbeer.RootBeer
-import kotlinx.serialization.ExperimentalSerializationApi
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
 import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
 import nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragmentDirections
@@ -35,7 +34,6 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 
 private const val RC_UPDATE_APP = 1
 
-@ExperimentalSerializationApi
 class MainActivity : AppCompatActivity() {
 
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
