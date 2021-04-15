@@ -215,8 +215,8 @@
     <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
     <string name="error_while_pairing">Fout tijdens het koppelen:</string>
     <string name="error_questionnaire_is_empty">Er missen wat gegevens, ververs de pagina en probeer opnieuw.</string>
-    <string name="unsecure_device_warning_title">Je telefoon heeft geen pincode</string>
-    <string name="unsecure_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door een pincode in te stellen.</string>
+    <string name="unsecure_device_warning_title">Je telefoon heeft geen schermvergrendeling</string>
+    <string name="unsecure_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door een schermvergrendeling in te stellen.</string>
     <string name="unsecure_device_warning_positive_button">Naar instellingen</string>
     <string name="unsecure_device_warning_negative_button">Niet nu</string>
     <string name="rooted_device_warning_title">Het besturingssysteem van je telefoon is aangepast</string>
