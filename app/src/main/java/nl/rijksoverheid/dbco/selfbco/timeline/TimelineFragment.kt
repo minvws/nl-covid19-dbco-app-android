@@ -25,17 +25,14 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
-import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
-import nl.rijksoverheid.dbco.selfbco.roommates.RoommateInputFragment
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.Days
@@ -109,7 +106,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }
@@ -129,12 +126,6 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         setFooterForContent(content)
     }

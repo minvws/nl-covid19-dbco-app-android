@@ -16,7 +16,6 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionExplanationBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
@@ -32,7 +31,7 @@ class SelfBcoPermissionExplanationFragment :
 
         val content = Section(
             listOf(
-                HeaderItem(R.string.selfbco_permission_explanation_header),
+                HeaderItem(getString(R.string.selfbco_permission_explanation_header)),
                 ParagraphItem(getString(R.string.selfbco_permission_extra_summary), clickable = true),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item1)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item2)),
@@ -43,14 +42,8 @@ class SelfBcoPermissionExplanationFragment :
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

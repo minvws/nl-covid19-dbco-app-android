@@ -96,7 +96,7 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
     }
 
     private fun setupBackButton() {
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             handleBackPress()
         }
         val callback: OnBackPressedCallback =

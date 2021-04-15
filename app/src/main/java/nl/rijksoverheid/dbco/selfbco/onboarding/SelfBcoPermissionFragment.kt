@@ -26,7 +26,6 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
@@ -66,7 +65,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
 
         val content = Section(
             listOf(
-                HeaderItem(R.string.selfbco_permission_header),
+                HeaderItem(getString(R.string.selfbco_permission_header)),
                 ParagraphItem(getString(R.string.selfbco_permission_summary), clickable = true),
                 ParagraphIconItem(getString(R.string.selfbco_permission_item1)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_item2)),
@@ -77,12 +76,6 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         binding.btnNext.setOnClickListener {
             requestContactAccess()
@@ -93,7 +86,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
                 SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
             )
         }
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

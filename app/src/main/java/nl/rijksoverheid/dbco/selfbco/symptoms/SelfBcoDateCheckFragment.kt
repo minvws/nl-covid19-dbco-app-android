@@ -55,7 +55,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }

@@ -59,8 +59,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
     }
 
-    private var dataWipeClickedAmount = 0
-
     private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
 
     private val pairingViewModel: PairingViewModel by activityViewModels()
@@ -112,8 +110,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
-        binding.toolbar.isVisible = false
-
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -128,11 +124,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
                 checkPermissionGoToTaskDetails(item.task)
-            }
-            if (item is BuildNumberItem) {
-                if (BuildConfig.DEBUG) {
-                    handleQADataWipe()
-                }
             }
             if (item is MemoryTipMyContactsItem) {
                 findNavController().navigate(
@@ -453,24 +444,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun isUserPaired(): Boolean {
         return userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)
-    }
-
-    private fun handleQADataWipe() {
-        dataWipeClickedAmount++
-        if (dataWipeClickedAmount == 4) {
-            val builder = MaterialAlertDialogBuilder(requireContext())
-            builder.setMessage(getString(R.string.qa_clear_data_summary))
-            builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
-                dataWipeClickedAmount = 0
-                dialog.dismiss()
-                wipeStorageAndRestart()
-            }
-            builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
-                dialog.dismiss()
-                dataWipeClickedAmount = 0
-            }
-            builder.create().show()
-        }
     }
 
     private fun showLocalDeletionDialog() {
