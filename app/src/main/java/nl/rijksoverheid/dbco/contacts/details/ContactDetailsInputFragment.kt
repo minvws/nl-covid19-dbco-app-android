@@ -98,10 +98,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
             )
         )
-        val contactName = viewModel
-            .task
-            .linkedContact
-            ?.getDisplayName() ?: getString(R.string.mycontacts_add_contact)
+        var contactName = viewModel.task.linkedContact?.getDisplayName()
+        if (contactName.isNullOrEmpty()) {
+            contactName = getString(R.string.mycontacts_add_contact)
+        }
         adapter.add(HeaderItem(contactName))
         updateButton()
     }

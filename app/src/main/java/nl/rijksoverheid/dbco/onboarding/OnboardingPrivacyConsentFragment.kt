@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -66,11 +67,7 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
 
     private fun initToolbar() {
         binding.backButton.setOnClickListener { findNavController().popBackStack() }
-        binding.backButton.visibility = if (args.canGoBack) {
-            View.VISIBLE
-        } else {
-            View.INVISIBLE
-        }
+        binding.appbar.isVisible = args.canGoBack
     }
 
     private fun initContent(isChecked: Boolean) {
