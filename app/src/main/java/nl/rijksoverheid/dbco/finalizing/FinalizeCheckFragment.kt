@@ -100,6 +100,6 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
     }
 
     private fun initToolbar(binding: FragmentFinalizingCheckBinding) {
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

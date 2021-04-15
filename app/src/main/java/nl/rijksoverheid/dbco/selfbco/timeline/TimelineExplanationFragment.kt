@@ -46,7 +46,7 @@ class TimelineExplanationFragment : BaseFragment(R.layout.fragment_selfbco_timel
             findNavController().navigate(TimelineExplanationFragmentDirections.toTimelineFragment())
         }
 
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

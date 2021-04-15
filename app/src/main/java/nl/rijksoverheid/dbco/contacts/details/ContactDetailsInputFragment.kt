@@ -82,7 +82,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener { checkUnsavedChanges() }
+        binding.toolbar.backButton.setOnClickListener { checkUnsavedChanges() }
         binding.delete.isVisible = viewModel.task.isLocalAndSaved() && args.enabled
         binding.delete.setOnClickListener { showDeleteItemDialog(noRisk = false) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

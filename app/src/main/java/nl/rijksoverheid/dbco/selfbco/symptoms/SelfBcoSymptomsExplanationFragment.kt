@@ -43,7 +43,7 @@ class SelfBcoSymptomsExplanationFragment :
 
         binding.content.adapter = adapter
 
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

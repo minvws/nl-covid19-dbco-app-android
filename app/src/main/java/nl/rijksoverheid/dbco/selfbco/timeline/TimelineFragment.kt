@@ -106,7 +106,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }

@@ -91,7 +91,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

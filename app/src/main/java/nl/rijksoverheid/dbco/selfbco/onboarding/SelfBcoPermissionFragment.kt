@@ -86,7 +86,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
                 SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
             )
         }
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

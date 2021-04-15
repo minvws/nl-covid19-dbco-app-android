@@ -38,7 +38,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
         binding.codeEntry.showKeyboardWhenInPortrait(delay = KEYBOARD_DELAY)
 
         // Setup back button
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }

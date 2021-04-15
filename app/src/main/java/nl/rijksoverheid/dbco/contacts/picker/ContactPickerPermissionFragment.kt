@@ -83,7 +83,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
                 )
             )
         }
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

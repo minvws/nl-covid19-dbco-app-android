@@ -35,7 +35,7 @@ class ZipCodeSupportFragment : BaseFragment(R.layout.fragment_zipcode_support),
         binding.codeEntry.showKeyboardWhenInPortrait(delay = KEYBOARD_DELAY)
 
         // Setup back button
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
             it.hideKeyboard()
         }

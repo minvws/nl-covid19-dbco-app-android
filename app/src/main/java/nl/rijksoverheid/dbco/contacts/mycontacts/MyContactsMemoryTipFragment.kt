@@ -79,6 +79,6 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
 
         binding.content.adapter = adapter
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

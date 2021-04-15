@@ -120,7 +120,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
     }
 
     private fun initToolbar(binding: FragmentSelfbcoSymptomsBinding) {
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     private fun initHeader(content: Section) {

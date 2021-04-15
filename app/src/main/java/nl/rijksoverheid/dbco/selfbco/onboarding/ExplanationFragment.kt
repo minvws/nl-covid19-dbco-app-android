@@ -61,7 +61,7 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
             }
         }
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     companion object {

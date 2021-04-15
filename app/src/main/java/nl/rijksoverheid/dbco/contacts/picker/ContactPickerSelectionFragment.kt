@@ -115,7 +115,7 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
     }
 
     private fun initToolbar(binding: FragmentContactSelectionBinding) {
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     override fun onPause() {

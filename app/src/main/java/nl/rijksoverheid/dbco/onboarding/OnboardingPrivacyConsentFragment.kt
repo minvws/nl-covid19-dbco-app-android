@@ -66,7 +66,7 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
         binding.appbar.isVisible = args.canGoBack
     }
 

@@ -51,6 +51,6 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
             )
         }
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }
