@@ -157,7 +157,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
     ) {
         val allSymptoms = selfBcoViewModel.getSymptoms()
         addSymptoms(
-            symptoms = allSymptoms.subList(INITIAL_SYMPTOM_SIZE - 1, allSymptoms.size),
+            symptoms = allSymptoms.subList(INITIAL_SYMPTOM_SIZE, allSymptoms.size),
             content = content
         )
         updateFooter(
@@ -204,7 +204,7 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
         val selectedSymptoms = selfBcoViewModel.getSelectedSymptoms()
         val symptoms = selfBcoViewModel.getSymptoms()
 
-        var result = symptoms.subList(0, INITIAL_SYMPTOM_SIZE - 1) // start with subset
+        var result = symptoms.subList(0, INITIAL_SYMPTOM_SIZE) // start with subset
 
         for (selected in selectedSymptoms) {
             if (!result.any { it.value == selected }) {
