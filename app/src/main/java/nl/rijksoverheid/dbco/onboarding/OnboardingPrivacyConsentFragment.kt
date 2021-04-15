@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,7 +20,6 @@ import com.xwray.groupie.Section
 import kotlinx.coroutines.flow.onEach
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingPrivacyBinding
 import nl.rijksoverheid.dbco.items.input.PrivacyConsentItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
@@ -66,18 +66,14 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
     }
 
     private fun initToolbar() {
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
-        binding.backButton.visibility = if (args.canGoBack) {
-            View.VISIBLE
-        } else {
-            View.INVISIBLE
-        }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.appbar.isVisible = args.canGoBack
     }
 
     private fun initContent(isChecked: Boolean) {
         val content = Section(
             listOf(
-                HeaderItem(R.string.onboarding_privacy_title),
+                HeaderItem(getString(R.string.onboarding_privacy_title)),
                 ParagraphItem(getString(R.string.onboarding_privacy_summary), clickable = true),
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item1)),
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item2)),
@@ -92,12 +88,6 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         binding.btnNext.setOnClickListener { viewModel.onNextClicked() }
         binding.btnNext.isEnabled = isChecked

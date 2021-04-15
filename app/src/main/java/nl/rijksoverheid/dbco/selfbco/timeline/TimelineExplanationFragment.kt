@@ -16,7 +16,6 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoTimelineExplanationBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
@@ -30,7 +29,7 @@ class TimelineExplanationFragment : BaseFragment(R.layout.fragment_selfbco_timel
 
         val content = Section(
             listOf(
-                HeaderItem(R.string.selfbco_timeline_explanation_header),
+                HeaderItem(getString(R.string.selfbco_timeline_explanation_header)),
                 ParagraphItem(getString(R.string.selfbco_timeline_explanation_summary), clickable = true),
                 ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step1), R.drawable.ic_checkmark_round),
                 ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step2), R.drawable.ic_checkmark_round),
@@ -42,18 +41,12 @@ class TimelineExplanationFragment : BaseFragment(R.layout.fragment_selfbco_timel
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         binding.btnNext.setOnClickListener {
             findNavController().navigate(TimelineExplanationFragmentDirections.toTimelineFragment())
         }
 
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }

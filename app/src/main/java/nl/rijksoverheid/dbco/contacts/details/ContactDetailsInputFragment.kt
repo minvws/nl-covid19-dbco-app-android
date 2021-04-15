@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -42,6 +43,7 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
 import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
 import java.util.*
@@ -80,21 +82,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     }
 
     private fun initToolbar() {
-        val contactName = viewModel.task.linkedContact?.getDisplayName()
-            ?: getString(R.string.mycontacts_add_contact)
-        binding.toolbar.title = contactName
-        binding.toolbar.setNavigationOnClickListener { checkUnsavedChanges() }
-
-        if (viewModel.task.isLocalAndSaved() && args.enabled) {
-            binding.toolbar.inflateMenu(R.menu.contact_detail_menu)
-            binding.toolbar.setOnMenuItemClickListener {
-                if (it.itemId == R.id.delete_contact_item) {
-                    showDeleteItemDialog(noRisk = false)
-                }
-                true
-            }
-        }
-
+        binding.toolbar.backButton.setOnClickListener { checkUnsavedChanges() }
+        binding.delete.isVisible = viewModel.task.isLocalAndSaved() && args.enabled
+        binding.delete.setOnClickListener { showDeleteItemDialog(noRisk = false) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             checkUnsavedChanges()
         }
@@ -108,6 +98,11 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
             )
         )
+        var contactName = viewModel.task.linkedContact?.getDisplayName()
+        if (contactName.isNullOrEmpty()) {
+            contactName = getString(R.string.mycontacts_add_contact)
+        }
+        adapter.add(HeaderItem(contactName))
         updateButton()
     }
 

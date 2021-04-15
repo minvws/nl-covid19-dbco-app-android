@@ -53,6 +53,6 @@ class SelfBcoChronicSymptomsWorsenedFragment :
             )
         }
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

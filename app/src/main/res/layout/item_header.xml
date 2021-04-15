@@ -14,7 +14,7 @@
 
         <variable
             name="text"
-            type="Integer" />
+            type="String" />
     </data>
 
     <TextView

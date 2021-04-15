@@ -25,71 +25,6 @@
         app:popUpToInclusive="true" />
 
     <fragment
-        android:id="@+id/placeholderFragment"
-        android:name="nl.rijksoverheid.dbco.debug.PlaceholderFragment"
-        android:label="PlaceholderFragment"
-        tools:layout="@layout/fragment_placeholder">
-
-        <action
-            android:id="@+id/toStylingFragment"
-            app:destination="@id/stylingDebugFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-
-        <action
-            android:id="@+id/toAboutFragment"
-            app:destination="@id/aboutFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-
-        <action
-            android:id="@+id/toMyContactsFragment"
-            app:destination="@id/myContactsFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/stylingDebugFragment"
-        android:name="nl.rijksoverheid.dbco.debug.StylingDebugFragment"
-        android:label="StylingDebugFragment"
-        tools:layout="@layout/fragment_styling" />
-
-    <fragment
-        android:id="@+id/aboutFragment"
-        android:name="nl.rijksoverheid.dbco.about.AboutFragment"
-        android:label="AboutFragment"
-        tools:layout="@layout/fragment_list">
-
-        <action
-            android:id="@+id/toAboutDetailFragment"
-            app:destination="@id/FAQDetailFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/FAQDetailFragment"
-        android:name="nl.rijksoverheid.dbco.about.faq.FAQDetailFragment"
-        android:label="FAQDetailFragment">
-
-        <argument
-            android:name="faqItemId"
-            app:argType="nl.rijksoverheid.dbco.about.faq.FAQItemId" />
-
-    </fragment>
-
-    <fragment
         android:id="@+id/contactPickerPermission"
         android:name="nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragment"
         android:label="ContactPickerPermissionFragment"
@@ -715,7 +650,8 @@
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/myContactsFragment" />
 
     </fragment>
 

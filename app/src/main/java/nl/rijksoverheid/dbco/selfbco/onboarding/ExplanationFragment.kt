@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentExplanationBinding
@@ -60,7 +61,7 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
             }
         }
 
-        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 
     companion object {
