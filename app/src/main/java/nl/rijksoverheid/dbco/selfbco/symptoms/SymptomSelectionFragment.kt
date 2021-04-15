@@ -25,6 +25,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.input.SymptomItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
+import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import java.io.Serializable
@@ -125,14 +126,19 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
     private fun initHeader(content: Section) {
         content.addAll(
             listOf(
-                HeaderItem(R.string.selfbco_symptom_header),
-                ParagraphItem(getString(R.string.selfbco_symptom_summary))
+                HeaderItem(getString(R.string.selfbco_symptom_header)),
+                VerticalSpaceItem(R.dimen.list_spacing),
+                ParagraphItem(getString(R.string.selfbco_symptom_summary)),
+                VerticalSpaceItem(R.dimen.activity_vertical_margin)
             )
         )
     }
 
     private fun initSymptoms(content: Section, symptoms: List<State.SymptomState>) {
-        symptoms.map(::mapToSymptomItem).forEach { symptom -> content.add(symptom) }
+        symptoms.map(::mapToSymptomItem).forEach { symptom ->
+            content.add(symptom)
+            content.add(VerticalSpaceItem(R.dimen.list_spacing))
+        }
     }
 
     private fun mapToSymptomItem(symptom: State.SymptomState): SymptomItem {
@@ -229,7 +235,10 @@ class SymptomSelectionFragment : BaseFragment(R.layout.fragment_selfbco_symptoms
                 value = symptom.value,
                 selected = false
             )
-        }.forEach { item -> content.add(item) }
+        }.forEach { item ->
+            content.add(item)
+            content.add(VerticalSpaceItem(R.dimen.list_spacing))
+        }
     }
 
     /**

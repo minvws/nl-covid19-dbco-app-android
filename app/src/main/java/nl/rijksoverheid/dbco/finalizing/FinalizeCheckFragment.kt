@@ -42,6 +42,7 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentFinalizingCheckBinding.bind(view)
+        initToolbar(binding)
         binding.content.adapter = adapter
 
         tasksViewModel.getCachedCase().let { case ->
@@ -96,5 +97,9 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         binding.sendButton.setOnClickListener {
             findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
         }
+    }
+
+    private fun initToolbar(binding: FragmentFinalizingCheckBinding) {
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

@@ -16,11 +16,9 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionExplanationBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 
 class SelfBcoPermissionExplanationFragment :
     BaseFragment(R.layout.fragment_selfbco_permission_explanation) {
@@ -32,23 +30,16 @@ class SelfBcoPermissionExplanationFragment :
 
         val content = Section(
             listOf(
-                HeaderItem(R.string.selfbco_permission_explanation_header),
-                ParagraphItem(getString(R.string.selfbco_permission_extra_summary), clickable = true),
-                ParagraphIconItem(getString(R.string.selfbco_permission_extra_item1)),
-                ParagraphIconItem(getString(R.string.selfbco_permission_extra_item2)),
-                ParagraphIconItem(getString(R.string.selfbco_permission_extra_item3))
+                HeaderItem(getString(R.string.selfbco_permission_explanation_header)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item1)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item2)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item3_verbose))
             )
         )
         val adapter = GroupAdapter<GroupieViewHolder>()
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()

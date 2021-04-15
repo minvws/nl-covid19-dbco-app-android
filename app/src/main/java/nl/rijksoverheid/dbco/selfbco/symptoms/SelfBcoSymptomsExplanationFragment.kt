@@ -16,7 +16,6 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoSymptomsExplanationBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
@@ -32,7 +31,7 @@ class SelfBcoSymptomsExplanationFragment :
 
         val content = Section(
             listOf(
-                HeaderItem(R.string.selfbco_symptoms_explanation_title),
+                HeaderItem(getString(R.string.selfbco_symptoms_explanation_title)),
                 SubHeaderItem(getString(R.string.selfbco_symptoms_explanation_header_1)),
                 ParagraphItem(getString(R.string.selfbco_symptoms_explanation_description_1)),
                 SubHeaderItem(getString(R.string.selfbco_symptoms_explanation_header_2)),
@@ -43,12 +42,6 @@ class SelfBcoSymptomsExplanationFragment :
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()

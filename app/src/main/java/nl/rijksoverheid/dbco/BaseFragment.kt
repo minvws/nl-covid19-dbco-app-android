@@ -8,27 +8,15 @@
 
 package nl.rijksoverheid.dbco
 
-import android.os.Bundle
-import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
 abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layout) {
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        toolbar?.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         return requireActivity().defaultViewModelProviderFactory
@@ -58,7 +46,10 @@ abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layou
         return showProgressDialog(getString(message), dismissAction)
     }
 
-    private fun showProgressDialog(message: String, dismissAction: (() -> Unit)? = null): AlertDialog {
+    private fun showProgressDialog(
+        message: String,
+        dismissAction: (() -> Unit)? = null
+    ): AlertDialog {
         val builder = MaterialAlertDialogBuilder(requireContext())
 
         builder.setCancelable(false)

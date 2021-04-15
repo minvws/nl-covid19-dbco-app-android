@@ -36,10 +36,8 @@ class ZipCodeSupportFragment : BaseFragment(R.layout.fragment_zipcode_support),
 
         // Setup back button
         binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
             it.hideKeyboard()
-            it.postDelayed({
-                findNavController().popBackStack()
-            }, KEYBOARD_DELAY)
         }
 
         // Setup next button

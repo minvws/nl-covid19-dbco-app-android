@@ -112,8 +112,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding = FragmentMyContactsBinding.bind(view)
         binding.content.adapter = adapter
 
-        binding.toolbar.isVisible = false
-
         setupSendButton()
 
         binding.swipeRefresh.setOnRefreshListener {

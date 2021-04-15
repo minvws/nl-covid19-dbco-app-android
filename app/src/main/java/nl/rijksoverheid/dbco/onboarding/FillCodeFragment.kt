@@ -39,10 +39,8 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
 
         // Setup back button
         binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
             it.hideKeyboard()
-            it.postDelayed({
-                findNavController().popBackStack()
-            }, KEYBOARD_DELAY)
         }
 
         // Setup next button

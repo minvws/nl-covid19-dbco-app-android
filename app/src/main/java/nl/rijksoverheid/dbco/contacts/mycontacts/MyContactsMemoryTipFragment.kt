@@ -9,17 +9,17 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.about.faq.FAQItemDecoration
 import nl.rijksoverheid.dbco.databinding.FragmentMycontactsMemoryBinding
 import nl.rijksoverheid.dbco.items.ui.*
 
 class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_memory) {
+
     private val args: MyContactsMemoryTipFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentMycontactsMemoryBinding.bind(view)
-
 
         val content = Section(
             listOf(
@@ -78,15 +78,7 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
         adapter.add(content)
 
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            FAQItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.list_spacing)
-            )
-        )
 
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

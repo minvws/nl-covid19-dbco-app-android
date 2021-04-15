@@ -24,6 +24,7 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.LocalContactItem
 import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
@@ -40,20 +41,14 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val binding = FragmentContactSelectionBinding.bind(view)
-        binding.toolbar.title = getString(R.string.contacts_picker_title)
-        binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            ContactItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
-            )
-        )
+        initToolbar(binding)
+        adapter.clear()
+        adapter.add(HeaderItem(getString(R.string.contacts_picker_title), R.dimen.activity_horizontal_margin))
 
-        args.indexTask?.let {
-            selectedTask = it
-        }
+        binding.content.adapter = adapter
+        binding.content.addItemDecoration(ContactItemDecoration(requireContext()))
+        args.indexTask?.let { selectedTask = it }
 
         binding.manualEntryButton.setOnClickListener {
             // User chooses not to select an existing contact from their device, start fresh
@@ -65,11 +60,9 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             )
         }
 
-
         contactsViewModel.localContactsLiveDataItem.observe(
             viewLifecycleOwner,
             Observer { allContacts ->
-                adapter.clear()
                 adapter.add(SearchFieldItem({ content ->
                     Timber.d("Searching for ${content.toString()}")
                     contactsViewModel.filterLocalContactsOnName(content.toString())
@@ -121,9 +114,12 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
         contactsViewModel.fetchLocalContacts()
     }
 
+    private fun initToolbar(binding: FragmentContactSelectionBinding) {
+        binding.backButton.setOnClickListener { findNavController().popBackStack() }
+    }
+
     override fun onPause() {
         super.onPause()
         view?.findViewById<View>(R.id.searchView)?.clearFocus() // make search input inactive
     }
-
 }

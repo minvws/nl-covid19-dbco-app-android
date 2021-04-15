@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 
 private val ATTRS = intArrayOf(android.R.attr.listDivider)
 
-class ContactItemDecoration(context: Context, @Dimension val startOffset: Int) :
+class ContactItemDecoration(context: Context) :
     RecyclerView.ItemDecoration() {
 
     private val bounds = Rect()
@@ -62,8 +62,8 @@ class ContactItemDecoration(context: Context, @Dimension val startOffset: Int) :
         }
 
         val rtlLayout = ViewCompat.getLayoutDirection(parent) == ViewCompat.LAYOUT_DIRECTION_RTL
-        val adaptedLeft = if (rtlLayout) left else left + startOffset
-        val adaptedRight = if (rtlLayout) right - startOffset else right
+        val adaptedLeft = if (rtlLayout) left else left
+        val adaptedRight = if (rtlLayout) right else right
 
         val childCount: Int = parent.childCount
         if (childCount > 1) {

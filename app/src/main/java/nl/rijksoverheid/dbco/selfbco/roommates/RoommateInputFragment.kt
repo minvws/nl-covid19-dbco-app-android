@@ -100,7 +100,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         content.setHeader(
             Section(
                 listOf(
-                    HeaderItem(R.string.selfbco_roommates_header),
+                    HeaderItem(getString(R.string.selfbco_roommates_header)),
                     ParagraphItem(getString(R.string.selfbco_roommates_summary))
                 )
             )
