@@ -44,7 +44,6 @@ class DateInputItem(
         this.binding = viewBinding
         viewBinding.item = this
 
-        viewBinding.inputLayout.setEndIconOnClickListener(datePickerListener)
         viewBinding.inputLabel.setOnClickListener(datePickerListener)
 
         if (date == null) {
@@ -59,16 +58,19 @@ class DateInputItem(
     }
 
     private fun showDatePicker() {
-        val now = LocalDate.now()
-        val monthOfYearToUse = (date?.monthOfYear ?: 1) -1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
+        // Default date is 1 January 1980
+        val year = date?.year ?: 1980
+        val month = (date?.monthOfYear ?: 1) - 1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
+        val day = date?.dayOfMonth ?: 1
+
         val dialog = DatePickerDialog(
             context,
             R.style.SpinnerDatePickerDialogTheme,
             this,
-            date?.year ?: 1980,
-            monthOfYearToUse,
-            date?.dayOfMonth ?: 1
-        ) // default date 1 Jan 1980
+            year,
+            month,
+            day
+        )
         dialog.datePicker.calendarViewShown = false
         dialog.datePicker.spinnersShown = true
         dialog.show()
@@ -80,7 +82,7 @@ class DateInputItem(
 
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         // Same issue as before, LocalDate uses 1-12 for months instead of the 0-11 we get from the DatePickerDialog, increase date by 1 here for proper processing.
-        date = LocalDate(year, month+1, dayOfMonth).apply {
+        date = LocalDate(year, month + 1, dayOfMonth).apply {
             binding?.inputLabel?.setText(this.toString(dateInputUI))
         }
     }
@@ -102,7 +104,7 @@ class DateInputItem(
     private fun fillInPreviousAnswer() {
         previousAnswerValue?.let { prevAnswer ->
             prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
-                date = LocalDate.parse(value, DateFormats.dateInputData )
+                date = LocalDate.parse(value, DateFormats.dateInputData)
             }
         }
     }
