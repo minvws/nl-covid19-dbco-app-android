@@ -13,6 +13,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFinalizingLoadingBinding
@@ -44,13 +45,26 @@ class FinalizeLoadingFragment : BaseFragment(R.layout.fragment_finalizing_loadin
     }
 
     private fun handleUpload(result: UploadStatus) {
-
         if (result is UploadSuccess) {
             findNavController().navigate(FinalizeLoadingFragmentDirections.toFinalizeSentFragment())
         } else if (result is UploadError) {
-            showErrorDialog(getString(R.string.generic_error_prompt_message), {
-                tasksViewModel.uploadCurrentCase()
-            })
+            showError()
         }
+    }
+
+    private fun showError() {
+        MaterialAlertDialogBuilder(requireContext()).apply {
+            setCancelable(false)
+            setTitle(R.string.error)
+            setMessage(R.string.generic_error_prompt_message)
+            setPositiveButton(R.string.error_try_again) { dialogInterface, _ ->
+                tasksViewModel.uploadCurrentCase()
+                dialogInterface.dismiss()
+            }
+            setNegativeButton(R.string.close) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                findNavController().navigate(FinalizeLoadingFragmentDirections.toMyContactsFragment())
+            }
+        }.create().show()
     }
 }

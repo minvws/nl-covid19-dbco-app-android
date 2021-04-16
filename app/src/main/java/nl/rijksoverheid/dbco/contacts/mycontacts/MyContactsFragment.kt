@@ -66,7 +66,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     private val contentSection = Section()
     private lateinit var footerSection: Section
     private lateinit var headerSection: Section
-    private var clicksBlocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -378,17 +377,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     override fun onResume() {
         super.onResume()
-        clicksBlocked = false
         tasksViewModel.syncData()
         binding.swipeRefresh.isRefreshing = true
     }
 
     private fun checkPermissionGoToTaskDetails(task: Task) {
-        if (clicksBlocked) { // prevents from double click
-            return
-        }
-        clicksBlocked = true
-
         if (tasksViewModel.viewData.value?.caseResult is CaseExpired) {
             // no need to check permissions, just show the task but disabled
             findNavController().navigate(
