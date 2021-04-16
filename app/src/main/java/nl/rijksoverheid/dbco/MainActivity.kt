@@ -8,11 +8,15 @@
 
 package nl.rijksoverheid.dbco
 
-import android.content.SharedPreferences
+import android.app.KeyguardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -27,7 +31,6 @@ import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.lifecycle.EventObserver
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.tasks.TasksRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
@@ -37,8 +40,6 @@ private const val RC_UPDATE_APP = 1
 class MainActivity : AppCompatActivity() {
 
     private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
-
-    private var userPrefs: SharedPreferences? = null
 
     private var factory: ViewModelFactory? = null
 
@@ -54,8 +55,6 @@ class MainActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_SECURE
             )
         }
-
-        userPrefs = LocalStorageRepository.getInstance(this).getSharedPreferences()
 
         appLifecycleViewModel.updateEvent.observe(
             this,
@@ -92,23 +91,57 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIfRooted() {
-        if (userPrefs?.getBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, false) == true) {
-            return
-        }
-
         if (RootBeer(this).isRooted) {
-            val builder = MaterialAlertDialogBuilder(this)
-            builder.setCancelable(true)
-            builder.setMessage(getString(R.string.rooted_device_warning))
-            builder.setPositiveButton(
-                R.string.close
-            ) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                userPrefs?.edit()?.putBoolean(Constants.USER_SAW_ROOTED_WARNING_KEY, true)?.apply()
-            }
-            val alert: AlertDialog = builder.create()
-            alert.show()
+            showSecurityMessage(
+                title = R.string.rooted_device_warning_title,
+                message = R.string.rooted_device_warning_message,
+                positiveButton = R.string.rooted_device_warning_positive_button,
+                negativeButton = R.string.close,
+                positiveIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.rooted_device_warning_link))
+                ),
+            ) { checkIfUnsecureDevice() }
+        } else {
+            checkIfUnsecureDevice()
         }
+    }
+
+    private fun checkIfUnsecureDevice() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!keyguardManager.isKeyguardSecure) {
+            showSecurityMessage(
+                title = R.string.unsecure_device_warning_title,
+                message = R.string.unsecure_device_warning_message,
+                positiveButton = R.string.unsecure_device_warning_positive_button,
+                negativeButton = R.string.unsecure_device_warning_negative_button,
+                positiveIntent = Intent(Settings.ACTION_SECURITY_SETTINGS),
+            )
+        }
+    }
+
+    private fun showSecurityMessage(
+        @StringRes title: Int,
+        @StringRes message: Int,
+        @StringRes positiveButton: Int,
+        @StringRes negativeButton: Int,
+        positiveIntent: Intent,
+        closeAction: (() -> Unit)? = null
+    ) {
+        MaterialAlertDialogBuilder(this).apply {
+            setCancelable(false)
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton(positiveButton) { dialogInterface, _ ->
+                startActivity(positiveIntent)
+                dialogInterface.dismiss()
+                closeAction?.invoke()
+            }
+            setNegativeButton(negativeButton) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                closeAction?.invoke()
+            }
+        }.create().show()
     }
 
     override fun onResume() {

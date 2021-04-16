@@ -215,7 +215,14 @@
     <string name="error_while_fetching_case">Fout bij het ophalen van een Case:</string>
     <string name="error_while_pairing">Fout tijdens het koppelen:</string>
     <string name="error_questionnaire_is_empty">Er missen wat gegevens, ververs de pagina en probeer opnieuw.</string>
-    <string name="rooted_device_warning">Je telefoon lijkt jailbroken of rooted. Dit betekent dat het besturingssysteem gekraakt is. Hierdoor is je telefoon mogelijk minder goed beveiligd.</string>
+    <string name="unsecure_device_warning_title">Je telefoon heeft geen schermvergrendeling</string>
+    <string name="unsecure_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door een schermvergrendeling in te stellen.</string>
+    <string name="unsecure_device_warning_positive_button">Naar instellingen</string>
+    <string name="unsecure_device_warning_negative_button">Niet nu</string>
+    <string name="rooted_device_warning_title">Het besturingssysteem van je telefoon is aangepast</string>
+    <string name="rooted_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door het originele besturingssysteem van je telefoon te gebruiken.</string>
+    <string name="rooted_device_warning_positive_button">Lees meer</string>
+    <string name="rooted_device_warning_link">https://support.google.com/accounts/answer/9211246</string>
     <string name="qa_clear_data_summary">Weet je zeker dat je alle opgeslagen gegevens wilt wissen? De applicatie wordt hierbij afgesloten.</string>
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
     <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
