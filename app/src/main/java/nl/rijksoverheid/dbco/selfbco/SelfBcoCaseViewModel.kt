@@ -13,6 +13,7 @@ import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
 import nl.rijksoverheid.dbco.applifecycle.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
+import nl.rijksoverheid.dbco.network.request.CaseRequest
 import nl.rijksoverheid.dbco.tasks.ITaskRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Source
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
@@ -26,6 +27,10 @@ class SelfBcoCaseViewModel(
 ) : ViewModel() {
 
     private var testedOrSymptoms = SelfBcoConstants.COVID_CHECK_FLOW
+
+
+    fun testSymptomOnset(): String =
+        CaseRequest.fromCase(tasksRepository.getCase()).dateOfSymptomOnset ?: "null"
 
     fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
 
@@ -101,6 +106,17 @@ class SelfBcoCaseViewModel(
         tasksRepository.updateTestDate(
             date.toString(DateFormats.dateInputData)
         )
+    }
+
+    /**
+     * Reset all dates relevant to the flow when EZD is more than x days in the past
+     */
+    fun resetSymptomOnsetTooFarInPast() {
+        with(tasksRepository) {
+            updatePositiveTestDate(null)
+            updateNegativeTestDate(null)
+            updateIncreasedSymptomDate(null)
+        }
     }
 
     /**

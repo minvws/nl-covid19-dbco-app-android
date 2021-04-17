@@ -26,6 +26,8 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoChronicSymptomsBinding.bind(view)
 
+        selfBcoViewModel.resetSymptomOnsetTooFarInPast()
+
         binding.btnEarlierTested.setOnClickListener {
             findNavController().navigate(
                 SelfBcoChronicSymptomsFragmentDirections.toSelfBcoDateCheckFragment(

@@ -1,7 +1,9 @@
 package nl.rijksoverheid.dbco.network.request
 
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import org.joda.time.LocalDate
 
 @Serializable
 data class CaseRequest(
@@ -18,12 +20,29 @@ data class CaseRequest(
 
         fun fromCase(case: Case): CaseRequest = CaseRequest(
             reference = case.reference,
-            dateOfSymptomOnset = case.dateOfSymptomOnset,
+            dateOfSymptomOnset = determineSymptomOnset(case),
             dateOfTest = case.dateOfTest,
             windowExpiresAt = case.windowExpiresAt,
             tasks = case.tasks.map { TaskRequest.fromTask(it) },
             symptoms = case.symptoms,
             symptomsKnown = case.symptomsKnown
         )
+
+        /**
+         * Symptom onset as far as the portal is concerned is the most recent date
+         * between all possible dates entered by the index
+         */
+        private fun determineSymptomOnset(case: Case): String? {
+            return listOfNotNull(
+                case.dateOfSymptomOnset.dateOrNull(),
+                case.dateOfIncreasedSymptoms.dateOrNull(),
+                case.dateOfNegativeTest.dateOrNull(),
+                case.dateOfPositiveTest.dateOrNull()
+            ).maxOrNull()?.toString(DateFormats.dateInputData)
+        }
+
+        private fun String?.dateOrNull(): LocalDate? {
+            return this?.let { LocalDate.parse(it, DateFormats.dateInputData) }
+        }
     }
 }

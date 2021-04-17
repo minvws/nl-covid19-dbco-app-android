@@ -49,8 +49,7 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
 
-        Toast.makeText(requireContext(), "EZD: ${selfBcoViewModel.getDateOfSymptomOnset().toString(DateFormats.dateInputData)}", Toast.LENGTH_LONG).show()
-        Toast.makeText(requireContext(), "Test: ${selfBcoViewModel.getDateOfTest().toString(DateFormats.dateInputData)}", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "EZD: ${selfBcoViewModel.testSymptomOnset()}", Toast.LENGTH_LONG).show()
 
         val content = Section()
 

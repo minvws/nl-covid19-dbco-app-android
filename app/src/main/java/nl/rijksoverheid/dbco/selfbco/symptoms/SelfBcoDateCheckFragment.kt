@@ -20,7 +20,6 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBindingImpl
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
 import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckNavigation.*
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import nl.rijksoverheid.dbco.util.getDate
@@ -93,17 +92,9 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
     }
 
     private fun save(state: SelfBcoDateCheckState): LocalDate {
-        // First save the entered date by its type
-        saveDate(state.type, requireDate())
-
-        // Determine if the date in symptom onset or test should be the entered type or the old date
-        val result = determineResultDate(state)
-        if (selfBcoViewModel.getTypeOfFlow() == COVID_CHECK_FLOW) {
-            saveDate(TEST_DATE, result)
-        } else {
-            saveDate(SYMPTOM_ONSET, result)
-        }
-        return result
+        val date = requireDate()
+        saveDate(state.type, date)
+        return date
     }
 
     private fun getStoredDate(dateCheckType: DateCheckType): LocalDate {
@@ -113,20 +104,6 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             TEST_DATE -> selfBcoViewModel.getDateOfTest()
             POSITIVE_TEST_DATE -> selfBcoViewModel.getDateOfPositiveTest()
             NEGATIVE_TEST_DATE -> selfBcoViewModel.getDateOfNegativeTest()
-        }
-    }
-
-    private fun determineResultDate(state: SelfBcoDateCheckState): LocalDate {
-        val selectedDate = requireDate()
-        val startDate = if (selfBcoViewModel.getTypeOfFlow() == COVID_CHECK_FLOW) {
-            getStoredDate(TEST_DATE)
-        } else {
-            getStoredDate(SYMPTOM_ONSET)
-        }
-        return if (state.canGoInPast) {
-            selectedDate
-        } else {
-            if (selectedDate.isAfter(startDate)) selectedDate else startDate
         }
     }
 

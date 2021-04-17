@@ -22,8 +22,6 @@ data class SelfBcoDateCheckState(
     val title: String,
     val summary: String,
     val showExplanation: Boolean = false,
-    // whether the date selection can go before the stored symptom or test date
-    val canGoInPast: Boolean = true,
     val nextAction: (LocalDate, LocalDate) -> SelfBcoDateCheckNavigation
 ) : Serializable {
 
@@ -74,7 +72,6 @@ data class SelfBcoDateCheckState(
                 type = NEGATIVE_TEST_DATE,
                 title = context.getString(R.string.selfbco_date_negative_covid_title),
                 summary = context.getString(R.string.selfbco_date_negative_covid_summary),
-                canGoInPast = false,
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
             )
 
@@ -102,7 +99,6 @@ data class SelfBcoDateCheckState(
                 type = POSITIVE_TEST_DATE,
                 title = context.getString(R.string.selfbco_date_symptoms_positive_test_title),
                 summary = context.getString(R.string.selfbco_date_symptoms_positive_test_summary),
-                canGoInPast = false,
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
             )
 
@@ -118,7 +114,6 @@ data class SelfBcoDateCheckState(
                     context.getString(R.string.selfbco_date_symptoms_increased_summary),
                     date
                 ),
-                canGoInPast = false,
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
             )
     }
