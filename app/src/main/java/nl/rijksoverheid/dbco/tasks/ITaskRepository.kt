@@ -89,9 +89,9 @@ interface ITaskRepository {
 
     /**
      * Update the negative test date
-     * @param testDate date of negative test or null when it needs to be reset
+     * @param testDate date of negative test
      */
-    fun updateNegativeTestDate(testDate: String?)
+    fun updateNegativeTestDate(testDate: String)
 
     /**
      * Used to store a negative test date when EZD date is more than x days in the past
@@ -100,9 +100,9 @@ interface ITaskRepository {
 
     /**
      * Update the positive test date
-     * @param testDate date of positive test or null when it needs to be reset
+     * @param testDate date of positive test
      */
-    fun updatePositiveTestDate(testDate: String?)
+    fun updatePositiveTestDate(testDate: String)
 
     /**
      * Used to store a positive test date when EZD date is more than x days in the past
@@ -112,9 +112,9 @@ interface ITaskRepository {
 
     /**
      * Update the symptom increased date
-     * @param date date of increased symptoms or null when it needs to be reset
+     * @param date date of increased symptoms
      */
-    fun updateIncreasedSymptomDate(date: String?)
+    fun updateIncreasedSymptomDate(date: String)
 
     /**
      * Used to store a date when chronic symptoms have increased

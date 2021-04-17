@@ -12,7 +12,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -23,7 +22,6 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
-import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoRoommatesInputBinding
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
@@ -48,8 +46,6 @@ class RoommateInputFragment : BaseFragment(R.layout.fragment_selfbco_roommates_i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoRoommatesInputBinding.bind(view)
-
-        Toast.makeText(requireContext(), "EZD: ${selfBcoViewModel.testSymptomOnset()}", Toast.LENGTH_LONG).show()
 
         val content = Section()
 

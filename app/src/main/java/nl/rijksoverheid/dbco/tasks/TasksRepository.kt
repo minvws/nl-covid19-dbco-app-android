@@ -251,7 +251,7 @@ class TasksRepository(
         )
     }
 
-    override fun updateNegativeTestDate(testDate: String?) {
+    override fun updateNegativeTestDate(testDate: String) {
         val new = _case.copy(dateOfNegativeTest = testDate)
         persistCase(
             case = new,
@@ -261,7 +261,7 @@ class TasksRepository(
 
     override fun getNegativeTestDate(): String? = _case.dateOfNegativeTest
 
-    override fun updatePositiveTestDate(testDate: String?) {
+    override fun updatePositiveTestDate(testDate: String) {
         val new = _case.copy(dateOfPositiveTest = testDate)
         persistCase(
             case = new,
@@ -271,7 +271,7 @@ class TasksRepository(
 
     override fun getPositiveTestDate(): String? = _case.dateOfPositiveTest
 
-    override fun updateIncreasedSymptomDate(date: String?) {
+    override fun updateIncreasedSymptomDate(date: String) {
         val new = _case.copy(dateOfIncreasedSymptoms = date)
         persistCase(
             case = new,
