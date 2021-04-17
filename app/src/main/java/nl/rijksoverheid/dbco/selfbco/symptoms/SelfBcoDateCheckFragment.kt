@@ -16,16 +16,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBindingImpl
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
 import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckNavigation.*
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import nl.rijksoverheid.dbco.util.getDate
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.LocalDate
 import java.io.Serializable
+import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType.*
+import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType
 
 /**
  * Handles both date checking for testing and symptoms
@@ -42,11 +45,11 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoDateCheckBindingImpl.bind(view)
 
-        val state: SelfBcoDateCheckState = args.state
-        val date = State.fromBundle(savedInstanceState)?.date ?: selfBcoViewModel.getStartDate()
+        val argState: SelfBcoDateCheckState = args.state
+        val date = State.fromBundle(savedInstanceState)?.date ?: getStoredDate(argState.type)
 
         initToolbar()
-        initContent(state, date)
+        initContent(argState, date)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -75,13 +78,12 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         binding.datePicker.maxDate = System.currentTimeMillis()
 
         binding.btnNext.setOnClickListener {
-            val selectedDate = requireDate()
-            saveDate(selectedDate)
-            handleNavigation(state.nextAction(selectedDate, LocalDate.now()))
+            val result = save(state)
+            handleNavigation(state.nextAction(result, LocalDate.now()))
         }
 
         binding.btnInfo.setOnClickListener {
-            saveDate(requireDate())
+            save(state)
             findNavController().navigate(
                 SelfBcoDateCheckFragmentDirections.toSelfBcoSymptomsExplanationFragment()
             )
@@ -90,11 +92,51 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         binding.btnInfo.isVisible = state.showExplanation
     }
 
-    private fun saveDate(date: LocalDate) {
-        if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
-            selfBcoViewModel.updateDateOfSymptomOnset(date)
+    private fun save(state: SelfBcoDateCheckState): LocalDate {
+        // First save the entered date by its type
+        saveDate(state.type, requireDate())
+
+        // Determine if the date in symptom onset or test should be the entered type or the old date
+        val result = determineResultDate(state)
+        if (selfBcoViewModel.getTypeOfFlow() == COVID_CHECK_FLOW) {
+            saveDate(TEST_DATE, result)
         } else {
-            selfBcoViewModel.updateDateOfTest(date)
+            saveDate(SYMPTOM_ONSET, result)
+        }
+        return result
+    }
+
+    private fun getStoredDate(dateCheckType: DateCheckType): LocalDate {
+        return when (dateCheckType) {
+            SYMPTOM_ONSET -> selfBcoViewModel.getDateOfSymptomOnset()
+            SYMPTOMS_INCREASED_DATE -> selfBcoViewModel.getDateOfIncreasedSymptoms()
+            TEST_DATE -> selfBcoViewModel.getDateOfTest()
+            POSITIVE_TEST_DATE -> selfBcoViewModel.getDateOfPositiveTest()
+            NEGATIVE_TEST_DATE -> selfBcoViewModel.getDateOfNegativeTest()
+        }
+    }
+
+    private fun determineResultDate(state: SelfBcoDateCheckState): LocalDate {
+        val selectedDate = requireDate()
+        val startDate = if (selfBcoViewModel.getTypeOfFlow() == COVID_CHECK_FLOW) {
+            getStoredDate(TEST_DATE)
+        } else {
+            getStoredDate(SYMPTOM_ONSET)
+        }
+        return if (state.canGoInPast) {
+            selectedDate
+        } else {
+            if (selectedDate.isAfter(startDate)) selectedDate else startDate
+        }
+    }
+
+    private fun saveDate(dateCheckType: DateCheckType, date: LocalDate) {
+        when (dateCheckType) {
+            SYMPTOM_ONSET -> selfBcoViewModel.updateDateOfSymptomOnset(date)
+            SYMPTOMS_INCREASED_DATE -> selfBcoViewModel.updateDateOfIncreasedSymptoms(date)
+            TEST_DATE -> selfBcoViewModel.updateTestDate(date)
+            POSITIVE_TEST_DATE -> selfBcoViewModel.updateDateOfPositiveTest(date)
+            NEGATIVE_TEST_DATE -> selfBcoViewModel.updateDateOfNegativeTest(date)
         }
     }
 
@@ -115,7 +157,11 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
                 SelfBcoDateCheckFragmentDirections.toSelfBcoDoubleCheckFragment()
             }
             is SymptomsWorsenedCheck -> {
-                SelfBcoDateCheckFragmentDirections.toSelfBcoChronicSymptomsWorsenedFragment()
+                SelfBcoDateCheckFragmentDirections.toSelfBcoChronicSymptomsWorsenedFragment(
+                    date = selfBcoViewModel
+                        .getDateOfSymptomOnset()
+                        .toString(DateFormats.selfBcoDateCheck)
+                )
             }
             is ChronicSymptomCheck -> {
                 SelfBcoDateCheckFragmentDirections.toSelfBcoChronicSymptomsFragment()

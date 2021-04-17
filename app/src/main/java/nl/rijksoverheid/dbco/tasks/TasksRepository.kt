@@ -251,6 +251,36 @@ class TasksRepository(
         )
     }
 
+    override fun updateNegativeTestDate(testDate: String) {
+        val new = _case.copy(dateOfNegativeTest = testDate)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
+    }
+
+    override fun getNegativeTestDate(): String? = _case.dateOfNegativeTest
+
+    override fun updatePositiveTestDate(testDate: String) {
+        val new = _case.copy(dateOfPositiveTest = testDate)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
+    }
+
+    override fun getPositiveTestDate(): String? = _case.dateOfPositiveTest
+
+    override fun updateIncreasedSymptomDate(date: String) {
+        val new = _case.copy(dateOfIncreasedSymptoms = date)
+        persistCase(
+            case = new,
+            localChanges = true
+        )
+    }
+
+    override fun getIncreasedSymptomDate(): String? = _case.dateOfIncreasedSymptoms
+
     override fun setSymptoms(symptoms: List<Symptom>) {
         val old = _case
         val new = old.copy(symptoms = symptoms.map { it.value }.toSet())

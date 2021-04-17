@@ -10,12 +10,17 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoChronicSymptomsBinding
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 
 class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_chronic_symptoms) {
+
+    private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,7 +36,12 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
 
         binding.btnAlwaysSymptoms.setOnClickListener {
             findNavController().navigate(
-                SelfBcoChronicSymptomsFragmentDirections.toSelfBcoChronicSymptomsWorsenedFragment()
+                SelfBcoChronicSymptomsFragmentDirections.toSelfBcoChronicSymptomsWorsenedFragment(
+                    date = selfBcoViewModel
+                        .getDateOfSymptomOnset()
+                        .toString(DateFormats.selfBcoDateCheck)
+
+                )
             )
         }
 

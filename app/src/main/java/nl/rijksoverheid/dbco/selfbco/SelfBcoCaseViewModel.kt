@@ -85,20 +85,68 @@ class SelfBcoCaseViewModel(
         } ?: LocalDate.now()
     }
 
-    fun getDateOfTest(): LocalDate {
-        return tasksRepository.getTestDate()?.let {
-            LocalDate.parse(it, DateFormats.dateInputData)
-        } ?: LocalDate.now()
-    }
-
     fun updateDateOfSymptomOnset(date: LocalDate) {
         tasksRepository.updateSymptomOnsetDate(
             date.toString(DateFormats.dateInputData)
         )
     }
 
-    fun updateDateOfTest(date: LocalDate) {
+    fun getDateOfTest(): LocalDate {
+        return tasksRepository.getTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: LocalDate.now()
+    }
+
+    fun updateTestDate(date: LocalDate) {
         tasksRepository.updateTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfNegativeTest(): LocalDate {
+        return tasksRepository.getNegativeTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfNegativeTest(date: LocalDate) {
+        tasksRepository.updateNegativeTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfPositiveTest(): LocalDate {
+        return tasksRepository.getPositiveTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfPositiveTest(date: LocalDate) {
+        tasksRepository.updatePositiveTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfIncreasedSymptoms(): LocalDate {
+        return tasksRepository.getIncreasedSymptomDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfIncreasedSymptoms(date: LocalDate) {
+        tasksRepository.updateIncreasedSymptomDate(
             date.toString(DateFormats.dateInputData)
         )
     }

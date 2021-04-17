@@ -17,24 +17,121 @@ import org.joda.time.LocalDateTime
 
 interface ITaskRepository {
 
+    /**
+     * @return updated [Case] from backend merged with local case
+     */
     suspend fun fetchCase(): Case
+
+    /**
+     * @return the [Case] reference entered in the portal
+     */
     fun getCaseReference(): String?
+
+    /**
+     * Save a new [Task] to the [Case]
+     * @param task -> the task to save
+     * @param shouldMerge -> closure to determine if the task already exists in the case
+     * @param shouldUpdate -> closure to determine if the task has any new information worth updating
+     */
     fun saveTask(
         task: Task,
         shouldMerge: (Task) -> Boolean,
         shouldUpdate: (Task) -> Boolean
     )
+
+    /**
+     * @return get all contacts for a given [Category]
+     * @param category -> the category to filter, when null; all contacts are returned
+     */
     fun getContactsByCategory(category: Category?): List<Task>
+
+    /**
+     * Delete a [Task] in the current [Case]
+     * @param uuid -> id of the task
+     */
     fun deleteTask(uuid: String)
+
+    /**
+     * @return the current local representation of the [Case]
+     */
     fun getCase(): Case
+
+    /**
+     * Upload the local [Case] to the backend
+     */
     suspend fun uploadCase()
+
+    /**
+     * @return the date string when the used started experiencing symptoms
+     * Note: also referred as EZD
+     */
     fun getSymptomOnsetDate(): String?
-    fun getStartOfContagiousPeriod(): LocalDate?
+
+    /**
+     * Update the symptom onset date
+     */
     fun updateSymptomOnsetDate(dateOfSymptomOnset: String)
-    fun updateTestDate(testDate: String)
+
+    /**
+     * @return the [LocalDate] when the index could be contagious
+     */
+    fun getStartOfContagiousPeriod(): LocalDate?
+
+    /**
+     * Used to store the test date when index has no symptoms
+     */
     fun getTestDate(): String?
+
+    /**
+     * Update the test date
+     */
+    fun updateTestDate(testDate: String)
+
+    /**
+     * Update the negative test date
+     */
+    fun updateNegativeTestDate(testDate: String)
+
+    /**
+     * Used to store a negative test date when EZD date is more than x days in the past
+     */
+    fun getNegativeTestDate(): String?
+
+    /**
+     * Update the positive test date
+     */
+    fun updatePositiveTestDate(testDate: String)
+
+    /**
+     * Used to store a positive test date when EZD date is more than x days in the past
+     * Note: not to be confused with [getTestDate]
+     */
+    fun getPositiveTestDate(): String?
+
+    /**
+     * Update the symptom increased date
+     */
+    fun updateIncreasedSymptomDate(date: String)
+
+    /**
+     * Used to store a date when chronic symptoms have increased
+     * used when EZD date is more than x days in the past
+     */
+    fun getIncreasedSymptomDate(): String?
+
+    /**
+     * Set the list of symptoms
+     */
     fun setSymptoms(symptom: List<Symptom>)
+
+    /**
+     * @return the symptoms of an index
+     */
     fun getSymptoms(): List<String>
+
+    /**
+     * @return the [LocalDateTime] when the current [Case] was last edited
+     */
     fun getLastEdited(): LocalDateTime
 
     companion object {
