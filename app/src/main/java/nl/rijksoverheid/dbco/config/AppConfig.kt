@@ -22,7 +22,6 @@ data class AppConfig(
 @Serializable
 data class FeatureFlags(
     val enableContactCalling: Boolean,
-    val enablePerspectiveSharing: Boolean,
     val enablePerspectiveCopy: Boolean,
     val enableSelfBCO: Boolean
 )

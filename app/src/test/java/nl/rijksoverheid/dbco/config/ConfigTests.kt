@@ -76,7 +76,6 @@ class ConfigTests {
                 enableContactCalling = true,
                 enablePerspectiveCopy = true,
                 enableSelfBCO = true,
-                enablePerspectiveSharing = true
             ),
             symptoms = listOf(),
             supportedZipCodeRanges = supportedZipCodeRanges
