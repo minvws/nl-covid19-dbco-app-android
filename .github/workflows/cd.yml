@@ -3,7 +3,7 @@ name: Build and distribute app to Firebase App Distribution
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build:
