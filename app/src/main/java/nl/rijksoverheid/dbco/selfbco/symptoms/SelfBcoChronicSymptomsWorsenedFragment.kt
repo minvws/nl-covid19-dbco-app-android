@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -23,19 +24,21 @@ class SelfBcoChronicSymptomsWorsenedFragment :
 
     private val selfBcoViewModel: SelfBcoCaseViewModel by activityViewModels()
 
+    private val args: SelfBcoChronicSymptomsWorsenedFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoChronicSymptomsWorsenedBinding.bind(view)
 
         binding.datecheckHeader.text = String.format(
             getString(R.string.selfbco_chronic_symptoms_worsened_title),
-            selfBcoViewModel.getDateOfSymptomOnset().toString(DateFormats.selfBcoDateCheck)
+            args.date
         )
 
         binding.btnNo.setOnClickListener {
             findNavController().navigate(
                 SelfBcoChronicSymptomsWorsenedFragmentDirections.toSelfBcoDateCheckFragment(
-                    state = SelfBcoDateCheckState.createSymptomTestState(requireContext())
+                    state = SelfBcoDateCheckState.createPositiveTestState(requireContext())
                 )
             )
         }

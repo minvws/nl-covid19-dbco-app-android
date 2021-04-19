@@ -506,6 +506,12 @@
         android:label="SelfBcoChronicSymptomsWorsenedFragment"
         tools:layout="@layout/fragment_selfbco_chronic_symptoms_worsened">
 
+        <argument
+            android:name="date"
+            app:argType="string"
+            app:nullable="false" />
+
+
         <action
             android:id="@+id/to_selfBcoDateCheckFragment"
             app:destination="@id/selfBcoDateCheckFragment"
