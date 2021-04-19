@@ -1,7 +1,5 @@
 package nl.rijksoverheid.dbco.config
 
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
-import nl.rijksoverheid.dbco.applifecycle.config.ZipCodeRange
 import org.junit.Assert
 import org.junit.Test
 

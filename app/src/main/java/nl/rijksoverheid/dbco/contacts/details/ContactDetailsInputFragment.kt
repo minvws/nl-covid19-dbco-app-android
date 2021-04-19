@@ -13,6 +13,7 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,7 +25,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.details.TaskDetailItemsStorage.Companion.ANSWER_EARLIER
@@ -52,7 +53,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private val viewModel: TasksDetailViewModel by viewModels()
 
-    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
 
     private val args: ContactDetailsInputFragmentArgs by navArgs()
 
@@ -112,7 +113,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewModel,
             requireContext(),
             viewLifecycleOwner,
-            appLifecycleViewModel.getFeatureFlags()
+            appViewModel.getFeatureFlags()
         ).apply {
             if (viewModel.task.source != Source.Portal) {
                 adapter.add(classificationSection)

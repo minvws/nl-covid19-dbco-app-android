@@ -219,6 +219,10 @@
     <string name="unsecure_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door een schermvergrendeling in te stellen.</string>
     <string name="unsecure_device_warning_positive_button">Naar instellingen</string>
     <string name="unsecure_device_warning_negative_button">Niet nu</string>
+    <string name="invalid_config_warning_title">Het is niet gelukt data op te halen</string>
+    <string name="invalid_config_warning_message">TBD</string>
+    <string name="invalid_config_warning_positive_button">Probeer opnieuw</string>
+    <string name="invalid_config_warning_negative_button">Sluiten</string>
     <string name="rooted_device_warning_title">Het besturingssysteem van je telefoon is aangepast</string>
     <string name="rooted_device_warning_message">GGD Contact vraagt je naar gevoelige gegevens. We raden aan je gegevens te beveiligen door het originele besturingssysteem van je telefoon te gebruiken.</string>
     <string name="rooted_device_warning_positive_button">Lees meer</string>

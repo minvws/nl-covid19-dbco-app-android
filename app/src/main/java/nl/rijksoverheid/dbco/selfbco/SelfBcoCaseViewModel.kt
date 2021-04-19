@@ -9,8 +9,8 @@
 package nl.rijksoverheid.dbco.selfbco
 
 import androidx.lifecycle.ViewModel
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
-import nl.rijksoverheid.dbco.applifecycle.config.Symptom
+import nl.rijksoverheid.dbco.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.tasks.ITaskRepository

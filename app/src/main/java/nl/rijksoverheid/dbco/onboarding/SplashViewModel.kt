@@ -17,8 +17,8 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.AppConfig
+import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
@@ -52,7 +52,7 @@ class SplashViewModel(
 
         if (lastEdited.isBefore(now.minusDays(TWO_WEEKS))) {
             wipeStorage()
-            appConfigRepository.setConfig(config)
+            appConfigRepository.storeConfig(config)
             _navigation.value = FlowSelection
         } else if (skipOnboarding) {
             _navigation.value = MyTasks

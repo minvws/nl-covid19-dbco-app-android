@@ -8,7 +8,7 @@
 
 package nl.rijksoverheid.dbco.tasks
 
-import nl.rijksoverheid.dbco.applifecycle.config.Symptom
+import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.tasks.data.entity.Task

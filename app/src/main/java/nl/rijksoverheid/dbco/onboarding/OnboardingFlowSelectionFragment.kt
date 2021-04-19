@@ -11,23 +11,23 @@ package nl.rijksoverheid.dbco.onboarding
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingFlowSelectionBinding
 import nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment
 
 class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
 
-    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingFlowSelectionBinding.bind(view)
 
-        binding.btnNoCode.isVisible = appLifecycleViewModel.getFeatureFlags().enableSelfBCO
+        binding.btnNoCode.isVisible = appViewModel.getFeatureFlags().enableSelfBCO
 
         binding.btnNext.setOnClickListener {
             findNavController().navigate(
