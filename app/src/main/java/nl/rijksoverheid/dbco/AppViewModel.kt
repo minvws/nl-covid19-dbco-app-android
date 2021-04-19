@@ -15,8 +15,6 @@ import nl.rijksoverheid.dbco.config.AppConfig
 import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState.UpdateRequired
-import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState.InAppUpdate
-import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.UpToDate
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
@@ -39,8 +37,8 @@ class AppViewModel(
             try {
                 val config = appConfigRepository.getAppConfig()
                 val state = appUpdateManager.getUpdateState(config)
-                if (state is UpdateRequired || state is InAppUpdate) {
-                    _updateEvent.value = Update(state)
+                if (state is UpdateRequired) {
+                    _updateEvent.value = Update(state.installerPackageName)
                 } else {
                     _appConfig.postValue(config)
                     _updateEvent.value = UpToDate
@@ -59,7 +57,7 @@ class AppViewModel(
 
         object UpToDate : AppLifecycleStatus()
 
-        data class Update(val state: UpdateState) : AppLifecycleStatus()
+        data class Update(val installerPackageName: String?) : AppLifecycleStatus()
 
         object ConfigError : AppLifecycleStatus()
     }

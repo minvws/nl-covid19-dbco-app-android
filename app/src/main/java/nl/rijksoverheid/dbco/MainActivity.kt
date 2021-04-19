@@ -22,9 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.play.core.install.model.AppUpdateType
 import com.scottyab.rootbeer.RootBeer
-import nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragmentDirections
 import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
@@ -34,10 +32,7 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
-import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState.InAppUpdate
-import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState.UpdateRequired
-
-private const val RC_UPDATE_APP = 1
+import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
 
 class MainActivity : AppCompatActivity() {
 
@@ -99,24 +94,11 @@ class MainActivity : AppCompatActivity() {
         configError = null
         when (updateEvent) {
             is Update -> {
-                when (updateEvent.state) {
-                    is InAppUpdate -> {
-                        updateEvent.state.appUpdateManager.startUpdateFlowForResult(
-                            updateEvent.state.appUpdateInfo,
-                            AppUpdateType.IMMEDIATE,
-                            this,
-                            RC_UPDATE_APP
-                        )
-                    }
-                    is UpdateRequired -> {
-                        findNavController(R.id.nav_host_fragment).navigate(
-                            AppUpdateRequiredFragmentDirections.actionAppUpdateRequired(
-                                updateEvent.state.installerPackageName
-                            )
-                        )
-                    }
-                    else -> { /* NO-OP */ }
-                }
+                findNavController(R.id.nav_host_fragment).navigate(
+                    AppUpdateRequiredFragmentDirections.actionAppUpdateRequired(
+                        updateEvent.installerPackageName
+                    )
+                )
             }
             is ConfigError -> {
                 configError = showErrorMessage(

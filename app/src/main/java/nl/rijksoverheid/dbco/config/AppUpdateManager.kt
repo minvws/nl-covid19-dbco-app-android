@@ -7,8 +7,6 @@
 package nl.rijksoverheid.dbco.config
 
 import android.content.Context
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
 import nl.rijksoverheid.dbco.BuildConfig
 
 class AppUpdateManager(
@@ -17,7 +15,7 @@ class AppUpdateManager(
 ) {
 
     /**
-     * Checks if a forced update is necessary and if so returns the manager and info to force the update.
+     * Checks if a forced update is necessary and if so returns the info to force the update.
      */
     fun getUpdateState(config: AppConfig): UpdateState {
         val minimumVersionCode = config.androidMinimumVersion
@@ -30,11 +28,6 @@ class AppUpdateManager(
     }
 
     sealed class UpdateState {
-
-        data class InAppUpdate(
-            val appUpdateManager: AppUpdateManager,
-            val appUpdateInfo: AppUpdateInfo
-        ) : UpdateState()
 
         data class UpdateRequired(val installerPackageName: String?) : UpdateState()
 
