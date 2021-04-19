@@ -37,17 +37,17 @@ import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import java.util.*
 
-class TasksRepository(
+class CaseRepository(
     context: Context,
     private val userRepository: IUserRepository
-) : ITaskRepository {
+) : ICaseRepository {
 
     private val api = DbcoApi.create(context)
 
     private val _case: Case
         get() {
             val savedCase = encryptedSharedPreferences.getString(
-                ITaskRepository.CASE_KEY,
+                ICaseRepository.CASE_KEY,
                 null
             )
             return if (savedCase != null) {
@@ -310,6 +310,6 @@ class TasksRepository(
             case
         }
         val caseString = Defaults.json.encodeToString(new)
-        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, caseString).apply()
+        encryptedSharedPreferences.edit().putString(ICaseRepository.CASE_KEY, caseString).apply()
     }
 }

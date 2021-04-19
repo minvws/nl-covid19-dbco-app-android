@@ -15,7 +15,7 @@ import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 
-interface ITaskRepository {
+interface ICaseRepository {
 
     /**
      * @return updated [Case] from backend merged with local case

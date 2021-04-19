@@ -18,7 +18,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ICaseRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import nl.rijksoverheid.dbco.util.numeric
 import org.joda.time.DateTimeZone
@@ -31,7 +31,7 @@ import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.Uplo
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 class TasksOverviewViewModel(
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {

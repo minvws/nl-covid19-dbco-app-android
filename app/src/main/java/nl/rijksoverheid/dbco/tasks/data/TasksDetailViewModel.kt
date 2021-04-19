@@ -15,13 +15,13 @@ import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ICaseRepository
 import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.joda.time.LocalDate
 
 class TasksDetailViewModel(
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     questionnaireRepository: IQuestionnaireRepository
 ) : ViewModel() {
 

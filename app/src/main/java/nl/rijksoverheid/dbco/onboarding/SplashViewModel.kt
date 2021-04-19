@@ -23,14 +23,14 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ICaseRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 
 class SplashViewModel(
     context: Context,
     private val userRepository: IUserRepository,
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
 

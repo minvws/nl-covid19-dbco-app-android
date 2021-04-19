@@ -22,7 +22,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.selfbco.reverse.Poller
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ICaseRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
@@ -30,7 +30,7 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.*
 
 class PairingViewModel(
     private val userRepository: IUserRepository,
-    private val tasksRepository: ITaskRepository
+    private val tasksRepository: ICaseRepository
 ) : ViewModel() {
 
     private val _pairingResult = MutableLiveData<PairingStatus>()

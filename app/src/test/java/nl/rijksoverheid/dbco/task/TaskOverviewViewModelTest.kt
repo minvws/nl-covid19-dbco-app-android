@@ -20,7 +20,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
+import nl.rijksoverheid.dbco.tasks.ICaseRepository
 import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import org.junit.Assert
@@ -54,7 +54,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -108,7 +108,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -147,7 +147,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -186,7 +186,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -224,7 +224,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -262,7 +262,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -300,7 +300,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val case = Case(
                 windowExpiresAt = "test",
@@ -338,7 +338,7 @@ class TaskOverviewViewModelTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             val cached = Case(
                 windowExpiresAt = null,
@@ -388,7 +388,7 @@ class TaskOverviewViewModelTest {
     fun `given questionnaire throws error, when questionnaire is synced, then pass error state`() =
         runBlockingTest {
             // given
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             coEvery { questionnaireMock.syncQuestionnaires() } throws IllegalStateException("test")
             every { tasksMock.getCase() } returns Case()
@@ -408,7 +408,7 @@ class TaskOverviewViewModelTest {
     fun `given questionnaire throws no error, when questionnaire is synced, then pass CaseSuccess state`() =
         runBlockingTest {
             // given
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             every { tasksMock.getCase() } returns Case()
             coEvery { tasksMock.fetchCase() } returns Case()
@@ -427,7 +427,7 @@ class TaskOverviewViewModelTest {
     fun `given upload fails, when case is uploaded, then pass error state`() =
         runBlockingTest {
             // given
-            val tasksMock = mockk<ITaskRepository>()
+            val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
             coEvery { tasksMock.uploadCase() } throws IllegalStateException("test")
 
@@ -445,7 +445,7 @@ class TaskOverviewViewModelTest {
     fun `given upload succeeds, when case is uploaded, then pass success state`() =
         runBlockingTest {
             // given
-            val tasksMock = mockk<ITaskRepository>(relaxed = true)
+            val tasksMock = mockk<ICaseRepository>(relaxed = true)
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
 
             // when
@@ -459,7 +459,7 @@ class TaskOverviewViewModelTest {
         }
 
     private fun createViewModel(
-        tasksRepository: ITaskRepository,
+        tasksRepository: ICaseRepository,
         questionnaireRepository: IQuestionnaireRepository
     ) = TasksOverviewViewModel(
         tasksRepository,
