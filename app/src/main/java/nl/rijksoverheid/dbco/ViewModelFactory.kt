@@ -11,10 +11,8 @@ package nl.rijksoverheid.dbco
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.AppUpdateManager
+import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
@@ -22,14 +20,14 @@ import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
-import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.user.IUserRepository
 
 class ViewModelFactory(
     private val context: Context,
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val contactsRepository: ContactsRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
     private val userRepository: IUserRepository,
@@ -55,12 +53,9 @@ class ViewModelFactory(
                 tasksRepository,
                 appConfigRepository
             ) as T
-            AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
-                AppLifecycleManager(
-                    context,
-                    context.getSharedPreferences("${BuildConfig.APPLICATION_ID}.config", 0),
-                    AppUpdateManagerFactory.create(context)
-                ), appConfigRepository
+            AppViewModel::class.java -> AppViewModel(
+                AppUpdateManager(context),
+                appConfigRepository
             ) as T
             OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(
                 tasksRepository,

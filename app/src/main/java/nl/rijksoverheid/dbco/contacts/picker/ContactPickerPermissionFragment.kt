@@ -27,7 +27,7 @@ import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
 

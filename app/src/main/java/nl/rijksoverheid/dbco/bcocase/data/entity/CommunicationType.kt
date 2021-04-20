@@ -6,14 +6,20 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks.data.entity
+package nl.rijksoverheid.dbco.bcocase.data.entity
 
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
 @Keep
-enum class TaskType {
-    @SerialName("contact")
-    Contact,
+enum class CommunicationType {
+    @SerialName("index")
+    Index,
+
+    @SerialName("staff")
+    Staff,
+
+    @SerialName("none")
+    None
 }

@@ -149,8 +149,6 @@ dependencies {
 
     //google
     implementation "com.google.android.material:material:$google_material_version"
-    implementation "com.google.android.play:core:$google_play_core_version"
-    implementation "com.google.android.play:core-ktx:$google_play_core_ktx_version"
     dbcoAccImplementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_crashlytics_ktx_version"
     dbcoTestImplementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_crashlytics_ktx_version"
 

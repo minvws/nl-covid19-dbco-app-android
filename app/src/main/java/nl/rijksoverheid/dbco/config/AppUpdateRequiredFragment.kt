@@ -4,7 +4,7 @@
  *
  *  SPDX-License-Identifier: EUPL-1.2
  */
-package nl.rijksoverheid.dbco.applifecycle
+package nl.rijksoverheid.dbco.config
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -12,8 +12,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
@@ -23,14 +24,16 @@ import timber.log.Timber
 private const val APP_GALLERY_PACKAGE = "com.huawei.appmarket"
 
 class AppUpdateRequiredFragment : BaseFragment(R.layout.fragment_app_update_required) {
+
     private val args: AppUpdateRequiredFragmentArgs by navArgs()
-    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
+
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentAppUpdateRequiredBinding.bind(view)
 
-        val updateMessage = appLifecycleViewModel.getUpdateMessage()
+        val updateMessage = appViewModel.getUpdateMessage()
         binding.text = updateMessage
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

@@ -10,11 +10,12 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
+import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
@@ -24,7 +25,7 @@ class SplashFragment : BaseFragment(R.layout.fragment_splash) {
 
     private val viewModel: SplashViewModel by viewModels()
 
-    private val appLifecycleViewModel: AppLifecycleViewModel by viewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,10 +33,9 @@ class SplashFragment : BaseFragment(R.layout.fragment_splash) {
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
             handleNavigation(navigation)
         })
-        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, { config ->
+        appViewModel.appConfig.observe(viewLifecycleOwner, { config ->
             viewModel.onConfigLoaded(config)
         })
-        appLifecycleViewModel.checkForForcedAppUpdate()
     }
 
     private fun handleNavigation(navigation: Navigation) {

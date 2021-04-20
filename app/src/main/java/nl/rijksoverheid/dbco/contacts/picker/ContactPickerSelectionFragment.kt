@@ -26,7 +26,7 @@ import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import timber.log.Timber
 
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {

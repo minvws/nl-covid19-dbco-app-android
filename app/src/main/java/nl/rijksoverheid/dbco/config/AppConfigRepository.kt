@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.applifecycle.config
+package nl.rijksoverheid.dbco.config
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +15,11 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate
 import kotlin.Exception
 
 class AppConfigRepository(val context: Context) {
@@ -32,32 +35,45 @@ class AppConfigRepository(val context: Context) {
     suspend fun getAppConfig(): AppConfig {
         return try {
             val config = withContext(Dispatchers.IO) { api.getAppConfig() }.body()!!
-            setConfig(config)
+            storeConfig(config)
             config
         } catch (ex: Exception) {
-            AppConfig()
+            val cached = getCachedConfig()
+            val cacheDate = getCacheDate()
+            val now = LocalDate.now(DateTimeZone.UTC)
+            if (cached == null || cacheDate?.isBefore(now.minusDays(CACHE_VALIDITY_DAYS)) != false) {
+                throw ex
+            } else {
+                cached
+            }
         }
     }
 
-    fun setConfig(config: AppConfig) {
+    fun storeConfig(config: AppConfig) {
         val configString = Defaults.json.encodeToString(config)
-        sharedPrefs.edit().putString(KEY_CONFIG, configString).apply()
+        sharedPrefs.edit()
+            .putString(KEY_CONFIG, configString)
+            .putString(
+                KEY_CONFIG_CACHE_DATE,
+                LocalDate.now(DateTimeZone.UTC).toString(DateFormats.dateInputData)
+            )
+            .apply()
     }
 
     fun getUpdateMessage(): String {
         val fallback = context.getString(R.string.update_app_description)
-        return getCachedConfig()?.androidMinimumVersionMessage ?: fallback
+        return requireConfig().androidMinimumVersionMessage ?: fallback
     }
 
-    fun getFeatureFlags(): FeatureFlags {
-        return getCachedConfig()?.featureFlags ?: FeatureFlags()
-    }
+    fun getFeatureFlags(): FeatureFlags = requireConfig().featureFlags
 
-    fun getSymptoms(): List<Symptom> = getCachedConfig()?.symptoms ?: emptyList()
+    fun getSymptoms(): List<Symptom> = requireConfig().symptoms
 
     fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
-        return getCachedConfig()?.isSelfBcoSupportedForZipCode(zipCode) ?: false
+        return requireConfig().isSelfBcoSupportedForZipCode(zipCode)
     }
+
+    private fun requireConfig(): AppConfig = getCachedConfig()!!
 
     private fun getCachedConfig(): AppConfig? {
         return sharedPrefs.getString(KEY_CONFIG, null)?.let { config ->
@@ -65,8 +81,16 @@ class AppConfigRepository(val context: Context) {
         }
     }
 
+    private fun getCacheDate(): LocalDate? {
+        return sharedPrefs.getString(KEY_CONFIG_CACHE_DATE, null)?.let { date ->
+            LocalDate.parse(date, DateFormats.dateInputData)
+        }
+    }
+
     companion object {
 
-        const val KEY_CONFIG = "KEY_CONFIG"
+        private const val KEY_CONFIG = "KEY_CONFIG"
+        private const val KEY_CONFIG_CACHE_DATE = "KEY_CONFIG_CACHE_DATE"
+        private const val CACHE_VALIDITY_DAYS = 7
     }
 }
