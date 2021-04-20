@@ -17,10 +17,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFinalizingLoadingBinding
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadError
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadError
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 
 class FinalizeLoadingFragment : BaseFragment(R.layout.fragment_finalizing_loading) {
 

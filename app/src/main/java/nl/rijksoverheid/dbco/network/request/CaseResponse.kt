@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.network.request
 
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.user.data.entity.SealedData

@@ -26,7 +26,7 @@ import com.scottyab.rootbeer.RootBeer
 import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
-import nl.rijksoverheid.dbco.tasks.CaseRepository
+import nl.rijksoverheid.dbco.bcocase.CaseRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update

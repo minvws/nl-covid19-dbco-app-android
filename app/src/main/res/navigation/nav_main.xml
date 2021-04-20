@@ -27,7 +27,7 @@
         <argument
             android:name="indexTask"
             android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
             app:nullable="true" />
 
         <action
@@ -59,7 +59,7 @@
         <argument
             android:name="indexTask"
             android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
             app:nullable="true" />
 
         <action
@@ -145,7 +145,7 @@
 
         <argument
             android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
 
     </fragment>
 

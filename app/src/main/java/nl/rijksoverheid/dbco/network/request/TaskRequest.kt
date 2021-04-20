@@ -3,10 +3,10 @@ package nl.rijksoverheid.dbco.network.request
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
 
 @Serializable
 data class TaskRequest(

@@ -13,10 +13,10 @@ import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.tasks.ICaseRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
 import org.joda.time.LocalDate
 import java.util.*
 

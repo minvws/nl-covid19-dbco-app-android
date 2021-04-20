@@ -6,10 +6,10 @@
  *
  */
 
-package nl.rijksoverheid.dbco.contacts.data.entity
+package nl.rijksoverheid.dbco.bcocase.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 
 @Serializable
 data class Case(

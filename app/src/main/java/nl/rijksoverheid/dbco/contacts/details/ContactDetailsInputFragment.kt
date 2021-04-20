@@ -36,17 +36,17 @@ import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
-import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import org.joda.time.LocalDateTime
 import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Index
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {

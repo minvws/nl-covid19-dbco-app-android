@@ -13,7 +13,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.config.AppConfig
-import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
+import nl.rijksoverheid.dbco.network.request.CaseResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse

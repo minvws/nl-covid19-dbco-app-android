@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.selfbco.reverse.Poller
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingStatePoller
-import nl.rijksoverheid.dbco.tasks.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*

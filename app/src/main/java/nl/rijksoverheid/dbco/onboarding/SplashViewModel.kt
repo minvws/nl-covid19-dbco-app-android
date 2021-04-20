@@ -23,7 +23,7 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
-import nl.rijksoverheid.dbco.tasks.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 
