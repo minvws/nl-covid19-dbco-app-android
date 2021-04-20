@@ -178,11 +178,6 @@
     <string name="reverse_pairing_try_again">Probeer opnieuw</string>
     <string name="add_contact">+ Contact toevoegen</string>
 
-    <string name="finalize_appbar_title">Bijna klaar</string>
-    <string name="finalize_uninformed_header">Contacten die nog niet zijn geïnformeerd</string>
-    <string name="finalize_uninformed_subtext">Deze contacten moeten weten dat je besmet bent</string>
-    <string name="finalize_no_phone_or_email_header">Deel e-mailadres of telefoonnummer</string>
-    <string name="finalize_no_phone_or_email_subtext">De GGD zal deze contacten informeren</string>
     <string name="finalize_sent_title">Bedankt voor het delen van de gegevens met de GGD</string>
     <string name="finalize_sent_subtitle">Je kunt nog contactgegevens aanpassen, contacten toevoegen of een andere aanpassing doorgeven.</string>
 
@@ -325,7 +320,7 @@
     <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>
     <string name="selfbco_covid_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
-    <string name="finalize_check_contact_header">Bijna klaar, wil je dit nog doen?</string>
+    <string name="finalize_check_contact_header">Bijna klaar. Je gaat de gegevens delen met de GGD. Wil je dit nu doen?</string>
     <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>
     <string name="permission_summary">Zo kun je snel de gegevens van dit contact aanvullen. Je bepaalt altijd zelf welke gegevens je met de GGD deelt.</string>
     <string name="no_add_manually">Nee, zelf toevoegen</string>

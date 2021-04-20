@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.bcocase.data.entity
 
 import kotlinx.serialization.Serializable
-import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 
 @Serializable
 data class Case(
@@ -26,4 +25,9 @@ data class Case(
     val tasks: List<Task> = mutableListOf(),
     val symptoms: Set<String> = mutableSetOf(),
     val symptomsKnown: Boolean = false
-)
+) {
+
+    fun hasEssentialTaskData(): Boolean {
+        return !tasks.any { !it.hasEssentialData() }
+    }
+}

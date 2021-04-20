@@ -27,7 +27,6 @@ import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
 
@@ -64,7 +63,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentPermissionBinding.bind(view)
 
-        val nameToShow = args.indexTask?.label ?: getString(R.string.this_contact)
+        val nameToShow = args.indexTask.label ?: getString(R.string.this_contact)
 
         binding.onboardingHeader.text =
             String.format(getString(R.string.permission_name_header), nameToShow)
@@ -79,7 +78,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             )?.apply()
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTask = args.indexTask ?: Task.createAppContact()
+                    indexTask = args.indexTask
                 )
             )
         }

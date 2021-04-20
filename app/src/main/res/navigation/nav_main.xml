@@ -26,9 +26,8 @@
 
         <argument
             android:name="indexTask"
-            android:defaultValue="@null"
             app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
-            app:nullable="true" />
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactPicker"
@@ -58,9 +57,8 @@
 
         <argument
             android:name="indexTask"
-            android:defaultValue="@null"
             app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
-            app:nullable="true" />
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactDetails"
