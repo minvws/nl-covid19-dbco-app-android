@@ -69,6 +69,8 @@ class AppConfigRepository(val context: Context) {
 
     fun getSymptoms(): List<Symptom> = requireConfig().symptoms
 
+    fun getGuidelines(): GuidelinesContainer = requireConfig().guidelines
+
     fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
         return requireConfig().isSelfBcoSupportedForZipCode(zipCode)
     }

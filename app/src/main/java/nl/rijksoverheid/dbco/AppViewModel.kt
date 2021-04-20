@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.UpToDate
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.config.AppUpdateManager
+import nl.rijksoverheid.dbco.config.GuidelinesContainer
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 class AppViewModel(
@@ -52,6 +53,8 @@ class AppViewModel(
     fun getUpdateMessage(): String = appConfigRepository.getUpdateMessage()
 
     fun getFeatureFlags(): FeatureFlags = appConfigRepository.getFeatureFlags()
+
+    fun getGuidelines(): GuidelinesContainer = appConfigRepository.getGuidelines()
 
     sealed class AppLifecycleStatus {
 
