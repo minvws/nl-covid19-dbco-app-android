@@ -13,8 +13,6 @@ import android.view.View
 import android.widget.DatePicker
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.DateFormats.dateInputUI
@@ -26,13 +24,15 @@ import org.joda.time.LocalDate
 class DateInputItem(
     val context: Context,
     question: Question?,
-    private val previousAnswerValue: JsonObject? = null,
+    private val answerSelectedListener: (String) -> Unit,
+    private val previousAnswerValue: String? = null,
     private val isEnabled: Boolean
 ) :
     BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
 
     private var binding: ItemQuestionDateBinding? = null
-    private var date: LocalDate? = null
+
+    private var date: LocalDate? = getPreviousAnswer()
 
     private val datePickerListener = { view: View ->
         showDatePicker()
@@ -45,10 +45,6 @@ class DateInputItem(
         viewBinding.item = this
 
         viewBinding.inputLabel.setOnClickListener(datePickerListener)
-
-        if (date == null) {
-            fillInPreviousAnswer()
-        }
 
         date?.let {
             viewBinding.inputLabel.setText(it.toString(dateInputUI))
@@ -83,7 +79,10 @@ class DateInputItem(
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         // Same issue as before, LocalDate uses 1-12 for months instead of the 0-11 we get from the DatePickerDialog, increase date by 1 here for proper processing.
         date = LocalDate(year, month + 1, dayOfMonth).apply {
-            binding?.inputLabel?.setText(this.toString(dateInputUI))
+            val text = this.toString(dateInputUI)
+            binding?.inputLabel?.setText(text)
+        }.also {
+            answerSelectedListener(it.toString(DateFormats.dateInputData))
         }
     }
 
@@ -101,11 +100,9 @@ class DateInputItem(
         return answers
     }
 
-    private fun fillInPreviousAnswer() {
-        previousAnswerValue?.let { prevAnswer ->
-            prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
-                date = LocalDate.parse(value, DateFormats.dateInputData)
-            }
+    private fun getPreviousAnswer(): LocalDate? {
+        return previousAnswerValue?.let { prevAnswer ->
+            LocalDate.parse(prevAnswer, DateFormats.dateInputData)
         }
     }
 }

@@ -66,7 +66,9 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentContactInputBinding.bind(view)
 
-        viewModel.init(args.indexTask)
+        if (savedInstanceState == null) {
+            viewModel.init(args.indexTask)
+        }
         initToolbar()
         initContent()
         initItemStorage(args.enabled)
