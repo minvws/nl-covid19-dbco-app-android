@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks.data.entity
+package nl.rijksoverheid.dbco.bcocase.data.entity
 
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName

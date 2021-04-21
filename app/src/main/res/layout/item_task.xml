@@ -16,7 +16,7 @@
 
         <variable
             name="task"
-            type="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            type="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
 
 
     </data>

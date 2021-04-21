@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks
+package nl.rijksoverheid.dbco.bcocase
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -17,16 +17,16 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import nl.rijksoverheid.dbco.Defaults
-import nl.rijksoverheid.dbco.applifecycle.config.Symptom
+import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.network.request.CaseRequest
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.user.data.entity.SealedData
 import nl.rijksoverheid.dbco.user.data.entity.UploadCaseBody
@@ -37,17 +37,17 @@ import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import java.util.*
 
-class TasksRepository(
+class CaseRepository(
     context: Context,
     private val userRepository: IUserRepository
-) : ITaskRepository {
+) : ICaseRepository {
 
     private val api = DbcoApi.create(context)
 
     private val _case: Case
         get() {
             val savedCase = encryptedSharedPreferences.getString(
-                ITaskRepository.CASE_KEY,
+                ICaseRepository.CASE_KEY,
                 null
             )
             return if (savedCase != null) {
@@ -310,6 +310,6 @@ class TasksRepository(
             case
         }
         val caseString = Defaults.json.encodeToString(new)
-        encryptedSharedPreferences.edit().putString(ITaskRepository.CASE_KEY, caseString).apply()
+        encryptedSharedPreferences.edit().putString(ICaseRepository.CASE_KEY, caseString).apply()
     }
 }

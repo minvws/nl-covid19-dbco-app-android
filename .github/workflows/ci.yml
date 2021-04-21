@@ -1,9 +1,6 @@
 name: Run lint and test on PR
 
-on:
-  pull_request:
-    branches:
-      - main
+on: [pull_request]
 
 jobs:
   build-and-test:

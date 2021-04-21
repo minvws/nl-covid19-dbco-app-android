@@ -9,19 +9,19 @@
 package nl.rijksoverheid.dbco.selfbco
 
 import androidx.lifecycle.ViewModel
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
-import nl.rijksoverheid.dbco.applifecycle.config.Symptom
+import nl.rijksoverheid.dbco.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
 import org.joda.time.LocalDate
 import java.util.*
 
 class SelfBcoCaseViewModel(
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
 

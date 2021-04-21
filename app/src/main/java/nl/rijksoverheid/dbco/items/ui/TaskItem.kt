@@ -14,10 +14,10 @@ import androidx.core.view.isVisible
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemTaskBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.util.setImageResource
 import java.io.Serializable
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
 
 class TaskItem(
     val task: Task

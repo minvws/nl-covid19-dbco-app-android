@@ -6,7 +6,7 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks.data
+package nl.rijksoverheid.dbco.bcocase.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -15,23 +15,23 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.util.numeric
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadError
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireSuccess
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadError
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 class TasksOverviewViewModel(
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {

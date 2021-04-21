@@ -13,12 +13,6 @@
     app:startDestination="@id/splashFragment">
 
     <action
-        android:id="@+id/action_end_of_life"
-        app:destination="@id/nav_end_of_life"
-        app:popUpTo="@id/nav_main"
-        app:popUpToInclusive="true" />
-
-    <action
         android:id="@+id/action_app_update_required"
         app:destination="@id/nav_app_update_required"
         app:popUpTo="@id/nav_main"
@@ -32,9 +26,8 @@
 
         <argument
             android:name="indexTask"
-            android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
-            app:nullable="true" />
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactPicker"
@@ -64,9 +57,8 @@
 
         <argument
             android:name="indexTask"
-            android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task"
-            app:nullable="true" />
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactDetails"
@@ -151,7 +143,7 @@
 
         <argument
             android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
 
     </fragment>
 
@@ -285,13 +277,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_end_of_life"
-        android:name="nl.rijksoverheid.dbco.applifecycle.EndOfLifeFragment"
-        tools:layout="@layout/fragment_end_of_life" />
-
-    <fragment
         android:id="@+id/nav_app_update_required"
-        android:name="nl.rijksoverheid.dbco.applifecycle.AppUpdateRequiredFragment"
+        android:name="nl.rijksoverheid.dbco.config.AppUpdateRequiredFragment"
         tools:layout="@layout/fragment_app_update_required">
 
         <argument

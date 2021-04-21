@@ -6,16 +6,16 @@
  *
  */
 
-package nl.rijksoverheid.dbco.tasks
+package nl.rijksoverheid.dbco.bcocase
 
-import nl.rijksoverheid.dbco.applifecycle.config.Symptom
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.config.Symptom
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 
-interface ITaskRepository {
+interface ICaseRepository {
 
     /**
      * @return updated [Case] from backend merged with local case

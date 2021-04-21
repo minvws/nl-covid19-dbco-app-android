@@ -25,7 +25,7 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
@@ -33,17 +33,17 @@ import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import nl.rijksoverheid.dbco.tasks.data.entity.TaskType
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseExpired
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseSuccess
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.CaseResult.CaseError
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel.ViewData
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.CaseExpired
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.CaseSuccess
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.CaseError
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.ViewData
 
 /**
  * Overview fragment showing selected or suggested contacts of the user

@@ -2,7 +2,7 @@ package nl.rijksoverheid.dbco.network.request
 
 import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import nl.rijksoverheid.dbco.contacts.data.entity.Case
+import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import org.joda.time.LocalDate
 
 @Serializable
