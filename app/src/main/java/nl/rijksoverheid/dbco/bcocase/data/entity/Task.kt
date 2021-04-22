@@ -14,6 +14,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import org.joda.time.LocalDate
+import java.util.*
 
 typealias JavaSerializable = java.io.Serializable
 
@@ -98,7 +99,11 @@ data class Task(
     }
 
     companion object {
-        fun createAppContact(): Task = Task(taskType = TaskType.Contact, source = Source.App)
+        fun createAppContact(): Task = Task(
+            uuid = UUID.randomUUID().toString(),
+            taskType = TaskType.Contact,
+            source = Source.App
+        )
     }
 }
 

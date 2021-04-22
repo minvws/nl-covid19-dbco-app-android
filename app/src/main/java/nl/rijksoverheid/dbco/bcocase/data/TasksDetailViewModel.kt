@@ -46,7 +46,8 @@ class TasksDetailViewModel(
     val task: Task
         get() = _task
 
-    fun init(task: Task) {
+    fun init(taskId: String) {
+        val task = tasksRepository.getTask(taskId)
         this._task = task
         if (task.linkedContact == null) {
             task.linkedContact = LocalContact.fromLabel(task.label)
