@@ -8,10 +8,8 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
-import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
-import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -21,7 +19,7 @@ class QuestionMultipleOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswer: JsonObject? = null,
+    previousAnswer: String? = null,
     private val isLocked: Boolean = false,
     val isEnabled: Boolean,
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(
@@ -60,10 +58,6 @@ class QuestionMultipleOptionsItem(
                 answerSelectedListener.invoke(answer)
                 selectedAnswer = answer
             }
-        }
-
-        if (selectedAnswer == null) {
-            fillInPreviousAnswer()
         }
 
         selectedAnswer?.let {

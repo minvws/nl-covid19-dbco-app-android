@@ -12,8 +12,6 @@ import android.content.Context
 import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSingleInputBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
@@ -22,26 +20,25 @@ import nl.rijksoverheid.dbco.util.toJsonPrimitive
 class SingleInputItem(
     val context: Context,
     question: Question,
-    private val previousAnswerValue: JsonObject? = null,
+    private val answerSelectedListener: (String) -> Unit,
+    previousAnswerValue: String? = null,
     private val isEnabled: Boolean
 ) :
     BaseQuestionItem<ItemSingleInputBinding>(question) {
 
-    private var input: String? = null
+    private var input: String? = previousAnswerValue
+
     override fun getLayout() = R.layout.item_single_input
 
     override fun bind(viewBinding: ItemSingleInputBinding, position: Int) {
         viewBinding.item = this
-
-        if (input == null) {
-            fillInPreviousAnswer()
-        }
 
         input?.let {
             viewBinding.editText.setText(it)
         }
         viewBinding.editText.doAfterTextChanged {
             input = it.toString()
+            input?.let { text -> answerSelectedListener(text) }
         }
         viewBinding.editText.isEnabled = isEnabled
     }
@@ -57,13 +54,5 @@ class SingleInputItem(
         val input = input ?: ""
         answers["value"] = input.toJsonPrimitive()
         return answers
-    }
-
-    private fun fillInPreviousAnswer() {
-        previousAnswerValue?.let { prevAnswer ->
-            prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
-                input = value
-            }
-        }
     }
 }

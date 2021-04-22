@@ -37,7 +37,10 @@ class ViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
-            ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
+            ContactsViewModel::class.java -> ContactsViewModel(
+                contactsRepository,
+                tasksRepository
+            ) as T
             TasksOverviewViewModel::class.java -> TasksOverviewViewModel(
                 tasksRepository,
                 questionnaireRepository

@@ -108,6 +108,16 @@ class TasksOverviewViewModel(
         })
     }
 
+    fun createEmptyContact(): Task {
+        val task = Task.createAppContact()
+        tasksRepository.saveTask(
+            task = task,
+            shouldMerge = { false },
+            shouldUpdate = { false }
+        )
+        return task
+    }
+
     data class ViewData(val caseResult: CaseResult, val questionnaireResult: QuestionnaireResult)
 
     sealed class CaseResult {

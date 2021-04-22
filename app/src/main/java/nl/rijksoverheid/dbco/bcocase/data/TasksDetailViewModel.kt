@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.bcocase.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
@@ -38,12 +39,15 @@ class TasksDetailViewModel(
     val name = MutableLiveData<String?>(null)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
+    val textAnswers: MutableMap<String, String> = mutableMapOf()
+
     private lateinit var _task: Task
 
     val task: Task
         get() = _task
 
-    fun init(task: Task) {
+    fun init(taskId: String) {
+        val task = tasksRepository.getTask(taskId)
         this._task = task
         if (task.linkedContact == null) {
             task.linkedContact = LocalContact.fromLabel(task.label)
@@ -53,6 +57,8 @@ class TasksDetailViewModel(
         communicationType.value = task.communication
         dateOfLastExposure.value = task.dateOfLastExposure
         category.value = task.category
+
+        cacheTextAnswers(task)
         updateRiskFlagsFromCategory(task)
     }
 
@@ -123,6 +129,18 @@ class TasksDetailViewModel(
         }
     }
 
+    /**
+     * Keep a local cache of answers which come from generic questions without backing live data
+     * so the view can reference initial and updated values
+     */
+    private fun cacheTextAnswers(task: Task) {
+        task.questionnaireResult?.answers?.let { answers ->
+            answers.filter { answer -> answer.isTextQuestion() }.forEach { result ->
+                textAnswers[result.questionUuid!!] = result.textValue
+            }
+        }
+    }
+
     fun updateCategoryFromRiskFlags() {
         category.value = when {
             sameHouseholdRisk.value == true -> Category.ONE
@@ -136,4 +154,13 @@ class TasksDetailViewModel(
             else -> null
         }
     }
+
+    private fun Answer.isTextQuestion(): Boolean {
+        return !questionUuid.isNullOrEmpty() &&
+                value != null &&
+                value!!.containsKey("value")
+    }
+
+    private val Answer.textValue: String
+        get() = value!!["value"]!!.jsonPrimitive.content
 }

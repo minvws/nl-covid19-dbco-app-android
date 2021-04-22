@@ -12,12 +12,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
-
-class ContactsViewModel(private val repository: ContactsRepository) : ViewModel() {
+class ContactsViewModel(
+    private val repository: ContactsRepository,
+    private val caseRepository: ICaseRepository
+) : ViewModel() {
 
     private val _localContactsLiveData = SingleLiveEvent<ArrayList<LocalContact>>()
     val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
@@ -52,5 +55,17 @@ class ContactsViewModel(private val repository: ContactsRepository) : ViewModel(
         return fullLocalContactItems.map {
             it.getDisplayName()
         } as ArrayList<String>
+    }
+
+    fun getTaskLabel(uuid: String): String? = caseRepository.getTask(uuid).label
+
+    fun onContactPicked(taskUuid: String, contact: LocalContact) {
+        val task = caseRepository.getTask(taskUuid)
+        task.linkedContact = contact
+        caseRepository.saveTask(
+            task,
+            shouldMerge = { current -> current.uuid == task.uuid },
+            shouldUpdate = { current -> task != current }
+        )
     }
 }
