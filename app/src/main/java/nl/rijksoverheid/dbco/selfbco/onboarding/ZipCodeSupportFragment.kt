@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentZipcodeSupportBinding
+import nl.rijksoverheid.dbco.onboarding.OnboardingExplanationFragment
 import nl.rijksoverheid.dbco.onboarding.FillCodeField
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.util.*
@@ -45,11 +46,11 @@ class ZipCodeSupportFragment : BaseFragment(R.layout.fragment_zipcode_support),
             val direction =
                 if (selfBcoViewModel.isZipCodeSupported(binding.codeEntry.code.toInt())) {
                     ZipCodeSupportFragmentDirections.toExplanationFragment(
-                        ExplanationFragment.SELF_BCO_FLOW_SUPPORTED_REGION
+                        OnboardingExplanationFragment.SELF_BCO_FLOW_SUPPORTED_REGION
                     )
                 } else {
                     ZipCodeSupportFragmentDirections.toExplanationFragment(
-                        ExplanationFragment.SELF_BCO_FLOW_UNSUPPORTED_REGION
+                        OnboardingExplanationFragment.SELF_BCO_FLOW_UNSUPPORTED_REGION
                     )
                 }
             findNavController().navigate(direction)

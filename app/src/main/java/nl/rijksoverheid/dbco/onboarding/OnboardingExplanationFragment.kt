@@ -6,25 +6,24 @@
  *
  */
 
-package nl.rijksoverheid.dbco.selfbco.onboarding
+package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.transition.TransitionInflater
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentExplanationBinding
+import nl.rijksoverheid.dbco.databinding.FragmentOnboardingExplanationBinding
 import nl.rijksoverheid.dbco.util.HtmlHelper
 
-class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
+class OnboardingExplanationFragment : BaseFragment(R.layout.fragment_onboarding_explanation) {
 
-    val args: ExplanationFragmentArgs by navArgs()
+    val args: OnboardingExplanationFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentExplanationBinding.bind(view)
+        val binding = FragmentOnboardingExplanationBinding.bind(view)
 
         binding.onboardingHeader.text = if (args.flow == REGULAR_FLOW) {
             getString(R.string.normal_flow_explanation_title)
@@ -50,10 +49,10 @@ class ExplanationFragment : BaseFragment(R.layout.fragment_explanation) {
             }
             setOnClickListener {
                 if (args.flow == REGULAR_FLOW) {
-                    findNavController().navigate(ExplanationFragmentDirections.toCodeFillFragment())
+                    findNavController().navigate(OnboardingExplanationFragmentDirections.toCodeFillFragment())
                 } else {
                     findNavController().navigate(
-                        ExplanationFragmentDirections.toPrivacyConsentFragment(
+                        OnboardingExplanationFragmentDirections.toPrivacyConsentFragment(
                             canGoBack = true
                         )
                     )
