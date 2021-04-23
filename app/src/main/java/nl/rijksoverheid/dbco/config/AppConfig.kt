@@ -30,7 +30,7 @@ data class GuidelinesContainer(
     val outro: GenericGuidelines
 ) {
     fun getReferenceNumberItem(referenceNumber: String): String {
-        return referenceNumberItem.replace("{ReferenceNumber}", referenceNumber)
+        return referenceNumberItem.replace(Guidelines.REFERENCE_NUMBER, referenceNumber)
     }
 }
 
@@ -44,11 +44,20 @@ data class Guidelines(
     fun getCategory1(): String = category1
 
     fun getCategory2(exposureDate: String): String {
-        return category2.replace("{ExposureDate}", exposureDate)
+        return category2.replace(EXPOSURE_DATE, exposureDate)
     }
 
     fun getCategory3(exposureDate: String): String {
-        return category3.replace("{ExposureDate}", exposureDate)
+        return category3.replace(EXPOSURE_DATE, exposureDate)
+    }
+
+    companion object {
+        const val EXPOSURE_DATE = "{ExposureDate}"
+        const val EXPOSURE_DATE_PLUS_FIVE = "{ExposureDate+5}"
+        const val EXPOSURE_DATE_PLUS_TEN = "{ExposureDate+10}"
+        const val EXPOSURE_DATE_PLUS_ELEVEN = "{ExposureDate+11}"
+        const val REFERENCE_NUMBER_ITEM = "{ReferenceNumberItem}"
+        const val REFERENCE_NUMBER = "{ReferenceNumber}"
     }
 }
 
@@ -59,15 +68,15 @@ data class GenericGuidelines(
     private val category3: String
 ) {
     fun getCategory1(referenceNumberItem: String? = null): String {
-        return category1.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+        return category1.replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory2(referenceNumberItem: String? = null): String {
-        return category2.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+        return category2.replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory3(referenceNumberItem: String? = null): String {
-        return category3.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+        return category3.replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 }
 
@@ -79,8 +88,8 @@ data class RangedGuidelines(
 ) {
     fun getCategory1(exposureDatePlusEleven: String, referenceNumberItem: String? = null): String {
         return category1
-            .replace("{ExposureDate+11}", exposureDatePlusEleven)
-            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+            .replace(Guidelines.EXPOSURE_DATE_PLUS_ELEVEN, exposureDatePlusEleven)
+            .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory2(
@@ -91,9 +100,9 @@ data class RangedGuidelines(
     ): String {
         val text = if (withinRange) category2.withinRange else category2.outsideRange
         return text
-            .replace("{ExposureDate+5}", exposureDatePlusFive)
-            .replace("{ExposureDate+10}", exposureDatePlusTen)
-            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+            .replace(Guidelines.EXPOSURE_DATE_PLUS_FIVE, exposureDatePlusFive)
+            .replace(Guidelines.EXPOSURE_DATE_PLUS_TEN, exposureDatePlusTen)
+            .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory3(
@@ -101,8 +110,8 @@ data class RangedGuidelines(
         referenceNumberItem: String? = null
     ): String {
         return category3
-            .replace("{ExposureDate+5}", exposureDatePlusFive)
-            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
+            .replace(Guidelines.EXPOSURE_DATE_PLUS_FIVE, exposureDatePlusFive)
+            .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 }
 
@@ -111,7 +120,6 @@ data class RangedGuideline(
     val withinRange: String,
     val outsideRange: String
 )
-
 
 @Serializable
 data class FeatureFlags(
