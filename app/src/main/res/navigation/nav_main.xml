@@ -25,10 +25,9 @@
         tools:layout="@layout/fragment_permission">
 
         <argument
-            android:name="indexTask"
-            android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
-            app:nullable="true" />
+            android:name="indexTaskUuid"
+            app:argType="string"
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactPicker"
@@ -57,10 +56,9 @@
         tools:layout="@layout/fragment_contact_selection">
 
         <argument
-            android:name="indexTask"
-            android:defaultValue="@null"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
-            app:nullable="true" />
+            android:name="indexTaskUuid"
+            app:argType="string"
+            app:nullable="false" />
 
         <action
             android:id="@+id/toContactDetails"
@@ -144,8 +142,9 @@
             app:nullable="false" />
 
         <argument
-            android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
+            android:name="indexTaskUuid"
+            app:argType="string"
+            app:nullable="false"/>
 
     </fragment>
 

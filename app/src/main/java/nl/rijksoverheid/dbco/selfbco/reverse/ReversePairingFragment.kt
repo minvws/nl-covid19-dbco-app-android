@@ -18,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
@@ -30,6 +31,8 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private val pairingViewModel: PairingViewModel by activityViewModels()
 
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoPairingBinding.bind(view)
@@ -37,6 +40,11 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
         setupBackButton()
         setUpListeners()
 
+        binding.btnNext.text = if (tasksViewModel.getCachedCase().hasEssentialTaskData()) {
+            getString(R.string.send_data)
+        } else {
+            getString(R.string.next)
+        }
         binding.btnNext.setOnClickListener {
             findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
         }

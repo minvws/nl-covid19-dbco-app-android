@@ -11,7 +11,6 @@ package nl.rijksoverheid.dbco.contacts.picker
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
@@ -26,7 +25,6 @@ import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
-import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import timber.log.Timber
 
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
@@ -37,41 +35,43 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
 
     private val contactsViewModel: ContactsViewModel by viewModels()
 
-    private var selectedTask: Task? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentContactSelectionBinding.bind(view)
         initToolbar(binding)
-        adapter.clear()
-        adapter.add(HeaderItem(getString(R.string.contacts_picker_title), R.dimen.activity_horizontal_margin))
 
         binding.content.adapter = adapter
         binding.content.addItemDecoration(ContactItemDecoration(requireContext()))
-        args.indexTask?.let { selectedTask = it }
 
         binding.manualEntryButton.setOnClickListener {
             // User chooses not to select an existing contact from their device, start fresh
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                    indexTask = selectedTask ?: Task.createAppContact(),
+                    indexTaskUuid = args.indexTaskUuid,
                     enabled = true
                 )
             )
         }
 
         contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            Observer { allContacts ->
+            viewLifecycleOwner, { allContacts ->
+                adapter.clear()
+                adapter.add(
+                    HeaderItem(
+                        getString(R.string.contacts_picker_title),
+                        R.dimen.activity_horizontal_margin
+                    )
+                )
                 adapter.add(SearchFieldItem({ content ->
                     Timber.d("Searching for ${content.toString()}")
                     contactsViewModel.filterLocalContactsOnName(content.toString())
                 }, R.string.contact_picker_search_hint))
 
                 // If the user has selected a task, see if we can suggest contacts that match the label of this task
-                if (selectedTask != null) {
+                val label = contactsViewModel.getTaskLabel(args.indexTaskUuid)
+                if (!label.isNullOrEmpty()) {
                     val suggestedContacts =
-                        contactsViewModel.filterSuggestedContacts(selectedTask?.label ?: "")
+                        contactsViewModel.filterSuggestedContacts(label)
                     if (suggestedContacts.isNotEmpty()) {
                         val suggestedContactsSection = Section(
                             TinyHeaderItem(R.string.header_suggested_contacts)
@@ -96,12 +96,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                 adapter.setOnItemClickListener { item, _ ->
                     when (item) {
                         is LocalContactItem -> {
-                            Timber.d("Clicked contact $item")
-                            val task = selectedTask ?: Task.createAppContact()
-                            task.linkedContact = item.contact
+                            contactsViewModel.onContactPicked(args.indexTaskUuid, item.contact)
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                                    indexTask = task,
+                                    indexTaskUuid = args.indexTaskUuid,
                                     enabled = true
                                 )
                             )

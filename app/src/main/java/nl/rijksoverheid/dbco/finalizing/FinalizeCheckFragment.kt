@@ -18,11 +18,8 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFinalizingCheckBinding
-import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
-import timber.log.Timber
 
 class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
@@ -45,49 +42,27 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         initToolbar(binding)
         binding.content.adapter = adapter
 
-        tasksViewModel.getCachedCase().let { case ->
+        val case = tasksViewModel.getCachedCase()
+
+        if (case.hasEssentialTaskData()) {
+            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
+        } else {
             contentSection.clear()
-            val noPhoneOrEmailSection = Section()
-                .apply {
-                    setHeader(
-                        DuoHeaderItem(
-                            getString(R.string.finalize_no_phone_or_email_header),
-                            getString(R.string.finalize_no_phone_or_email_subtext)
-                        )
-                    )
-                }
-
-
-            case.tasks.forEach { task ->
-                Timber.d("Found task $task")
-                when (task.taskType) {
-                    TaskType.Contact -> {
-                        // Check if all (required) data has been filled in
-                        val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
-
-                        if (!hasEmailOrPhone) {
-                            noPhoneOrEmailSection.add(TaskItem(task))
-                        }
-                    }
+            val incompleteTasks = Section().apply {
+                case.tasks.filter { task ->
+                    !task.hasEssentialData()
+                }.forEach { task ->
+                    add(TaskItem(task))
                 }
             }
-
-
-            if (noPhoneOrEmailSection.groupCount > 1) {
-                contentSection.add(noPhoneOrEmailSection)
-            }
-
-            // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
-            if (noPhoneOrEmailSection.groupCount <= 1) {
-                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
-            }
+            contentSection.add(incompleteTasks)
         }
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
                 findNavController().navigate(
                     FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
-                        indexTask = item.task,
+                        indexTaskUuid = item.task.uuid!!,
                         enabled = true
                     )
                 )

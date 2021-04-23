@@ -35,6 +35,7 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
+import java.lang.IllegalStateException
 import java.util.*
 
 class CaseRepository(
@@ -130,9 +131,6 @@ class CaseRepository(
         if (task.communication == null) {
             task.communication = CommunicationType.None
         }
-        if (task.uuid.isNullOrEmpty()) {
-            task.uuid = UUID.randomUUID().toString()
-        }
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
                 if (shouldUpdate(currentTask)) {
@@ -179,6 +177,13 @@ class CaseRepository(
         persistCase(
             case = new,
             localChanges = true
+        )
+    }
+
+    override fun getTask(uuid: String): Task {
+        val task = _case.tasks.find { task -> task.uuid == uuid }
+        return task ?: throw IllegalStateException(
+            "trying to find a task with uuid which does not exist"
         )
     }
 
