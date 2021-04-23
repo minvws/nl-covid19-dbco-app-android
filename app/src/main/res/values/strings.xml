@@ -273,7 +273,7 @@
     <string name="selfbco_date_symptoms_increased_title">Wanneer namen je klachten toe?</string>
     <string name="selfbco_date_symptoms_increased_summary">Kies de datum na %s, maar die voor je (laatste) coronatest was.</string>
     <string name="selfbco_date_negative_covid_title">Wanneer was je laatste negatieve coronatest?</string>
-    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een test waaruit bleek dat je <b>geen</b> corona had.]]></string>
+    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Let op: een zelftest telt niet mee.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
