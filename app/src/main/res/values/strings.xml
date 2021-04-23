@@ -63,8 +63,10 @@
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->
-    <string name="onboarding_flow_selection_title">Waarschuw mensen die je misschien hebt besmet</string>
-    <string name="onboarding_flow_selection_subtext">Je kunt via deze app bepalen wie van je contacten een grote kans op besmetting heeft gelopen. Ook kun je contactgegevens met de GGD delen voor het contactonderzoek.</string>
+    <string name="onboarding_start_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
+    <string name="onboarding_start_subtext">Het advies verschilt per persoon. Dit hangt af van de afstand tussen jullie en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet en tot wanneer. Deze informatie kan jij daarna makkelijk delen.</string>
+    <string name="onboarding_flow_selection_title">Heb je aan de telefoon een code van de GGD gekregen?</string>
+    <string name="onboarding_flow_selection_subtext">Let op: dit is niet de GGD-sleutel die je in de CoronaMelder-app vindt.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
     <string name="fill_code_placeholder">0000-0000-0000</string>
@@ -238,18 +240,18 @@
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
     <string name="pairing_code_being_checked">Code wordt gecontroleerd, even geduld.</string>
 
-    <string name="normal_flow_explanation_title">Deel de gegevens van contacten met de GGD</string>
-    <string name="normal_flow_explanation_summary">Zo kunnen we mensen die misschien zijn besmet zo snel mogelijk informeren. Goed om te weten: niet iedereen hoeft direct in quarantaine.</string>
+    <string name="normal_flow_explanation_title">Deel de gegevens van de mensen die misschien besmet zijn</string>
+    <string name="normal_flow_explanation_summary">Zo kunnen we deze contacten zo snel mogelijk informeren. Goed om te weten: niet iedereen hoeft direct in quarantaine.</string>
 
     <!-- Zelf BCO -->
-    <string name="zelfbco_have_code">Ik heb al een code</string>
-    <string name="zelfbco_no_code">Ik heb nog geen code</string>
+    <string name="zelfbco_have_code">Ja, ik heb een code</string>
+    <string name="zelfbco_no_code">Nee, geen code</string>
     <string name="zelfbco_zipcode_support_title">Wat zijn de eerste vier cijfers van je postcode?</string>
     <string name="zelfbco_zipcode_support_summary">Zo kunnen we bepalen in welke GGD-regio je woont. Wat je precies in de app kunt doen, verschilt per regio.</string>
     <string name="zelfbco_zipcode_support_placeholder">0000</string>
-    <string name="selfbco_explanation_title">Bepaal wie van je contacten misschien zijn besmet en informeer hen</string>
-    <string name="selfbco_explanation_supported_summary"><![CDATA[We gaan een overzicht maken van mensen die je hebt ontmoet. Goed om te weten: niet iedereen hoeft direct in quarantaine.<br/><br/>Ook kun je in jouw GGD-regio contactgegevens met de GGD delen voor het contactonderzoek.]]></string>
-    <string name="selfbco_explanation_unsupported_summary">De GGD in jouw regio kan nog geen gegevens uit de app ontvangen. Je kunt via de app wel zelf bepalen wie van je contacten misschien besmet zijn en daarna de juiste leefregels met hen delen.</string>
+    <string name="selfbco_explanation_title">Bepaal wie misschien zijn besmet en informeer hen</string>
+    <string name="selfbco_explanation_supported_summary"><![CDATA[We gaan een overzicht maken contacten die je misschien hebt besmet. Goed om te weten: niet iedereen hoeft direct in quarantaine.<br/><br/>Ook kun je in jouw GGD-regio contactgegevens met de GGD delen voor het contactonderzoek.]]></string>
+    <string name="selfbco_explanation_unsupported_summary">Je kunt in jouw regio nog geen gegevens delen met de GGD. Je kunt via de app wel zelf bepalen wie van je contacten misschien besmet zijn en daarna de juiste leefregels met hen delen.</string>
     <string name="selfbco_explanation_unsupported_button">Ik snap het</string>
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
@@ -271,7 +273,7 @@
     <string name="selfbco_date_symptoms_increased_title">Wanneer namen je klachten toe?</string>
     <string name="selfbco_date_symptoms_increased_summary">Kies de datum na %s, maar die voor je (laatste) coronatest was.</string>
     <string name="selfbco_date_negative_covid_title">Wanneer was je laatste negatieve coronatest?</string>
-    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een test waaruit bleek dat je <b>geen</b> corona had.]]></string>
+    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Let op: een zelftest telt niet mee.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>

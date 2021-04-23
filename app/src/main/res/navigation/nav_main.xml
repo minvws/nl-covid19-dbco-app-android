@@ -148,6 +148,30 @@
     </fragment>
 
     <fragment
+        android:id="@+id/onboardingStartFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingStartFragment"
+        android:label="OnboardingStartFragment"
+        tools:layout="@layout/fragment_onboarding_start">
+
+        <action
+            android:id="@+id/toOnboardingFlowSelectionFragment"
+            app:destination="@id/onboardingFlowSelectionFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/toExplanationFragment"
+            app:destination="@id/ExplanationFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/onboardingFlowSelectionFragment"
         android:name="nl.rijksoverheid.dbco.onboarding.OnboardingFlowSelectionFragment"
         android:label="OnboardingFlowSelectionFragment"
@@ -326,7 +350,7 @@
 
     <fragment
         android:id="@+id/ExplanationFragment"
-        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.OnboardingExplanationFragment"
         android:label="ExplanationFragment">
 
         <argument
@@ -358,8 +382,8 @@
         android:label="SplashFragment">
 
         <action
-            android:id="@+id/toOnboardingFlowSelectionFragment"
-            app:destination="@id/onboardingFlowSelectionFragment"
+            android:id="@+id/toOnboardingStartFragment"
+            app:destination="@id/onboardingStartFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true" />
