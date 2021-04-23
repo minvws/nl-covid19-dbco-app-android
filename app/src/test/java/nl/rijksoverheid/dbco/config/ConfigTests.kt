@@ -78,7 +78,38 @@ class ConfigTests {
                 enableSelfBCO = true,
             ),
             symptoms = listOf(),
-            supportedZipCodeRanges = supportedZipCodeRanges
+            supportedZipCodeRanges = supportedZipCodeRanges,
+            guidelines = GuidelinesContainer(
+                introExposureDateKnown = Guidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                introExposureDateUnknown = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                guidelinesExposureDateKnown = RangedGuidelines(
+                    category1 = "test",
+                    category2 = RangedGuideline(
+                        withinRange = "test",
+                        outsideRange = "test"
+                    ),
+                    category3 = "test"
+                ),
+                guidelinesExposureDateUnknown = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                referenceNumberItem = "test",
+                outro = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                )
+            )
         )
     }
 }
