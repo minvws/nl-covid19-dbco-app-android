@@ -49,7 +49,10 @@
     <string name="mycontacts_delete_data_ok">Verwijder</string>
     <string name="mycontacts_delete_data_cancel">Ga terug</string>
     <string name="mycontacts_delete_data_button">Verwijder gegevens</string>
-    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a>.]]></string>
+    <string name="upload_data_dialog_title">Wil je nu de gegevens met de GGD delen?</string>
+    <string name="upload_data_dialog_summary">Goed om te weten: je kunt hierna nog gegevens aanpassen en deze opnieuw delen.</string>
+    <string name="upload_data_dialog_ok">Delen</string>
+    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a>.<br/><br/><a href=\"https://www.toegankelijkheidsverklaring.nl/register/4379\">Digitale toegankelijkheidsverklaring</a>]]></string>
 
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 

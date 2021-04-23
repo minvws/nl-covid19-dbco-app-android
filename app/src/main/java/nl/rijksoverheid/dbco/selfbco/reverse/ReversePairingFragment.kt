@@ -40,13 +40,17 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
         setupBackButton()
         setUpListeners()
 
-        binding.btnNext.text = if (tasksViewModel.getCachedCase().hasEssentialTaskData()) {
+        binding.btnNext.text = if (tasksViewModel.hasEssentialTaskData()) {
             getString(R.string.send_data)
         } else {
             getString(R.string.next)
         }
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
+            if (tasksViewModel.hasEssentialTaskData()) {
+                showUploadDialog()
+            } else {
+                findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
+            }
         }
 
         binding.retryWithNewCode.setOnClickListener { pairingViewModel.startReversePairing() }
@@ -126,6 +130,20 @@ class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
     private fun hasUserSharedCode(): Boolean {
         return pairingViewModel.userHasSharedCode.value == true
+    }
+
+    private fun showUploadDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.upload_data_dialog_title))
+        builder.setMessage(getString(R.string.upload_data_dialog_summary))
+        builder.setPositiveButton(R.string.upload_data_dialog_ok) { dialog, _ ->
+            dialog.dismiss()
+            findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
     private fun showShareCodeDialog() {

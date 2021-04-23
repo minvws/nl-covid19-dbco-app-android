@@ -85,6 +85,10 @@ class TasksOverviewViewModel(
         }
     }
 
+    fun isCurrentCaseExpired(): Boolean = _viewData.value?.caseResult is CaseResult.CaseExpired
+
+    fun hasEssentialTaskData(): Boolean = getCachedCase().hasEssentialTaskData()
+
     fun getCachedQuestionnaire() = questionnaireRepository.getCachedQuestionnaire()
 
     fun getStartOfContagiousPeriod(): LocalDate {

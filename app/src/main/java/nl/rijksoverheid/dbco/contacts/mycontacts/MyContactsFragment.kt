@@ -176,22 +176,35 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.sendButton.setOnClickListener {
             binding.pairingContainer.isVisible = false
             if (isUserPaired()) {
-                if (tasksViewModel.viewData.value?.caseResult !is CaseExpired) {
-                    findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                if (!tasksViewModel.isCurrentCaseExpired()) {
+                    if (tasksViewModel.hasEssentialTaskData()) {
+                        showUploadDialog()
+                    } else {
+                        findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+                    }
                 } else {
                     showLocalDeletionDialog()
                 }
             } else {
-                // User isn't paired yet, let them pair first
-                findNavController()
-                    .navigate(
-                        MyContactsFragmentDirections.toReversePairingFragment(
-                            credentials = pairingCredentials,
-                            initWithInvalidCodeState = initReversePairingWithInvalidState
-                        )
-                    )
+                openReversePairing(
+                    pairingCredentials = pairingCredentials,
+                    initReversePairingWithInvalidState = initReversePairingWithInvalidState
+                )
             }
         }
+    }
+
+    private fun openReversePairing(
+        pairingCredentials: ReversePairingCredentials? = null,
+        initReversePairingWithInvalidState: Boolean = false
+    ) {
+        findNavController()
+            .navigate(
+                MyContactsFragmentDirections.toReversePairingFragment(
+                    credentials = pairingCredentials,
+                    initWithInvalidCodeState = initReversePairingWithInvalidState
+                )
+            )
     }
 
     private fun setUpPairingListeners() {
@@ -388,7 +401,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
     }
 
     private fun checkPermissionGoToTaskDetails(task: Task) {
-        if (tasksViewModel.viewData.value?.caseResult is CaseExpired) {
+        if (tasksViewModel.getCachedQuestionnaire() == null) {
+            showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
+            return
+        }
+
+        if (tasksViewModel.isCurrentCaseExpired()) {
             // no need to check permissions, just show the task but disabled
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
@@ -399,10 +417,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             return
         }
 
-        if (tasksViewModel.getCachedQuestionnaire() == null) {
-            showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
-            return
-        }
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS
@@ -447,6 +461,20 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun isUserPaired(): Boolean {
         return userPrefs.getBoolean(Constants.USER_IS_PAIRED, false)
+    }
+
+    private fun showUploadDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.upload_data_dialog_title))
+        builder.setMessage(getString(R.string.upload_data_dialog_summary))
+        builder.setPositiveButton(R.string.upload_data_dialog_ok) { dialog, _ ->
+            dialog.dismiss()
+            findNavController().navigate(MyContactsFragmentDirections.toFinalizeCheck())
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
     private fun showLocalDeletionDialog() {
