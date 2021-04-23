@@ -10,29 +10,21 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingFlowSelectionBinding
-import nl.rijksoverheid.dbco.selfbco.onboarding.ExplanationFragment
 
 class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
-
-    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingFlowSelectionBinding.bind(view)
 
-        binding.btnNoCode.isVisible = appViewModel.getFeatureFlags().enableSelfBCO
-
         binding.btnNext.setOnClickListener {
             findNavController().navigate(
                 OnboardingFlowSelectionFragmentDirections.toExplanationFragment(
-                    ExplanationFragment.REGULAR_FLOW
+                    OnboardingExplanationFragment.REGULAR_FLOW
                 )
             )
         }
@@ -42,5 +34,7 @@ class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboardin
                 OnboardingFlowSelectionFragmentDirections.toZipCodeSupportedFragment()
             )
         }
+
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.AppViewModel
-import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation
@@ -44,7 +44,7 @@ class SplashFragment : BaseFragment(R.layout.fragment_splash) {
             is Consent -> SplashFragmentDirections.toOnboardingPrivacyConsentFragment(
                 canGoBack = false
             )
-            is FlowSelection -> SplashFragmentDirections.toOnboardingFlowSelectionFragment()
+            is Start -> SplashFragmentDirections.toOnboardingStartFragment()
         }
         findNavController().navigate(direction)
     }

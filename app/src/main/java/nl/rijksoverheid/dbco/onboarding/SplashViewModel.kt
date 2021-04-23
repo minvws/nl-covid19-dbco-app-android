@@ -20,7 +20,7 @@ import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
 import nl.rijksoverheid.dbco.config.AppConfig
 import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
-import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.FlowSelection
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
@@ -53,7 +53,7 @@ class SplashViewModel(
         if (lastEdited.isBefore(now.minusDays(TWO_WEEKS))) {
             wipeStorage()
             appConfigRepository.storeConfig(config)
-            _navigation.value = FlowSelection
+            _navigation.value = Start
         } else if (skipOnboarding) {
             _navigation.value = MyTasks
         } else if (isPaired && !gaveConsent) {
@@ -61,7 +61,7 @@ class SplashViewModel(
         } else if (isPaired && gaveConsent) {
             _navigation.value = MyTasks
         } else {
-            _navigation.value = FlowSelection
+            _navigation.value = Start
         }
     }
 
@@ -77,6 +77,6 @@ class SplashViewModel(
 
         object MyTasks : Navigation()
         object Consent : Navigation()
-        object FlowSelection : Navigation()
+        object Start : Navigation()
     }
 }
