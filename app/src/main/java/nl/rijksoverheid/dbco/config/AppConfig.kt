@@ -22,10 +22,10 @@ data class AppConfig(
 
 @Serializable
 data class GuidelinesContainer(
-    val intro: Guidelines,
-    val genericIntro: GenericGuidelines,
-    val guidelines: RangedGuidelines,
-    val genericGuidelines: GenericGuidelines,
+    val introExposureDateKnown: Guidelines,
+    val introExposureDateUnknown: GenericGuidelines,
+    val guidelinesExposureDateKnown: RangedGuidelines,
+    val guidelinesExposureDateUnknown: GenericGuidelines,
     private val referenceNumberItem: String,
     val outro: GenericGuidelines
 ) {
@@ -59,15 +59,15 @@ data class GenericGuidelines(
     private val category3: String
 ) {
     fun getCategory1(referenceNumberItem: String? = null): String {
-        return category1.replace("{ReferenceItem}", referenceNumberItem ?: "")
+        return category1.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 
     fun getCategory2(referenceNumberItem: String? = null): String {
-        return category2.replace("{ReferenceItem}", referenceNumberItem ?: "")
+        return category2.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 
     fun getCategory3(referenceNumberItem: String? = null): String {
-        return category3.replace("{ReferenceItem}", referenceNumberItem ?: "")
+        return category3.replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 }
 
@@ -80,7 +80,7 @@ data class RangedGuidelines(
     fun getCategory1(exposureDatePlusEleven: String, referenceNumberItem: String? = null): String {
         return category1
             .replace("{ExposureDate+11}", exposureDatePlusEleven)
-            .replace("{ReferenceItem}", referenceNumberItem ?: "")
+            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 
     fun getCategory2(
@@ -93,7 +93,7 @@ data class RangedGuidelines(
         return text
             .replace("{ExposureDate+5}", exposureDatePlusFive)
             .replace("{ExposureDate+10}", exposureDatePlusTen)
-            .replace("{ReferenceItem}", referenceNumberItem ?: "")
+            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 
     fun getCategory3(
@@ -102,7 +102,7 @@ data class RangedGuidelines(
     ): String {
         return category3
             .replace("{ExposureDate+5}", exposureDatePlusFive)
-            .replace("{ReferenceItem}", referenceNumberItem ?: "")
+            .replace("{ReferenceNumberItem}", referenceNumberItem ?: "")
     }
 }
 

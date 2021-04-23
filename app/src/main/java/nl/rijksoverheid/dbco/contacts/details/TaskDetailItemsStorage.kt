@@ -450,13 +450,13 @@ class TaskDetailItemsStorage(
         var message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
             when (viewModel.category.value) {
-                Category.ONE -> guidelines.genericGuidelines.getCategory1(
+                Category.ONE -> guidelines.guidelinesExposureDateUnknown.getCategory1(
                     referenceNumberItem = referenceItem
                 )
-                Category.TWO_A, Category.TWO_B -> guidelines.genericGuidelines.getCategory2(
+                Category.TWO_A, Category.TWO_B -> guidelines.guidelinesExposureDateUnknown.getCategory2(
                     referenceNumberItem = referenceItem
                 )
-                Category.THREE_A, Category.THREE_B -> guidelines.genericGuidelines.getCategory3(
+                Category.THREE_A, Category.THREE_B -> guidelines.guidelinesExposureDateUnknown.getCategory3(
                     referenceNumberItem = referenceItem
                 )
                 else -> ""
@@ -475,17 +475,17 @@ class TaskDetailItemsStorage(
             val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
 
             when (viewModel.category.value) {
-                Category.ONE -> guidelines.guidelines.getCategory1(
+                Category.ONE -> guidelines.guidelinesExposureDateKnown.getCategory1(
                     exposureDatePlusEleven = exposureDatePlusEleven,
                     referenceNumberItem = referenceItem
                 )
-                Category.TWO_A, Category.TWO_B -> guidelines.guidelines.getCategory2(
+                Category.TWO_A, Category.TWO_B -> guidelines.guidelinesExposureDateKnown.getCategory2(
                     withinRange = daysBetweenEncounterAndNow < 4,
                     exposureDatePlusFive = exposureDatePlusFive,
                     exposureDatePlusTen = exposureDatePlusTen,
                     referenceNumberItem = referenceItem
                 )
-                Category.THREE_A, Category.THREE_B -> guidelines.guidelines.getCategory3(
+                Category.THREE_A, Category.THREE_B -> guidelines.guidelinesExposureDateKnown.getCategory3(
                     exposureDatePlusFive = exposureDatePlusFive,
                     referenceNumberItem = referenceItem
                 )
@@ -505,18 +505,18 @@ class TaskDetailItemsStorage(
         // To be shown above the copied message
         val introMessage = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             when (viewModel.category.value) {
-                Category.ONE -> guidelines.genericIntro.getCategory1()
-                Category.TWO_A, Category.TWO_B -> guidelines.genericIntro.getCategory2()
-                Category.THREE_A, Category.THREE_B -> guidelines.genericIntro.getCategory3()
+                Category.ONE -> guidelines.introExposureDateUnknown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateUnknown.getCategory2()
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateUnknown.getCategory3()
                 else -> ""
             }
         } else {
             when (viewModel.category.value) {
-                Category.ONE -> guidelines.intro.getCategory1()
-                Category.TWO_A, Category.TWO_B -> guidelines.intro.getCategory2(
+                Category.ONE -> guidelines.introExposureDateKnown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateKnown.getCategory2(
                     exposureDate = dateLastExposure
                 )
-                Category.THREE_A, Category.THREE_B -> guidelines.intro.getCategory3(
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateKnown.getCategory3(
                     exposureDate = dateLastExposure
                 )
                 else -> ""
@@ -543,6 +543,7 @@ class TaskDetailItemsStorage(
             add(ParagraphItem(message, clickable = true))
             add(SubHeaderItem(footer))
 
+            val canCallTask = viewModel.task.linkedContact?.hasSingleValidPhoneNumber() ?: false
             if (featureFlags.enablePerspectiveCopy) {
                 add(
                     ButtonItem(
@@ -561,7 +562,7 @@ class TaskDetailItemsStorage(
                         },
                         // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
                         // Otherwise always light
-                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == false)) {
+                        type = if (!featureFlags.enableContactCalling || !canCallTask) {
                             ButtonType.DARK
                         } else {
                             ButtonType.LIGHT
@@ -571,7 +572,7 @@ class TaskDetailItemsStorage(
             }
 
             // add "Call $name" button if phone is set and config has calling on
-            if (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == true) {
+            if (featureFlags.enableContactCalling && canCallTask) {
                 add(
                     ButtonItem(
                         context.getString(
