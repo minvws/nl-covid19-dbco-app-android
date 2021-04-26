@@ -68,10 +68,7 @@ class ConfigTests {
     private fun createConfig(supportedZipCodeRanges: List<ZipCodeRange>): AppConfig {
         return AppConfig(
             androidMinimumVersionMessage = "test",
-            iosMinimumVersion = "1",
-            iosMinimumVersionMessage = "test",
             androidMinimumVersion = 1,
-            iosAppStoreURL = "test",
             featureFlags = FeatureFlags(
                 enableContactCalling = true,
                 enablePerspectiveCopy = true,
