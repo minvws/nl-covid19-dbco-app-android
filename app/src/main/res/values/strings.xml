@@ -64,7 +64,7 @@
 
     <!--    Onboarding-->
     <string name="onboarding_start_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
-    <string name="onboarding_start_subtext">Het advies verschilt per persoon. Dit hangt af van de afstand tussen jullie en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet en tot wanneer. Deze informatie kan jij daarna makkelijk delen.</string>
+    <string name="onboarding_start_subtext">Het advies verschilt per persoon. Dit hangt af van of jullie afstand hielden en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet blijven en tot wanneer. Deze informatie kan jij daarna makkelijk delen.</string>
     <string name="onboarding_flow_selection_title">Heb je aan de telefoon een code van de GGD gekregen?</string>
     <string name="onboarding_flow_selection_subtext">Let op: dit is niet de GGD-sleutel die je in de CoronaMelder-app vindt.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
