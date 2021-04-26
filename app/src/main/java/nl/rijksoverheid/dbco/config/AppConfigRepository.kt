@@ -22,6 +22,10 @@ import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import kotlin.Exception
 
+/**
+ * Repository used to fetch/cache and return the current dynamic configuration
+ * used throughout the app
+ */
 class AppConfigRepository(val context: Context) {
 
     private val api by lazy {
@@ -32,6 +36,12 @@ class AppConfigRepository(val context: Context) {
         LocalStorageRepository.getInstance(context).getSharedPreferences()
     }
 
+    /**
+     * Fetch new configuration from the API and subsequently cache the config.
+     * When an error occurs it might use the cached version depending on cache age.
+     * @return the configuration, whether from the API or cache, or an [Exception] when
+     * API call throws an error and the cache is not healthy
+     */
     suspend fun getAppConfig(): AppConfig {
         return try {
             val config = withContext(Dispatchers.IO) { api.getAppConfig() }.body()!!

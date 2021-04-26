@@ -21,6 +21,10 @@ import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
 
+/**
+ * ViewModel used in the consent.
+ * Also determines that the next step in the flow is when moving to the next screen
+ */
 class OnboardingConsentViewModel(
     private val tasksRepository: ICaseRepository,
     private val userRepository: IUserRepository,

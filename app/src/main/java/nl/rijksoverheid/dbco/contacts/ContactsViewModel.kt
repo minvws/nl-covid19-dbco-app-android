@@ -17,12 +17,19 @@ import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
+/**
+ * ViewModel which exposes local contacts to attach to a [Task] in the current [Case]
+ */
 class ContactsViewModel(
     private val repository: ContactsRepository,
     private val caseRepository: ICaseRepository
 ) : ViewModel() {
 
     private val _localContactsLiveData = SingleLiveEvent<ArrayList<LocalContact>>()
+
+    /**
+     * Exposes a list of contacts in the users phone book
+     */
     val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
     private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList()

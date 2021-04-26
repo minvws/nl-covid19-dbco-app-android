@@ -22,6 +22,10 @@ import nl.rijksoverheid.dbco.config.AppUpdateManager
 import nl.rijksoverheid.dbco.config.GuidelinesContainer
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
+/**
+ * ViewModel used in the app scope.
+ * Used for update related logic, accessing feature flags and other configurations
+ */
 class AppViewModel(
     private val appUpdateManager: AppUpdateManager,
     private val appConfigRepository: AppConfigRepository

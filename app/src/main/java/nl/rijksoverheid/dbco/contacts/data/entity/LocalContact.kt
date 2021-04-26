@@ -15,6 +15,9 @@ import java.util.*
 
 typealias JavaSerializable = java.io.Serializable
 
+/**
+ * Contact attached to a [Task]
+ */
 @Serializable
 @Keep
 data class LocalContact(

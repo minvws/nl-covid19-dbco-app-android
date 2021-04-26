@@ -37,6 +37,9 @@ import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
 
+/**
+ * Used to display all questions and data for a [Task]
+ */
 class TaskDetailItemsStorage(
     val enabled: Boolean,
     val viewModel: TasksDetailViewModel,

@@ -2,16 +2,41 @@ package nl.rijksoverheid.dbco.config
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Dynamic configuration used throughout the app
+ */
 @Serializable
 data class AppConfig(
+
+    /**
+     * The message to show when the current version of the app is not supported anymore
+     */
     val androidMinimumVersionMessage: String?,
-    val iosMinimumVersion: String?,
-    val iosMinimumVersionMessage: String?,
+
+    /**
+     * The minimum version code of the app which is supported by the back-end
+     */
     val androidMinimumVersion: Int,
-    val iosAppStoreURL: String?,
+
+    /**
+     * Current feature flag values, used to disable/enable some features in the app
+     */
     val featureFlags: FeatureFlags,
+
+    /**
+     * List of possible symptoms an index might have and select
+     */
     val symptoms: List<Symptom>,
+
+    /**
+     * List of zip-code ranges associated with GGD instances which currently
+     * support the SelfBCO part of the app
+     */
     val supportedZipCodeRanges: List<ZipCodeRange>,
+
+    /**
+     * Guidelines specific for risk categories to show for a given [Task]
+     */
     val guidelines: GuidelinesContainer
 ) {
 

@@ -9,6 +9,10 @@ package nl.rijksoverheid.dbco.config
 import android.content.Context
 import nl.rijksoverheid.dbco.BuildConfig
 
+/**
+ * Manager responsible for providing state related to the current app version
+ * and whether this app version is supported in the dynamic [AppConfig]
+ */
 class AppUpdateManager(
     private val context: Context,
     private val currentVersionCode: Int = BuildConfig.VERSION_CODE
@@ -29,8 +33,15 @@ class AppUpdateManager(
 
     sealed class UpdateState {
 
+        /**
+         * Current app has to be updated in the relevant store where it was downloaded
+         * @param installerPackageName package name used to open the store
+         */
         data class UpdateRequired(val installerPackageName: String?) : UpdateState()
 
+        /**
+         * Current app version is fully supported
+         */
         object UpToDate : UpdateState()
     }
 }
