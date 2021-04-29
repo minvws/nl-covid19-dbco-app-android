@@ -13,6 +13,9 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
+/**
+ * Local storage used for storing all data, uses encrypted [SharedPreferences]
+ */
 class LocalStorageRepository(context: Context) {
 
     private val prefs: SharedPreferences = EncryptedSharedPreferences.create(

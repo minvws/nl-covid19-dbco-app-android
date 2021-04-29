@@ -11,6 +11,9 @@ package nl.rijksoverheid.dbco.contacts.data.entity
 import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 
+/**
+ * Risk category for a [Task]
+ */
 @Keep
 @kotlinx.serialization.Serializable
 enum class Category(val label: String) {

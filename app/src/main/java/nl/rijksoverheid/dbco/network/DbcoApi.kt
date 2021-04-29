@@ -14,7 +14,7 @@ import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.config.AppConfig
 import nl.rijksoverheid.dbco.network.request.CaseResponse
-import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
+import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnaireResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
@@ -30,7 +30,7 @@ interface DbcoApi {
 
     @GET("v2/questionnaires")
     @Streaming
-    suspend fun getQuestionnaires(): QuestionnairyResponse
+    suspend fun getQuestionnaires(): QuestionnaireResponse
 
     @GET("v2/cases/{token}")
     @Streaming

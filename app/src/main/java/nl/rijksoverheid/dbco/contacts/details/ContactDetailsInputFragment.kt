@@ -115,7 +115,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             viewModel,
             requireContext(),
             viewLifecycleOwner,
-            appViewModel.getFeatureFlags()
+            appViewModel.getFeatureFlags(),
+            appViewModel.getGuidelines()
         ).apply {
             if (viewModel.task.source != Source.Portal) {
                 adapter.add(classificationSection)

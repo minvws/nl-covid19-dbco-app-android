@@ -27,6 +27,9 @@ import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 
+/**
+ * ViewModel which, when starting the app, determines where in the flow the app should start
+ */
 class SplashViewModel(
     context: Context,
     private val userRepository: IUserRepository,

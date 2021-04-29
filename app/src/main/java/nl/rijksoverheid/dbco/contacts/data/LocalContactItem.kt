@@ -14,9 +14,6 @@ import nl.rijksoverheid.dbco.databinding.ItemContactBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import java.io.Serializable
 
-/**
- * Class representing a user's contact from their contacts list
- */
 class LocalContactItem(
     val contact: LocalContact
 ) : BaseBindableItem<ItemContactBinding>(), Serializable {

@@ -16,7 +16,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.*
@@ -31,17 +30,23 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.config.FeatureFlags
+import nl.rijksoverheid.dbco.config.GuidelinesContainer
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
 
+/**
+ * Used to display all questions and data for a [Task]
+ */
 class TaskDetailItemsStorage(
     val enabled: Boolean,
     val viewModel: TasksDetailViewModel,
     val context: Context,
     private val viewLifecycleOwner: LifecycleOwner,
-    private val featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags,
+    private val guidelines: GuidelinesContainer
 ) {
 
     var classificationQuestion: Question? = null
@@ -441,18 +446,22 @@ class TaskDetailItemsStorage(
 
         val dateLastExposure = viewModel.dateOfLastExposure.value
 
+        val referenceItem = if (viewModel.hasCaseReference()) {
+            guidelines.getReferenceNumberItem(viewModel.getCaseReference()!!)
+        } else null
+
         var message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
             when (viewModel.category.value) {
-                Category.ONE -> {
-                    context.getString(R.string.inform_contact_guidelines_category1_no_date)
-                }
-                Category.TWO_A, Category.TWO_B -> {
-                    context.getString(R.string.inform_contact_guidelines_category2_no_date)
-                }
-                Category.THREE_A, Category.THREE_B -> {
-                    context.getString(R.string.inform_contact_guidelines_category3_no_date)
-                }
+                Category.ONE -> guidelines.guidelinesExposureDateUnknown.getCategory1(
+                    referenceNumberItem = referenceItem
+                )
+                Category.TWO_A, Category.TWO_B -> guidelines.guidelinesExposureDateUnknown.getCategory2(
+                    referenceNumberItem = referenceItem
+                )
+                Category.THREE_A, Category.THREE_B -> guidelines.guidelinesExposureDateUnknown.getCategory3(
+                    referenceNumberItem = referenceItem
+                )
                 else -> ""
             }
 
@@ -469,50 +478,28 @@ class TaskDetailItemsStorage(
             val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
 
             when (viewModel.category.value) {
-                Category.ONE -> {
-                    context.getString(
-                        R.string.inform_contact_guidelines_category1_with_date,
-                        exposureDatePlusEleven
-                    )
-                }
-                Category.TWO_A, Category.TWO_B -> {
-                    if (daysBetweenEncounterAndNow < 4) {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2_recent_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    } else {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    }
-                }
-                Category.THREE_A, Category.THREE_B -> {
-                    context.getString(
-                        R.string.inform_contact_guidelines_category3_with_date,
-                        exposureDatePlusFive
-                    )
-                }
+                Category.ONE -> guidelines.guidelinesExposureDateKnown.getCategory1(
+                    exposureDatePlusEleven = exposureDatePlusEleven,
+                    referenceNumberItem = referenceItem
+                )
+                Category.TWO_A, Category.TWO_B -> guidelines.guidelinesExposureDateKnown.getCategory2(
+                    withinRange = daysBetweenEncounterAndNow < 4,
+                    exposureDatePlusFive = exposureDatePlusFive,
+                    exposureDatePlusTen = exposureDatePlusTen,
+                    referenceNumberItem = referenceItem
+                )
+                Category.THREE_A, Category.THREE_B -> guidelines.guidelinesExposureDateKnown.getCategory3(
+                    exposureDatePlusFive = exposureDatePlusFive,
+                    referenceNumberItem = referenceItem
+                )
                 else -> ""
             }
         }
 
-        if (viewModel.hasCaseReference()) {
-            message += context.getString(
-                R.string.inform_contact_guidelines_case_number,
-                viewModel.getCaseReference()
-            )
-        }
-
         val link = when (viewModel.category.value) {
-            Category.ONE -> context.getString(R.string.inform_contact_link_category1)
-            Category.TWO_A -> context.getString(R.string.inform_contact_link_category2a)
-            Category.TWO_B -> context.getString(R.string.inform_contact_link_category2b)
-            Category.THREE_A, Category.THREE_B -> context.getString(R.string.inform_contact_link_category3)
+            Category.ONE -> guidelines.outro.getCategory1()
+            Category.TWO_A, Category.TWO_B -> guidelines.outro.getCategory2()
+            Category.THREE_A, Category.THREE_B -> guidelines.outro.getCategory3()
             else -> ""
         }
 
@@ -521,36 +508,19 @@ class TaskDetailItemsStorage(
         // To be shown above the copied message
         val introMessage = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             when (viewModel.category.value) {
-                Category.ONE -> context.getString(R.string.inform_contact_intro_category1)
-                Category.TWO_A -> context.getString(R.string.inform_contact_intro_category2, "")
-                Category.TWO_B -> context.getString(R.string.inform_contact_intro_category2, "")
-                Category.THREE_A, Category.THREE_B -> context.getString(
-                    R.string.inform_contact_intro_category3,
-                    ""
-                )
+                Category.ONE -> guidelines.introExposureDateUnknown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateUnknown.getCategory2()
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateUnknown.getCategory3()
                 else -> ""
             }
         } else {
-            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            val exposureDateFormatted = "${
-                context.getString(
-                    R.string.inform_contact_intro_date,
-                    exposureDate.toString(DateFormats.informContactGuidelinesUI)
-                )
-            } "
             when (viewModel.category.value) {
-                Category.ONE -> context.getString(R.string.inform_contact_intro_category1)
-                Category.TWO_A -> context.getString(
-                    R.string.inform_contact_intro_category2,
-                    exposureDateFormatted
+                Category.ONE -> guidelines.introExposureDateKnown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateKnown.getCategory2(
+                    exposureDate = dateLastExposure
                 )
-                Category.TWO_B -> context.getString(
-                    R.string.inform_contact_intro_category2,
-                    exposureDateFormatted
-                )
-                Category.THREE_A, Category.THREE_B -> context.getString(
-                    R.string.inform_contact_intro_category3,
-                    exposureDateFormatted
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateKnown.getCategory3(
+                    exposureDate = dateLastExposure
                 )
                 else -> ""
             }
@@ -576,6 +546,7 @@ class TaskDetailItemsStorage(
             add(ParagraphItem(message, clickable = true))
             add(SubHeaderItem(footer))
 
+            val canCallTask = viewModel.task.linkedContact?.hasSingleValidPhoneNumber() ?: false
             if (featureFlags.enablePerspectiveCopy) {
                 add(
                     ButtonItem(
@@ -594,7 +565,7 @@ class TaskDetailItemsStorage(
                         },
                         // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
                         // Otherwise always light
-                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == false)) {
+                        type = if (!featureFlags.enableContactCalling || !canCallTask) {
                             ButtonType.DARK
                         } else {
                             ButtonType.LIGHT
@@ -604,7 +575,7 @@ class TaskDetailItemsStorage(
             }
 
             // add "Call $name" button if phone is set and config has calling on
-            if (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == true) {
+            if (featureFlags.enableContactCalling && canCallTask) {
                 add(
                     ButtonItem(
                         context.getString(

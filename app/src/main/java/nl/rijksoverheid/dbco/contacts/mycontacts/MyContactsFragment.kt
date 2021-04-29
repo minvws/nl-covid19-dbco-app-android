@@ -45,10 +45,6 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.Case
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.ViewData
 
-/**
- * Overview fragment showing selected or suggested contacts of the user
- */
-
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     lateinit var binding: FragmentMyContactsBinding
