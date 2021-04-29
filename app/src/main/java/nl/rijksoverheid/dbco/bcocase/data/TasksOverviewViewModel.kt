@@ -30,6 +30,10 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.Up
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
+/**
+ * ViewModel used to fetch and show all [Task]s currently added to the [Case].
+ * Is also used to upload changes in the current [Case]
+ */
 class TasksOverviewViewModel(
     private val tasksRepository: ICaseRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
@@ -37,9 +41,17 @@ class TasksOverviewViewModel(
 ) : ViewModel() {
 
     private val _viewData = SingleLiveEvent<ViewData>()
+
+    /**
+     * Exposes all data needed to show the [Task]s in the current case
+     */
     val viewData: LiveData<ViewData> = _viewData
 
     private val _uploadStatus = SingleLiveEvent<UploadStatus>()
+
+    /**
+     * Exposes the upload state when uploading all changes in the current [Case]
+     */
     val uploadStatus: LiveData<UploadStatus> = _uploadStatus
 
     fun getCachedCase() = tasksRepository.getCase()
@@ -95,6 +107,10 @@ class TasksOverviewViewModel(
         return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
     }
 
+    /**
+     * Sort the list of [Task]s in the current case.
+     * First on category, then on last exposure date and finally on alphabetic name
+     */
     private fun sortTasks(tasks: List<Task>): List<Task> {
         val fallbackDate = "9999-01-01".numeric()
         return tasks.sortedWith(Comparator<Task> { a, b ->

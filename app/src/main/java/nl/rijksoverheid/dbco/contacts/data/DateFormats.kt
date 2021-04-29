@@ -13,7 +13,7 @@ import org.joda.time.format.DateTimeFormatter
 import java.util.*
 
 /**
- * Created by Dima Kovalenko.
+ * Possible date formats used throughout the app
  */
 object DateFormats {
     val dateInputData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
@@ -26,5 +26,4 @@ object DateFormats {
     val dateInputUI: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy").withLocale(Locale("nl"))
     val selfBcoDateCheck : DateTimeFormatter = DateTimeFormat.forPattern("EEEE d MMMM").withLocale(Locale("nl"))
     val selfBcoDateOnly : DateTimeFormatter = DateTimeFormat.forPattern("d MMMM").withLocale(Locale("nl"))
-
 }

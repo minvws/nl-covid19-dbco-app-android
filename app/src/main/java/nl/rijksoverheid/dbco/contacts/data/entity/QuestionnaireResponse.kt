@@ -12,6 +12,6 @@ import kotlinx.serialization.Serializable
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 @Serializable
-data class QuestionnairyResponse(
+data class QuestionnaireResponse(
 	val questionnaires: List<Questionnaire?>? = null
 )

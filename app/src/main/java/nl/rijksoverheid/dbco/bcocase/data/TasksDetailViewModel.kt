@@ -21,6 +21,11 @@ import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import org.joda.time.LocalDate
 
+/**
+ * ViewModel responsible for handling changes in [Task] details
+ * exposes a number of [LiveData] objects which describe some attributes from
+ * the currently selected [Task], like what risk category the [Task] falls into.
+ */
 class TasksDetailViewModel(
     private val tasksRepository: ICaseRepository,
     questionnaireRepository: IQuestionnaireRepository

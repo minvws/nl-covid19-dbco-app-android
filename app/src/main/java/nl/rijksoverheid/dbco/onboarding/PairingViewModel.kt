@@ -28,6 +28,9 @@ import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.*
 
+/**
+ * ViewModel used for pairing the app with the backend
+ */
 class PairingViewModel(
     private val userRepository: IUserRepository,
     private val tasksRepository: ICaseRepository

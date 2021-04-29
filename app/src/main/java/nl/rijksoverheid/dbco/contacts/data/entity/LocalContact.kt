@@ -15,6 +15,9 @@ import java.util.*
 
 typealias JavaSerializable = java.io.Serializable
 
+/**
+ * Contact attached to a [Task]
+ */
 @Serializable
 @Keep
 data class LocalContact(
@@ -31,6 +34,10 @@ data class LocalContact(
 
     fun hasValidPhoneNumber() : Boolean {
         return numbers.count { Constants.PHONE_VALIDATION_MATCHER.matcher(it).matches() } > 0
+    }
+
+    fun hasSingleValidPhoneNumber() : Boolean {
+        return numbers.count { Constants.PHONE_VALIDATION_MATCHER.matcher(it).matches() } == 1
     }
 
     fun hasValidEmailAddress() : Boolean {
