@@ -30,14 +30,18 @@ class EmailAddressItem(
     isEnabled = isEnabled
 ) {
 
-    internal class EmailAddressValidator : InputQuestionMultipleOptionsItemValidator {
+    internal class EmailAddressValidator : InputItemValidator {
 
-        override fun validate(input: String?): Pair<Boolean, Int?> {
+        override fun validate(input: String?): InputValidationResult {
             return if (input.isNullOrEmpty()) {
-                return Pair(false, null)
+                return InputValidationResult.Valid(isComplete = false)
             } else {
                 val matches = Patterns.EMAIL_ADDRESS.matcher(input).matches()
-                if (matches) Pair(true, null) else Pair(false, R.string.error_valid_email)
+                if (matches) {
+                    InputValidationResult.Valid(isComplete = true)
+                } else {
+                    InputValidationResult.Error(errorRes = R.string.error_valid_email)
+                }
             }
         }
     }
