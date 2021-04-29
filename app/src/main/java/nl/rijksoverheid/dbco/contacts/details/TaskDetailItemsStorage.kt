@@ -20,10 +20,6 @@ import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.*
-import nl.rijksoverheid.dbco.items.ui.ParagraphItem
-import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
-import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
-import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
@@ -31,6 +27,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
@@ -362,6 +359,7 @@ class TaskDetailItemsStorage(
     ) {
         section.addAll(
             listOf(
+                VerticalSpaceItem(R.dimen.activity_vertical_margin),
                 ContactNameItem(
                     firstName = viewModel.task.linkedContact?.firstName,
                     lastName = viewModel.task.linkedContact?.lastName,

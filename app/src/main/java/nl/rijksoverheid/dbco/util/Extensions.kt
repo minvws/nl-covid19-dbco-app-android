@@ -18,6 +18,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.textfield.TextInputLayout
@@ -73,6 +76,18 @@ fun TextInputLayout.setCompleted(completed: Boolean) {
         setEndIconTintList(null)
         isEndIconVisible = false
     }
+}
+
+fun TextInputLayout.setError(
+    @DrawableRes iconRes: Int,
+    @StringRes messageRes: Int,
+    @ColorRes errorColor: Int
+) {
+    setErrorIconDrawable(iconRes)
+    setErrorIconTintList(ContextCompat.getColorStateList(context, errorColor))
+    boxStrokeErrorColor = ContextCompat.getColorStateList(context, errorColor)
+    setErrorTextColor(ContextCompat.getColorStateList(context, errorColor))
+    error = context.getString(messageRes)
 }
 
 fun View.accessibilityAnnouncement(stringId: Int) {

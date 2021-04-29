@@ -46,6 +46,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
 
@@ -128,6 +129,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             adapter.add(informSection)
 
             classificationSection.removeAllChildren()
+            classificationSection.add(VerticalSpaceItem(R.dimen.activity_vertical_margin))
             classificationSection.add(dateOfLastExposureItem)
             val questions = viewModel.questionnaire?.questions?.filterNotNull() ?: emptyList()
             questions.forEach { question ->
