@@ -15,9 +15,6 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -73,17 +70,13 @@ class TaskDetailItemsStorage(
             viewModel.sameHouseholdRisk.value = it.value.toBoolean()
             viewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.sameHouseholdRisk.value))
-            }
-        ),
+        previousAnswerValue = viewModel.sameHouseholdRisk.value.toString(),
         isLocked = viewModel.task.source == Source.Portal,
         isEnabled = enabled
     )
 
     private val distanceRiskItem = QuestionThreeOptionsItem(
-        context= context,
+        context = context,
         question = Question(
             null,
             context.getString(R.string.distance_risk_label),
@@ -109,15 +102,7 @@ class TaskDetailItemsStorage(
             }
             viewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put(
-                    "value", JsonPrimitive(
-                        "${viewModel.distanceRisk.value?.first}, ${viewModel.distanceRisk.value?.second}"
-                    )
-                )
-            }
-        ),
+        previousAnswerValue = "${viewModel.distanceRisk.value?.first}, ${viewModel.distanceRisk.value?.second}",
         isLocked = viewModel.task.source == Source.Portal,
         isEnabled = enabled
     )
@@ -138,11 +123,7 @@ class TaskDetailItemsStorage(
             viewModel.physicalContactRisk.value = it.value.toBoolean()
             viewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.physicalContactRisk.value))
-            }
-        ),
+        previousAnswerValue = viewModel.physicalContactRisk.value.toString(),
         isLocked = viewModel.task.source == Source.Portal,
         isEnabled = enabled,
     )
@@ -163,11 +144,7 @@ class TaskDetailItemsStorage(
             viewModel.sameRoomRisk.value = it.value.toBoolean()
             viewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.sameRoomRisk.value))
-            }
-        ),
+        previousAnswerValue = viewModel.sameRoomRisk.value.toString(),
         isEnabled = enabled
     )
 
@@ -284,11 +261,7 @@ class TaskDetailItemsStorage(
         answerSelectedListener = {
             viewModel.dateOfLastExposure.postValue(it.value)
         },
-        previousAnswer = JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
-            }
-        ),
+        previousAnswer = viewModel.dateOfLastExposure.value,
         isEnabled = enabled
     )
 
@@ -306,9 +279,10 @@ class TaskDetailItemsStorage(
                             SingleInputItem(
                                 context = context,
                                 question = question,
-                                previousAnswerValue = viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
-                                    question.uuid
-                                )?.value,
+                                answerSelectedListener = {
+                                    viewModel.textAnswers[question.uuid!!] = it
+                                },
+                                previousAnswerValue = viewModel.textAnswers[question.uuid],
                                 isEnabled = enabled
                             )
                         )
@@ -318,9 +292,10 @@ class TaskDetailItemsStorage(
                             DateInputItem(
                                 context = context,
                                 question = question,
-                                previousAnswerValue = viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
-                                    question.uuid
-                                )?.value,
+                                answerSelectedListener = {
+                                    viewModel.textAnswers[question.uuid!!] = it
+                                },
+                                previousAnswerValue = viewModel.textAnswers[question.uuid],
                                 isEnabled = enabled
                             )
                         )
@@ -341,15 +316,16 @@ class TaskDetailItemsStorage(
     ) {
         val size = question.answerOptions?.size ?: return
         if (size == 1) return
-        val previousValue =
-            viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+        val previousValue = viewModel.textAnswers[question.uuid!!]
         section.add(
             when (size) {
                 2 -> {
                     QuestionTwoOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = { /* NO-OP */ },
+                        answerSelectedListener = {
+                            viewModel.textAnswers[question.uuid!!] = it.value!!
+                        },
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -358,7 +334,9 @@ class TaskDetailItemsStorage(
                     QuestionThreeOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = { /* NO-OP */ },
+                        answerSelectedListener = {
+                            viewModel.textAnswers[question.uuid!!] = it.value!!
+                        },
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -367,7 +345,9 @@ class TaskDetailItemsStorage(
                     QuestionMultipleOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = { /* NO-OP */ },
+                        answerSelectedListener = {
+                            viewModel.textAnswers[question.uuid!!] = it.value!!
+                        },
                         previousAnswer = previousValue,
                         isEnabled = enabled
                     )

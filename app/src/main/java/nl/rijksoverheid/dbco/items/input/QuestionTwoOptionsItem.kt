@@ -8,12 +8,10 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
-import android.view.View
 import android.widget.CompoundButton
 import android.widget.RadioGroup
 import androidx.core.view.isVisible
 import com.xwray.groupie.Item
-import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestion2OptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -24,7 +22,7 @@ class QuestionTwoOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswerValue: JsonObject? = null,
+    previousAnswerValue: String? = null,
     private val isLocked: Boolean = false,
     private val isEnabled: Boolean
 ) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(
@@ -43,11 +41,6 @@ class QuestionTwoOptionsItem(
 
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
-
-        // try restore state
-        if (selectedAnswer == null) {
-            fillInPreviousAnswer()
-        }
 
         // if there is no previous answer - reset clear selection
         if (selectedAnswer == null) {

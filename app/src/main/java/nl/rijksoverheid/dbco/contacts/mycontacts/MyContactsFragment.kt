@@ -317,7 +317,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         if (topSection.groupCount == 1) {
             contentSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(Task.createAppContact())
+                checkPermissionGoToTaskDetails(
+                    task = tasksViewModel.createEmptyContact()
+                )
             }, type = ButtonType.BORDERLESS))
         } else {
             contentSection.add(topSection)
@@ -351,7 +353,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
         if (notUploadedSection.groupCount > 1) {
             notUploadedSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(Task.createAppContact())
+                checkPermissionGoToTaskDetails(
+                    task = tasksViewModel.createEmptyContact()
+                )
             }, type = ButtonType.BORDERLESS))
         }
         return listOf(notUploadedSection, uploadedSection)
@@ -382,7 +386,9 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
         if (inProgressSection.groupCount > 1) {
             inProgressSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(Task.createAppContact())
+                checkPermissionGoToTaskDetails(
+                    task = tasksViewModel.createEmptyContact()
+                )
             }, type = ButtonType.BORDERLESS))
         }
         return listOf(inProgressSection, doneSection)
@@ -404,7 +410,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             // no need to check permissions, just show the task but disabled
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTask = task,
+                    indexTaskUuid = task.uuid!!,
                     enabled = false
                 )
             )
@@ -423,27 +429,31 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             ) {
                 findNavController().navigate(
                     ContactPickerPermissionFragmentDirections.toContactDetails(
-                        indexTask = task,
+                        indexTaskUuid = task.uuid!!,
                         enabled = true
                     )
                 )
             } else {
                 // If not granted permission - send users to permission grant screen (if he didn't see it before)
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerPermission(task)
+                    MyContactsFragmentDirections.toContactPickerPermission(
+                        indexTaskUuid = task.uuid!!
+                    )
                 )
             }
         } else {
             if (task.linkedContact != null) {
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactDetails(
-                        indexTask = task,
+                        indexTaskUuid = task.uuid!!,
                         enabled = true
                     )
                 )
             } else {
                 findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerSelection(task)
+                    MyContactsFragmentDirections.toContactPickerSelection(
+                        indexTaskUuid = task.uuid!!
+                    )
                 )
             }
         }

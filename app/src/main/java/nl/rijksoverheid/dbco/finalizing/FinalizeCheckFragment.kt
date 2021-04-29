@@ -58,11 +58,11 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
             contentSection.add(incompleteTasks)
         }
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
                 findNavController().navigate(
                     FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
-                        indexTask = item.task,
+                        indexTaskUuid = item.task.uuid!!,
                         enabled = true
                     )
                 )

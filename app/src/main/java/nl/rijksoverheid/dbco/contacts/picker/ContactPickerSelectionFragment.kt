@@ -11,7 +11,6 @@ package nl.rijksoverheid.dbco.contacts.picker
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.xwray.groupie.GroupAdapter
@@ -48,7 +47,7 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             // User chooses not to select an existing contact from their device, start fresh
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                    indexTask = args.indexTask,
+                    indexTaskUuid = args.indexTaskUuid,
                     enabled = true
                 )
             )
@@ -69,9 +68,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                 }, R.string.contact_picker_search_hint))
 
                 // If the user has selected a task, see if we can suggest contacts that match the label of this task
-                if (!args.indexTask.label.isNullOrEmpty()) {
+                val label = contactsViewModel.getTaskLabel(args.indexTaskUuid)
+                if (!label.isNullOrEmpty()) {
                     val suggestedContacts =
-                        contactsViewModel.filterSuggestedContacts(args.indexTask.label!!)
+                        contactsViewModel.filterSuggestedContacts(label)
                     if (suggestedContacts.isNotEmpty()) {
                         val suggestedContactsSection = Section(
                             TinyHeaderItem(R.string.header_suggested_contacts)
@@ -96,12 +96,10 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                 adapter.setOnItemClickListener { item, _ ->
                     when (item) {
                         is LocalContactItem -> {
-                            Timber.d("Clicked contact $item")
-                            val task = args.indexTask
-                            task.linkedContact = item.contact
+                            contactsViewModel.onContactPicked(args.indexTaskUuid, item.contact)
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                                    indexTask = task,
+                                    indexTaskUuid = args.indexTaskUuid,
                                     enabled = true
                                 )
                             )

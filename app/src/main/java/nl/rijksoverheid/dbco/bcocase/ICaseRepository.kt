@@ -52,6 +52,12 @@ interface ICaseRepository {
     fun deleteTask(uuid: String)
 
     /**
+     * @return a [Task] in the current [Case]
+     * @param uuid -> id of the task
+     */
+    fun getTask(uuid: String): Task
+
+    /**
      * @return the current local representation of the [Case]
      */
     fun getCase(): Case
