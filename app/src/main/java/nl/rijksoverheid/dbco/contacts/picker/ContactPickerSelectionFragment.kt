@@ -48,7 +48,8 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
                     indexTaskUuid = args.indexTaskUuid,
-                    enabled = true
+                    enabled = true,
+                    newTask = true
                 )
             )
         }
@@ -100,7 +101,8 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
                                     indexTaskUuid = args.indexTaskUuid,
-                                    enabled = true
+                                    enabled = true,
+                                    newTask = true
                                 )
                             )
                         }

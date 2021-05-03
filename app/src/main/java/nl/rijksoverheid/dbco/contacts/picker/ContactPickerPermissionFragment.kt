@@ -89,7 +89,8 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             )?.apply()
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTaskUuid = args.indexTaskUuid
+                    indexTaskUuid = args.indexTaskUuid,
+                    newTask = true
                 )
             )
         }

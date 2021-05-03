@@ -24,7 +24,8 @@ class QuestionTwoOptionsItem(
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswerValue: String? = null,
     private val isLocked: Boolean = false,
-    private val isEnabled: Boolean
+    private val isEnabled: Boolean,
+    private val canShowEmptyWarning: Boolean = false,
 ) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(
     context,
     question,
@@ -45,6 +46,7 @@ class QuestionTwoOptionsItem(
         // if there is no previous answer - reset clear selection
         if (selectedAnswer == null) {
             viewBinding.answerGroup.clearCheck()
+            viewBinding.questionWarning.isVisible = canShowEmptyWarning
         }
 
         question?.answerOptions?.indexOf(selectedAnswer)?.let { index ->
@@ -64,6 +66,7 @@ class QuestionTwoOptionsItem(
                     answerOption?.let {
                         selectedAnswer = it
                         answerSelectedListener.invoke(it)
+                        viewBinding.questionWarning.isVisible = false
                     }
                 }
             }

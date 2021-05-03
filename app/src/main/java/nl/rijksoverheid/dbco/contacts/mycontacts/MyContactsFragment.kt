@@ -118,7 +118,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
-                checkPermissionGoToTaskDetails(item.task)
+                checkPermissionGoToTaskDetails(
+                    task = item.task,
+                    newTask = false
+                )
             }
             if (item is MemoryTipMyContactsItem) {
                 findNavController().navigate(
@@ -314,7 +317,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (topSection.groupCount == 1) {
             contentSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         } else {
@@ -350,7 +354,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (notUploadedSection.groupCount > 1) {
             notUploadedSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         }
@@ -383,7 +388,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (inProgressSection.groupCount > 1) {
             inProgressSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         }
@@ -396,7 +402,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.swipeRefresh.isRefreshing = true
     }
 
-    private fun checkPermissionGoToTaskDetails(task: Task) {
+    private fun checkPermissionGoToTaskDetails(
+        task: Task,
+        newTask: Boolean
+    ) {
         if (tasksViewModel.getCachedQuestionnaire() == null) {
             showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
             return
@@ -407,7 +416,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
                     indexTaskUuid = task.uuid!!,
-                    enabled = false
+                    enabled = false,
+                    newTask = newTask
                 )
             )
             return
@@ -426,7 +436,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 findNavController().navigate(
                     ContactPickerPermissionFragmentDirections.toContactDetails(
                         indexTaskUuid = task.uuid!!,
-                        enabled = true
+                        enabled = true,
+                        newTask = newTask
                     )
                 )
             } else {
@@ -442,7 +453,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 findNavController().navigate(
                     MyContactsFragmentDirections.toContactDetails(
                         indexTaskUuid = task.uuid!!,
-                        enabled = true
+                        enabled = true,
+                        newTask = newTask
                     )
                 )
             } else {

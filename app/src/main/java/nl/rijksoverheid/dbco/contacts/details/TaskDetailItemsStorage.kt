@@ -39,6 +39,7 @@ import org.joda.time.LocalDate
  */
 class TaskDetailItemsStorage(
     val enabled: Boolean,
+    val newTask: Boolean,
     val viewModel: TasksDetailViewModel,
     val context: Context,
     private val viewLifecycleOwner: LifecycleOwner,
@@ -74,7 +75,8 @@ class TaskDetailItemsStorage(
         },
         previousAnswerValue = viewModel.sameHouseholdRisk.value.toString(),
         isLocked = viewModel.task.source == Source.Portal,
-        isEnabled = enabled
+        isEnabled = enabled,
+        canShowEmptyWarning = canShowEmptyWarnings()
     )
 
     private val distanceRiskItem = QuestionThreeOptionsItem(
@@ -264,7 +266,8 @@ class TaskDetailItemsStorage(
             viewModel.dateOfLastExposure.postValue(it.value)
         },
         previousAnswer = viewModel.dateOfLastExposure.value,
-        isEnabled = enabled
+        isEnabled = enabled,
+        canShowEmptyWarning = canShowEmptyWarnings()
     )
 
     fun refreshContactDetailsSection() {
@@ -369,7 +372,9 @@ class TaskDetailItemsStorage(
                     firstName = viewModel.task.linkedContact?.firstName,
                     lastName = viewModel.task.linkedContact?.lastName,
                     question = question,
-                    isEnabled = enabled
+                    isEnabled = enabled,
+                    canShowEmptyWarning = canShowEmptyWarnings(),
+                    canShowFakeNameWarning = canShowWarnings(),
                 ) { newFirstName, newLastName ->
                     viewModel.task.linkedContact?.firstName = newFirstName
                     viewModel.task.linkedContact?.lastName = newLastName
@@ -378,7 +383,8 @@ class TaskDetailItemsStorage(
                 PhoneNumberItem(
                     numbers = viewModel.task.linkedContact?.numbers ?: emptySet(),
                     question = question,
-                    isEnabled = enabled
+                    isEnabled = enabled,
+                    canShowEmptyWarning = canShowEmptyWarnings()
                 ) {
                     viewModel.task.linkedContact?.numbers = it
                     viewModel.hasEmailOrPhone.value =
@@ -387,7 +393,8 @@ class TaskDetailItemsStorage(
                 EmailAddressItem(
                     emailAddresses = viewModel.task.linkedContact?.emails ?: emptySet(),
                     question = question,
-                    isEnabled = enabled
+                    isEnabled = enabled,
+                    canShowEmptyWarning = canShowEmptyWarnings()
                 ) {
                     viewModel.task.linkedContact?.emails = it
                     viewModel.hasEmailOrPhone.value =
@@ -597,6 +604,10 @@ class TaskDetailItemsStorage(
             }
         }
     }
+
+    private fun canShowWarnings(): Boolean = enabled
+
+    private fun canShowEmptyWarnings(): Boolean = canShowWarnings() && !newTask
 
     companion object {
         const val ANSWER_EARLIER = "earlier"
