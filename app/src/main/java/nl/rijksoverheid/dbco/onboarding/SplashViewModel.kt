@@ -23,6 +23,7 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.DataDeletion
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
@@ -56,7 +57,7 @@ class SplashViewModel(
         if (lastEdited.isBefore(now.minusDays(TWO_WEEKS))) {
             wipeStorage()
             appConfigRepository.storeConfig(config)
-            _navigation.value = Start
+            _navigation.value = DataDeletion
         } else if (skipOnboarding) {
             _navigation.value = MyTasks
         } else if (isPaired && !gaveConsent) {
@@ -81,5 +82,6 @@ class SplashViewModel(
         object MyTasks : Navigation()
         object Consent : Navigation()
         object Start : Navigation()
+        object DataDeletion : Navigation()
     }
 }

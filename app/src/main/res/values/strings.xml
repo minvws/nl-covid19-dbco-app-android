@@ -15,6 +15,7 @@
     <string name="save">Opslaan</string>
     <string name="dont_save">Niet opslaan</string>
     <string name="next">Volgende</string>
+    <string name="continueNext">Ga door</string>
     <string name="ready">Klaar</string>
     <string name="previous">Vorige</string>
     <string name="begin">Beginnen</string>
@@ -64,6 +65,8 @@
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
 
     <!--    Onboarding-->
+    <string name="onboarding_data_deleted_title">Alle gegevens zijn automatisch verwijderd</string>
+    <string name="onboarding_data_deleted_subtext">Je hebt de app al een tijd niet gebruikt. Om de gegevens van je contacten te beschermen, zijn deze uit de app verwijderd.</string>
     <string name="onboarding_start_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
     <string name="onboarding_start_subtext">Het advies verschilt per persoon. Dit hangt af van of jullie afstand hielden en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet blijven en tot wanneer. Deze informatie kan jij daarna makkelijk delen.</string>
     <string name="onboarding_flow_selection_title">Heb je aan de telefoon een code van de GGD gekregen?</string>

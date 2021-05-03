@@ -144,7 +144,26 @@
         <argument
             android:name="indexTaskUuid"
             app:argType="string"
-            app:nullable="false"/>
+            app:nullable="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/dataDeletedFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.DataDeletedFragment"
+        android:label="DataDeletedFragment"
+        tools:layout="@layout/fragment_data_deleted">
+
+        <action
+            android:id="@+id/toOnboardingStartFragment"
+            app:destination="@id/onboardingStartFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -385,6 +404,13 @@
         <action
             android:id="@+id/toOnboardingStartFragment"
             app:destination="@id/onboardingStartFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/toDataDeletedFragment"
+            app:destination="@id/dataDeletedFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true" />
