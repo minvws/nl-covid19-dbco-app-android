@@ -12,16 +12,20 @@ import android.text.InputType
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Warning
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Error
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Valid
 
 class PhoneNumberItem(
     numbers: Set<String>,
     question: Question?,
     isEnabled: Boolean,
+    canShowEmptyWarning: Boolean = false,
     changeListener: (Set<String>) -> Unit
 ) : InputQuestionMultipleOptionsItem(
     question = question,
     items = numbers,
-    validator = PhoneNumberValidator(),
+    validator = PhoneNumberValidator(canShowEmptyWarning),
     changeListener = changeListener,
     key = ANSWER_KEY,
     type = InputType.TYPE_CLASS_PHONE,
@@ -30,19 +34,27 @@ class PhoneNumberItem(
     isEnabled = isEnabled
 ) {
 
-    internal class PhoneNumberValidator : InputItemValidator {
+    internal class PhoneNumberValidator(
+        private val canShowEmptyWarning: Boolean
+    ) : InputItemValidator {
 
         override fun validate(input: String?): InputValidationResult {
-            if (input.isNullOrEmpty()) return InputValidationResult.Valid(isComplete = false)
+            if (input.isNullOrEmpty()) {
+                return if (canShowEmptyWarning) {
+                    Warning(warningRes = R.string.warning_necessary)
+                } else {
+                    Valid(isComplete = false)
+                }
+            }
 
             val replaced = input.replace(Regex("[\\s)(]"), "")
 
             if (!Constants.PHONE_VALIDATION_MATCHER.matcher(replaced).matches()) {
                 // If the matcher fails for whatever reason, check if input was too long or too short
                 return when {
-                    replaced.length < 10 -> InputValidationResult.Error(errorRes = R.string.error_valid_phone_too_short)
-                    replaced.length > 11 -> InputValidationResult.Error(errorRes = R.string.error_valid_phone_too_long)
-                    else -> InputValidationResult.Error(errorRes = R.string.error_valid_phone)
+                    replaced.length < 10 -> Error(errorRes = R.string.error_valid_phone_too_short)
+                    replaced.length > 11 -> Error(errorRes = R.string.error_valid_phone_too_long)
+                    else -> Error(errorRes = R.string.error_valid_phone)
                 }
 
             } else {
@@ -50,12 +62,12 @@ class PhoneNumberItem(
                 return if (replaced.length in 11..13) {
                     // If its not a number starting with our valid prefixes, don't allow it
                     if (!Constants.VALID_PHONENUMER_PREFIXES.any { input.startsWith(it) }) {
-                        InputValidationResult.Error(errorRes = R.string.error_valid_phone)
+                        Error(errorRes = R.string.error_valid_phone)
                     } else {
-                        InputValidationResult.Valid(isComplete = true)
+                        Valid(isComplete = true)
                     }
                 } else {
-                    InputValidationResult.Valid(isComplete = true)
+                    Valid(isComplete = true)
                 }
             }
         }

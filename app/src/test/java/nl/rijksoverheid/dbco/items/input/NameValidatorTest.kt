@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 class NameValidatorTest {
 
     @Test
-    fun `given input is empty, when input is validated, then return valid result but incomplete`() {
+    fun `given input is empty and warning cannot be shown, when input is validated, then return valid result but incomplete`() {
         // given
         val context = mockk<Context>()
         val input = ""
@@ -23,13 +23,34 @@ class NameValidatorTest {
         every { context.resources.openRawResource(R.raw.invalid_names) } returns stringsInputStream()
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context,
+            canShowEmptyWarning = false
+        )
 
         // then
         Assert.assertEquals(
             validator.validate(input),
             InputValidationResult.Valid(isComplete = false)
         )
+    }
+
+    @Test
+    fun `given input is empty and warning can be shown, when input is validated, then return warning`() {
+        // given
+        val context = mockk<Context>()
+        val input = ""
+        every { context.resources.openRawResource(R.raw.invalid_name_suffixes) } returns stringsInputStream()
+        every { context.resources.openRawResource(R.raw.invalid_names) } returns stringsInputStream()
+
+        // when
+        val validator = createValidator(
+            context = context,
+            canShowEmptyWarning = true
+        )
+
+        // then
+        Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
     }
 
     @Test
@@ -47,7 +68,9 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertEquals(
@@ -71,13 +94,39 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertEquals(
             validator.validate(input),
             InputValidationResult.Valid(isComplete = false)
         )
+    }
+
+    @Test
+    fun `given input is not valid name and warning cannot be shown, when input is validated, then return valid`() {
+        // given
+        val context = mockk<Context>()
+        val input = "aoy"
+        val invalidNames = listOf("mama", "papa")
+        val invalidSuffixes = listOf("je", "weg")
+        every { context.resources.openRawResource(R.raw.invalid_name_suffixes) } returns stringsInputStream(
+            invalidSuffixes
+        )
+        every { context.resources.openRawResource(R.raw.invalid_names) } returns stringsInputStream(
+            invalidNames
+        )
+
+        // when
+        val validator = createValidator(
+            context = context,
+            canShowFakeNameWarning = false
+        )
+
+        // then
+        Assert.assertTrue(validator.validate(input) is InputValidationResult.Valid)
     }
 
     @Test
@@ -95,7 +144,9 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
@@ -116,7 +167,9 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
@@ -137,7 +190,9 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
@@ -158,7 +213,9 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
@@ -179,11 +236,23 @@ class NameValidatorTest {
         )
 
         // when
-        val validator = ContactNameItem.NameValidator(context)
+        val validator = createValidator(
+            context = context
+        )
 
         // then
         Assert.assertTrue(validator.validate(input) is InputValidationResult.Warning)
     }
+
+    private fun createValidator(
+        context: Context,
+        canShowFakeNameWarning: Boolean = true,
+        canShowEmptyWarning: Boolean = true
+    ) = ContactNameItem.NameValidator(
+        context = context,
+        canShowFakeNameWarning = canShowFakeNameWarning,
+        canShowEmptyWarning = canShowEmptyWarning
+    )
 
     private fun stringsInputStream(strings: List<String> = emptyList()): InputStream {
         return strings

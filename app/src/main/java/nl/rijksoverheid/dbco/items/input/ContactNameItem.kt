@@ -20,12 +20,15 @@ import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import kotlin.collections.HashMap
 import nl.rijksoverheid.dbco.items.input.InputValidationResult.Warning
 import nl.rijksoverheid.dbco.items.input.InputValidationResult.Error
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Valid
 
 class ContactNameItem(
     private var firstName: String?,
     private var lastName: String?,
     question: Question?,
     private val isEnabled: Boolean,
+    private val canShowEmptyWarning: Boolean = false,
+    private val canShowFakeNameWarning: Boolean = false,
     private val changeListener: (String?, String?) -> Unit
 ) : BaseQuestionItem<ItemContactNameBinding>(question) {
 
@@ -36,7 +39,11 @@ class ContactNameItem(
     override fun bind(viewBinding: ItemContactNameBinding, position: Int) {
         this.binding = viewBinding
 
-        val validator = NameValidator(viewBinding.firstName.context)
+        val validator = NameValidator(
+            context = viewBinding.firstName.context,
+            canShowEmptyWarning = canShowEmptyWarning,
+            canShowFakeNameWarning = canShowFakeNameWarning
+        )
 
         viewBinding.firstName.editText?.setText(firstName)
         viewBinding.lastName.editText?.setText(lastName)
@@ -103,7 +110,11 @@ class ContactNameItem(
         }
     }
 
-    internal class NameValidator(context: Context) : InputItemValidator {
+    internal class NameValidator(
+        context: Context,
+        private val canShowFakeNameWarning: Boolean,
+        private val canShowEmptyWarning: Boolean,
+    ) : InputItemValidator {
 
         private val invalidNames: List<String> = context
             .resources
@@ -127,40 +138,48 @@ class ContactNameItem(
 
         override fun validate(input: String?): InputValidationResult {
             return if (input.isNullOrEmpty()) {
-                return InputValidationResult.Valid(isComplete = false)
-            } else {
-                val onlyConsonants = input
-                    .lowercase()
-                    .toList()
-                    .none { !consonants.contains(it) }
-
-                val onlyVowels = input
-                    .lowercase()
-                    .toList()
-                    .none { !vowels.contains(it) }
-
-                val containsInvalidName = invalidNames
-                    .any { it in input.lowercase() }
-
-                val endsWithInvalidSuffix = invalidSuffixes
-                    .any { input.lowercase().endsWith(it) }
-
-                val containsInvalidCharacters = input
-                    .lowercase()
-                    .any { !validCharacters.contains(it) }
-
-                val conditions = mutableListOf(
-                    onlyConsonants,
-                    onlyVowels,
-                    containsInvalidName,
-                    endsWithInvalidSuffix,
-                    containsInvalidCharacters
-                )
-
-                if (conditions.any { it }) {
-                    Warning(warningRes = R.string.warning_name)
+                if (canShowEmptyWarning) {
+                    Warning(warningRes = R.string.warning_necessary_short)
                 } else {
-                    InputValidationResult.Valid(isComplete = false)
+                    Valid(isComplete = false)
+                }
+            } else {
+                if (canShowFakeNameWarning) {
+                    val onlyConsonants = input
+                        .lowercase()
+                        .toList()
+                        .none { !consonants.contains(it) }
+
+                    val onlyVowels = input
+                        .lowercase()
+                        .toList()
+                        .none { !vowels.contains(it) }
+
+                    val containsInvalidName = invalidNames
+                        .any { it in input.lowercase() }
+
+                    val endsWithInvalidSuffix = invalidSuffixes
+                        .any { input.lowercase().endsWith(it) }
+
+                    val containsInvalidCharacters = input
+                        .lowercase()
+                        .any { !validCharacters.contains(it) }
+
+                    val conditions = mutableListOf(
+                        onlyConsonants,
+                        onlyVowels,
+                        containsInvalidName,
+                        endsWithInvalidSuffix,
+                        containsInvalidCharacters
+                    )
+
+                    if (conditions.any { it }) {
+                        Warning(warningRes = R.string.warning_name)
+                    } else {
+                        Valid(isComplete = false)
+                    }
+                } else {
+                    Valid(isComplete = false)
                 }
             }
         }

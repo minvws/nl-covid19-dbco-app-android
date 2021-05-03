@@ -58,6 +58,8 @@
     <string name="header_all_contacts">ALLE CONTACTEN</string>
 
     <string name="warning_name">Klopt deze naam?</string>
+    <string name="warning_necessary">Nodig voor contact met GGD</string>
+    <string name="warning_necessary_short">Vul dit in</string>
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
     <string name="error_valid_phone">Dit telefoonnummer lijkt niet geldig, weet je zeker dat dit klopt?</string>
     <string name="error_valid_phone_too_long">Dit telefoonnummer lijkt te veel cijfers te bevatten, weet je zeker dat dit klopt?</string>

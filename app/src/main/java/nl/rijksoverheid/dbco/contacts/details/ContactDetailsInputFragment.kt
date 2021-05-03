@@ -72,7 +72,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
         initToolbar()
         initContent()
-        initItemStorage(args.enabled)
+        initItemStorage(
+            enabled = args.enabled,
+            newTask = args.newTask
+        )
 
         viewModel.category.observe(viewLifecycleOwner, { cat -> onCategoryChanged(cat) })
         viewModel.communicationType.observe(viewLifecycleOwner, { onTypeChanged() })
@@ -110,14 +113,18 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         updateButton()
     }
 
-    private fun initItemStorage(enabled: Boolean) {
+    private fun initItemStorage(
+        enabled: Boolean,
+        newTask: Boolean
+    ) {
         itemsStorage = TaskDetailItemsStorage(
-            enabled,
-            viewModel,
-            requireContext(),
-            viewLifecycleOwner,
-            appViewModel.getFeatureFlags(),
-            appViewModel.getGuidelines()
+            enabled = enabled,
+            newTask = newTask,
+            viewModel = viewModel,
+            context = requireContext(),
+            viewLifecycleOwner = viewLifecycleOwner,
+            featureFlags = appViewModel.getFeatureFlags(),
+            guidelines = appViewModel.getGuidelines()
         ).apply {
             if (viewModel.task.source != Source.Portal) {
                 adapter.add(classificationSection)

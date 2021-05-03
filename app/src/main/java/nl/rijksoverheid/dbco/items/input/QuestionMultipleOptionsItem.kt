@@ -14,6 +14,7 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.setError
 
 class QuestionMultipleOptionsItem(
     context: Context,
@@ -22,6 +23,7 @@ class QuestionMultipleOptionsItem(
     previousAnswer: String? = null,
     private val isLocked: Boolean = false,
     val isEnabled: Boolean,
+    private val canShowEmptyWarning: Boolean = false
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(
     context,
     question,
@@ -52,11 +54,22 @@ class QuestionMultipleOptionsItem(
             viewBinding.inputLabel.showDropDown()
         }
 
+        if (selectedAnswer == null && canShowEmptyWarning) {
+            viewBinding.inputLayout.setError(
+                R.drawable.ic_warning_24,
+                R.string.warning_necessary,
+                R.color.purple
+            )
+        } else {
+            viewBinding.inputLayout.error = null
+        }
+
         // Listen to selections that happen in the dropdown
         viewBinding.inputLabel.setOnItemClickListener { _, _, position, _ ->
             question?.answerOptions?.getOrNull(position)?.let { answer ->
                 answerSelectedListener.invoke(answer)
                 selectedAnswer = answer
+                viewBinding.inputLayout.error = null
             }
         }
 
