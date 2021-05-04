@@ -40,6 +40,15 @@
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
+                <nl.rijksoverheid.dbco.util.AccessibleImageView
+                    android:id="@+id/onboarding_header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/illustration_user_calendar" />
+
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
