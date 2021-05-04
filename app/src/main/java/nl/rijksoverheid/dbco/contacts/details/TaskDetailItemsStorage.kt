@@ -33,6 +33,9 @@ import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
+import nl.rijksoverheid.dbco.items.input.ButtonType.DARK
+import nl.rijksoverheid.dbco.items.input.ButtonType.LIGHT
 
 /**
  * Used to display all questions and data for a [Task]
@@ -442,7 +445,7 @@ class TaskDetailItemsStorage(
                 R.string.inform_contact_title_staff,
                 contactName
             )
-            CommunicationType.Index -> context.getString(
+            Index -> context.getString(
                 R.string.inform_contact_title_index,
                 contactName
             )
@@ -535,13 +538,10 @@ class TaskDetailItemsStorage(
         val plainMessage = fullMessage.removeHtmlTags()
 
         informSection.apply {
-
             if (!isExpanded) {
                 onToggleExpanded()
             }
-
             removeAllChildren()
-
             setEnabled(isEnabled)
             if (!isEnabled) {
                 return
@@ -551,58 +551,65 @@ class TaskDetailItemsStorage(
             add(ParagraphItem(message, clickable = true))
             add(SubHeaderItem(footer))
 
-            val canCallTask = viewModel.task.linkedContact?.hasSingleValidPhoneNumber() ?: false
-            if (featureFlags.enablePerspectiveCopy) {
+            val callButtonType = if (
+                viewModel.commByIndex() &&
+                viewModel.callingEnabled(featureFlags)
+            ) {
+                DARK
+            } else {
+                LIGHT
+            }
+            val copyButtonType = if (
+                viewModel.commByIndex() &&
+                viewModel.copyEnabled(featureFlags) &&
+                !viewModel.callingEnabled(featureFlags)
+            ) {
+                DARK
+            } else {
+                LIGHT
+            }
+
+            if (viewModel.copyEnabled(featureFlags)) {
                 add(
                     ButtonItem(
-                        context.getString(R.string.contact_section_inform_copy),
-                        {
-                            val clipboard =
-                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip =
-                                ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
-                            clipboard.setPrimaryClip(clip)
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.contact_section_inform_copied),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        },
-                        // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
-                        // Otherwise always light
-                        type = if (!featureFlags.enableContactCalling || !canCallTask) {
-                            ButtonType.DARK
-                        } else {
-                            ButtonType.LIGHT
-                        }
+                        text = context.getString(R.string.contact_section_inform_copy),
+                        buttonClickListener = { copyGuidelines(plainMessage, fullMessage) },
+                        type = copyButtonType
                     )
                 )
             }
 
-            // add "Call $name" button if phone is set and config has calling on
-            if (featureFlags.enableContactCalling && canCallTask) {
+            if (viewModel.callingEnabled(featureFlags)) {
+                val name = viewModel.task.linkedContact!!.firstName ?: "contact"
+                val number = viewModel.task.linkedContact!!.numbers.first()
                 add(
                     ButtonItem(
-                        context.getString(
-                            R.string.contact_section_inform_call,
-                            viewModel.task.linkedContact?.firstName ?: "contact"
-                        ),
-                        {
-                            val intent = Intent(
-                                Intent.ACTION_DIAL,
-                                Uri.parse("tel:${viewModel.task.linkedContact?.numbers?.first()}")
-                            )
-                            context.startActivity(intent)
-                        },
-                        type = if (viewModel.communicationType.value == CommunicationType.Index) {
-                            ButtonType.DARK
-                        } else {
-                            ButtonType.LIGHT
-                        }
+                        text = context.getString(R.string.contact_section_inform_call, name),
+                        buttonClickListener = { callTask(number) },
+                        type = callButtonType
                     )
                 )
             }
         }
+    }
+
+    private fun callTask(number: String) {
+        val intent = Intent(
+            Intent.ACTION_DIAL,
+            Uri.parse("tel:${number}")
+        )
+        context.startActivity(intent)
+    }
+
+    private fun copyGuidelines(plainMessage: String, fullMessage: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newHtmlText("Copied Text", plainMessage, fullMessage)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(
+            context,
+            context.getString(R.string.contact_section_inform_copied),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun canShowWarnings(): Boolean = enabled

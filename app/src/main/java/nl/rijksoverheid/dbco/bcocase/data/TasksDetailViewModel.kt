@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.config.FeatureFlags
 import org.joda.time.LocalDate
 
 /**
@@ -65,6 +66,18 @@ class TasksDetailViewModel(
 
         cacheTextAnswers(task)
         updateRiskFlagsFromCategory(task)
+    }
+
+    fun commByIndex(): Boolean = communicationType.value == CommunicationType.Index
+
+    private fun canCallTask(): Boolean = task.linkedContact?.hasSingleValidPhoneNumber() ?: false
+
+    fun callingEnabled(featureFlags: FeatureFlags): Boolean {
+        return canCallTask() && featureFlags.enableContactCalling
+    }
+
+    fun copyEnabled(featureFlags: FeatureFlags): Boolean {
+        return featureFlags.enablePerspectiveCopy
     }
 
     fun getQuestionnaireAnswers(): List<Answer> = _task.questionnaireResult?.answers ?: emptyList()

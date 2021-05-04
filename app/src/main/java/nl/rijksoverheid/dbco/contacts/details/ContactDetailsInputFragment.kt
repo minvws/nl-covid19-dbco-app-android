@@ -12,11 +12,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -46,6 +48,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
@@ -195,6 +198,27 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     else -> saveContact()
                 }
             }
+        }
+        setButtonType(binding.saveButton)
+    }
+
+    private fun setButtonType(saveButton: MaterialButton) {
+        val featureFlags = appViewModel.getFeatureFlags()
+        val byGGD = !viewModel.commByIndex()
+        val callAndCopyDisabled = !viewModel.callingEnabled(featureFlags) &&
+                !viewModel.copyEnabled(featureFlags)
+        if (byGGD || callAndCopyDisabled) {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_primary
+            )
+            saveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
+        } else {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_secondary
+            )
+            saveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
         }
     }
 
