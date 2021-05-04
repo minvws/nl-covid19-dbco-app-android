@@ -298,6 +298,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage.informSection.isExpanded = true
             itemsStorage.classificationSection.isExpanded = false
             itemsStorage.contactDetailsSection.isExpanded = false
+            binding.content.smoothScrollToPosition(adapter.itemCount - 1)
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
             dialog.dismiss()
