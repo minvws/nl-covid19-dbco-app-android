@@ -384,7 +384,7 @@ class TaskDetailItemsStorage(
                     numbers = viewModel.task.linkedContact?.numbers ?: emptySet(),
                     question = question,
                     isEnabled = enabled,
-                    canShowEmptyWarning = canShowEmptyWarnings()
+                    canShowEmptyWarning = canShowEmptyWarnings() && viewModel.hasEmailOrPhone.value == false
                 ) {
                     viewModel.task.linkedContact?.numbers = it
                     viewModel.hasEmailOrPhone.value =
@@ -394,7 +394,7 @@ class TaskDetailItemsStorage(
                     emailAddresses = viewModel.task.linkedContact?.emails ?: emptySet(),
                     question = question,
                     isEnabled = enabled,
-                    canShowEmptyWarning = canShowEmptyWarnings()
+                    canShowEmptyWarning = canShowEmptyWarnings() && viewModel.hasEmailOrPhone.value == false
                 ) {
                     viewModel.task.linkedContact?.emails = it
                     viewModel.hasEmailOrPhone.value =
