@@ -36,7 +36,6 @@ import org.joda.time.LocalDateTime
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import java.lang.IllegalStateException
-import java.util.*
 
 class CaseRepository(
     context: Context,
@@ -99,19 +98,31 @@ class CaseRepository(
             if (old.windowExpiresAt == null) {
                 new = new.copy(windowExpiresAt = remoteCase.windowExpiresAt)
             }
-            val mergedTasks = old.tasks.toMutableList()
-            remoteCase.tasks.forEach { remoteTask ->
-                var found = false
-                mergedTasks.forEach { currentTask ->
-                    if (remoteTask.uuid == currentTask.uuid) {
-                        found = true
+            val localTasks = old.tasks.toMutableList()
+            val remoteTasks = remoteCase.tasks
+
+            if (localTasks.isEmpty()) {
+                new = new.copy(tasks = remoteTasks)
+            } else {
+                remoteCase.tasks.forEach { remoteTask ->
+                    val existingTask = localTasks.find { it.uuid == remoteTask.uuid }
+                    when {
+                        existingTask == null -> localTasks.add(remoteTask)
+                        existingTask.questionnaireResult == null -> {
+                            // no changes made by user, can just replace with remote
+                            localTasks.remove(existingTask)
+                            localTasks.add(remoteTask)
+                        }
+                        existingTask.taskType == TaskType.Contact -> {
+                            // local task can handle updates to these fields
+                            existingTask.communication = remoteTask.communication
+                            existingTask.label = remoteTask.label
+                            existingTask.taskContext = remoteTask.taskContext
+                        }
                     }
                 }
-                if (!found) {
-                    mergedTasks.add(remoteTask)
-                }
+                new = new.copy(tasks = localTasks)
             }
-            new = new.copy(tasks = mergedTasks)
             persistCase(new)
         }
         return _case
