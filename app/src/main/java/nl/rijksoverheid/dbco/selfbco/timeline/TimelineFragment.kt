@@ -267,7 +267,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val dates = ArrayList<String>()
         sections.forEach {
             if (it.getContactItems().isEmpty()) {
-                dates.add(it.date.toString(DateFormats.selfBcoDateCheck))
+                dates.add(it.date.toString(DateFormats.selfBcoDateCheck).capitalize())
                 filledInAll = false
             }
         }
