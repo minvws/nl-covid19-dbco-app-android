@@ -282,7 +282,7 @@
     <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
     <string name="selfbco_timeline_summary_more">Wat deel ik precies met de GGD?</string>
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
-    <string name="selfbco_timeline_error_message">Klopt het dat je op %s niemand hebt ontmoet?</string>
+    <string name="selfbco_timeline_error_message">Klopt het dat je deze dag(en) niemand hebt ontmoet?\n \n%s</string>
     <string name="str_continue">Ga verder</string>
     <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
     <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>

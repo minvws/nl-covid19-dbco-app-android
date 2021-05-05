@@ -285,7 +285,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         builder.setMessage(
             String.format(
                 getString(R.string.selfbco_timeline_error_message),
-                dates.asReversed().joinToString()
+                dates.asReversed().joinToString(separator = "\n")
             )
         )
         builder.setPositiveButton(
