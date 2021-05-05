@@ -31,7 +31,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="fitCenter"
-                android:src="@drawable/illustration_onboarding" />
+                android:src="@drawable/illustration_general_user" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/continueNext" />
+                android:text="@string/ok" />
 
         </LinearLayout>
 
