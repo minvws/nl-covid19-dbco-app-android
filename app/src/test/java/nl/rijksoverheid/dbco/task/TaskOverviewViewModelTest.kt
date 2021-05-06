@@ -10,10 +10,7 @@
 package nl.rijksoverheid.dbco.task
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -38,8 +35,11 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireRe
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
+import org.mockito.ArgumentMatchers.any
 import java.lang.IllegalStateException
 
 @RunWith(MockitoJUnitRunner::class)
@@ -47,6 +47,157 @@ class TaskOverviewViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
+
+    @Test
+    fun `when repository has cache, when cached case is fetched, return that case`() {
+        // given
+        val case = Case()
+        val tasksMock = mockk<ICaseRepository>()
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getCase() } returns case
+
+        // when
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        val result = viewModel.getCachedCase()
+
+        Assert.assertEquals(case, result)
+    }
+
+    @Test
+    fun `when repository has questionnaire, when cached questionnaire is fetched, return that questionnaire`() {
+        // given
+        val questionnaire = Questionnaire()
+        val tasksMock = mockk<ICaseRepository>()
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { questionnaireMock.getCachedQuestionnaire() } returns questionnaire
+
+        // when
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        val result = viewModel.getCachedQuestionnaire()
+
+        Assert.assertEquals(questionnaire, result)
+    }
+
+    @Test
+    fun `when case is uploaded, when error is encountered, post error to live data`() = runBlockingTest {
+        // given
+        val tasksMock = mockk<ICaseRepository>()
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        coEvery { tasksMock.uploadCase() } throws IllegalStateException("test")
+
+        // when
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.uploadCurrentCase()
+
+        Assert.assertTrue(viewModel.uploadStatus.value == UploadError)
+    }
+
+    @Test
+    fun `when case is uploaded, when no error is encountered, post success to live data`() = runBlockingTest {
+        // given
+        val tasksMock = mockk<ICaseRepository>()
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        coEvery { tasksMock.uploadCase() } just Runs
+
+        // when
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.uploadCurrentCase()
+
+        Assert.assertTrue(viewModel.uploadStatus.value == UploadSuccess)
+    }
+
+    @Test
+    fun `when current case is expired, when case expiration is checked, then the case should be expired`() =
+        runBlockingTest {
+            // given
+            val now = LocalDateTime.now(DateTimeZone.UTC)
+            mockkStatic(LocalDateTime::class)
+            val tasksMock = mockk<ICaseRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            val case = Case(windowExpiresAt = "test")
+            every { LocalDateTime.parse("test", DateFormats.expiryData) } returns now.minusDays(1)
+            every { tasksMock.getCase() } returns case
+            coEvery { tasksMock.fetchCase() } returns case
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncData()
+
+            // then
+            Assert.assertTrue(viewModel.isCurrentCaseExpired())
+        }
+
+    @Test
+    fun `when current case is not expired, when case expiration is checked, then the case should not be expired`() =
+        runBlockingTest {
+            // given
+            val now = LocalDateTime.now(DateTimeZone.UTC)
+            mockkStatic(LocalDateTime::class)
+            val tasksMock = mockk<ICaseRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            val case = Case(windowExpiresAt = "test")
+            every { LocalDateTime.parse("test", DateFormats.expiryData) } returns now.plusDays(1)
+            every { tasksMock.getCase() } returns case
+            coEvery { tasksMock.fetchCase() } returns case
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+            viewModel.syncData()
+
+            // then
+            Assert.assertFalse(viewModel.isCurrentCaseExpired())
+        }
+
+    @Test
+    fun `when case has task with not all data, when essential data is checked, then it should be false`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ICaseRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            val case = mockk<Case>()
+            every { case.hasEssentialTaskData() } returns false
+            every { tasksMock.getCase() } returns case
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+
+            // then
+            Assert.assertFalse(viewModel.hasEssentialTaskData())
+        }
+
+    @Test
+    fun `when case has tasks with all data, when essential data is checked, then it should be true`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ICaseRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            val case = mockk<Case>()
+            every { case.hasEssentialTaskData() } returns true
+            every { tasksMock.getCase() } returns case
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+
+            // then
+            Assert.assertTrue(viewModel.hasEssentialTaskData())
+        }
+
+    @Test
+    fun `when repository has start of contagious period, when start date is fetched, then it should be the same`() =
+        runBlockingTest {
+            // given
+            val tasksMock = mockk<ICaseRepository>()
+            val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+            val date = LocalDate.now()
+            every { tasksMock.getStartOfContagiousPeriod() } returns date
+
+            // when
+            val viewModel = createViewModel(tasksMock, questionnaireMock)
+
+            // then
+            Assert.assertEquals(viewModel.getStartOfContagiousPeriod(), date)
+        }
+
 
     @Test
     fun `when cat is not the same, when the list is sorted, category one should be first`() =
