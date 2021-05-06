@@ -68,7 +68,7 @@ class TasksDetailViewModel(
         updateRiskFlagsFromCategory(task)
     }
 
-    fun commByIndex(): Boolean = communicationType.value == CommunicationType.Index
+    fun commByIndex(): Boolean = communicationType.value != CommunicationType.Staff
 
     private fun canCallTask(): Boolean = task.linkedContact?.hasSingleValidPhoneNumber() ?: false
 

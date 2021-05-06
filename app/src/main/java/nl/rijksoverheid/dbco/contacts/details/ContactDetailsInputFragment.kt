@@ -230,6 +230,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         // in their data rather than during a scroll.
         if (!binding.content.isComputingLayout) {
             itemsStorage.refreshInformSection()
+            updateButton()
         }
     }
 

@@ -139,7 +139,7 @@ class ContactNameItem(
         override fun validate(input: String?): InputValidationResult {
             return if (input.isNullOrEmpty()) {
                 if (canShowEmptyWarning) {
-                    Warning(warningRes = R.string.warning_necessary_short)
+                    Warning(warningRes = R.string.warning_necessary)
                 } else {
                     Valid(isComplete = false)
                 }
