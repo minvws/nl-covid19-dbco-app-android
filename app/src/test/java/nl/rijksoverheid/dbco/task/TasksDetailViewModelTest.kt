@@ -16,6 +16,7 @@ import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.junit.Assert
 import org.junit.Rule
@@ -572,7 +573,7 @@ class TasksDetailViewModelTest {
         // given
         val tasksMock = mockk<ICaseRepository>()
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
-        val date = LocalDate.now()
+        val date = LocalDate.now(DateTimeZone.UTC)
         every { tasksMock.getStartOfContagiousPeriod() } returns date
 
         // when

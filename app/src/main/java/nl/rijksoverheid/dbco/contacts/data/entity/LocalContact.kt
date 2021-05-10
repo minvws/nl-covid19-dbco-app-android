@@ -41,7 +41,7 @@ data class LocalContact(
     }
 
     fun hasValidEmailAddress() : Boolean {
-        return emails.count { android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches() } > 0
+        return emails.count { Constants.EMAIL_VALIDATION_MATCHER.matcher(it).matches() } > 0
     }
 
     fun getDisplayName(): String {

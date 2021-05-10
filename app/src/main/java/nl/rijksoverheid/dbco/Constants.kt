@@ -26,6 +26,16 @@ object Constants {
 
     // Validation patterns
     val PHONE_VALIDATION_MATCHER : Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
+    val EMAIL_VALIDATION_MATCHER = Pattern.compile(
+        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                ")+"
+    )
+
     // prefixes for the Netherlands, Belgium and Germany
     val VALID_PHONENUMER_PREFIXES = listOf("+31", "+0031", "0031", "+32", "+0032", "0032","+49", "+0049", "0049" )
 }

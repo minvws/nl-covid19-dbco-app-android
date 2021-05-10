@@ -9,7 +9,7 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
-import android.util.Patterns
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.items.input.InputValidationResult.Warning
@@ -46,7 +46,7 @@ class EmailAddressItem(
                     Valid(isComplete = false)
                 }
             } else {
-                val matches = Patterns.EMAIL_ADDRESS.matcher(input).matches()
+                val matches = Constants.EMAIL_VALIDATION_MATCHER.matcher(input).matches()
                 if (matches) {
                     Valid(isComplete = true)
                 } else {
