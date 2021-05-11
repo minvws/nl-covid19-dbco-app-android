@@ -12,12 +12,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.selfbco.reverse.Poller
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
@@ -33,7 +30,9 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.*
  */
 class PairingViewModel(
     private val userRepository: IUserRepository,
-    private val tasksRepository: ICaseRepository
+    private val tasksRepository: ICaseRepository,
+    private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _pairingResult = MutableLiveData<PairingStatus>()
@@ -55,8 +54,8 @@ class PairingViewModel(
      * Pair with regular pin given by an GGD employee
      */
     fun pair(pin: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        viewModelScope.launch(mainDispatcher) {
+            withContext(ioDispatcher) {
                 _pairingResult.postValue(pairWithCode(pin))
             }
         }
@@ -92,8 +91,8 @@ class PairingViewModel(
     }
 
     private fun retrievePairingCode() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        viewModelScope.launch(mainDispatcher) {
+            withContext(ioDispatcher) {
                 val pairingResponse = userRepository.retrieveReversePairingCode()
                 if (pairingResponse.isSuccessful) {
                     val code = pairingResponse.body()?.code
@@ -109,8 +108,8 @@ class PairingViewModel(
 
     private fun startPolling(credentials: ReversePairingCredentials) {
         cancelPollingForChanges()
-        pollingJob = viewModelScope.launch {
-            poller = ReversePairingStatePoller(userRepository, Dispatchers.IO)
+        pollingJob = viewModelScope.launch(mainDispatcher) {
+            poller = ReversePairingStatePoller(userRepository, ioDispatcher)
             val flow = poller.poll(POLLING_DELAY, credentials).onEach { result ->
                 when (result) {
                     is ReversePairingSuccess -> {

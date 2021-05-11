@@ -188,7 +188,7 @@ class TaskOverviewViewModelTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
-            val date = LocalDate.now()
+            val date = LocalDate.now(DateTimeZone.UTC)
             every { tasksMock.getStartOfContagiousPeriod() } returns date
 
             // when
