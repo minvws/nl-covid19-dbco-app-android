@@ -7,18 +7,21 @@
  */
 package nl.rijksoverheid.dbco.items.input
 
+import androidx.annotation.DimenRes
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
+import nl.rijksoverheid.dbco.util.margin
 
 class ButtonItem(
     private val text: String,
     buttonClickListener: (ButtonItem) -> Unit,
     private val enabled: Boolean = true,
-    private val type: ButtonType = ButtonType.LIGHT
+    private val type: ButtonType = ButtonType.LIGHT,
+    @DimenRes private val horizontalMargin: Int? = null
 ) : BaseBindableItem<ItemButtonBinding>() {
     data class ViewState(
         val text: String,
@@ -36,6 +39,7 @@ class ButtonItem(
 
     override fun bind(viewBinding: ItemButtonBinding, position: Int) {
         viewBinding.viewState = viewState
+        viewBinding.button.margin(start = horizontalMargin, end = horizontalMargin)
         when (type) {
             ButtonType.DARK -> {
                 viewBinding.button.apply {

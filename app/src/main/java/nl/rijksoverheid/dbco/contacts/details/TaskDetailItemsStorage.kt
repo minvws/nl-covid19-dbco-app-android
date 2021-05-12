@@ -547,9 +547,25 @@ class TaskDetailItemsStorage(
                 return
             }
 
-            add(SubHeaderItem(header))
-            add(ParagraphItem(message, clickable = true))
-            add(SubHeaderItem(footer))
+            add(
+                SubHeaderItem(
+                    text = header,
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
+            add(
+                ParagraphItem(
+                    text = message,
+                    clickable = true,
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
+            add(
+                SubHeaderItem(
+                    text = footer,
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
 
             val callButtonType = if (
                 viewModel.commByIndex() &&
@@ -574,7 +590,8 @@ class TaskDetailItemsStorage(
                     ButtonItem(
                         text = context.getString(R.string.contact_section_inform_copy),
                         buttonClickListener = { copyGuidelines(plainMessage, fullMessage) },
-                        type = copyButtonType
+                        type = copyButtonType,
+                        horizontalMargin = R.dimen.activity_horizontal_margin
                     )
                 )
             }
@@ -586,7 +603,8 @@ class TaskDetailItemsStorage(
                     ButtonItem(
                         text = context.getString(R.string.contact_section_inform_call, name),
                         buttonClickListener = { callTask(number) },
-                        type = callButtonType
+                        type = callButtonType,
+                        horizontalMargin = R.dimen.activity_horizontal_margin
                     )
                 )
             }

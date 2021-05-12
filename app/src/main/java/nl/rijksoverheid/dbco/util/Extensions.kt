@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
@@ -19,6 +20,7 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -163,5 +165,23 @@ fun DatePicker.getDate(): Date {
     val calendar = Calendar.getInstance()
     calendar.set(year, month, dayOfMonth)
     return calendar.time
+}
+
+fun View.margin(
+    @DimenRes start: Int? = null,
+    @DimenRes top: Int? = null,
+    @DimenRes end: Int? = null,
+    @DimenRes bottom: Int? = null
+) {
+    layoutParams<ViewGroup.MarginLayoutParams> {
+        start?.run { leftMargin = context.resources.getDimensionPixelSize(start) }
+        top?.run { topMargin = context.resources.getDimensionPixelSize(top) }
+        end?.run { rightMargin = context.resources.getDimensionPixelSize(end) }
+        bottom?.run { bottomMargin = context.resources.getDimensionPixelSize(bottom) }
+    }
+}
+
+inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) {
+    if (layoutParams is T) block(layoutParams as T)
 }
 

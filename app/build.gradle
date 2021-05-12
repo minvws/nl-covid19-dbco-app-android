@@ -159,6 +159,7 @@ dependencies {
     //3rd-party dependency versions
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-viewbinding:$groupie_version"
+    implementation "com.github.qiujayen:sticky-layoutmanager:$sticky_header_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
