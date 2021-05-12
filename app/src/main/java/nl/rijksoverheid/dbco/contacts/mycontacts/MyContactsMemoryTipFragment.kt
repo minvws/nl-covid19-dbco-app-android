@@ -20,8 +20,15 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentMycontactsMemoryBinding.bind(view)
+        val adapter = GroupAdapter<GroupieViewHolder>()
+        adapter.add(initContent())
 
-        val content = Section(
+        binding.content.adapter = adapter
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+    }
+
+    private fun initContent(): Section {
+        return Section(
             listOf(
                 // Top
                 IllustrationItem(R.drawable.illustration_general_user),
@@ -74,11 +81,5 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
                 )
             )
         )
-        val adapter = GroupAdapter<GroupieViewHolder>()
-        adapter.add(content)
-
-        binding.content.adapter = adapter
-
-        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 }

@@ -432,15 +432,81 @@ class TaskDetailItemsStorage(
 
     fun refreshInformSection() {
 
-        val isEnabled =
-            viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
-        val contactName = if (!viewModel.name.value.isNullOrEmpty()) {
-            viewModel.name.value
-        } else {
-            context.getString(R.string.inform_header_this_person)
-        }
+        val isEnabled = isInformSectionEnabled()
+        val contactName = getContactName()
         val header = context.getString(R.string.inform_header, contactName)
-        val footer = when (viewModel.communicationType.value) {
+        val footer = getInformFooter(contactName)
+
+        val dateLastExposure = viewModel.dateOfLastExposure.value
+        val referenceItem = getInformCaseReferenceItem()
+        val message = getInformMessage(dateLastExposure, referenceItem)
+
+        val introMessage = getInformIntroMessage(dateLastExposure)
+        val fullMessage = "$introMessage<br/>$message"
+        val plainMessage = fullMessage.removeHtmlTags()
+
+        informSection.apply {
+            if (!isExpanded) onToggleExpanded()
+            removeAllChildren()
+            setEnabled(isEnabled)
+            if (!isEnabled) return
+
+            val margin = R.dimen.activity_horizontal_margin
+            add(SubHeaderItem(text = header, horizontalMargin = margin))
+            add(ParagraphItem(text = message, clickable = true, horizontalMargin = margin))
+            add(SubHeaderItem(text = footer, horizontalMargin = margin))
+
+            val callButtonType = getCallButtonType()
+            val copyButtonType = getCopyButtonType()
+
+            if (viewModel.copyEnabled(featureFlags)) {
+                add(
+                    ButtonItem(
+                        text = context.getString(R.string.contact_section_inform_copy),
+                        buttonClickListener = { copyGuidelines(plainMessage, fullMessage) },
+                        type = copyButtonType,
+                        horizontalMargin = margin
+                    )
+                )
+            }
+
+            if (viewModel.callingEnabled(featureFlags)) {
+                val name = viewModel.task.linkedContact!!.firstName ?: "contact"
+                val number = viewModel.task.linkedContact!!.numbers.first()
+                add(
+                    ButtonItem(
+                        text = context.getString(R.string.contact_section_inform_call, name),
+                        buttonClickListener = { callTask(number) },
+                        type = callButtonType,
+                        horizontalMargin = margin
+                    )
+                )
+            }
+        }
+    }
+
+    private fun getCopyButtonType(): ButtonType {
+        return if (
+            viewModel.commByIndex() &&
+            viewModel.copyEnabled(featureFlags) &&
+            !viewModel.callingEnabled(featureFlags)
+        ) {
+            DARK
+        } else {
+            LIGHT
+        }
+    }
+
+    private fun getCallButtonType(): ButtonType {
+        return if (viewModel.commByIndex() && viewModel.callingEnabled(featureFlags)) {
+            DARK
+        } else {
+            LIGHT
+        }
+    }
+
+    private fun getInformFooter(contactName: String): String {
+        return when (viewModel.communicationType.value) {
             CommunicationType.Staff -> context.getString(
                 R.string.inform_contact_title_staff,
                 contactName
@@ -451,14 +517,59 @@ class TaskDetailItemsStorage(
             )
             else -> context.getString(R.string.inform_contact_title_unknown, contactName)
         }
+    }
 
-        val dateLastExposure = viewModel.dateOfLastExposure.value
+    private fun isInformSectionEnabled(): Boolean {
+        return viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
+    }
 
-        val referenceItem = if (viewModel.hasCaseReference()) {
+    private fun getContactName(): String {
+        return if (!viewModel.name.value.isNullOrEmpty()) {
+            viewModel.name.value!!
+        } else {
+            context.getString(R.string.inform_header_this_person)
+        }
+    }
+
+    private fun getInformIntroMessage(dateLastExposure: String?): String {
+        return if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+            when (viewModel.category.value) {
+                Category.ONE -> guidelines.introExposureDateUnknown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateUnknown.getCategory2()
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateUnknown.getCategory3()
+                else -> ""
+            }
+        } else {
+            when (viewModel.category.value) {
+                Category.ONE -> guidelines.introExposureDateKnown.getCategory1()
+                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateKnown.getCategory2(
+                    exposureDate = dateLastExposure
+                )
+                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateKnown.getCategory3(
+                    exposureDate = dateLastExposure
+                )
+                else -> ""
+            }
+        }
+    }
+
+    private fun getInformLink(): String {
+        return when (viewModel.category.value) {
+            Category.ONE -> guidelines.outro.getCategory1()
+            Category.TWO_A, Category.TWO_B -> guidelines.outro.getCategory2()
+            Category.THREE_A, Category.THREE_B -> guidelines.outro.getCategory3()
+            else -> ""
+        }
+    }
+
+    private fun getInformCaseReferenceItem(): String? {
+        return if (viewModel.hasCaseReference()) {
             guidelines.getReferenceNumberItem(viewModel.getCaseReference()!!)
         } else null
+    }
 
-        var message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+    private fun getInformMessage(dateLastExposure: String?, referenceItem: String?): String {
+        val message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
             when (viewModel.category.value) {
                 Category.ONE -> guidelines.guidelinesExposureDateUnknown.getCategory1(
@@ -503,112 +614,7 @@ class TaskDetailItemsStorage(
                 else -> ""
             }
         }
-
-        val link = when (viewModel.category.value) {
-            Category.ONE -> guidelines.outro.getCategory1()
-            Category.TWO_A, Category.TWO_B -> guidelines.outro.getCategory2()
-            Category.THREE_A, Category.THREE_B -> guidelines.outro.getCategory3()
-            else -> ""
-        }
-
-        message += "<br/>$link"
-
-        // To be shown above the copied message
-        val introMessage = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
-            when (viewModel.category.value) {
-                Category.ONE -> guidelines.introExposureDateUnknown.getCategory1()
-                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateUnknown.getCategory2()
-                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateUnknown.getCategory3()
-                else -> ""
-            }
-        } else {
-            when (viewModel.category.value) {
-                Category.ONE -> guidelines.introExposureDateKnown.getCategory1()
-                Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateKnown.getCategory2(
-                    exposureDate = dateLastExposure
-                )
-                Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateKnown.getCategory3(
-                    exposureDate = dateLastExposure
-                )
-                else -> ""
-            }
-        }
-
-        val fullMessage = "$introMessage<br/>$message"
-        val plainMessage = fullMessage.removeHtmlTags()
-
-        informSection.apply {
-            if (!isExpanded) {
-                onToggleExpanded()
-            }
-            removeAllChildren()
-            setEnabled(isEnabled)
-            if (!isEnabled) {
-                return
-            }
-
-            add(
-                SubHeaderItem(
-                    text = header,
-                    horizontalMargin = R.dimen.activity_horizontal_margin
-                )
-            )
-            add(
-                ParagraphItem(
-                    text = message,
-                    clickable = true,
-                    horizontalMargin = R.dimen.activity_horizontal_margin
-                )
-            )
-            add(
-                SubHeaderItem(
-                    text = footer,
-                    horizontalMargin = R.dimen.activity_horizontal_margin
-                )
-            )
-
-            val callButtonType = if (
-                viewModel.commByIndex() &&
-                viewModel.callingEnabled(featureFlags)
-            ) {
-                DARK
-            } else {
-                LIGHT
-            }
-            val copyButtonType = if (
-                viewModel.commByIndex() &&
-                viewModel.copyEnabled(featureFlags) &&
-                !viewModel.callingEnabled(featureFlags)
-            ) {
-                DARK
-            } else {
-                LIGHT
-            }
-
-            if (viewModel.copyEnabled(featureFlags)) {
-                add(
-                    ButtonItem(
-                        text = context.getString(R.string.contact_section_inform_copy),
-                        buttonClickListener = { copyGuidelines(plainMessage, fullMessage) },
-                        type = copyButtonType,
-                        horizontalMargin = R.dimen.activity_horizontal_margin
-                    )
-                )
-            }
-
-            if (viewModel.callingEnabled(featureFlags)) {
-                val name = viewModel.task.linkedContact!!.firstName ?: "contact"
-                val number = viewModel.task.linkedContact!!.numbers.first()
-                add(
-                    ButtonItem(
-                        text = context.getString(R.string.contact_section_inform_call, name),
-                        buttonClickListener = { callTask(number) },
-                        type = callButtonType,
-                        horizontalMargin = R.dimen.activity_horizontal_margin
-                    )
-                )
-            }
-        }
+        return "$message<br/>${getInformLink()}"
     }
 
     private fun callTask(number: String) {

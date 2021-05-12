@@ -25,29 +25,28 @@ import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TOKEN
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.KEY_TX
 import nl.rijksoverheid.dbco.user.IUserRepository.Companion.PUBLIC_KEY_VERSION
 import nl.rijksoverheid.dbco.user.data.entity.PairingRequestBody
+import nl.rijksoverheid.dbco.user.data.entity.PairingResponse
 import nl.rijksoverheid.dbco.util.Obfuscator
 import nl.rijksoverheid.dbco.util.toHexString
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
 import org.libsodium.jni.crypto.Util
 import retrofit2.Response
-import timber.log.Timber
 
 /**
  * HA stands for Health Authority (in our case GGD)
  * Documentation: https://github.com/minvws/nl-covid19-dbco-app-coordination-private/blob/main/architecture/api/apispec-app.yaml
  */
-class UserRepository(context: Context) : IUserRepository { // TODO move to dagger
+class UserRepository(context: Context) : IUserRepository {
 
-    private var encryptedSharedPreferences: SharedPreferences = LocalStorageRepository.getInstance(context).getSharedPreferences()
+    private var encryptedSharedPreferences: SharedPreferences =
+        LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     private val api: DbcoApi = DbcoApi.create(context)
 
     private var rx: String? = null
     private var tx: String? = null
     private var token: String? = null
-
-
 
     init {
         encryptedSharedPreferences.getString(KEY_RX, null)?.let {
@@ -62,18 +61,53 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
     }
 
     @ExperimentalUnsignedTypes
-    @SuppressLint("ApplySharedPref")
     override suspend fun pair(pincode: String) {
         // generating local keys
         val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())
         val clientPublicKeyBytes = ByteArray(Sodium.crypto_box_publickeybytes())
+        val sealedClientPublicKey = getPublicKey(clientSecretKeyBytes, clientPublicKeyBytes)
+
+        // call to GGD server
+        val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey, PUBLIC_KEY_VERSION)
+        val pairingResponse = api.pair(pairingBody)
+
+        // decrypting response
+        onPairingResponse(pairingResponse, clientSecretKeyBytes, clientPublicKeyBytes)
+    }
+
+    override suspend fun retrieveReversePairingCode(): Response<ReversePairingResponse> {
+        // call to GGD server
+        return api.retrievePairingCode()
+    }
+
+    override suspend fun checkReversePairingStatus(token: String): Response<ReversePairingStatusResponse> {
+        return api.checkReversePairingStatus(token)
+    }
+
+    override fun getRx(): String? {
+        return rx
+    }
+
+    override fun getTx(): String? {
+        return tx
+    }
+
+    override fun getToken(): String? {
+        return token
+    }
+
+    private fun getPublicKey(
+        clientSecretKeyBytes: ByteArray,
+        clientPublicKeyBytes: ByteArray
+    ): String {
+
         Sodium.crypto_box_keypair(clientPublicKeyBytes, clientSecretKeyBytes)
 
         val haPubKey = Obfuscator.deObfuscate(BuildConfig.GGD_PUBLIC_KEY)
         val haPubKeyBytes = Base64.decode(haPubKey, BASE64_FLAGS)
 
         // encrypting local public key with given GGD key
-        val cipherTextLength = 48  + clientPublicKeyBytes.size
+        val cipherTextLength = 48 + clientPublicKeyBytes.size
         val sealedClientPublicKeyBytes = ByteArray(cipherTextLength)
         Sodium.crypto_box_seal(
             sealedClientPublicKeyBytes,
@@ -81,13 +115,15 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
             clientPublicKeyBytes.size,
             haPubKeyBytes
         )
-        val sealedClientPublicKey = Base64.encodeToString(sealedClientPublicKeyBytes, BASE64_FLAGS)
+        return Base64.encodeToString(sealedClientPublicKeyBytes, BASE64_FLAGS)
+    }
 
-        // call to GGD server
-        val pairingBody = PairingRequestBody(pincode, sealedClientPublicKey, PUBLIC_KEY_VERSION)
-        val pairingResponse = api.pair(pairingBody)
-
-        // decrypting response
+    @SuppressLint("ApplySharedPref")
+    private fun onPairingResponse(
+        pairingResponse: PairingResponse,
+        clientSecretKeyBytes: ByteArray,
+        clientPublicKeyBytes: ByteArray
+    ) {
         if (pairingResponse.sealedHealthAuthorityPublicKey == null) {
             throw IllegalStateException("sealedHealthAuthorityPublicKey is null")
         } else if (pairingResponse.sealedHealthAuthorityPublicKey == "") {
@@ -98,14 +134,13 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
             BASE64_FLAGS
         )
         val haSpecificPublicKeyBytes = Util.zeros(SodiumConstants.ZERO_BYTES)
-        val cryptoBoxSealOpenResult = Sodium.crypto_box_seal_open(
+        Sodium.crypto_box_seal_open(
             haSpecificPublicKeyBytes,
             sealedHaPublicKeyBytes,
             sealedHaPublicKeyBytes.size,
             clientPublicKeyBytes,
             clientSecretKeyBytes
         )
-        Timber.d("cryptoBoxSealOpenResult = $cryptoBoxSealOpenResult")
 
         // generating rx and tx
         val rxBytes = Util.zeros(SodiumConstants.SESSIONKEYBYTES)
@@ -121,7 +156,14 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
         // generate token that will be used for user identification
         val rxPlusTx = Util.merge(rxBytes, txBytes)
         val tokenBytes = Util.zeros(Sodium.crypto_generichash_bytes())
-        Sodium.crypto_generichash(tokenBytes, tokenBytes.size, rxPlusTx, rxPlusTx.size, Util.zeros(0), 0)
+        Sodium.crypto_generichash(
+            tokenBytes,
+            tokenBytes.size,
+            rxPlusTx,
+            rxPlusTx.size,
+            Util.zeros(0),
+            0
+        )
 
         // save result
         tx = Base64.encodeToString(txBytes, BASE64_FLAGS)
@@ -137,23 +179,4 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
             .commit()
     }
 
-    override suspend fun retrieveReversePairingCode() : Response<ReversePairingResponse> {
-        // call to GGD server
-        return api.retrievePairingCode()
-    }
-
-    override suspend fun checkReversePairingStatus(token : String) : Response<ReversePairingStatusResponse> {
-        return api.checkReversePairingStatus(token)
-    }
-
-    override fun getRx(): String? {
-        return rx
-    }
-    override fun getTx(): String? {
-        return tx
-    }
-
-    override fun getToken(): String? {
-        return token
-    }
 }

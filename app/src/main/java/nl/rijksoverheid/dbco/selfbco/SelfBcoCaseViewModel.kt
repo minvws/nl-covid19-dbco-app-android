@@ -88,7 +88,9 @@ class SelfBcoCaseViewModel(
             )
             tasksRepository.saveTask(
                 task = task,
-                shouldMerge = { current -> current.label!!.contentEquals(task.label!!) },
+                shouldMerge = { current ->
+                    current.label!!.lowercase().contentEquals(task.label!!.lowercase())
+                },
                 shouldUpdate = { current ->
                     task.getExposureDate().isAfter(current.getExposureDate())
                 }

@@ -61,70 +61,47 @@ class CaseRepository(
         LocalStorageRepository.getInstance(context).getSharedPreferences()
 
     override suspend fun fetchCase(): Case {
-        userRepository.getToken()?.let {
-            val data = withContext(Dispatchers.IO) { api.getCase(it) }
-            val sealedCase = data.body()?.sealedCase
-            val cipherBytes =
-                Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
-            val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
-            val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
-            val caseBodyBytes = ByteArray(cipherBytes.size - Sodium.crypto_secretbox_macbytes())
-            Sodium.crypto_secretbox_open_easy(
-                caseBodyBytes,
-                cipherBytes,
-                cipherBytes.size,
-                nonceBytes,
-                rxBytes
-            )
-            val caseString = String(caseBodyBytes)
-            val remoteCase: Case = Defaults.json.decodeFromString(caseString)
+        val token = userRepository.getToken() ?: return _case
 
-            val old = _case
+        val remoteCase = getRemoteCase(token)
+        val localCase = _case
 
-            var new = old.copy(
-                reference = remoteCase.reference,
-                symptomsKnown = remoteCase.symptomsKnown
-            )
+        var mergedCase = localCase.copy(
+            reference = remoteCase.reference,
+            symptomsKnown = remoteCase.symptomsKnown,
+            dateOfTest = localCase.dateOfTest ?: remoteCase.dateOfTest,
+            windowExpiresAt = localCase.windowExpiresAt ?: remoteCase.windowExpiresAt,
+            dateOfSymptomOnset = localCase.dateOfSymptomOnset ?: remoteCase.dateOfSymptomOnset,
+            symptoms = if (localCase.symptoms.isEmpty()) remoteCase.symptoms else localCase.symptoms,
+        )
 
-            if (old.dateOfTest == null) {
-                new = new.copy(dateOfTest = remoteCase.dateOfTest)
-            }
-            if (old.dateOfSymptomOnset == null) {
-                new = new.copy(dateOfSymptomOnset = remoteCase.dateOfSymptomOnset)
-            }
-            if (old.symptoms.isEmpty()) {
-                new = new.copy(symptoms = remoteCase.symptoms)
-            }
-            if (old.windowExpiresAt == null) {
-                new = new.copy(windowExpiresAt = remoteCase.windowExpiresAt)
-            }
-            val localTasks = old.tasks.toMutableList()
-            val remoteTasks = remoteCase.tasks
+        val localTasks = localCase.tasks.toMutableList()
+        val remoteTasks = remoteCase.tasks
 
-            if (localTasks.isEmpty()) {
-                new = new.copy(tasks = remoteTasks)
-            } else {
-                remoteCase.tasks.forEach { remoteTask ->
-                    val existingTask = localTasks.find { it.uuid == remoteTask.uuid }
-                    when {
-                        existingTask == null -> localTasks.add(remoteTask)
-                        existingTask.questionnaireResult == null -> {
-                            // no changes made by user, can just replace with remote
-                            localTasks.remove(existingTask)
-                            localTasks.add(remoteTask)
-                        }
-                        existingTask.taskType == TaskType.Contact -> {
-                            // local task can handle updates to these fields
-                            existingTask.communication = remoteTask.communication
-                            existingTask.label = remoteTask.label
-                            existingTask.taskContext = remoteTask.taskContext
-                        }
+        if (localTasks.isEmpty()) {
+            mergedCase = mergedCase.copy(tasks = remoteTasks)
+        } else {
+            remoteCase.tasks.forEach { remoteTask ->
+                val existingTask = localTasks.find { it.uuid == remoteTask.uuid }
+                when {
+                    existingTask == null -> localTasks.add(remoteTask)
+                    existingTask.questionnaireResult == null -> {
+                        // no changes made by user, can just replace with remote
+                        localTasks.remove(existingTask)
+                        localTasks.add(remoteTask)
+                    }
+                    existingTask.taskType == TaskType.Contact -> {
+                        // local task can handle updates to these fields
+                        existingTask.communication = remoteTask.communication
+                        existingTask.label = remoteTask.label
+                        existingTask.taskContext = remoteTask.taskContext
                     }
                 }
-                new = new.copy(tasks = localTasks)
             }
-            persistCase(new)
+            mergedCase = mergedCase.copy(tasks = localTasks)
         }
+        persistCase(mergedCase)
+
         return _case
     }
 
@@ -315,6 +292,25 @@ class CaseRepository(
         } else {
             LocalDateTime.now(DateTimeZone.UTC)
         }
+    }
+
+    private suspend fun getRemoteCase(userToken: String): Case {
+        val data = withContext(Dispatchers.IO) { api.getCase(userToken) }
+        val sealedCase = data.body()?.sealedCase
+        val cipherBytes =
+            Base64.decode(sealedCase?.ciphertext, IUserRepository.BASE64_FLAGS)
+        val nonceBytes = Base64.decode(sealedCase?.nonce, IUserRepository.BASE64_FLAGS)
+        val rxBytes = Base64.decode(userRepository.getRx(), IUserRepository.BASE64_FLAGS)
+        val caseBodyBytes = ByteArray(cipherBytes.size - Sodium.crypto_secretbox_macbytes())
+        Sodium.crypto_secretbox_open_easy(
+            caseBodyBytes,
+            cipherBytes,
+            cipherBytes.size,
+            nonceBytes,
+            rxBytes
+        )
+        val caseString = String(caseBodyBytes)
+        return Defaults.json.decodeFromString(caseString)
     }
 
     private fun persistCase(case: Case, localChanges: Boolean = false) {
