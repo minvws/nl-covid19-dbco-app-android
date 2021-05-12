@@ -75,4 +75,6 @@ class ContactsViewModel(
             shouldUpdate = { current -> task != current }
         )
     }
+
+    fun onNoContactPicked(indexTaskUuid: String) = caseRepository.deleteTask(uuid = indexTaskUuid)
 }
