@@ -8,18 +8,21 @@
 package nl.rijksoverheid.dbco.items.ui
 
 import android.text.method.LinkMovementMethod
+import androidx.annotation.DimenRes
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
+import nl.rijksoverheid.dbco.util.margin
 import timber.log.Timber
 
 
 class ParagraphItem(
         private val text: String?,
-        private val clickable: Boolean = false
+        private val clickable: Boolean = false,
+        @DimenRes private val horizontalMargin: Int? = null
 ) : BaseBindableItem<ItemParagraphBinding>() {
     override fun getLayout() = R.layout.item_paragraph
 
@@ -27,6 +30,7 @@ class ParagraphItem(
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
         viewBinding.content.linksClickable = true
         viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
+        viewBinding.content.margin(start = horizontalMargin, end = horizontalMargin)
 
         Timber.d("Got value $text")
         text?.let {

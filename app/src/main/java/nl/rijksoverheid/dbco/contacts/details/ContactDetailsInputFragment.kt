@@ -20,8 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
+import com.jay.widget.StickyHeadersLinearLayoutManager
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -32,7 +31,6 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.details.TaskDetailItemsStorage.Companion.ANSWER_EARLIER
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
-import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
@@ -48,7 +46,6 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
-import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
@@ -61,7 +58,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private val args: ContactDetailsInputFragmentArgs by navArgs()
 
-    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val adapter = ContactDetailsAdapter()
 
     private lateinit var itemsStorage: TaskDetailItemsStorage
     private lateinit var binding: FragmentContactInputBinding
@@ -102,17 +99,19 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun initContent() {
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            QuestionnaireSectionDecorator(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
-            )
+        binding.content.layoutManager = StickyHeadersLinearLayoutManager<ContactDetailsAdapter>(
+            requireContext()
         )
         var contactName = viewModel.task.linkedContact?.getDisplayName()
         if (contactName.isNullOrEmpty()) {
             contactName = getString(R.string.mycontacts_add_contact)
         }
-        adapter.add(HeaderItem(contactName))
+        adapter.add(
+            HeaderItem(
+                text = contactName,
+                horizontalMargin = R.dimen.activity_horizontal_margin
+            )
+        )
         updateButton()
     }
 
