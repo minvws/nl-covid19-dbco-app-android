@@ -32,7 +32,7 @@ buildscript {
 
     //3rd-party dependency versions
     ext.desugar_jdk_libs_version = "1.1.5"
-    ext.libsodium_jni_version = "2.0.1"
+    ext.libsodium_jni_version = "2.0.2"
     ext.rootbeer_version = "0.0.8"
     ext.joda_time_version = "2.10.6.2"
     ext.groupie_version = "2.8.0"
