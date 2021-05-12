@@ -9,13 +9,14 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
-import android.text.InputType
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.annotation.StringRes
-import androidx.core.widget.doAfterTextChanged
 import com.xwray.groupie.Item
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemInputWithOptionsBinding
@@ -37,7 +38,7 @@ abstract class InputQuestionMultipleOptionsItem(
     @StringRes private val singleHint: Int,
     @StringRes private val multipleHint: Int,
     private val isEnabled: Boolean,
-) : BaseQuestionItem<ItemInputWithOptionsBinding>(question) {
+) : BaseQuestionItem<ItemInputWithOptionsBinding>(question), TextWatcher {
 
     private val hasMultipleItems: Boolean
         get() = items.size > 1
@@ -51,11 +52,14 @@ abstract class InputQuestionMultipleOptionsItem(
         with(editText) {
             inputType = type
             imeOptions = EditorInfo.IME_ACTION_DONE
-            doAfterTextChanged { text ->
-                items = setOf(text.toString()).also { changeListener(it) }
-            }
+            addTextChangedListener(this@InputQuestionMultipleOptionsItem)
         }
         initInput(viewBinding = viewBinding)
+    }
+
+    override fun onViewDetachedFromWindow(viewHolder: GroupieViewHolder<ItemInputWithOptionsBinding>) {
+        super.onViewDetachedFromWindow(viewHolder)
+        viewHolder.binding.requireEditText().removeTextChangedListener(this)
     }
 
     private fun initInput(viewBinding: ItemInputWithOptionsBinding, forceFocus: Boolean = false) {
@@ -140,5 +144,13 @@ abstract class InputQuestionMultipleOptionsItem(
     internal enum class ViewState {
         SINGLE_EDIT,
         MULTIPLE_OPTIONS
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* */ }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* */ }
+
+    override fun afterTextChanged(text: Editable?) {
+        items = setOf(text.toString()).also { changeListener(it) }
     }
 }
