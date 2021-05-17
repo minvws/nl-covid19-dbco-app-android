@@ -8,6 +8,7 @@ import kotlinx.serialization.json.JsonObject
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -757,6 +758,237 @@ class TasksDetailViewModelTest {
 
         // then
         Assert.assertTrue(viewModel.category.value == Category.NO_RISK)
+    }
+
+    @Test
+    fun `given changes are enabled and a local task with category and no exposure date, then task should be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            category = Category.ONE,
+            source = Source.App
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertTrue(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are enabled and a local task with no category and exposure date, then task should be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            dateOfLastExposure = "date",
+            source = Source.App
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertTrue(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are enabled and a local task with both a category and exposure date, then task should be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            dateOfLastExposure = "date",
+            source = Source.App,
+            category = Category.ONE
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertTrue(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are enabled and a local task with no a category and exposure date, then task should not be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            source = Source.App,
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertFalse(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are enabled and a remote task with a category and exposure date, then task should not be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            source = Source.Portal,
+            category = Category.ONE,
+            dateOfLastExposure = "date"
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertFalse(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are not enabled and a local task with a category and exposure date, then task should not be deletable`() {
+        // given
+        val id = "test"
+        val changesEnabled = false
+        val task = Task(
+            source = Source.App,
+            category = Category.ONE,
+            dateOfLastExposure = "date"
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+
+        // then
+        Assert.assertFalse(viewModel.isDeletionPossible(changesEnabled))
+    }
+
+    @Test
+    fun `given changes are not enabled, when task is cancelled, then task should not be deleted`() {
+        // given
+        val id = "test"
+        val changesEnabled = false
+        val task = Task(
+            source = Source.App,
+            category = Category.ONE,
+            dateOfLastExposure = "date"
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+        viewModel.onCancelled(changesEnabled)
+
+        // then
+        verify(exactly = 0) { tasksMock.deleteTask(id) }
+    }
+
+    @Test
+    fun `given changes are enabled and local task with no information, when task is cancelled, then task should be deleted`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            uuid = id,
+            source = Source.App,
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+        viewModel.onCancelled(changesEnabled)
+
+        // then
+        verify { tasksMock.deleteTask(id) }
+    }
+
+    @Test
+    fun `given changes are enabled and local task with category, when task is cancelled, then task should not be deleted`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            uuid = id,
+            source = Source.App,
+            category = Category.ONE
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+        viewModel.onCancelled(changesEnabled)
+
+        // then
+        verify(exactly = 0) { tasksMock.deleteTask(id) }
+    }
+
+    @Test
+    fun `given changes are enabled and local task with exposure date, when task is cancelled, then task should not be deleted`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            uuid = id,
+            source = Source.App,
+            dateOfLastExposure = "date"
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+        viewModel.onCancelled(changesEnabled)
+
+        // then
+        verify(exactly = 0) { tasksMock.deleteTask(id) }
+    }
+
+    @Test
+    fun `given changes are enabled and local task which is saved, when task is cancelled, then task should not be deleted`() {
+        // given
+        val id = "test"
+        val changesEnabled = true
+        val task = Task(
+            uuid = id,
+            source = Source.App,
+            questionnaireResult = QuestionnaireResult(id, emptyList())
+        )
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
+        every { tasksMock.getTask(id) } returns task
+
+        val viewModel = createViewModel(tasksMock, questionnaireMock)
+        viewModel.init(id)
+        viewModel.onCancelled(changesEnabled)
+
+        // then
+        verify(exactly = 0) { tasksMock.deleteTask(id) }
     }
 
     private fun createFeatureFlags(

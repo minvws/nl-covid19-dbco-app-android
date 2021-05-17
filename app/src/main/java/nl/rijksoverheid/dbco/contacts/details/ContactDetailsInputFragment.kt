@@ -90,7 +90,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun initToolbar() {
         binding.toolbar.backButton.setOnClickListener { checkUnsavedChanges() }
-        binding.delete.isVisible = viewModel.task.isLocalAndSaved() && args.enabled
+        binding.delete.isVisible = viewModel.isDeletionPossible(args.enabled)
         binding.delete.setOnClickListener { showDeleteItemDialog(noRisk = false) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             checkUnsavedChanges()
@@ -192,7 +192,8 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             setOnClickListener {
                 when {
                     shouldCloseWithWarning || shouldCancelWithWarning -> showDeleteItemDialog(noRisk = true)
-                    shouldCancel || shouldClose -> findNavController().popBackStack()
+                    shouldCancel -> checkUnsavedChanges()
+                    shouldClose -> findNavController().popBackStack()
                     indexShouldInform() -> showDidYouInformDialog()
                     else -> saveContact()
                 }
@@ -289,12 +290,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
             builder.setNegativeButton(R.string.yes) { dialog, _ ->
                 dialog.dismiss()
-                findNavController().popBackStack()
+                cancel()
             }
             builder.create().show()
         } else {
             findNavController().popBackStack()
         }
+    }
+
+    private fun cancel() {
+        viewModel.onCancelled(args.enabled)
+        findNavController().popBackStack()
     }
 
     private fun hasMadeChanges(): Boolean {
@@ -460,9 +466,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         return viewModel.communicationType.value != Staff && !viewModel.task.didInform
     }
 
-    private fun Task.isLocalAndSaved() = source == Source.App && isSaved()
+    private fun Task.isLocalAndSaved() = isLocal() && isSaved()
 
-    private fun Task.isLocalAndNotSaved() = source == Source.App && !isSaved()
-
-    private fun Task.isSaved() = uuid != null
+    private fun Task.isLocalAndNotSaved() = isLocal() && !isSaved()
 }

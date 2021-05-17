@@ -76,5 +76,10 @@ class ContactsViewModel(
         )
     }
 
-    fun onNoContactPicked(indexTaskUuid: String) = caseRepository.deleteTask(uuid = indexTaskUuid)
+    fun onNoContactPicked(indexTaskUuid: String) {
+        val task = caseRepository.getTask(indexTaskUuid)
+        if (!task.hasCategoryOrExposure()) {
+            caseRepository.deleteTask(uuid = indexTaskUuid)
+        }
+    }
 }

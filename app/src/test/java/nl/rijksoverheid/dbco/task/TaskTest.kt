@@ -3,6 +3,7 @@ package nl.rijksoverheid.dbco.task
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.serialization.json.JsonObject
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -187,5 +188,77 @@ class TaskTest {
 
         // then
         Assert.assertEquals("$fallback ($context)", task.getDisplayName(fallback))
+    }
+
+    @Test
+    fun `given a task with with questionnaire result, then task is saved`() {
+        // given
+        val task = Task(questionnaireResult = QuestionnaireResult("result", emptyList()))
+
+        // then
+        Assert.assertTrue(task.isSaved())
+    }
+
+    @Test
+    fun `given a task with with no questionnaire result, then task is not saved`() {
+        // given
+        val task = Task(questionnaireResult = null)
+
+        // then
+        Assert.assertFalse(task.isSaved())
+    }
+
+    @Test
+    fun `given a task with with source app, then task is local`() {
+        // given
+        val task = Task(source = Source.App)
+
+        // then
+        Assert.assertTrue(task.isLocal())
+    }
+
+    @Test
+    fun `given a task with with source portal, then task is not local`() {
+        // given
+        val task = Task(source = Source.Portal)
+
+        // then
+        Assert.assertFalse(task.isLocal())
+    }
+
+    @Test
+    fun `given a task with category, then task has date or category`() {
+        // given
+        val task = Task(category = Category.ONE)
+
+        // then
+        Assert.assertTrue(task.hasCategoryOrExposure())
+    }
+
+    @Test
+    fun `given a task with exposure date, then task has date or category`() {
+        // given
+        val task = Task(dateOfLastExposure = "date")
+
+        // then
+        Assert.assertTrue(task.hasCategoryOrExposure())
+    }
+
+    @Test
+    fun `given a task with both exposure date and category, then task has date or category`() {
+        // given
+        val task = Task(dateOfLastExposure = "date", category = Category.ONE)
+
+        // then
+        Assert.assertTrue(task.hasCategoryOrExposure())
+    }
+
+    @Test
+    fun `given a task with no exposure date and category, then task has no date or category`() {
+        // given
+        val task = Task(dateOfLastExposure = null, category = null)
+
+        // then
+        Assert.assertFalse(task.hasCategoryOrExposure())
     }
 }

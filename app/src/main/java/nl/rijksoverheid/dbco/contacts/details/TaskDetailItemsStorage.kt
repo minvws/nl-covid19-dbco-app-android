@@ -155,7 +155,7 @@ class TaskDetailItemsStorage(
         isEnabled = enabled
     )
 
-    private val noRiskItem = NoRiskItem()
+    private val noRiskItem = NoRiskItem(horizontalMargin = R.dimen.activity_horizontal_margin)
     private val noExposureRiskItem = NoExposureRiskItem()
 
     fun addClassificationQuestions(
