@@ -98,6 +98,18 @@ class TasksDetailViewModel(
         )
     }
 
+    fun isDeletionPossible(changesEnabled: Boolean): Boolean {
+        val hasInformation = (task.hasCategoryOrExposure() || task.isSaved())
+        return changesEnabled && task.isLocal() && hasInformation
+    }
+
+    fun onCancelled(changesEnabled: Boolean) {
+        val hasNoInformation = !task.isSaved() && !task.hasCategoryOrExposure()
+        if (changesEnabled && task.isLocal() && hasNoInformation) {
+            deleteCurrentTask()
+        }
+    }
+
     fun deleteCurrentTask() = task.uuid?.let { uuid -> tasksRepository.deleteTask(uuid) }
 
     private fun updateRiskFlagsFromCategory(task: Task) {
