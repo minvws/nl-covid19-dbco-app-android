@@ -9,18 +9,12 @@
 package nl.rijksoverheid.dbco.selfbco.onboarding
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -78,7 +72,11 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
         binding.content.adapter = adapter
 
         binding.btnNext.setOnClickListener {
-            requestContactAccess()
+            requestPermission(requestCallback, Manifest.permission.READ_CONTACTS) {
+                findNavController().navigate(
+                    SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
+                )
+            }
         }
 
         binding.btnManual.setOnClickListener {
@@ -90,51 +88,4 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
             findNavController().popBackStack()
         }
     }
-
-
-    private fun requestContactAccess() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    Manifest.permission.READ_CONTACTS
-                )
-            ) {
-                requestCallback.launch(Manifest.permission.READ_CONTACTS)
-            } else {
-                activity?.let {
-                    val builder = MaterialAlertDialogBuilder(it)
-                    builder.setTitle(R.string.permissions_title)
-                    builder.setCancelable(false)
-                    builder.setMessage(R.string.permissions_some_permissions_denied)
-                    builder.setPositiveButton(
-                        R.string.permissions_go_to_settings
-                    ) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                        // Go to app settings
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", it.packageName, null)
-                        )
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        it.startActivity(intent)
-                        it.finish()
-                    }
-                    builder.setNegativeButton(R.string.permissions_no) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                    }
-                    val alert: AlertDialog = builder.create()
-                    alert.show()
-                }
-            }
-        } else {
-            findNavController().navigate(
-                SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
-            )
-        }
-    }
-
 }

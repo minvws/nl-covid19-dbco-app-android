@@ -14,7 +14,6 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
-import nl.rijksoverheid.dbco.items.ui.TimelineContactAddItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import org.joda.time.LocalDate
 

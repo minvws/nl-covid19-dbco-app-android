@@ -1,4 +1,4 @@
-package nl.rijksoverheid.dbco.ui
+package nl.rijksoverheid.dbco.items.ui
 
 import android.content.Context
 import android.graphics.Typeface

@@ -6,13 +6,12 @@
  *
  */
 
-package nl.rijksoverheid.dbco.items.ui
+package nl.rijksoverheid.dbco.selfbco.timeline
 
 import android.view.View
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactAddBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.selfbco.timeline.TimelineSection
 
 class TimelineContactAddItem(section: TimelineSection, private val addListener: OnAddClickedListener) : BaseBindableItem<ItemContactAddBinding>() {
 
