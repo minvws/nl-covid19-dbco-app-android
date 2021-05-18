@@ -33,6 +33,7 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
 import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -83,7 +84,8 @@ class MainActivity : AppCompatActivity() {
             ContactsRepository(this),
             QuestionnaireRepository(this),
             userRepository,
-            AppConfigRepository(this)
+            AppConfigRepository(this),
+            LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
         ).also {
             factory = it
         }

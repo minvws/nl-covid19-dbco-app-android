@@ -32,15 +32,11 @@ import org.joda.time.LocalDateTime
  * ViewModel which, when starting the app, determines where in the flow the app should start
  */
 class SplashViewModel(
-    context: Context,
+    private val storage: SharedPreferences,
     private val userRepository: IUserRepository,
     private val tasksRepository: ICaseRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
-
-    private val storage: SharedPreferences by lazy {
-        LocalStorageRepository.getInstance(context).getSharedPreferences()
-    }
 
     private val _navigation = SingleLiveEvent<Navigation>()
     val navigation: LiveData<Navigation> = _navigation

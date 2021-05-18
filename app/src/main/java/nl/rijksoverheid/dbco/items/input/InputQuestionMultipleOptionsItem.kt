@@ -21,7 +21,7 @@ import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemInputWithOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.ui.BottomSheetDialogPicker
+import nl.rijksoverheid.dbco.items.ui.BottomSheetDialogPicker
 import nl.rijksoverheid.dbco.util.setCompleted
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import nl.rijksoverheid.dbco.items.input.InputQuestionMultipleOptionsItem.ViewState.MULTIPLE_OPTIONS

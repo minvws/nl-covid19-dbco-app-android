@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.config.AppConfig
 import nl.rijksoverheid.dbco.config.AppConfigRepository
@@ -28,7 +30,8 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
  */
 class AppViewModel(
     private val appUpdateManager: AppUpdateManager,
-    private val appConfigRepository: AppConfigRepository
+    private val appConfigRepository: AppConfigRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _updateEvent = SingleLiveEvent<AppLifecycleStatus>()
@@ -38,7 +41,7 @@ class AppViewModel(
     val appConfig: LiveData<AppConfig> = _appConfig
 
     fun fetchConfig() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             try {
                 val config = appConfigRepository.getAppConfig()
                 val state = appUpdateManager.getUpdateState(config)
