@@ -9,6 +9,9 @@
 package nl.rijksoverheid.dbco.config
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
@@ -17,7 +20,6 @@ import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.network.DbcoApi
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import kotlin.Exception
@@ -26,15 +28,12 @@ import kotlin.Exception
  * Repository used to fetch/cache and return the current dynamic configuration
  * used throughout the app
  */
-class AppConfigRepository(val context: Context) {
-
-    private val api by lazy {
-        DbcoApi.create(context)
-    }
-
-    private val sharedPrefs by lazy {
-        LocalStorageRepository.getInstance(context).getSharedPreferences()
-    }
+class AppConfigRepository(
+    private val context: Context,
+    private val api: DbcoApi,
+    private val storage: SharedPreferences,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
 
     /**
      * Fetch new configuration from the API and subsequently cache the config.
@@ -44,7 +43,7 @@ class AppConfigRepository(val context: Context) {
      */
     suspend fun getAppConfig(): AppConfig {
         return try {
-            val config = withContext(Dispatchers.IO) { api.getAppConfig() }.body()!!
+            val config = withContext(coroutineDispatcher) { api.getAppConfig() }.body()!!
             storeConfig(config)
             config
         } catch (ex: Exception) {
@@ -61,7 +60,7 @@ class AppConfigRepository(val context: Context) {
 
     fun storeConfig(config: AppConfig) {
         val configString = Defaults.json.encodeToString(config)
-        sharedPrefs.edit()
+        storage.edit()
             .putString(KEY_CONFIG, configString)
             .putString(
                 KEY_CONFIG_CACHE_DATE,
@@ -88,21 +87,24 @@ class AppConfigRepository(val context: Context) {
     private fun requireConfig(): AppConfig = getCachedConfig()!!
 
     private fun getCachedConfig(): AppConfig? {
-        return sharedPrefs.getString(KEY_CONFIG, null)?.let { config ->
+        return storage.getString(KEY_CONFIG, null)?.let { config ->
             Defaults.json.decodeFromString(config)
         }
     }
 
     private fun getCacheDate(): LocalDate? {
-        return sharedPrefs.getString(KEY_CONFIG_CACHE_DATE, null)?.let { date ->
+        return storage.getString(KEY_CONFIG_CACHE_DATE, null)?.let { date ->
             LocalDate.parse(date, DateFormats.dateInputData)
         }
     }
 
     companion object {
 
-        private const val KEY_CONFIG = "KEY_CONFIG"
-        private const val KEY_CONFIG_CACHE_DATE = "KEY_CONFIG_CACHE_DATE"
-        private const val CACHE_VALIDITY_DAYS = 7
+        @VisibleForTesting
+        const val KEY_CONFIG = "KEY_CONFIG"
+        @VisibleForTesting
+        const val KEY_CONFIG_CACHE_DATE = "KEY_CONFIG_CACHE_DATE"
+        @VisibleForTesting
+        const val CACHE_VALIDITY_DAYS = 7
     }
 }

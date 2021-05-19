@@ -33,6 +33,7 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
 import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
+import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class MainActivity : AppCompatActivity() {
@@ -78,13 +79,15 @@ class MainActivity : AppCompatActivity() {
             return factory as ViewModelFactory
         }
         val userRepository = UserRepository(this)
+        val storage = LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
+        val api = DbcoApi.create(baseContext)
         return ViewModelFactory(
             baseContext,
             CaseRepository(this, userRepository),
             ContactsRepository(this),
-            QuestionnaireRepository(this),
+            QuestionnaireRepository(storage, api),
             userRepository,
-            AppConfigRepository(this),
+            AppConfigRepository(this, api, storage),
             LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
         ).also {
             factory = it
@@ -112,7 +115,8 @@ class MainActivity : AppCompatActivity() {
                     closeAction = { finish() }
                 )
             }
-            else -> { /* NO-OP*/ }
+            else -> { /* NO-OP*/
+            }
         }
     }
 

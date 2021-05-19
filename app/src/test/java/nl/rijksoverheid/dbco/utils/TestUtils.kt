@@ -2,17 +2,11 @@ package nl.rijksoverheid.dbco.utils
 
 import nl.rijksoverheid.dbco.config.*
 
-fun createAppConfig(androidMinimumVersionCode: Int = 0) = AppConfig(
-    androidMinimumVersion = androidMinimumVersionCode,
-    androidMinimumVersionMessage = "test",
-    featureFlags = FeatureFlags(
-        enableSelfBCO = true,
-        enablePerspectiveCopy = true,
-        enableContactCalling = true
-    ),
-    symptoms = emptyList(),
-    supportedZipCodeRanges = emptyList(),
-    guidelines = GuidelinesContainer(
+fun createAppConfig(
+    androidMinimumVersionCode: Int = 0,
+    androidMinimumVersionMessage: String? = "test",
+    symptoms: List<Symptom> = emptyList(),
+    guidelines: GuidelinesContainer = GuidelinesContainer(
         introExposureDateKnown = Guidelines(
             category1 = "test",
             category2 = "test",
@@ -42,5 +36,18 @@ fun createAppConfig(androidMinimumVersionCode: Int = 0) = AppConfig(
             category2 = "test",
             category3 = "test"
         )
+    ),
+    supportedZipCodeRange: List<ZipCodeRange> = emptyList(),
+    featureFlags: FeatureFlags = FeatureFlags(
+        enableSelfBCO = true,
+        enableContactCalling = true,
+        enablePerspectiveCopy = true
     )
+) = AppConfig(
+    androidMinimumVersion = androidMinimumVersionCode,
+    androidMinimumVersionMessage = androidMinimumVersionMessage,
+    featureFlags = featureFlags,
+    symptoms = symptoms,
+    supportedZipCodeRanges = supportedZipCodeRange,
+    guidelines = guidelines
 )

@@ -165,50 +165,20 @@ class TaskDetailItemsStorage(
         classificationQuestion = question
         section?.add(sameHouseholdRiskItem) // always added
 
-        viewModel.sameHouseholdRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                if (section?.getPosition(distanceRiskItem) == -1) {
-                    section.add(distanceRiskItem)
-                }
-            } else {
-                section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(noRiskItem)
-            }
+        viewModel.sameHouseholdRisk.observe(viewLifecycleOwner, { risk ->
+            onSameHouseRiskChanged(risk = risk, section = section)
         })
 
-        viewModel.distanceRisk.observe(viewLifecycleOwner, {
-            if (it != null && it.first == false) {
-                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-                if (section?.getPosition(sameRoomRiskItem) == -1) {
-                    section.add(sameRoomRiskItem)
-                }
-            } else if (it != null && it.second == false) {
-                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(noRiskItem)
-                if (section?.getPosition(physicalContactRiskItem) == -1) {
-                    section.add(physicalContactRiskItem)
-                }
-            } else {
-                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(noRiskItem)
-            }
+        viewModel.distanceRisk.observe(viewLifecycleOwner, { risk ->
+            onDistanceRiskChanged(risk = risk, section = section)
         })
 
         viewModel.physicalContactRisk.observe(viewLifecycleOwner, {
             section?.remove(noRiskItem)
         })
 
-        viewModel.sameRoomRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                if (section?.getPosition(noRiskItem) == -1) {
-                    section.add(noRiskItem)
-                }
-            } else {
-                section?.remove(noRiskItem)
-            }
+        viewModel.sameRoomRisk.observe(viewLifecycleOwner, { risk ->
+            onSameRoomRiskChanged(risk = risk, section = section)
         })
 
         listOf(
@@ -218,6 +188,51 @@ class TaskDetailItemsStorage(
             sameRoomRiskItem
         ).forEach {
             it.question?.uuid = question.uuid
+        }
+    }
+
+    private fun onSameRoomRiskChanged(risk: Boolean?, section: QuestionnaireSection?) {
+        if (risk == false) {
+            if (section?.getPosition(noRiskItem) == -1) {
+                section.add(noRiskItem)
+            }
+        } else {
+            section?.remove(noRiskItem)
+        }
+    }
+
+    private fun onDistanceRiskChanged(
+        risk: Pair<Boolean?, Boolean?>?,
+        section: QuestionnaireSection?
+    ) {
+        if (risk != null && risk.first == false) {
+            section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+            if (section?.getPosition(sameRoomRiskItem) == -1) {
+                section.add(sameRoomRiskItem)
+            }
+        } else if (risk != null && risk.second == false) {
+            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(noRiskItem)
+            if (section?.getPosition(physicalContactRiskItem) == -1) {
+                section.add(physicalContactRiskItem)
+            }
+        } else {
+            section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(noRiskItem)
+        }
+    }
+
+    private fun onSameHouseRiskChanged(risk: Boolean?, section: QuestionnaireSection?) {
+        if (risk == false) {
+            if (section?.getPosition(distanceRiskItem) == -1) {
+                section.add(distanceRiskItem)
+            }
+        } else {
+            section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(noRiskItem)
         }
     }
 
