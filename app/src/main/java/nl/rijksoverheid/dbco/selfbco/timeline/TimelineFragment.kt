@@ -207,6 +207,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         flowType: Int
     ): TimelineSection {
         return TimelineSection(
+            context = requireActivity().applicationContext,
             date = date,
             contactNames = contactNames.toTypedArray(),
             startDate = startDate,
@@ -289,7 +290,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
             )
         )
         builder.setPositiveButton(
-            getString(R.string.str_continue)
+            getString(R.string.selfbco_timeline_continue)
         ) { dialogInterface, _ ->
             dialogInterface.dismiss()
             handleInput()

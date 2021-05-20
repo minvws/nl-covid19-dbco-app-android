@@ -9,7 +9,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +21,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/memorytip_background_orange_bright"
             android:padding="2dp"
-            android:text="Geheugentip"
+            android:text="@string/selfbco_timeline_memory_tip_label"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -34,7 +33,7 @@
             style="@style/TextAppearance.App.Subtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Deze activiteiten worden vaak vergeten:"
+            android:text="@string/selfbco_timeline_memory_tip_title_short"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/accessibleTextView"
             app:layout_constraintTop_toBottomOf="@+id/accessibleTextView" />
@@ -102,9 +101,6 @@
             app:layout_constraintStart_toEndOf="@+id/ic_chat"
             app:layout_constraintTop_toTopOf="@+id/ic_chat" />
 
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

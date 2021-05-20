@@ -110,6 +110,8 @@
     <string name="contact_section_typeofcontact_subtext">Beantwoord een paar vragen</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
+    <string name="contact_section_classification_header">Soort contact</string>
+    <string name="contact_section_classification_subtext">Vragen over jullie ontmoeting</string>
 
     <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
     <string name="delete_contact_no_risk_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
@@ -282,7 +284,17 @@
     <string name="selfbco_timeline_summary_more">Wat deel ik precies met de GGD?</string>
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
     <string name="selfbco_timeline_error_message">Klopt het dat je deze dag(en) niemand hebt ontmoet?\n \n%s</string>
-    <string name="str_continue">Ga verder</string>
+    <string name="selfbco_timeline_today_date">Vandaag (%s)</string>
+    <string name="selfbco_timeline_yesterday_date">Gisteren (%s)</string>
+    <string name="selfbco_timeline_day_before_yesterday_date">Eergisteren (%s)</string>
+    <string name="selfbco_timeline_first_day_of_symptoms">De eerste dag dat je klachten had</string>
+    <string name="selfbco_timeline_day_of_test">Op deze dag liet je jezelf testen</string>
+    <string name="selfbco_timeline_first_contagious_date">Deze dag was je mogelijk al besmettelijk</string>
+    <string name="selfbco_timeline_memory_tip_label">Geheugentip</string>
+    <string name="selfbco_timeline_memory_tip_title">Mensen vergeten vaak activiteiten.\nBekijk daarom ook je:</string>
+    <string name="selfbco_timeline_memory_tip_title_short">Deze activiteiten worden vaak vergeten:</string>
+    <string name="selfbco_timeline_continue">Ga verder</string>
+
     <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
     <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>
     <string name="selfbco_memory_car">Samen in de auto zitten</string>
@@ -331,7 +343,6 @@
     <string name="selfbco_reverse_pairing_error_message">Er ging iets mis. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
     <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
 
-
     <string name="mycontacts_memory_title">Geen contacten vergeten?</string>
     <string name="mycontacts_memory_link">Lees de tips</string>
     <string name="mycontacts_memory_header">Maak een compleet overzicht van mensen die je hebt ontmoet tussen %s en vandaag</string>
@@ -343,4 +354,6 @@
     <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
     <string name="mycontacts_delete_data">Verwijder gegevens</string>
+
+    <string name="contact_item_add_hint">Voeg contact toe</string>
 </resources>
