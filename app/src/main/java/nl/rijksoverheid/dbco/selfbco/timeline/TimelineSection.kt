@@ -8,16 +8,22 @@
 
 package nl.rijksoverheid.dbco.selfbco.timeline
 
+import android.content.Context
 import com.xwray.groupie.Section
+import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import org.joda.time.LocalDate
+import java.util.*
 
 class TimelineSection(
+    private val context: Context,
     val date: LocalDate,
     private val contactNames: Array<String>,
     startDate: LocalDate,
@@ -77,7 +83,6 @@ class TimelineSection(
     }
 
     private fun setSectionHeader(startDate: LocalDate, date: LocalDate) {
-        // Todo: Move to string resources without requiring context
         setHeader(
             createHeader(
                 flowType = flowType,
@@ -98,12 +103,19 @@ class TimelineSection(
         val subtitle = getSubtitle(flowType, date, startDate)
         val formattedDate = date.toString(DateFormats.selfBcoDateCheck)
         val title = when {
-            date.isEqual(today) -> "Vandaag ($formattedDate)"
-            date.isEqual(today.minusDays(1)) -> "Gisteren ($formattedDate)"
-            date.isEqual(today.minusDays(2)) -> "Eergisteren ($formattedDate)"
-            else -> {
-                "" + date.toString(DateFormats.selfBcoDateCheck).capitalize()
-            }
+            date.isEqual(today) -> context.getString(
+                R.string.selfbco_timeline_today_date,
+                formattedDate
+            )
+            date.isEqual(today.minusDays(1)) -> context.getString(
+                R.string.selfbco_timeline_yesterday_date,
+                formattedDate
+            )
+            date.isEqual(today.minusDays(2)) -> context.getString(
+                R.string.selfbco_timeline_day_before_yesterday_date,
+                formattedDate
+            )
+            else -> date.toString(DateFormats.selfBcoDateCheck).capitalize(Locale.getDefault())
         }
 
         return if (subtitle != null) {
@@ -119,14 +131,11 @@ class TimelineSection(
         startDate: LocalDate
     ): String? {
         return if (date == startDate) when (flowType) {
-            SelfBcoConstants.SYMPTOM_CHECK_FLOW -> "De eerste dag dat je klachten had"
-            SelfBcoConstants.COVID_CHECK_FLOW -> "Op deze dag liet je jezelf testen"
+            SYMPTOM_CHECK_FLOW -> context.getString(R.string.selfbco_timeline_first_day_of_symptoms)
+            COVID_CHECK_FLOW -> context.getString(R.string.selfbco_timeline_day_of_test)
             else -> null
-        } else if (
-            flowType == SelfBcoConstants.SYMPTOM_CHECK_FLOW &&
-            date.isBefore(startDate)
-        ) {
-            "Deze dag was je mogelijk al besmettelijk"
+        } else if (flowType == SYMPTOM_CHECK_FLOW && date.isBefore(startDate)) {
+            context.getString(R.string.selfbco_timeline_first_contagious_date)
         } else {
             null
         }
