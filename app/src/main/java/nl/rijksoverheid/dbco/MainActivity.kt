@@ -48,8 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Set FLAG_SECURE to hide content on non-debug builds
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.FEATURE_SECURE_WINDOW) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE

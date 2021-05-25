@@ -62,6 +62,7 @@ android {
         localDev {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
             buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
@@ -74,6 +75,7 @@ android {
         dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
@@ -87,6 +89,7 @@ android {
         dbcoAcc {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
@@ -101,6 +104,7 @@ android {
         dbcoProd {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "true"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
