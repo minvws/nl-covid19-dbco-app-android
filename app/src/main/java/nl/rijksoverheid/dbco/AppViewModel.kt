@@ -4,6 +4,7 @@
  *
  *  SPDX-License-Identifier: EUPL-1.2
  */
+
 package nl.rijksoverheid.dbco
 
 import androidx.lifecycle.LiveData
@@ -23,6 +24,7 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.config.AppUpdateManager
 import nl.rijksoverheid.dbco.config.GuidelinesContainer
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
+import timber.log.Timber
 
 /**
  * ViewModel used in the app scope.
@@ -52,6 +54,7 @@ class AppViewModel(
                     _updateEvent.value = UpToDate
                 }
             } catch (ex: Exception) {
+                Timber.e(ex, "Exception during config/update state fetch!")
                 _updateEvent.value = ConfigError
             }
         }

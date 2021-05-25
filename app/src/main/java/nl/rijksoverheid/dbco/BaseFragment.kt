@@ -84,7 +84,11 @@ abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layou
         view?.clearFocus()
     }
 
-    internal fun requestPermission(requestCallback: ActivityResultLauncher<String>, permission: String, onGranted: (() -> Unit)) {
+    internal fun requestPermission(
+        requestCallback: ActivityResultLauncher<String>,
+        permission: String,
+        onGranted: (() -> Unit)
+    ) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.READ_CONTACTS

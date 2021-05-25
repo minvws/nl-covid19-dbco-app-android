@@ -19,13 +19,14 @@ object Constants {
     const val USER_PREFS = "userPrefs"
 
     // Pref keys
-    const val USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY = "userChoseAddContactsManuallyAfterPairing"
+    const val USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY =
+        "userChoseAddContactsManuallyAfterPairing"
     const val USER_COMPLETED_ONBOARDING = "completedOnboarding"
     const val USER_GAVE_CONSENT = "gaveConsent"
     const val USER_IS_PAIRED = "isPaired" // Track if user is paired already
 
     // Validation patterns
-    val PHONE_VALIDATION_MATCHER : Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
+    val PHONE_VALIDATION_MATCHER: Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
     val EMAIL_VALIDATION_MATCHER = Pattern.compile(
         "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                 "\\@" +
@@ -37,5 +38,6 @@ object Constants {
     )
 
     // prefixes for the Netherlands, Belgium and Germany
-    val VALID_PHONENUMER_PREFIXES = listOf("+31", "+0031", "0031", "+32", "+0032", "0032","+49", "+0049", "0049" )
+    val VALID_PHONENUMER_PREFIXES =
+        listOf("+31", "+0031", "0031", "+32", "+0032", "0032", "+49", "+0049", "0049")
 }

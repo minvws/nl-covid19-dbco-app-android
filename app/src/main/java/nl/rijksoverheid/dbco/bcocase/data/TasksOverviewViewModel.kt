@@ -29,6 +29,7 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireRe
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
+import timber.log.Timber
 
 /**
  * ViewModel used to fetch and show all [Task]s currently added to the [Case].
@@ -73,6 +74,7 @@ class TasksOverviewViewModel(
                     CaseResult.CaseSuccess(sorted)
                 }
             } catch (ex: Exception) {
+                Timber.e(ex, "Exception during case fetch!")
                 CaseResult.CaseError(getCachedCase())
             }
 
@@ -80,6 +82,7 @@ class TasksOverviewViewModel(
                 questionnaireRepository.syncQuestionnaires()
                 QuestionnaireSuccess
             } catch (ex: Exception) {
+                Timber.e(ex, "Exception during questionnaire fetch!")
                 QuestionnaireError
             }
             _viewData.value = ViewData(caseResult, questionnaireResult)

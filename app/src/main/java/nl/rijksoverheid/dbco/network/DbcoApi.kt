@@ -47,13 +47,14 @@ interface DbcoApi {
     suspend fun getAppConfig(): Response<AppConfig>
 
     @POST("v2/pairingrequests")
-    suspend fun retrievePairingCode() : Response<ReversePairingResponse>
+    suspend fun retrievePairingCode(): Response<ReversePairingResponse>
 
     @GET("v2/pairingrequests/{token}")
-    suspend fun checkReversePairingStatus(@Path("token") token: String) : Response<ReversePairingStatusResponse>
+    suspend fun checkReversePairingStatus(@Path("token") token: String): Response<ReversePairingStatusResponse>
 
 
     companion object {
+
         fun create(
             context: Context,
             client: OkHttpClient = createOkHttpClient(context),
@@ -67,5 +68,4 @@ interface DbcoApi {
                 .build().create(DbcoApi::class.java)
         }
     }
-
 }

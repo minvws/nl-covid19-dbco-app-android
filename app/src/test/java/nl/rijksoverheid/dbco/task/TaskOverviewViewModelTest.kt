@@ -6,7 +6,6 @@
  *
  */
 
-
 package nl.rijksoverheid.dbco.task
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

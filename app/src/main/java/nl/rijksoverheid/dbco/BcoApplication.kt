@@ -23,11 +23,7 @@ class BcoApplication : Application() {
         NaCl.sodium()
 
         if (BuildConfig.FEATURE_LOGGING) {
-            Timber.plant(Timber.DebugTree())
-            Timber.plant(FileTree(getExternalFilesDir(null)))
-            Timber.d("onCreate")
+            Timber.plant(Timber.DebugTree(), FileTree(getExternalFilesDir(null)))
         }
     }
-
-
 }

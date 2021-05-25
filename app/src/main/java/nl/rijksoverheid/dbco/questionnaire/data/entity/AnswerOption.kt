@@ -12,6 +12,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AnswerOption(
-	val label: String? = null,
-	val value: String? = null
+    val label: String? = null,
+    val value: String? = null
 )

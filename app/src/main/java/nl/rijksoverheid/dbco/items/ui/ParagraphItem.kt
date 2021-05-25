@@ -16,14 +16,13 @@ import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import nl.rijksoverheid.dbco.util.margin
-import timber.log.Timber
-
 
 class ParagraphItem(
-        private val text: String?,
-        private val clickable: Boolean = false,
-        @DimenRes private val horizontalMargin: Int? = null
+    private val text: String?,
+    private val clickable: Boolean = false,
+    @DimenRes private val horizontalMargin: Int? = null
 ) : BaseBindableItem<ItemParagraphBinding>() {
+
     override fun getLayout() = R.layout.item_paragraph
 
     override fun bind(viewBinding: ItemParagraphBinding, position: Int) {
@@ -32,7 +31,6 @@ class ParagraphItem(
         viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
         viewBinding.content.margin(start = horizontalMargin, end = horizontalMargin)
 
-        Timber.d("Got value $text")
         text?.let {
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
@@ -41,6 +39,8 @@ class ParagraphItem(
     }
 
     override fun isClickable() = clickable
+
     override fun isSameAs(other: Item<*>): Boolean = other is ParagraphItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is ParagraphItem && other.text == text
 }

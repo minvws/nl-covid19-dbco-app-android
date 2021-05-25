@@ -46,9 +46,6 @@ class ContactsRepository(val context: Context) {
         }
     }
 
-
-//region Local contacts
-
     private fun getPhoneContacts(): ArrayList<LocalContact> {
         val contactsList = ArrayList<LocalContact>()
         val contactsCursor = context.contentResolver?.query(
@@ -132,7 +129,4 @@ class ContactsRepository(val context: Context) {
         }
         return contactsEmailMap
     }
-
-    //endregion local
-
 }

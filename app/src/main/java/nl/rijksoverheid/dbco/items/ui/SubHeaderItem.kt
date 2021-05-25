@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.DimenRes
@@ -19,6 +20,7 @@ class SubHeaderItem(
     private val text: String,
     @DimenRes private val horizontalMargin: Int? = null
 ) : BaseBindableItem<ItemSubHeaderBinding>() {
+
     override fun getLayout() = R.layout.item_sub_header
 
     override fun bind(viewBinding: ItemSubHeaderBinding, position: Int) {
@@ -29,5 +31,6 @@ class SubHeaderItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is SubHeaderItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is SubHeaderItem && other.text == text
 }

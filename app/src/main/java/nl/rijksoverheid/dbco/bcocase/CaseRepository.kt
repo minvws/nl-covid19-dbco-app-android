@@ -35,6 +35,7 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.libsodium.jni.Sodium
 import org.libsodium.jni.SodiumConstants
+import timber.log.Timber
 import java.lang.IllegalStateException
 
 class CaseRepository(
@@ -172,13 +173,20 @@ class CaseRepository(
         val task = _case.tasks.find { task -> task.uuid == uuid }
         return task ?: throw IllegalStateException(
             "trying to find a task with uuid which does not exist"
-        )
+        ).also { ex -> Timber.e(ex) }
     }
 
     override fun getCase(): Case = _case
 
     override suspend fun uploadCase() {
-        val caseString = Json { encodeDefaults = true }.encodeToString(CaseRequest.fromCase(_case))
+        val caseString = Json {
+            encodeDefaults = true
+            prettyPrint = true
+        }.encodeToString(CaseRequest.fromCase(_case))
+
+        Timber.d("Uploading case..")
+        Timber.d(caseString)
+
         userRepository.getToken()?.let { token ->
             val caseBytes = caseString.toByteArray()
             val txBytes = Base64.decode(userRepository.getTx(), IUserRepository.BASE64_FLAGS)
@@ -310,7 +318,13 @@ class CaseRepository(
             rxBytes
         )
         val caseString = String(caseBodyBytes)
-        return Defaults.json.decodeFromString(caseString)
+        val case: Case = Defaults.json.decodeFromString(caseString)
+        val pretty = Json { prettyPrint = true }.encodeToString(case)
+
+        Timber.d("Retrieving case from API..")
+        Timber.d(pretty)
+
+        return case
     }
 
     private fun persistCase(case: Case, localChanges: Boolean = false) {

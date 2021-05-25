@@ -4,6 +4,7 @@
  *
  *  SPDX-License-Identifier: EUPL-1.2
  */
+
 package nl.rijksoverheid.dbco.config
 
 import android.content.Context

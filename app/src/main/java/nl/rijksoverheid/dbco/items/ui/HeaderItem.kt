@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.DimenRes
@@ -27,5 +28,6 @@ class HeaderItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is HeaderItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is HeaderItem && other.text == text
 }

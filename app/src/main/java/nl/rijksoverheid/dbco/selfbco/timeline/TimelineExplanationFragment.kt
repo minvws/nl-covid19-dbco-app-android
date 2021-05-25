@@ -30,11 +30,26 @@ class TimelineExplanationFragment : BaseFragment(R.layout.fragment_selfbco_timel
         val content = Section(
             listOf(
                 HeaderItem(getString(R.string.selfbco_timeline_explanation_header)),
-                ParagraphItem(getString(R.string.selfbco_timeline_explanation_summary), clickable = true),
-                ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step1), R.drawable.ic_checkmark_round),
-                ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step2), R.drawable.ic_checkmark_round),
-                ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step3), R.drawable.ic_questionmark_round),
-                ParagraphIconItem(getString(R.string.selfbco_timeline_explanation_step4), R.drawable.ic_minus_round),
+                ParagraphItem(
+                    getString(R.string.selfbco_timeline_explanation_summary),
+                    clickable = true
+                ),
+                ParagraphIconItem(
+                    getString(R.string.selfbco_timeline_explanation_step1),
+                    R.drawable.ic_checkmark_round
+                ),
+                ParagraphIconItem(
+                    getString(R.string.selfbco_timeline_explanation_step2),
+                    R.drawable.ic_checkmark_round
+                ),
+                ParagraphIconItem(
+                    getString(R.string.selfbco_timeline_explanation_step3),
+                    R.drawable.ic_questionmark_round
+                ),
+                ParagraphIconItem(
+                    getString(R.string.selfbco_timeline_explanation_step4),
+                    R.drawable.ic_minus_round
+                ),
             )
         )
         val adapter = GroupAdapter<GroupieViewHolder>()

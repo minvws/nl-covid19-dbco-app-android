@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.StringRes
@@ -13,8 +14,10 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemErrorBoxBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
-class ErrorBoxItem(@StringRes text: Int, @StringRes actionLabel: Int, action: () -> Unit = {}) :
-    BaseBindableItem<ItemErrorBoxBinding>() {
+class ErrorBoxItem(
+    @StringRes text: Int,
+    @StringRes actionLabel: Int, action: () -> Unit = {}
+) : BaseBindableItem<ItemErrorBoxBinding>() {
 
     data class ViewState(
         val text: Int,

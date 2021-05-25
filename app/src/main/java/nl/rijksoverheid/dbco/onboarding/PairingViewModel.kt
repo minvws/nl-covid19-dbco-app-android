@@ -24,6 +24,7 @@ import nl.rijksoverheid.dbco.user.IUserRepository
 import retrofit2.HttpException
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.*
+import timber.log.Timber
 
 /**
  * ViewModel used for pairing the app with the backend
@@ -85,6 +86,7 @@ class PairingViewModel(
             if (ex is HttpException && ex.code() == 400) {
                 PairingInvalid
             } else {
+                Timber.e(ex, "Exception during pair with code!")
                 PairingError(ex)
             }
         }
@@ -161,10 +163,13 @@ class PairingViewModel(
     }
 
     sealed class ReversePairingStatus {
-        data class ReversePairing(val credentials: ReversePairingCredentials) : ReversePairingStatus()
+        data class ReversePairing(val credentials: ReversePairingCredentials) :
+            ReversePairingStatus()
+
         data class ReversePairingSuccess(val code: String) : ReversePairingStatus()
         object ReversePairingExpired : ReversePairingStatus()
         object ReversePairingStopped : ReversePairingStatus()
-        data class ReversePairingError(val credentials: ReversePairingCredentials) : ReversePairingStatus()
+        data class ReversePairingError(val credentials: ReversePairingCredentials) :
+            ReversePairingStatus()
     }
 }

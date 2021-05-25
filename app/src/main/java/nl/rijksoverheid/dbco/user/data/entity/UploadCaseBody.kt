@@ -11,6 +11,4 @@ package nl.rijksoverheid.dbco.user.data.entity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UploadCaseBody(
-    val sealedCase: SealedData,
-)
+data class UploadCaseBody(val sealedCase: SealedData)

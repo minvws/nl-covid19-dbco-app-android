@@ -9,7 +9,9 @@
 package nl.rijksoverheid.dbco.selfbco
 
 class SelfBcoConstants {
+
     companion object {
+
         /**
          * Index has symptoms
          */

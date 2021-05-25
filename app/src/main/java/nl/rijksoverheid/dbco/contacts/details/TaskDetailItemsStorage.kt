@@ -656,6 +656,7 @@ class TaskDetailItemsStorage(
     private fun canShowEmptyWarnings(): Boolean = canShowWarnings() && !newTask
 
     companion object {
+
         const val ANSWER_EARLIER = "earlier"
     }
 }

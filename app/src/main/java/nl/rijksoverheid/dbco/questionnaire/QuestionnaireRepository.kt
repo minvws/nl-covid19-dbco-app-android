@@ -35,6 +35,7 @@ class QuestionnaireRepository(
     }
 
     companion object {
+
         const val KEY_QUESTIONNAIRE = "KEY_QUESTIONNAIRE"
     }
 }

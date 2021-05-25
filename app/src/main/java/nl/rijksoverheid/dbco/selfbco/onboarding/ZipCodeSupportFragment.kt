@@ -79,6 +79,7 @@ class ZipCodeSupportFragment : BaseFragment(R.layout.fragment_zipcode_support),
     }
 
     companion object {
+
         private const val KEYBOARD_DELAY = 400L
         private const val PLACEHOLDER = "0000"
     }

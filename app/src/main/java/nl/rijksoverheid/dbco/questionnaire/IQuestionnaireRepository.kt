@@ -23,5 +23,4 @@ interface IQuestionnaireRepository {
      * @return a cached version of the [Questionnaire] or null when no cached version exist
      */
     fun getCachedQuestionnaire(): Questionnaire?
-
 }

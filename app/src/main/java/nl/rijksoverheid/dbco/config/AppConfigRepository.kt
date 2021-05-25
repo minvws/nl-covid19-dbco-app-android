@@ -22,6 +22,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.network.DbcoApi
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
+import timber.log.Timber
 import kotlin.Exception
 
 /**
@@ -47,6 +48,7 @@ class AppConfigRepository(
             storeConfig(config)
             config
         } catch (ex: Exception) {
+            Timber.e(ex, "Exception during config fetch!")
             val cached = getCachedConfig()
             val cacheDate = getCacheDate()
             val now = LocalDate.now(DateTimeZone.UTC)

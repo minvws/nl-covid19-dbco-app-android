@@ -112,6 +112,7 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
     }
 
     companion object {
+
         private const val KEYBOARD_DELAY = 400L
         private const val PLACEHOLDER = "0000-0000-0000"
     }
