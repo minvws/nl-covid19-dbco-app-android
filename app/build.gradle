@@ -5,7 +5,6 @@ apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlinx-serialization'
 
-
 def getGitHash = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
