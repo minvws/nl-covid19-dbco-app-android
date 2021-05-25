@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
   ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
   ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
   ~
   ~   SPDX-License-Identifier: EUPL-1.2
   ~
   -->
-
 <resources>
     <string name="app_name">GGD Contact</string>
-
     <!--    Common words-->
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
@@ -30,10 +29,8 @@
     <string name="collapsed">Ingeklapt</string>
     <string name="expanded">Uitgeklapt</string>
     <string name="other">Anders</string>
-
     <!--    Generic error-->
     <string name="generic_error_prompt_message">Controleer de internetverbinding en probeer het opnieuw.</string>
-
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
     <string name="mycontacts_header">Mijn contacten</string>
@@ -53,10 +50,8 @@
     <string name="upload_data_dialog_title">Wil je nu de gegevens met de GGD delen?</string>
     <string name="upload_data_dialog_summary">Goed om te weten: je kunt hierna nog gegevens aanpassen en deze opnieuw delen.</string>
     <string name="upload_data_dialog_ok">Delen</string>
-    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a>.<br/><br/><a href=\"https://www.toegankelijkheidsverklaring.nl/register/4379\">Digitale toegankelijkheidsverklaring</a>]]></string>
-
+    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a>.<br/><br/><a href="https://www.toegankelijkheidsverklaring.nl/register/4379">Digitale toegankelijkheidsverklaring</a>]]></string>
     <string name="header_all_contacts">ALLE CONTACTEN</string>
-
     <string name="warning_name">Klopt deze naam?</string>
     <string name="warning_necessary">Vul dit in</string>
     <string name="error_valid_email">Vul een geldig e-mailadres in</string>
@@ -64,7 +59,6 @@
     <string name="error_valid_phone_too_long">Dit telefoonnummer lijkt te veel cijfers te bevatten, weet je zeker dat dit klopt?</string>
     <string name="error_valid_phone_too_short">Dit telefoonnummer lijkt te weinig cijfers te bevatten, weet je zeker dat dit klopt?</string>
     <string name="indexcontact_subtitle">Vul gegevens aan</string>
-
     <!--    Onboarding-->
     <string name="onboarding_data_deleted_title">Alle ingevulde gegevens zijn verwijderd</string>
     <string name="onboarding_data_deleted_subtext">Je hebt de app al een tijd niet gebruikt. Om de gegevens van je contacten te beschermen, zijn deze verwijderd.</string>
@@ -76,27 +70,23 @@
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
     <string name="fill_code_placeholder">0000-0000-0000</string>
     <string name="fill_code_invalid">Deze code is ongeldig</string>
-
     <!--    Onboarding privacy consent -->
     <string name="onboarding_privacy_title">Zo gaat GGD Contact om met je gegevens</string>
-    <string name="onboarding_privacy_summary"><![CDATA[In de <a href=\"https://ggdcontact.nl/nl/privacy-in-app\">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
+    <string name="onboarding_privacy_summary"><![CDATA[In de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
     <string name="onboarding_privacy_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
     <string name="onboarding_privacy_item2">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
     <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invult worden gedeeld</string>
     <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
-
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
     <string name="contact_permission_header">Geef toegang tot je contacten</string>
     <string name="contact_permission_summary">Zo kun je makkelijk contactgegevens aanvullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt. Wil je de app geen toegang geven? Dan kun je contactgegevens ook handmatig toevoegen.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
-
     <!--    Contact details and questions-->
     <string name="unsaved_changes_title">Weet je zeker dat je wilt teruggaan?</string>
     <string name="unsaved_changes_message">De gegevens die je hebt ingevuld worden niet opgeslagen.</string>
-
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
     <string name="distance_risk_label">Zijn jullie die dag dicht bij elkaar geweest? (minder dan 1,5 meter)</string>
@@ -112,17 +102,14 @@
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
     <string name="contact_section_classification_header">Soort contact</string>
     <string name="contact_section_classification_subtext">Vragen over jullie ontmoeting</string>
-
     <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
     <string name="delete_contact_no_risk_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
     <string name="delete_contact_no_risk_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent. Ook heeft de GGD geen gegevens van deze persoon nodig.</string>
-
     <string name="answer_no">Nee</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_think_yes">Ja, denk het wel</string>
     <string name="answer_know_no">Nee, zeker niet</string>
     <string name="answer_think_no">Nee, denk het niet</string>
-
     <!--    Fields-->
     <string name="hint_phone_number">Telefoonnummer</string>
     <string name="hint_phone_number_multiple">Selecteer telefoonnummer</string>
@@ -133,52 +120,41 @@
     <string name="contact_information_last_exposure_label">Wanneer was de laatste ontmoeting?</string>
     <string name="contact_information_last_exposure_earlier">Eerder</string>
     <string name="contact_information_last_exposure_every_day">Bijna iedere dag</string>
-
     <!--    Inform section-->
     <string name="contact_section_inform_header">Informatie voor dit contact</string>
     <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
-
     <string name="contact_section_icon_one">Stap 1</string>
     <string name="contact_section_icon_two">Stap 2</string>
     <string name="contact_section_icon_three">Stap 3</string>
-
     <string name="contact_section_announcement_one">Je hebt stap 1 afgerond</string>
     <string name="contact_section_announcement_two">Je hebt stap 2 afgerond</string>
     <string name="contact_section_announcement_three">Je hebt stap 3 afgerond</string>
-
     <string name="inform_contact_title_index"><![CDATA[Je hebt met de GGD afgesproken dat jij %s informeert]]></string>
     <string name="inform_contact_title_staff"><![CDATA[Je hebt met de GGD afgesproken dat zij %s informeren. Je kunt natuurlijk wel zelf alvast de leefregels delen.]]></string>
     <string name="inform_contact_title_unknown"><![CDATA[De GGD raadt aan om %s alvast te informeren en deze leefregels te delen.]]></string>
     <string name="inform_header"><![CDATA[Dit zijn de leefregels voor %s:]]></string>
-
     <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string>
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
     <string name="contact_inform_option_done">Ja</string>
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
     <string name="contact_inform_action_inform_now">Nu doen</string>
-
     <string name="contact_disabled_prompt_title">Je kunt geen gegevens meer in de app aanpassen</string>
     <string name="contact_disabled_prompt_message">Neem contact op met de GGD om aanpassingen door te geven</string>
     <string name="contact_disabled_prompt_button">Ik snap het</string>
-
     <string name="add_manually">Handmatig toevoegen</string>
     <string name="send_data">Deel gegevens met GGD</string>
     <string name="reverse_pairing_try_again">Probeer opnieuw</string>
     <string name="add_contact">+ Contact toevoegen</string>
-
     <string name="finalize_sent_title">Bedankt voor het delen van de gegevens met de GGD</string>
     <string name="finalize_sent_subtitle">Je kunt nog contactgegevens aanpassen, contacten toevoegen of een andere aanpassing doorgeven.</string>
-
     <string name="header_suggested_contacts">SUGGESTIES</string>
     <string name="onboarding_invalid_access_code">Er is een ongeldige koppelcode ingevoerd.</string>
-
     <!--    Classification questions-->
     <string name="other_category_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
     <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
-
     <!--    Update and end of life -->
     <string name="update_app_headline">De app heeft een update nodig</string>
     <string name="update_app_description">Update de app op je telefoon om te zorgen dat GGD Contact goed blijft werken.</string>
@@ -186,15 +162,13 @@
     <string name="end_of_life_description">Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is.</string>
     <string name="end_of_life_headline">CoronaMelder is gestopt</string>
     <string name="update_google_play_services">Updaten</string>
-
     <!--    Permissions-->
     <string name="permissions_title">Rechten</string>
     <string name="permissions_no">Nee</string>
     <string name="permissions_go_to_settings">Ga naar de Instellingen</string>
     <string name="permissions_grant_permissions">Ja, geef rechten</string>
-    <string name="permissions_some_permissions_denied">U heeft enkele rechten voor de app geweigerd. Sta alle rechten toe op het [Instellingen] > [Rechten] scherm</string>
-    <string name="permissions_app_needs_read_contacts_permission">Deze app heeft "Contactpersonen lezen" rechten nodig</string>
-
+    <string name="permissions_some_permissions_denied">U heeft enkele rechten voor de app geweigerd. Sta alle rechten toe op het [Instellingen] &gt; [Rechten] scherm</string>
+    <string name="permissions_app_needs_read_contacts_permission">Deze app heeft \"Contactpersonen lezen\" rechten nodig</string>
     <!--  Errors-->
     <string name="error">Fout</string>
     <string name="error_try_again">Probeer het opnieuw</string>
@@ -225,10 +199,8 @@
     <string name="inform_header_this_person">deze persoon</string>
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
     <string name="pairing_code_being_checked">Code wordt gecontroleerd, even geduld.</string>
-
     <string name="normal_flow_explanation_title">Deel de gegevens van de mensen die misschien besmet zijn</string>
     <string name="normal_flow_explanation_summary">Zo kunnen we deze contacten zo snel mogelijk informeren. Goed om te weten: niet iedereen hoeft direct in quarantaine.</string>
-
     <!-- Zelf BCO -->
     <string name="zelfbco_have_code">Ja, ik heb een code</string>
     <string name="zelfbco_no_code">Nee, geen code</string>
@@ -272,13 +244,11 @@
     <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
     <string name="selfbco_timeline_explanation_step3">Twijfel je? Voeg de persoon dan toch toe</string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>hierna</b> niet nog een keer toe te voegen]]></string>
-
     <string name="selfbco_symptoms_explanation_title">Ziektedag bepalen</string>
     <string name="selfbco_symptoms_explanation_header_1">Je hebt chronische klachten</string>
     <string name="selfbco_symptoms_explanation_description_1">Werden je klachten erger voordat je de coronatest deed? Zo ja, wanneer kreeg je de klachten? Kies die dag als eerste ziektedag.</string>
     <string name="selfbco_symptoms_explanation_header_2">Je bent al eerder getest</string>
     <string name="selfbco_symptoms_explanation_description_2"><![CDATA[Kreeg je ergere klachten tussen de laatste test en de test ervoor? Kies dan de dag waarop je die dag klachten kreeg als eerste ziektedag.<br/><br/> Als je het echt niet weet, dan kies je de datum waarop je de coronatest hebt gedaan.]]></string>
-
     <string name="selfbco_timeline_title">Wie heb je ontmoet tussen %s en vandaag?</string>
     <string name="selfbco_timeline_summary">Weet je niet hoe iemand heet? Zet het contact er dan toch in. Bijvoorbeeld als trainer, kapper of buurvrouw. Je hoeft hier geen huisgenoten toe te voegen.</string>
     <string name="selfbco_timeline_summary_more">Wat deel ik precies met de GGD?</string>
@@ -294,7 +264,6 @@
     <string name="selfbco_timeline_memory_tip_title">Mensen vergeten vaak activiteiten.\nBekijk daarom ook je:</string>
     <string name="selfbco_timeline_memory_tip_title_short">Deze activiteiten worden vaak vergeten:</string>
     <string name="selfbco_timeline_continue">Ga verder</string>
-
     <string name="selfbco_memory_work">Een onverwachts gesprek op werk</string>
     <string name="selfbco_memory_meeting">Ontmoetingen buiten of bij jou thuis</string>
     <string name="selfbco_memory_car">Samen in de auto zitten</string>
@@ -304,7 +273,6 @@
     <string name="selfbco_memory_socials">Social media</string>
     <string name="selfbco_timeline_extra_day_header">Ter controle: %s was de eerste dag dat je klachten had. Klopt dit?</string>
     <string name="selfbco_add_extra_day">+ Ik had al eerder klachten</string>
-
     <string name="selfbco_permission_header">Wil je je contactenlijst gebruiken om contactgegevens in te vullen?</string>
     <string name="selfbco_permission_explanation_header">Wat deel ik precies?</string>
     <string name="selfbco_permission_extra_summary">Je kunt alleen gegevens delen met de GGD als de app wordt ondersteund in jouw GGD-regio.</string>
@@ -317,7 +285,6 @@
     <string name="selfbco_permission_item3"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
     <string name="selfbco_permission_item3_verbose">Gegevens worden pas met de GGD gedeeld als jij op ‘Deel gegevens met GGD’ klikt</string>
     <string name="seflco_permission_give_access">Toegang geven</string>
-
     <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>
     <string name="selfbco_covid_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
@@ -327,7 +294,6 @@
     <string name="no_add_manually">Nee, zelf toevoegen</string>
     <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
     <string name="this_contact">Dit contact</string>
-
     <string name="selfbco_reverse_pairing_title">Koppel de app met de GGD om je gegevens te delen</string>
     <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens en locaties delen.</string>
     <string name="selfbco_reverse_pairing_step_1_title">Geef deze code door aan de GGD-medewerker:</string>
@@ -342,7 +308,6 @@
     <string name="selfbco_reverse_pairing_my_contacts_error_message">Koppelen mislukt. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
     <string name="selfbco_reverse_pairing_error_message">Er ging iets mis. Controleer of de GGD de juiste code heeft en of je internetverbinding werkt.</string>
     <string name="selfbco_reverse_pairing_error_button_text">Probeer opnieuw</string>
-
     <string name="mycontacts_memory_title">Geen contacten vergeten?</string>
     <string name="mycontacts_memory_link">Lees de tips</string>
     <string name="mycontacts_memory_header">Maak een compleet overzicht van mensen die je hebt ontmoet tussen %s en vandaag</string>
@@ -354,6 +319,5 @@
     <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
     <string name="mycontacts_delete_data">Verwijder gegevens</string>
-
     <string name="contact_item_add_hint">Voeg contact toe</string>
 </resources>

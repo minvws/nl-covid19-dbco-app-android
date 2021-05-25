@@ -13,6 +13,9 @@ This repository contains the Android implementation of the Dutch COVID-19 DBCO a
 
 - Install NDK (In your Android Studio, Go to File -> Project Structure -> SDK Location -> Under "Android NDK Location", click on "Download" Android NDK)
 
+- Install the OneSky Android Studio Plugin (https://plugins.jetbrains.com/plugin/7607-onesky-plugin/) and add your API keys in the Android Studio settings. Select the GGD Contact Android project. After this you can push new strings/pull
+updated translations from OneSky from the context menu in `strings.xml`.
+
 ## Development & Contribution process
 
 The development team works on the repository in a private fork (for reasons of compliance with existing processes) and shares its work as often as possible.
