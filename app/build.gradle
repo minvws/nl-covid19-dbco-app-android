@@ -1,3 +1,4 @@
+plugins { id "com.starter.easylauncher" version "4.0.0" }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
@@ -35,12 +36,14 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
         }
 
         debug {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GIT_VERSION", "\"dev\""
@@ -100,7 +103,6 @@ android {
             signingConfig signingConfigs.firebase
         }
 
-
         dbcoProd {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
@@ -114,7 +116,6 @@ android {
         }
     }
 
-
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -123,6 +124,18 @@ android {
     lintOptions {
         disable "UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning", "NullSafeMutableLiveData"
         // disable check in 3-rd party libs
+    }
+}
+
+easylauncher {
+    productFlavors {
+        localDev { filters chromeLike(label: "DEV") }
+        dbcoTest { filters chromeLike(label: "TEST") }
+        dbcoAcc { filters chromeLike(label: "ACC") }
+        dbcoProd { filters chromeLike(label: "PROD") }
+    }
+    variants {
+        dbcoProdRelease { enable false }
     }
 }
 
