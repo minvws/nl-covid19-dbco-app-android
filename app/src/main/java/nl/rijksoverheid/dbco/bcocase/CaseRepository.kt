@@ -117,8 +117,8 @@ class CaseRepository(
         val tasks = old.tasks.toMutableList()
         var found = false
         var canCaseBeUploaded = old.canBeUploaded
-        if (task.communication == CommunicationType.None) {
-            task.communication = null
+        if (task.communication == null) {
+            task.communication = CommunicationType.None
         }
         tasks.forEachIndexed { index, currentTask ->
             if (shouldMerge(currentTask)) {
