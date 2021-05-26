@@ -38,7 +38,12 @@ data class TaskRequest(
             source = task.source,
             label = task.label,
             category = task.category,
-            communication = task.communication,
+            // API cannot handle type None. TODO [DBCO-1810] should remove enum altogether since it is not used in the codebase
+            communication = if (task.communication != CommunicationType.None) {
+                task.communication
+            } else {
+                null
+            },
             uuid = task.uuid,
             dateOfLastExposure = task.dateOfLastExposure,
             questionnaireResult = task.questionnaireResult,
