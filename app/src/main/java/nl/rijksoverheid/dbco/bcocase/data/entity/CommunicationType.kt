@@ -18,8 +18,5 @@ enum class CommunicationType {
     Index,
 
     @SerialName("staff")
-    Staff,
-
-    @SerialName("none")
-    None
+    Staff
 }
