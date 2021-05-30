@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+  ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+  ~
+  ~   SPDX-License-Identifier: EUPL-1.2
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="nl.rijksoverheid.dbco.items.input.QuestionThreeOptionsItem" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
+
+        <TextView style="@style/QuestionText.Bold"
+            android:id="@+id/question_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{item.question.label}"
+            android:paddingVertical="10dp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:accessibilityHeading="@{true}"/>
+
+        <TextView style="@style/QuestionText"
+            android:id="@+id/question_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:lineSpacingMultiplier="1.4"
+            android:textColor="#993C3C43"
+            android:visibility="@{item.question.description == null ? View.GONE : View.VISIBLE}"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+        <RadioGroup
+            android:id="@+id/answer_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/option1"
+                style="@style/QuestionText.ChoiceButton"
+                android:text="@{item.question.answerOptions.get(0).label }" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/option2"
+                style="@style/QuestionText.ChoiceButton"
+                android:layout_marginTop="8dp"
+                android:text="@{item.question.answerOptions.get(1).label}" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/option3"
+                style="@style/QuestionText.ChoiceButton"
+                android:layout_marginTop="8dp"
+                android:text="@{item.question.answerOptions.get(2).label}" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/question_locked_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/question_locked_summary"
+            style="@style/QuestionText.Locked"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</layout>

@@ -8,110 +8,157 @@
 
 package nl.rijksoverheid.dbco.selfbco.reverse
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingBinding
-
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.*
 
 class ReversePairingFragment : BaseFragment(R.layout.fragment_selfbco_pairing) {
 
-    lateinit var binding: FragmentSelfbcoPairingBinding
-    private val viewModel by viewModels<ReversePairingViewmodel>()
+    private val args: ReversePairingFragmentArgs by navArgs()
 
+    lateinit var binding: FragmentSelfbcoPairingBinding
+
+    private val pairingViewModel: PairingViewModel by activityViewModels()
+
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelfbcoPairingBinding.bind(view)
-        setupBackButton()
 
+        setupBackButton()
         setUpListeners()
 
-        requestPairingCode()
+        binding.btnNext.text = if (tasksViewModel.hasEssentialTaskData()) {
+            getString(R.string.send_data)
+        } else {
+            getString(R.string.next)
+        }
+        binding.btnNext.setOnClickListener {
+            if (tasksViewModel.hasEssentialTaskData()) {
+                showUploadDialog()
+            } else {
+                findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
+            }
+        }
 
+        binding.retryWithNewCode.setOnClickListener { pairingViewModel.startReversePairing() }
+
+        if (savedInstanceState != null) return
+        if (args.initWithInvalidCodeState) {
+            showInvalidCode()
+        } else {
+            pairingViewModel.startReversePairing(args.credentials)
+        }
+    }
+
+    private fun showInvalidCode() {
+        binding.pairingCode.isVisible = false
+        binding.pairingExpiredCodeContainer.isVisible = true
+    }
+
+    private fun showPairingError(credentials: ReversePairingCredentials) {
+        binding.retryPairing.setOnClickListener { pairingViewModel.startReversePairing(credentials) }
+        binding.pairingLoadingIndicator.isVisible = false
+        binding.stateText.isVisible = false
+        binding.pairingErrorContainer.isVisible = true
+    }
+
+    private fun showPairing() {
+        binding.pairingErrorContainer.isVisible = false
+        binding.pairingLoadingIndicator.isVisible = true
+        binding.stateText.isVisible = true
     }
 
     private fun setUpListeners() {
-        viewModel.reversePairingCode.observe(viewLifecycleOwner, { retrievedCode ->
-            retrievedCode?.let {
-                val showCode =
-                    StringBuilder(retrievedCode).insert(retrievedCode.length / 2, "-").toString()
-                binding.pairingCode.text = showCode
-
-                checkPairingCodeStatus()
-            }
+        pairingViewModel.pairingCode.observe(viewLifecycleOwner, { code ->
+            binding.pairingExpiredCodeContainer.isVisible = false
+            binding.pairingCode.isVisible = true
+            binding.pairingCode.text = StringBuilder(code)
+                .insert(code.length / 2, "-")
+                .toString()
         })
 
-
-        viewModel.userHasPaired.observe(viewLifecycleOwner, { hasPaired: Boolean ->
-            if (hasPaired) {
-                Toast.makeText(requireContext(), "User has paired", Toast.LENGTH_SHORT).show()
-                binding.btnNext.isEnabled = true
+        pairingViewModel.reversePairingStatus.observe(viewLifecycleOwner, { status ->
+            when (status) {
+                is ReversePairingSuccess -> {
+                    binding.pairingLoadingIndicator.isVisible = false
+                    binding.pairedIndicator.isVisible = true
+                    binding.stateText.text = getString(R.string.selfbco_reverse_pairing_paired)
+                    binding.btnNext.isEnabled = true
+                }
+                is ReversePairingError -> showPairingError(status.credentials)
+                is ReversePairingExpired -> showInvalidCode()
+                is ReversePairing -> showPairing()
+                else -> { /* NO-OP */
+                }
             }
         })
-
-    }
-
-    private fun requestPairingCode() {
-        viewModel.retrievePairingCode()
-    }
-
-    private fun checkPairingCodeStatus(){
-        // Start polling on receiving code
-       // viewModel.checkPairingStatus()
-        viewModel.pollForChanges()
     }
 
     private fun setupBackButton() {
-        // Handle button on screen and back button
-        binding.backButton.setOnClickListener {
-            if (hasUserSharedCode()) {
-                findNavController().popBackStack()
-            } else {
-                showShareCodeDialog()
-            }
+        binding.toolbar.backButton.setOnClickListener {
+            handleBackPress()
         }
         val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true /* enabled by default */) {
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // Handle the back button event
-                    if (hasUserSharedCode()) {
-                        findNavController().popBackStack()
-                    } else {
-                        showShareCodeDialog()
-                    }
+                    handleBackPress()
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
 
+    private fun handleBackPress() {
+        if (hasUserSharedCode()) {
+            findNavController().popBackStack()
+        } else {
+            showShareCodeDialog()
+        }
     }
 
     private fun hasUserSharedCode(): Boolean {
-        // Check viewmodel value if user shared code
-        return viewModel.userHasSharedCode.value == true
+        return pairingViewModel.userHasSharedCode.value == true
     }
 
-    private fun showShareCodeDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Heb je de code gedeeld met de GGD-medewerker?")
-        builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
-            // Start background polling
-            checkPairingCodeStatus()
-            viewModel.setUserHasSharedCode(true)
+    private fun showUploadDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.upload_data_dialog_title))
+        builder.setMessage(getString(R.string.upload_data_dialog_summary))
+        builder.setPositiveButton(R.string.upload_data_dialog_ok) { dialog, _ ->
             dialog.dismiss()
-            //findNavController().popBackStack()
+            findNavController().navigate(ReversePairingFragmentDirections.toFinalizeCheckFragment())
         }
-        builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
         builder.create().show()
     }
 
-
+    private fun showShareCodeDialog() {
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(R.string.selfbco_reverse_pairing_share_message_title)
+        builder.setPositiveButton(R.string.answer_yes) { dialog, _ ->
+            pairingViewModel.setUserHasSharedCode(true)
+            dialog.dismiss()
+            findNavController().popBackStack()
+        }
+        builder.setNegativeButton(R.string.answer_no) { dialog, _ ->
+            pairingViewModel.cancelPairing()
+            dialog.dismiss()
+            findNavController().popBackStack()
+        }
+        builder.create().show()
+    }
 }

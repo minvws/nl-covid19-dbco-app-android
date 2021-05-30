@@ -19,20 +19,10 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.applifecycle.config.FeatureFlags
+import nl.rijksoverheid.dbco.config.FeatureFlags
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.items.input.ButtonItem
-import nl.rijksoverheid.dbco.items.input.ButtonType
-import nl.rijksoverheid.dbco.items.input.ContactNameItem
-import nl.rijksoverheid.dbco.items.input.DateInputItem
-import nl.rijksoverheid.dbco.items.input.EmailAddressItem
-import nl.rijksoverheid.dbco.items.input.NoExposureRiskItem
-import nl.rijksoverheid.dbco.items.input.NoRiskItem
-import nl.rijksoverheid.dbco.items.input.PhoneNumberItem
-import nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem
-import nl.rijksoverheid.dbco.items.input.QuestionTwoOptionsItem
-import nl.rijksoverheid.dbco.items.input.SingleInputItem
+import nl.rijksoverheid.dbco.items.input.*
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSectionHeader
@@ -41,21 +31,16 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
-import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
 import nl.rijksoverheid.dbco.util.removeAllChildren
 import nl.rijksoverheid.dbco.util.removeHtmlTags
 import org.joda.time.Days
 import org.joda.time.LocalDate
-import timber.log.Timber
-import kotlin.math.absoluteValue
 
-
-/**
- * Created by Dima Kovalenko.
- */
 class TaskDetailItemsStorage(
+    val enabled: Boolean,
     val viewModel: TasksDetailViewModel,
     val context: Context,
     private val viewLifecycleOwner: LifecycleOwner,
@@ -63,8 +48,6 @@ class TaskDetailItemsStorage(
 ) {
 
     var classificationQuestion: Question? = null
-
-    // Classification
 
     val classificationSection = QuestionnaireSection(
         QuestionnaireSectionHeader(
@@ -74,115 +57,118 @@ class TaskDetailItemsStorage(
         ), true
     )
 
-    private val livedTogetherRiskItem = QuestionTwoOptionsItem(
-        context,
-        Question(
+    private val sameHouseholdRiskItem = QuestionTwoOptionsItem(
+        context = context,
+        question = Question(
             null,
             context.getString(R.string.lived_together_risk_label),
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_no), null, false.toString()),
-                AnswerOption(context.getString(R.string.answer_yes), null, true.toString())
+                AnswerOption(context.getString(R.string.answer_no), false.toString()),
+                AnswerOption(context.getString(R.string.answer_yes), true.toString())
             )
         ),
-        {
-            when (it.value) {
-                false.toString() -> {
-                    viewModel.livedTogetherRisk.value = false
-                }
-                true.toString() -> {
-                    viewModel.livedTogetherRisk.value = true
-                }
-            }
+        answerSelectedListener = {
+            viewModel.sameHouseholdRisk.value = it.value.toBoolean()
             viewModel.updateCategoryFromRiskFlags()
         },
-        JsonObject(
+        previousAnswerValue = JsonObject(
             HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.livedTogetherRisk.value))
+                put("value", JsonPrimitive(viewModel.sameHouseholdRisk.value))
             }
         ),
-        isLocked = viewModel.task.value?.source == Source.Portal
+        isLocked = viewModel.task.source == Source.Portal,
+        isEnabled = enabled
     )
 
-    private val durationRiskItem = QuestionTwoOptionsItem(
-        context,
-        Question(
+    private val distanceRiskItem = QuestionThreeOptionsItem(
+        context= context,
+        question = Question(
             null,
-            context.getString(R.string.duration_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_know_no), null, false.toString())
-            )
-        ),
-        {
-            when (it.value) {
-                false.toString() -> viewModel.durationRisk.value = false
-                true.toString() -> viewModel.durationRisk.value = true
-            }
-            viewModel.updateCategoryFromRiskFlags()
-        },
-        JsonObject(
-            HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.durationRisk.value))
-            }
-        ),
-        isLocked = viewModel.task.value?.source == Source.Portal
-    )
-
-    private val distanceRiskItem = QuestionTwoOptionsItem(
-        context,
-        Question(
-            context.getString(R.string.distance_risk_description),
             context.getString(R.string.distance_risk_label),
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+                AnswerOption(
+                    context.getString(R.string.distance_risk_answer_long),
+                    "true, true"
+                ),
+                AnswerOption(
+                    context.getString(R.string.distance_risk_answer_short),
+                    "true, false"
+                ),
+                AnswerOption(context.getString(R.string.distance_risk_answer_no), "false, false")
             )
         ),
-        {
+        answerSelectedListener = {
             when (it.value) {
-                false.toString() -> viewModel.distanceRisk.value = false
-                true.toString() -> viewModel.distanceRisk.value = true
+                "true, true" -> viewModel.distanceRisk.value = Pair(first = true, second = true)
+                "true, false" -> viewModel.distanceRisk.value = Pair(first = true, second = false)
+                else -> viewModel.distanceRisk.value = Pair(first = false, second = false)
             }
             viewModel.updateCategoryFromRiskFlags()
         },
-        JsonObject(
+        previousAnswerValue = JsonObject(
             HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.distanceRisk.value))
+                put(
+                    "value", JsonPrimitive(
+                        "${viewModel.distanceRisk.value?.first}, ${viewModel.distanceRisk.value?.second}"
+                    )
+                )
             }
         ),
-        isLocked = viewModel.task.value?.source == Source.Portal
+        isLocked = viewModel.task.source == Source.Portal,
+        isEnabled = enabled
     )
 
-    private val otherRiskItem = QuestionTwoOptionsItem(
-        context,
-        Question(
-            null,
-            context.getString(R.string.other_risk_label),
+    private val physicalContactRiskItem = QuestionTwoOptionsItem(
+        context = context,
+        question = Question(
+            context.getString(R.string.physical_risk_description),
+            context.getString(R.string.physical_risk_label),
             QuestionType.ClassificationDetails,
             Group.Classification,
             listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), null, true.toString()),
-                AnswerOption(context.getString(R.string.answer_think_no), null, false.toString())
+                AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
+                AnswerOption(context.getString(R.string.answer_know_no), false.toString())
             )
         ),
-        {
-            when (it.value) {
-                false.toString() -> viewModel.otherRisk.value = false
-                true.toString() -> viewModel.otherRisk.value = true
-            }
+        answerSelectedListener = {
+            viewModel.physicalContactRisk.value = it.value.toBoolean()
             viewModel.updateCategoryFromRiskFlags()
         },
-        JsonObject(
+        previousAnswerValue = JsonObject(
             HashMap<String, JsonElement>().apply {
-                put("value", JsonPrimitive(viewModel.otherRisk.value))
+                put("value", JsonPrimitive(viewModel.physicalContactRisk.value))
             }
-        )
+        ),
+        isLocked = viewModel.task.source == Source.Portal,
+        isEnabled = enabled,
+    )
+
+    private val sameRoomRiskItem = QuestionTwoOptionsItem(
+        context = context,
+        question = Question(
+            null,
+            context.getString(R.string.same_room_risk_label),
+            QuestionType.ClassificationDetails,
+            Group.Classification,
+            listOf(
+                AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
+                AnswerOption(context.getString(R.string.answer_think_no), false.toString())
+            )
+        ),
+        answerSelectedListener = {
+            viewModel.sameRoomRisk.value = it.value.toBoolean()
+            viewModel.updateCategoryFromRiskFlags()
+        },
+        previousAnswerValue = JsonObject(
+            HashMap<String, JsonElement>().apply {
+                put("value", JsonPrimitive(viewModel.sameRoomRisk.value))
+            }
+        ),
+        isEnabled = enabled
     )
 
     private val noRiskItem = NoRiskItem()
@@ -193,47 +179,47 @@ class TaskDetailItemsStorage(
         section: QuestionnaireSection?
     ) {
         classificationQuestion = question
-        section?.add(livedTogetherRiskItem) // always added
+        section?.add(sameHouseholdRiskItem) // always added
 
-        viewModel.livedTogetherRisk.observe(viewLifecycleOwner, { it ->
+        viewModel.sameHouseholdRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                if(section?.getPosition(durationRiskItem) == -1){
-                    section.add(durationRiskItem)
-                }
-            } else {
-                section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(durationRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(noRiskItem)
-            }
-        })
-
-        viewModel.durationRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                if(section?.getPosition(distanceRiskItem) == -1){
+                if (section?.getPosition(distanceRiskItem) == -1) {
                     section.add(distanceRiskItem)
                 }
             } else {
                 section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
-                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(noRiskItem)
             }
         })
 
         viewModel.distanceRisk.observe(viewLifecycleOwner, {
-            if (it == false) {
-                if(section?.getPosition(otherRiskItem) == -1){
-                    section.add(otherRiskItem)
+            if (it != null && it.first == false) {
+                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+                if (section?.getPosition(sameRoomRiskItem) == -1) {
+                    section.add(sameRoomRiskItem)
+                }
+            } else if (it != null && it.second == false) {
+                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(noRiskItem)
+                if (section?.getPosition(physicalContactRiskItem) == -1) {
+                    section.add(physicalContactRiskItem)
                 }
             } else {
-                section?.remove(otherRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
+                section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
                 section?.remove(noRiskItem)
             }
         })
 
-        viewModel.otherRisk.observe(viewLifecycleOwner, {
+        viewModel.physicalContactRisk.observe(viewLifecycleOwner, {
+            section?.remove(noRiskItem)
+        })
+
+        viewModel.sameRoomRisk.observe(viewLifecycleOwner, {
             if (it == false) {
-                if(section?.getPosition(noRiskItem) == -1){
+                if (section?.getPosition(noRiskItem) == -1) {
                     section.add(noRiskItem)
                 }
             } else {
@@ -242,22 +228,13 @@ class TaskDetailItemsStorage(
         })
 
         listOf(
-            livedTogetherRiskItem,
+            sameHouseholdRiskItem,
             distanceRiskItem,
-            durationRiskItem,
-            otherRiskItem
+            physicalContactRiskItem,
+            sameRoomRiskItem
         ).forEach {
             it.question?.uuid = question.uuid
         }
-    }
-
-    fun getClassificationAnswerValue(): JsonObject {
-        val map = HashMap<String, JsonElement>()
-        map["category1Risk"] = JsonPrimitive(viewModel.livedTogetherRisk.value ?: false)
-        map["category2ARisk"] = JsonPrimitive(viewModel.durationRisk.value ?: false)
-        map["category2BRisk"] = JsonPrimitive(viewModel.distanceRisk.value ?: false)
-        map["category3Risk"] = JsonPrimitive(viewModel.otherRisk.value ?: false)
-        return JsonObject(map)
     }
 
     // Contact details
@@ -271,61 +248,55 @@ class TaskDetailItemsStorage(
     )
 
     val dateOfLastExposureItem = QuestionMultipleOptionsItem(
-        context,
-        Question(
+        context = context,
+        question = Question(
             null,
             context.getString(R.string.contact_information_last_exposure_label),
             QuestionType.Multiplechoice,
             Group.ContactDetails,
             mutableListOf<AnswerOption>().apply {
-                viewModel.getDateOfSymptomOnset()?.let {
+                viewModel.getStartOfContagiousPeriod()?.let {
 
                     add(
                         AnswerOption(
                             context.getString(R.string.contact_information_last_exposure_earlier),
-                            null,
                             ANSWER_EARLIER
                         )
                     )
 
-                    val twoDaysBeforeSymptoms = it.minusDays(2)
-                    val interval = Days.daysBetween(twoDaysBeforeSymptoms, LocalDate.now()).days
+                    val interval = Days.daysBetween(it, LocalDate.now()).days
                     for (i in 0..interval) {
-                        val date = twoDaysBeforeSymptoms.plusDays(i)
+                        val date = it.plusDays(i)
                         val label = date.toString(DateFormats.exposureUI)
                         val value = date.toString(DateFormats.dateInputData)
-                        add(AnswerOption(label, null, value))
+                        add(AnswerOption(label, value))
                     }
+
+                    add(
+                        AnswerOption(
+                            context.getString(R.string.contact_information_last_exposure_every_day),
+                            LocalDate.now().toString(DateFormats.dateInputData)
+                        )
+                    )
                 }
             }
         ),
-        {
+        answerSelectedListener = {
             viewModel.dateOfLastExposure.postValue(it.value)
         },
-        JsonObject(
+        previousAnswer = JsonObject(
             HashMap<String, JsonElement>().apply {
                 put("value", JsonPrimitive(viewModel.dateOfLastExposure.value))
             }
         ),
-        // Hide input if a date has been set through the GGD portal
-        isHidden = viewModel.dateOfLastExposure.value != null && viewModel.task.value?.source == Source.Portal
+        isEnabled = enabled
     )
 
     fun refreshContactDetailsSection() {
         contactDetailsSection.removeAllChildren()
-        var communicationTypeQuestionFound = false
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
-                // add hardcoded "date of last exposure" question before communication type question
-                if (isCommunicationTypeQuestion(question)) {
-                    let {
-                        if(!it.dateOfLastExposureItem.isHidden) {
-                            it.contactDetailsSection.add(it.dateOfLastExposureItem)
-                            communicationTypeQuestionFound = true
-                        }
-                    }
-                }
                 when (question.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, contactDetailsSection)
@@ -333,116 +304,125 @@ class TaskDetailItemsStorage(
                     QuestionType.Open -> {
                         contactDetailsSection.add(
                             SingleInputItem(
-                                context,
-                                question,
-                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                                context = context,
+                                question = question,
+                                previousAnswerValue = viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
+                                    question.uuid
+                                )?.value,
+                                isEnabled = enabled
                             )
                         )
                     }
                     QuestionType.Date -> {
                         contactDetailsSection.add(
                             DateInputItem(
-                                context,
-                                question,
-                                viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+                                context = context,
+                                question = question,
+                                previousAnswerValue = viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(
+                                    question.uuid
+                                )?.value,
+                                isEnabled = enabled
                             )
                         )
                     }
                     QuestionType.ContactDetails -> {
                         addContactDetailsItems(contactDetailsSection, question)
                     }
+                    else -> { /* NO-OP */
+                    }
                 }
             }
-        }
-        if (!communicationTypeQuestionFound) { // fallback, shouldn't happen
-                if(!dateOfLastExposureItem.isHidden) {
-                    contactDetailsSection?.add(dateOfLastExposureItem)
-                }
         }
     }
 
     private fun addMultiChoiceItem(
         question: Question,
-        sectionToAddTo: QuestionnaireSection?
+        section: QuestionnaireSection
     ) {
-        question.answerOptions?.size?.let { size ->
-            when {
-                size > 2 -> {
-                    sectionToAddTo?.add(
-                        QuestionMultipleOptionsItem(
-                            context,
-                            question,
-                            {},
-                            viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
-                        )
+        val size = question.answerOptions?.size ?: return
+        if (size == 1) return
+        val previousValue =
+            viewModel.task.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
+        section.add(
+            when (size) {
+                2 -> {
+                    QuestionTwoOptionsItem(
+                        context = context,
+                        question = question,
+                        answerSelectedListener = { /* NO-OP */ },
+                        previousAnswerValue = previousValue,
+                        isEnabled = enabled
                     )
                 }
-                size == 2 -> {
-                    var previousAnswerValue =
-                        viewModel.questionnaireResult?.getAnswerByQuestionUuid(question.uuid)?.value
-                    val shouldStaffContact =
-                        viewModel.task.value?.source == Source.Portal && viewModel.task.value?.communication == CommunicationType.Staff
-
-                    sectionToAddTo?.add(
-                        QuestionTwoOptionsItem(
-                            context,
-                            question,
-                            {
-                                if (!shouldStaffContact) {
-                                    when (it.trigger) {
-                                        ContactDetailsInputFragment.COMMUNICATION_STAFF -> viewModel.communicationType.value =
-                                            CommunicationType.Staff
-                                        ContactDetailsInputFragment.COMMUNICATION_INDEX -> viewModel.communicationType.value =
-                                            CommunicationType.Index
-                                    }
-                                }
-                            },
-                            previousAnswerValue
-                        )
+                3 -> {
+                    QuestionThreeOptionsItem(
+                        context = context,
+                        question = question,
+                        answerSelectedListener = { /* NO-OP */ },
+                        previousAnswerValue = previousValue,
+                        isEnabled = enabled
                     )
                 }
                 else -> {
+                    QuestionMultipleOptionsItem(
+                        context = context,
+                        question = question,
+                        answerSelectedListener = { /* NO-OP */ },
+                        previousAnswer = previousValue,
+                        isEnabled = enabled
+                    )
                 }
             }
-        }
+        )
     }
 
     private fun addContactDetailsItems(
-        sectionToAddTo: QuestionnaireSection?,
+        section: QuestionnaireSection,
         question: Question
     ) {
-        sectionToAddTo?.addAll(
+        section.addAll(
             listOf(
                 ContactNameItem(
-                    viewModel.selectedContact?.firstName,
-                    viewModel.selectedContact?.lastName,
-                    question
+                    firstName = viewModel.task.linkedContact?.firstName,
+                    lastName = viewModel.task.linkedContact?.lastName,
+                    question = question,
+                    isEnabled = enabled
                 ) { newFirstName, newLastName ->
-                    viewModel.selectedContact?.firstName = newFirstName
-                    viewModel.selectedContact?.lastName = newLastName
+                    viewModel.task.linkedContact?.firstName = newFirstName
+                    viewModel.task.linkedContact?.lastName = newLastName
+                    viewModel.name.value = newFirstName
                 },
-                PhoneNumberItem(viewModel.selectedContact?.number, question) {
-                    viewModel.selectedContact?.number = it
+                PhoneNumberItem(
+                    numbers = viewModel.task.linkedContact?.numbers ?: emptySet(),
+                    question = question,
+                    isEnabled = enabled
+                ) {
+                    viewModel.task.linkedContact?.numbers = it
                     viewModel.hasEmailOrPhone.value =
-                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 },
-                EmailAddressItem(viewModel.selectedContact?.email, question) {
-                    viewModel.selectedContact?.email = it
+                EmailAddressItem(
+                    emailAddresses = viewModel.task.linkedContact?.emails ?: emptySet(),
+                    question = question,
+                    isEnabled = enabled
+                ) {
+                    viewModel.task.linkedContact?.emails = it
                     viewModel.hasEmailOrPhone.value =
-                        viewModel.selectedContact?.hasValidEmailOrPhone()
+                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
                 }
             )
         )
 
         viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             if (it == ANSWER_EARLIER) {
-                contactDetailsSection.add(
-                    contactDetailsSection.getPosition(dateOfLastExposureItem),
+                classificationSection.remove(noExposureRiskItem)
+                classificationSection.add(
+                    classificationSection.getPosition(dateOfLastExposureItem),
                     noExposureRiskItem
                 )
                 informSection.setEnabled(false)
             } else {
-                contactDetailsSection.remove(noExposureRiskItem)
+                classificationSection.remove(noExposureRiskItem)
             }
         })
     }
@@ -454,124 +434,144 @@ class TaskDetailItemsStorage(
             R.string.contact_section_inform_header,
             R.string.contact_section_inform_subtext,
             3
-        ), true
+        ), false
     )
 
     fun refreshInformSection() {
 
-        val isEnabled = when (viewModel.category.value) {
-            Category.LIVED_TOGETHER, Category.DURATION, Category.DISTANCE, Category.OTHER  -> true
-            else -> false  // in those cases inform section is disabled and thus hidden
+        val isEnabled =
+            viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
+        val contactName = if (!viewModel.name.value.isNullOrEmpty()) {
+            viewModel.name.value
+        } else {
+            context.getString(R.string.inform_header_this_person)
         }
-        val contactName =  if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) viewModel.selectedContact?.firstName else context.getString(
-                    R.string.inform_header_this_person)
-        val header = context.getString(R.string.inform_header,contactName)
+        val header = context.getString(R.string.inform_header, contactName)
         val footer = when (viewModel.communicationType.value) {
-            CommunicationType.Staff ->context.getString(
+            CommunicationType.Staff -> context.getString(
                 R.string.inform_contact_title_staff,
                 contactName
             )
-            else -> context.getString(
+            CommunicationType.Index -> context.getString(
                 R.string.inform_contact_title_index,
                 contactName
             )
+            else -> context.getString(R.string.inform_contact_title_unknown, contactName)
         }
 
         val dateLastExposure = viewModel.dateOfLastExposure.value
 
-        var message = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+        var message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
-                if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
-                    when (viewModel.category.value) {
-                        Category.LIVED_TOGETHER -> {
-                            context.getString(R.string.inform_contact_guidelines_category1_no_date)
-                        }
-                        Category.DISTANCE -> {
-                            context.getString(R.string.inform_contact_guidelines_category2a_no_date)
-                        }
-                        Category.DURATION -> {
-                            context.getString(R.string.inform_contact_guidelines_category2b_no_date)
-                        }
-                        Category.OTHER -> {
-                            context.getString(R.string.inform_contact_guidelines_category3_no_date)
-                        }
-                        else -> ""
-                    }
-                } else {
-                    context.getString(R.string.inform_contact_guidelines_no_name)
+            when (viewModel.category.value) {
+                Category.ONE -> {
+                    context.getString(R.string.inform_contact_guidelines_category1_no_date)
                 }
-            }else{
-                // Handle with dates
-            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            val exposureDatePlusTen = exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusEleven = exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusFive = exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusFourteen = exposureDate.plusDays(14).toString(DateFormats.informContactGuidelinesUI)
-
-            if(!viewModel.selectedContact?.firstName.isNullOrEmpty()) {
-                when (viewModel.category.value) {
-                    Category.LIVED_TOGETHER -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category1_with_date,
-                            exposureDatePlusEleven
-                        )
-                    }
-                    Category.DISTANCE -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2a_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    }
-                    Category.DURATION -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category2b_with_date,
-                            exposureDatePlusFive,
-                            exposureDatePlusTen
-                        )
-                    }
-                    Category.OTHER -> {
-                        context.getString(
-                            R.string.inform_contact_guidelines_category3_with_date,
-                            exposureDatePlusFourteen
-                        )
-                    }
-                    else -> ""
+                Category.TWO_A, Category.TWO_B -> {
+                    context.getString(R.string.inform_contact_guidelines_category2_no_date)
                 }
-            }else{
-                context.getString(R.string.inform_contact_guidelines_no_name)
+                Category.THREE_A, Category.THREE_B -> {
+                    context.getString(R.string.inform_contact_guidelines_category3_no_date)
+                }
+                else -> ""
             }
 
+        } else {
+            // Handle with dates
+            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
+            val exposureDatePlusTen =
+                exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusEleven =
+                exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
+            val exposureDatePlusFive =
+                exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
+
+            val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
+
+            when (viewModel.category.value) {
+                Category.ONE -> {
+                    context.getString(
+                        R.string.inform_contact_guidelines_category1_with_date,
+                        exposureDatePlusEleven
+                    )
+                }
+                Category.TWO_A, Category.TWO_B -> {
+                    if (daysBetweenEncounterAndNow < 4) {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2_recent_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    } else {
+                        context.getString(
+                            R.string.inform_contact_guidelines_category2_with_date,
+                            exposureDatePlusFive,
+                            exposureDatePlusTen
+                        )
+                    }
+                }
+                Category.THREE_A, Category.THREE_B -> {
+                    context.getString(
+                        R.string.inform_contact_guidelines_category3_with_date,
+                        exposureDatePlusFive
+                    )
+                }
+                else -> ""
+            }
         }
 
+        if (viewModel.hasCaseReference()) {
+            message += context.getString(
+                R.string.inform_contact_guidelines_case_number,
+                viewModel.getCaseReference()
+            )
+        }
 
         val link = when (viewModel.category.value) {
-            Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_link_category1)
-            Category.DURATION -> context.getString(R.string.inform_contact_link_category2a)
-            Category.DISTANCE -> context.getString(R.string.inform_contact_link_category2b)
-            Category.OTHER -> context.getString(R.string.inform_contact_link_category3)
+            Category.ONE -> context.getString(R.string.inform_contact_link_category1)
+            Category.TWO_A -> context.getString(R.string.inform_contact_link_category2a)
+            Category.TWO_B -> context.getString(R.string.inform_contact_link_category2b)
+            Category.THREE_A, Category.THREE_B -> context.getString(R.string.inform_contact_link_category3)
             else -> ""
         }
 
         message += "<br/>$link"
 
         // To be shown above the copied message
-        val introMessage = if(dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
+        val introMessage = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             when (viewModel.category.value) {
-                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
-                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,"")
-                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,"")
-                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, "")
+                Category.ONE -> context.getString(R.string.inform_contact_intro_category1)
+                Category.TWO_A -> context.getString(R.string.inform_contact_intro_category2, "")
+                Category.TWO_B -> context.getString(R.string.inform_contact_intro_category2, "")
+                Category.THREE_A, Category.THREE_B -> context.getString(
+                    R.string.inform_contact_intro_category3,
+                    ""
+                )
                 else -> ""
             }
-        }else{
+        } else {
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            val exposureDateFormatted = "${context.getString(R.string.inform_contact_intro_date, exposureDate.toString(DateFormats.informContactGuidelinesUI))} "
+            val exposureDateFormatted = "${
+                context.getString(
+                    R.string.inform_contact_intro_date,
+                    exposureDate.toString(DateFormats.informContactGuidelinesUI)
+                )
+            } "
             when (viewModel.category.value) {
-                Category.LIVED_TOGETHER -> context.getString(R.string.inform_contact_intro_category1)
-                Category.DURATION -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
-                Category.DISTANCE -> context.getString(R.string.inform_contact_intro_category2,exposureDateFormatted)
-                Category.OTHER -> context.getString(R.string.inform_contact_intro_category3, exposureDateFormatted)
+                Category.ONE -> context.getString(R.string.inform_contact_intro_category1)
+                Category.TWO_A -> context.getString(
+                    R.string.inform_contact_intro_category2,
+                    exposureDateFormatted
+                )
+                Category.TWO_B -> context.getString(
+                    R.string.inform_contact_intro_category2,
+                    exposureDateFormatted
+                )
+                Category.THREE_A, Category.THREE_B -> context.getString(
+                    R.string.inform_contact_intro_category3,
+                    exposureDateFormatted
+                )
                 else -> ""
             }
         }
@@ -594,11 +594,7 @@ class TaskDetailItemsStorage(
 
             add(SubHeaderItem(header))
             add(ParagraphItem(message, clickable = true))
-
-            // Only add the footer if the source is Portal.
-            if (viewModel.task.value?.source == Source.Portal) {
-                add(SubHeaderItem(footer))
-            }
+            add(SubHeaderItem(footer))
 
             if (featureFlags.enablePerspectiveCopy) {
                 add(
@@ -618,7 +614,7 @@ class TaskDetailItemsStorage(
                         },
                         // If contact calling is off, make button dark. If calling is on but number isn't valid turn dark as well
                         // Otherwise always light
-                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == false)) {
+                        type = if (!featureFlags.enableContactCalling || (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == false)) {
                             ButtonType.DARK
                         } else {
                             ButtonType.LIGHT
@@ -628,15 +624,18 @@ class TaskDetailItemsStorage(
             }
 
             // add "Call $name" button if phone is set and config has calling on
-            if (featureFlags.enableContactCalling && viewModel.selectedContact?.hasValidPhoneNumber() == true) {
+            if (featureFlags.enableContactCalling && viewModel.task.linkedContact?.hasValidPhoneNumber() == true) {
                 add(
                     ButtonItem(
                         context.getString(
                             R.string.contact_section_inform_call,
-                            viewModel.selectedContact?.firstName ?: "contact"
+                            viewModel.task.linkedContact?.firstName ?: "contact"
                         ),
                         {
-                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.selectedContact?.number}"))
+                            val intent = Intent(
+                                Intent.ACTION_DIAL,
+                                Uri.parse("tel:${viewModel.task.linkedContact?.numbers?.first()}")
+                            )
                             context.startActivity(intent)
                         },
                         type = if (viewModel.communicationType.value == CommunicationType.Index) {
@@ -648,18 +647,6 @@ class TaskDetailItemsStorage(
                 )
             }
         }
-    }
-
-    // Misc
-
-    private fun isCommunicationTypeQuestion(question: Question): Boolean {
-        var foundTrigger = false
-        question.answerOptions?.forEach {
-            if (it?.trigger == ContactDetailsInputFragment.COMMUNICATION_STAFF || it?.trigger == ContactDetailsInputFragment.COMMUNICATION_INDEX) {
-                foundTrigger = true
-            }
-        }
-        return foundTrigger
     }
 
     companion object {

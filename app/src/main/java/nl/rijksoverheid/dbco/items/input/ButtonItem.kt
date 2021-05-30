@@ -15,41 +15,58 @@ import nl.rijksoverheid.dbco.databinding.ItemButtonBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
 class ButtonItem(
-        private val text: String,
-        buttonClickListener: () -> Unit,
-        private val enabled: Boolean = true,
-        private val type: ButtonType = ButtonType.LIGHT
+    private val text: String,
+    buttonClickListener: (ButtonItem) -> Unit,
+    private val enabled: Boolean = true,
+    private val type: ButtonType = ButtonType.LIGHT
 ) : BaseBindableItem<ItemButtonBinding>() {
     data class ViewState(
-            val text: String,
-            val enabled: Boolean,
-            val click: () -> Unit
+        val text: String,
+        val enabled: Boolean,
+        val click: () -> Unit,
     )
 
     private val viewState =
-            ViewState(
-                    text,
-                    enabled,
-                    buttonClickListener
-            )
+        ViewState(
+            text,
+            enabled,
+        ) { buttonClickListener(this) }
 
     override fun getLayout() = R.layout.item_button
 
-
     override fun bind(viewBinding: ItemButtonBinding, position: Int) {
         viewBinding.viewState = viewState
-        if (type == ButtonType.DARK) {
-            viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
-                setTextColor(context.getColor(R.color.white))
+        when (type) {
+            ButtonType.DARK -> {
+                viewBinding.button.apply {
+                    backgroundTintList = ContextCompat.getColorStateList(context, R.color.purple)
+                    setTextColor(context.getColor(R.color.white))
+                }
             }
-        } else if (type == ButtonType.LIGHT) {
-            viewBinding.button.apply {
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.gray_lighter)
-                setTextColor(context.getColor(R.color.purple))
+            ButtonType.LIGHT -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.gray_lighter)
+                    setTextColor(context.getColor(R.color.purple))
+                }
+            }
+            ButtonType.DANGER -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.white)
+                    viewBinding.button.setTextColor(context.getColor(R.color.red_danger))
+                }
+            }
+            ButtonType.BORDERLESS -> {
+                viewBinding.button.apply {
+                    backgroundTintList =
+                        ContextCompat.getColorStateList(context, R.color.white)
+                    setTextColor(context.getColor(R.color.purple))
+                }
             }
         }
     }
+
 
     override fun isSameAs(other: Item<*>): Boolean = other is ButtonItem && other.text == text
     override fun hasSameContentAs(other: Item<*>) = other is ButtonItem && other.text == text &&
@@ -57,4 +74,4 @@ class ButtonItem(
 }
 
 @Keep
-enum class ButtonType { LIGHT, DARK }
+enum class ButtonType { LIGHT, DARK, BORDERLESS, DANGER }

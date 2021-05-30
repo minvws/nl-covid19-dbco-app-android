@@ -20,9 +20,8 @@ object Constants {
 
     // Pref keys
     const val USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY = "userChoseAddContactsManuallyAfterPairing"
-    const val USER_SAW_ROOTED_WARNING_KEY = "userSawRootedWarning"
     const val USER_COMPLETED_ONBOARDING = "completedOnboarding"
-    const val USER_LOCAL_CASE = "localCase" // User created their case locally
+    const val USER_GAVE_CONSENT = "gaveConsent"
     const val USER_IS_PAIRED = "isPaired" // Track if user is paired already
 
     // Validation patterns

@@ -9,7 +9,7 @@
 package nl.rijksoverheid.dbco.util
 
 import android.content.Context
-import android.content.res.Resources
+import android.content.res.Configuration
 import android.os.Handler
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
@@ -17,22 +17,22 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
-import nl.rijksoverheid.dbco.onboarding.FillCodeField
-import org.joda.time.Interval
+import nl.rijksoverheid.dbco.R
 import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
     Handler().postDelayed(Runnable(block), milliseconds)
 }
 
-fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
-fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
-
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    imm.showSoftInput(this, 0)
 }
 
 fun View.hideKeyboard() {
@@ -40,8 +40,39 @@ fun View.hideKeyboard() {
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
+fun View.showKeyboardWhenInPortrait(delay: Long = 0) {
+    if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // Only auto show keyboard in portrait because it takes up the whole screen in landscape.
+        postDelayed({
+            requestFocus()
+            showKeyboard()
+        }, delay)
+    }
+}
+
 fun View.setContentResource(stringId: Int) {
     contentDescription = context.getString(stringId)
+}
+
+fun ImageView.setImageResource(resId: Int, stringId: Int) {
+    setImageResource(resId)
+    setContentResource(stringId)
+}
+
+fun TextInputLayout.setCompleted(completed: Boolean) {
+    if (completed) {
+        endIconMode = TextInputLayout.END_ICON_CUSTOM
+        setEndIconDrawable(R.drawable.ic_valid_small)
+        setEndIconContentDescription(R.string.completed)
+        setEndIconTintList(ContextCompat.getColorStateList(context, R.color.green))
+        isEndIconVisible = true
+    } else {
+        endIconMode = TextInputLayout.END_ICON_NONE
+        endIconDrawable = null
+        endIconContentDescription = null
+        setEndIconTintList(null)
+        isEndIconVisible = false
+    }
 }
 
 fun View.accessibilityAnnouncement(stringId: Int) {
@@ -49,7 +80,8 @@ fun View.accessibilityAnnouncement(stringId: Int) {
 }
 
 fun Context.accessibilityAnnouncement(stringId: Int) {
-    val accessibilityManager = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val accessibilityManager =
+        getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
     if (accessibilityManager.isEnabled) {
         val event = AccessibilityEvent.obtain(AccessibilityEvent.TYPE_ANNOUNCEMENT)
         event.text.add(getString(stringId))
@@ -57,21 +89,34 @@ fun Context.accessibilityAnnouncement(stringId: Int) {
     }
 }
 
-fun String.removeHtmlTags(): String{
+fun NestedScrollView.scrollTo(view: View, delay: Long = 0) {
+    postDelayed({
+        smoothScrollTo(0, view.bottom)
+    }, delay)
+}
+
+fun String.removeHtmlTags(): String {
     return this.replace("<br/>", "\n")
-            .replace("<b>", "")
-            .replace("</b>", "")
-            .replace("<ul>", "")
-            .replace("</ul>", "")
-            .replace("</li>", "")
-            .replace("<li>", "\n• ")
-            .replace("<a href=\"", "")
-            .replace(Regex("\">(.*)</a>"), "")
+        .replace("<b>", "")
+        .replace("</b>", "")
+        .replace("<ul>", "")
+        .replace("</ul>", "")
+        .replace("</li>", "")
+        .replace("<li>", "\n• ")
+        .replace("<a href=\"", "")
+        .replace(Regex("\">(.*)</a>"), "")
 }
 
 fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
 
 fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
+
+fun String.removeWhiteSpace(): String = this.filter { char -> !char.isWhitespace() }
+
+fun String?.numeric(): Int? {
+    if (this == null) return null
+    return filter { char -> char.isDigit() }.toInt()
+}
 
 fun ExpandableGroup.removeAllChildren() {
     if (itemCount <= 1) {
@@ -104,7 +149,4 @@ fun DatePicker.getDate(): Date {
     calendar.set(year, month, dayOfMonth)
     return calendar.time
 }
-
-fun Interval.toDateTimes() = generateSequence(start) { it.plusDays(1) }
-    .takeWhile(::contains)
 

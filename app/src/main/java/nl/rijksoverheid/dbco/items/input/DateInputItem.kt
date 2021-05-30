@@ -23,16 +23,20 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import org.joda.time.LocalDate
 
-
 class DateInputItem(
     val context: Context,
     question: Question?,
-    private val previousAnswerValue: JsonObject? = null
+    private val previousAnswerValue: JsonObject? = null,
+    private val isEnabled: Boolean
 ) :
     BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
 
     private var binding: ItemQuestionDateBinding? = null
     private var date: LocalDate? = null
+
+    private val datePickerListener = { view: View ->
+        showDatePicker()
+    }
 
     override fun getLayout() = R.layout.item_question_date
 
@@ -40,39 +44,46 @@ class DateInputItem(
         this.binding = viewBinding
         viewBinding.item = this
 
+        viewBinding.inputLabel.setOnClickListener(datePickerListener)
+
         if (date == null) {
             fillInPreviousAnswer()
         }
 
         date?.let {
-            viewBinding.dateLabel.setText(it.toString(dateInputUI))
+            viewBinding.inputLabel.setText(it.toString(dateInputUI))
         }
+
+        viewBinding.inputLayout.isEnabled = isEnabled
     }
 
-    fun onDateClicked(view: View) {
-        val now = LocalDate.now()
-        val monthOfYearToUse = (date?.monthOfYear ?: now.monthOfYear) -1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
+    private fun showDatePicker() {
+        // Default date is 1 January 1980
+        val year = date?.year ?: 1980
+        val month = (date?.monthOfYear ?: 1) - 1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
+        val day = date?.dayOfMonth ?: 1
+
         val dialog = DatePickerDialog(
             context,
             R.style.SpinnerDatePickerDialogTheme,
             this,
-            date?.year ?: now.year,
-            monthOfYearToUse,
-            date?.dayOfMonth ?: now.dayOfMonth
-        ) // default date 1 Jan 1980
+            year,
+            month,
+            day
+        )
         dialog.datePicker.calendarViewShown = false
         dialog.datePicker.spinnersShown = true
         dialog.show()
 
         // Override button color manually since Google doesn't support Spinner mode and/or spinner theming out of the box since API 24 & the Material design guidelines
-        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.color_primary))
-        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.color_primary))
+        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.primary))
+        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.primary))
     }
 
     override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         // Same issue as before, LocalDate uses 1-12 for months instead of the 0-11 we get from the DatePickerDialog, increase date by 1 here for proper processing.
-        date = LocalDate(year, month+1, dayOfMonth).apply {
-            binding?.dateLabel?.setText(this.toString(dateInputUI))
+        date = LocalDate(year, month + 1, dayOfMonth).apply {
+            binding?.inputLabel?.setText(this.toString(dateInputUI))
         }
     }
 
@@ -93,7 +104,7 @@ class DateInputItem(
     private fun fillInPreviousAnswer() {
         previousAnswerValue?.let { prevAnswer ->
             prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
-                date = LocalDate.parse(value, DateFormats.dateInputData )
+                date = LocalDate.parse(value, DateFormats.dateInputData)
             }
         }
     }

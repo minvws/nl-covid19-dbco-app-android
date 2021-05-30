@@ -8,31 +8,26 @@
 
 package nl.rijksoverheid.dbco.selfbco.timeline
 
-import android.widget.Toast
 import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
-import nl.rijksoverheid.dbco.items.ui.ContactAddItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TimelineContactAddItem
-import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
-import org.joda.time.DateTime
-import timber.log.Timber
+import org.joda.time.LocalDate
 
 class TimelineSection(
-    val date: DateTime,
+    val date: LocalDate,
     private val contactNames: Array<String>,
-    private val dateOfSymptomOnset: DateTime,
-    private val flowType: Int
+    startDate: LocalDate,
+    private val flowType: Int,
+    private val deleteListener: (String?) -> Unit
 ) : Section() {
 
-    // Track items added per section, easier than parsing section adapter manually for now
-    val items = ArrayList<ContactInputItem>()
-
     init {
-        setSectionHeader(date)
+        setSectionHeader(startDate, date)
         setFooter(
             TimelineContactAddItem(
                 this,
@@ -40,104 +35,101 @@ class TimelineSection(
                     override fun onAddClicked(section: TimelineSection) {
                         // Add new item, add trashcan listener like we did with roommates.
                         // Same principle only on a per section base
-                        val item =
-                            ContactInputItem(
-                                contactNames, "",
-                                trashListener = object : ContactInputItem.OnTrashClickedListener {
-                                    override fun onTrashClicked(item: ContactInputItem) {
-                                        Timber.d("Clicked trash for item with text ${item.contactName}")
-                                        this@TimelineSection.remove(item)
-                                        items.remove(item)
-                                    }
-                                })
-                        this@TimelineSection.add(item)
-                        items.add(item)
+                        addContactToTimeline()
                     }
                 })
         )
     }
 
-
-    private fun setSectionHeader(date: DateTime) {
-        Timber.d("Got date $date , comparing")
-        // Todo: Move to string resources without requiring context
-        when {
-            // Today
-            date.isEqual(DateTime.now().withTimeAtStartOfDay()) -> {
-                if (date.isEqual(dateOfSymptomOnset)) {
-                    when (flowType) {
-                        // Todo: Find a better way to handle this, there's a lot of logic for a simple text
-                        SelfBcoConstants.COVID_CHECK_FLOW -> {
-                            setHeader(
-                                SubHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    )
-                                )
-                            )
-                        }
-                        SelfBcoConstants.SYMPTOM_CHECK_FLOW -> {
-                            setHeader(
-                                DuoHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    ),
-                                    "De eerste dag dat je klachten had"
-                                )
-                            )
-                        }
-                        SelfBcoConstants.NOT_SELECTED -> {
-                            setHeader(
-                                SubHeaderItem(
-                                    String.format(
-                                        "Vandaag (%s)",
-                                        date.toString(DateFormats.selfBcoDateCheck)
-                                    )
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    setHeader(
-                        SubHeaderItem(
-                            String.format(
-                                "Vandaag (%s)",
-                                date.toString(DateFormats.selfBcoDateCheck)
-                            )
-                        )
-                    )
+    fun addContactToTimeline(
+        name: String = "",
+        uuid: String? = null,
+        focusOnBind: Boolean = true
+    ): ContactInputItem {
+        val item = ContactInputItem(
+            contactName = name,
+            contactUuid = uuid,
+            focusOnBind = focusOnBind,
+            contactNames = contactNames,
+            trashListener = object : ContactInputItem.OnTrashClickedListener {
+                override fun onTrashClicked(item: ContactInputItem) {
+                    this@TimelineSection.remove(item)
+                    deleteListener(item.contactUuid)
                 }
+            })
+        add(item)
+        return item
+    }
+
+    fun refreshHeader(newStartDate: LocalDate) {
+        removeHeader()
+        setSectionHeader(newStartDate, date)
+    }
+
+    fun getContactItems(): List<ContactInputItem> {
+        val items = mutableListOf<ContactInputItem>()
+        for (groupIndex: Int in 0 until groupCount) {
+            val item = getItem(groupIndex)
+            if (item is ContactInputItem) {
+                items.add(item)
             }
-            // Yesterday
-            date.isEqual(DateTime.now().minusDays(1).withTimeAtStartOfDay()) -> {
-                setHeader(
-                    SubHeaderItem(
-                        String.format(
-                            "Gisteren (%s)",
-                            date.toString(DateFormats.selfBcoDateCheck)
-                        )
-                    )
-                )
-            }
-            // Day before yesterday
-            date.isEqual(DateTime.now().minusDays(2).withTimeAtStartOfDay()) -> {
-                setHeader(
-                    SubHeaderItem(
-                        String.format(
-                            "Eergisteren (%s)",
-                            date.toString(DateFormats.selfBcoDateCheck)
-                        )
-                    )
-                )
-            }
-            // Everything else
+        }
+        return items
+    }
+
+    private fun setSectionHeader(startDate: LocalDate, date: LocalDate) {
+        // Todo: Move to string resources without requiring context
+        setHeader(
+            createHeader(
+                flowType = flowType,
+                today = LocalDate.now(),
+                date = date,
+                startDate = startDate
+            )
+        )
+    }
+
+    private fun createHeader(
+        flowType: Int,
+        today: LocalDate,
+        date: LocalDate,
+        startDate: LocalDate
+    ): BaseBindableItem<*> {
+
+        val subtitle = getSubtitle(flowType, date, startDate)
+        val formattedDate = date.toString(DateFormats.selfBcoDateCheck)
+        val title = when {
+            date.isEqual(today) -> "Vandaag ($formattedDate)"
+            date.isEqual(today.minusDays(1)) -> "Gisteren ($formattedDate)"
+            date.isEqual(today.minusDays(2)) -> "Eergisteren ($formattedDate)"
             else -> {
-                setHeader(SubHeaderItem("" + date.toString(DateFormats.selfBcoDateCheck).capitalize()))
+                "" + date.toString(DateFormats.selfBcoDateCheck).capitalize()
             }
+        }
+
+        return if (subtitle != null) {
+            DuoHeaderItem(title, subtitle)
+        } else {
+            SubHeaderItem(title)
         }
     }
 
-
+    private fun getSubtitle(
+        flowType: Int,
+        date: LocalDate,
+        startDate: LocalDate
+    ): String? {
+        return if (date == startDate) when (flowType) {
+            SelfBcoConstants.SYMPTOM_CHECK_FLOW -> "De eerste dag dat je klachten had"
+            SelfBcoConstants.COVID_CHECK_FLOW -> "Op deze dag liet je jezelf testen"
+            else -> null
+        } else if (
+            flowType == SelfBcoConstants.SYMPTOM_CHECK_FLOW &&
+            date.isBefore(startDate)
+        ) {
+            "Deze dag was je mogelijk al besmettelijk"
+        } else {
+            null
+        }
+    }
 }

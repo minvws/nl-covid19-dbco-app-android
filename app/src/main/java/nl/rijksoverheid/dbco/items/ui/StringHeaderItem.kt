@@ -7,10 +7,8 @@
  */
 package nl.rijksoverheid.dbco.items.ui
 
-import androidx.annotation.StringRes
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.ItemHeaderBinding
 import nl.rijksoverheid.dbco.databinding.ItemStringHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 

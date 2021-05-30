@@ -9,69 +9,155 @@
 package nl.rijksoverheid.dbco.selfbco
 
 import androidx.lifecycle.ViewModel
+import nl.rijksoverheid.dbco.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
-import nl.rijksoverheid.dbco.tasks.data.entity.Source
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
-import org.joda.time.DateTime
-import timber.log.Timber
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.entity.Source
+import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
+import org.joda.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
-class SelfBcoCaseViewModel(private val tasksRepository: ITaskRepository) : ViewModel() {
+class SelfBcoCaseViewModel(
+    private val tasksRepository: ICaseRepository,
+    private val appConfigRepository: AppConfigRepository
+) : ViewModel() {
 
-    private var dateOfSymptomOnset : DateTime? = null
-    private val indexSymptoms = ArrayList<String>()
-    private var testedOrSymptoms = SelfBcoConstants.NOT_SELECTED
+    private var testedOrSymptoms = SelfBcoConstants.COVID_CHECK_FLOW
 
-    fun generateSelfBcoCase(dateOfSymptomOnset: DateTime) {
-        this.dateOfSymptomOnset = dateOfSymptomOnset
-        tasksRepository.generateSelfBcoCase(dateOfSymptomOnset.toString(DateFormats.dateInputData))
+    fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
+
+    fun isZipCodeSupported(zipCode: Int): Boolean {
+        return appConfigRepository.isSelfBcoSupportedForZipCode(zipCode)
     }
 
-    fun addSymptom(symptom : String){
-        if(!indexSymptoms.contains(symptom)){
-            indexSymptoms.add(symptom)
-            Timber.d("Added symptom $symptom")
+    fun setSelectedSymptoms(symptoms: List<Symptom>) = tasksRepository.setSymptoms(symptoms)
+
+    fun getRoommates(): List<Task> = tasksRepository.getContactsByCategory(Category.ONE)
+
+    fun getTimelineContacts(): List<Task> {
+        return tasksRepository.getContactsByCategory(category = null)
+    }
+
+    fun removeContact(uuid: String) = tasksRepository.deleteTask(uuid)
+
+    fun addContact(
+        name: String,
+        dateOfLastExposure: String = LocalDate.now().toString(DateFormats.dateInputData),
+        category: Category?
+    ) {
+        if (name.isNotEmpty()) {
+            val task = Task(
+                taskType = TaskType.Contact,
+                source = Source.App,
+                category = category,
+                label = name,
+                uuid = UUID.randomUUID().toString(),
+                dateOfLastExposure = dateOfLastExposure
+            )
+            tasksRepository.saveTask(
+                task = task,
+                shouldMerge = { current -> current.label!!.contentEquals(task.label!!) },
+                shouldUpdate = { current ->
+                    task.getExposureDate().isAfter(current.getExposureDate())
+                }
+            )
         }
     }
 
-    fun removeSymptom(symptom: String){
-        if(indexSymptoms.contains(symptom)){
-            indexSymptoms.remove(symptom)
-            Timber.d("Removed symptom $symptom")
+    fun getStartOfContagiousPeriod(): LocalDate {
+        return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
+    }
+
+    fun getStartDate(): LocalDate {
+        return if (getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+            getDateOfSymptomOnset()
+        } else {
+            getDateOfTest()
         }
     }
 
-    fun addSelfBcoContact(name : String, dateOfLastExposure : String = DateTime.now().withTimeAtStartOfDay().toString(DateFormats.dateInputData), category : Category?){
-        val selfBcoContactTask = Task(taskType = "contact", source = Source.App,category = category, label = name, uuid = UUID.randomUUID().toString(), dateOfLastExposure = dateOfLastExposure)
-        tasksRepository.saveChangesToTask(selfBcoContactTask)
+    fun getDateOfSymptomOnset(): LocalDate {
+        return tasksRepository.getSymptomOnsetDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: LocalDate.now()
     }
 
-    fun getOnsetAsFormattedString() : String{
-        return dateOfSymptomOnset?.toString(DateFormats.selfBcoDateCheck) ?: ""
+    fun updateDateOfSymptomOnset(date: LocalDate) {
+        tasksRepository.updateSymptomOnsetDate(
+            date.toString(DateFormats.dateInputData)
+        )
     }
 
-    fun getDateOfSymptomOnset(): DateTime {
-        return dateOfSymptomOnset ?: DateTime.now().withTimeAtStartOfDay()
+    fun getDateOfTest(): LocalDate {
+        return tasksRepository.getTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: LocalDate.now()
     }
 
-    fun updateDateOfSymptomOnset(newDateTime: DateTime){
-        dateOfSymptomOnset = newDateTime
-        // Update EZD in case itself as well
-        tasksRepository.updateSymptomOnsetDate(newDateTime.withTimeAtStartOfDay().toString(DateFormats.dateInputData))
+    fun updateTestDate(date: LocalDate) {
+        tasksRepository.updateTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
     }
 
-    fun getCase() = tasksRepository.getCachedCase()
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfNegativeTest(): LocalDate {
+        return tasksRepository.getNegativeTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfNegativeTest(date: LocalDate) {
+        tasksRepository.updateNegativeTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfPositiveTest(): LocalDate {
+        return tasksRepository.getPositiveTestDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfPositiveTest(date: LocalDate) {
+        tasksRepository.updatePositiveTestDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
+
+    /**
+     * Used in flow when EZD is more than x days in the past,
+     * so we can assume a EZD is set
+     */
+    fun getDateOfIncreasedSymptoms(): LocalDate {
+        return tasksRepository.getIncreasedSymptomDate()?.let {
+            LocalDate.parse(it, DateFormats.dateInputData)
+        } ?: getDateOfSymptomOnset()
+    }
+
+    fun updateDateOfIncreasedSymptoms(date: LocalDate) {
+        tasksRepository.updateIncreasedSymptomDate(
+            date.toString(DateFormats.dateInputData)
+        )
+    }
 
     fun getTypeOfFlow() = testedOrSymptoms
-    fun setTypeOfFlow(type : Int){
+
+    fun setTypeOfFlow(type: Int) {
         testedOrSymptoms = type
     }
 
-    fun getSelectedSymptomsSize() : Int {
-        return indexSymptoms.size
-    }
+    fun getSelectedSymptomsSize(): Int = getSelectedSymptoms().size
 
+    fun getSelectedSymptoms(): List<String> = tasksRepository.getSymptoms()
 }

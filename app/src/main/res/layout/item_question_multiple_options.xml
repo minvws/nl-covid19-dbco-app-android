@@ -6,8 +6,7 @@
   ~
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -22,37 +21,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/activity_horizontal_margin">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_edit_text"
-                android:inputType="textNoSuggestions"
+            <AutoCompleteTextView
+                android:id="@+id/input_label"
                 android:layout_width="match_parent"
-                android:layout_height="54dp" />
+                android:layout_height="wrap_content"
+                android:maxLines="@integer/max_value"
+                android:inputType="none"/>
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <nl.rijksoverheid.dbco.util.AlwaysFireSpinner
-            android:id="@+id/options_spinner"
-            style="@style/QuestionText"
-            android:alpha="0"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingEnd="10dp" />
-
-    </FrameLayout>
 
         <TextView
             android:id="@+id/question_locked_description"

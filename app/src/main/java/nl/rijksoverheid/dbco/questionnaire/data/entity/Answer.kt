@@ -13,8 +13,8 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class Answer(
-	val uuid: String? = null,
-	val lastModified: String? = null,
-	val questionUuid: String? = null,
-	var value: JsonObject? = null
-)
+    val uuid: String? = null,
+    val lastModified: String? = null,
+    val questionUuid: String? = null,
+    var value: JsonObject? = null
+) : JavaSerializable

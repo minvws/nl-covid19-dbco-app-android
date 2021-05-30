@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <nl.rijksoverheid.dbco.util.AccessibleImageView
                 android:id="@+id/illustration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/headline" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/next"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

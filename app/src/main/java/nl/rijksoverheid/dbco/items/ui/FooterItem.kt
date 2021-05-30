@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemFooterBinding
-import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import timber.log.Timber

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-    <!--
+<?xml version="1.0" encoding="utf-8"?><!--
       ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
       ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
       ~
@@ -7,20 +6,9 @@
       ~
       -->
 <resources>
-    <declare-styleable name="PinEntryEditText">
-        <attr name="pinAnimationType" format="enum">
-            <enum name="popIn" value="0" />
-            <enum name="fromBottom" value="1" />
-            <enum name="none" value="-1" />
-        </attr>
-        <attr name="pinCharacterMask" format="string" />
-        <attr name="pinRepeatedHint" format="string" />
-        <attr name="pinLineStroke" format="dimension" />
-        <attr name="pinLineStrokeSelected" format="dimension" />
-        <attr name="pinCharacterSpacing" format="dimension" />
-        <attr name="pinTextBottomPadding" format="dimension" />
-        <attr name="pinLineColors" format="color" />
-        <attr name="pinBackgroundDrawable" format="reference" />
-        <attr name="pinBackgroundIsSquare" format="boolean" />
+    <declare-styleable name="FillCodeField">
+        <attr name="separator" format="string" />
+        <attr name="maxLength" format="integer" />
+        <attr name="groupSize" format="integer" />
     </declare-styleable>
 </resources>

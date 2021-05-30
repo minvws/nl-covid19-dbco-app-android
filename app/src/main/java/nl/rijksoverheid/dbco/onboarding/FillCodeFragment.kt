@@ -10,71 +10,79 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
-import android.view.accessibility.AccessibilityEvent
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
-import nl.rijksoverheid.dbco.util.hideKeyboard
-import nl.rijksoverheid.dbco.util.resolve
-import nl.rijksoverheid.dbco.util.showKeyboard
-import nl.rijksoverheid.dbco.util.updateText
-import retrofit2.HttpException
+import nl.rijksoverheid.dbco.util.*
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingError
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingSuccess
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingInvalid
 
 class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeField.Callback {
 
-    private val viewModel by viewModels<FillCodeViewModel>()
+    private val viewModel: PairingViewModel by viewModels()
+
     private lateinit var binding: FragmentFillCodeBinding
+
+    private var progressDialog: AlertDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFillCodeBinding.bind(view)
 
-        binding.backButton.setOnClickListener {
-            it.hideKeyboard()
-            it.postDelayed({
-                findNavController().popBackStack()
-            }, KEYBOARD_DELAY)
-        }
-
-        binding.nextButton.setOnClickListener {
-            viewModel.pair(binding.codeEntry.code)
-            binding.nextButton.isEnabled = false
-            binding.loadingContainer.visibility = View.VISIBLE
-            binding.loadingIndicator.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
-        }
-
+        // Setup code entry
         binding.codeEntry.callback = this
+        binding.codeEntry.showKeyboardWhenInPortrait(delay = KEYBOARD_DELAY)
 
-        binding.codeEntry.postDelayed({
-            binding.codeEntry.requestFocus()
-            binding.codeEntry.showKeyboard()
-        }, KEYBOARD_DELAY)
+        // Setup back button
+        binding.toolbar.backButton.setOnClickListener {
+            findNavController().popBackStack()
+            it.hideKeyboard()
+        }
 
-        viewModel.pairingResult.observe(viewLifecycleOwner, { resource ->
-            resource?.resolve(onError = { exception ->
-                if (exception is HttpException && exception.code() == 400) {
-                    // Invalid pairing code, show error message but keep code
-                    binding.inputErrorView.visibility = View.VISIBLE
-                } else {
-                    // Other general error
-                    showErrorDialog(getString(R.string.error_while_pairing), {
-                        binding.codeEntry.updateText("")
-                        binding.codeEntry.requestFocus()
-                    }, exception)
+        // Setup next button
+        binding.nextButton.setOnClickListener {
+            binding.nextButton.isEnabled = false
+            progressDialog = showProgressDialog(R.string.pairing_code_being_checked)
+            viewModel.pair(binding.codeEntry.code)
+        }
+
+        // Setup pairing logic
+        viewModel.pairingStatus.observe(viewLifecycleOwner, { result ->
+            progressDialog?.dismiss()
+            when (result) {
+                is PairingSuccess -> {
+                    binding.nextButton.isEnabled = true
+                    binding.nextButton.hideKeyboard()
+                    binding.nextButton.postDelayed({
+                        findNavController()
+                            .navigate(
+                                FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment(
+                                    canGoBack = false
+                                )
+                            )
+                    }, KEYBOARD_DELAY)
                 }
-
-                binding.nextButton.isEnabled = true
-                binding.loadingContainer.visibility = View.GONE
-            }, onSuccess = {
-                binding.nextButton.isEnabled = true
-                binding.loadingContainer.visibility = View.GONE
-                binding.nextButton.hideKeyboard()
-                binding.nextButton.postDelayed({
-                    findNavController().navigate(FillCodeFragmentDirections.toOnboardingAddDataFragment())
-                }, KEYBOARD_DELAY)
-            })
+                is PairingInvalid -> {
+                    binding.inputErrorView.setText(R.string.fill_code_invalid)
+                    binding.inputErrorView.accessibilityAnnouncement(R.string.fill_code_invalid)
+                    binding.inputErrorView.visibility = View.VISIBLE
+                    binding.scrollView.scrollTo(binding.inputErrorView)
+                    binding.nextButton.isEnabled = true
+                }
+                is PairingError -> {
+                    binding.inputErrorView.setText(R.string.error_while_pairing)
+                    showErrorDialog(getString(R.string.error_while_pairing), {
+                        binding.codeEntry.requestFocus()
+                    }, result.exception)
+                    binding.inputErrorView.visibility = View.VISIBLE
+                    binding.scrollView.scrollTo(binding.inputErrorView)
+                    binding.nextButton.isEnabled = true
+                }
+            }
         })
     }
 
@@ -89,7 +97,11 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
             // Update placeholder
             if (text.length >= 0) {
                 if (text.length <= PLACEHOLDER.length) {
-                    binding.codePlaceholder.text = String.format("%s%s", text, PLACEHOLDER.subSequence(text.length, PLACEHOLDER.length))
+                    binding.codePlaceholder.text = String.format(
+                        "%s%s",
+                        text,
+                        PLACEHOLDER.subSequence(text.length, PLACEHOLDER.length)
+                    )
                 } else {
                     binding.codePlaceholder.text = text
                 }

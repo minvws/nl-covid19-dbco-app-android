@@ -10,28 +10,42 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
-import timber.log.Timber
+import nl.rijksoverheid.dbco.AppViewModel
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation
 
-class SplashFragment : BaseFragment(R.layout.fragment_onboarding_flow_selection) {
+class SplashFragment : BaseFragment(R.layout.fragment_splash) {
 
-    private val viewModel by viewModels<OnboardingHelpViewModel>()
-    private val appLifecycleViewModel by viewModels<AppLifecycleViewModel>()
+    private val viewModel: SplashViewModel by viewModels()
+
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        appLifecycleViewModel.appConfig.observe(viewLifecycleOwner, {
-            findNavController().navigate(SplashFragmentDirections.toOnboarding())
+        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+            handleNavigation(navigation)
         })
-
-        appLifecycleViewModel.checkForForcedAppUpdate()
-
-
+        appViewModel.appConfig.observe(viewLifecycleOwner, { config ->
+            viewModel.onConfigLoaded(config)
+        })
     }
 
+    private fun handleNavigation(navigation: Navigation) {
+        val direction = when (navigation) {
+            is MyTasks -> SplashFragmentDirections.toMyContacts()
+            is Consent -> SplashFragmentDirections.toOnboardingPrivacyConsentFragment(
+                canGoBack = false
+            )
+            is Start -> SplashFragmentDirections.toOnboardingStartFragment()
+        }
+        findNavController().navigate(direction)
+    }
 }

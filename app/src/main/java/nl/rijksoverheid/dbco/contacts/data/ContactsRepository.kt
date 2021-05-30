@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
+import nl.rijksoverheid.dbco.util.removeWhiteSpace
 
 class ContactsRepository(val context: Context) {
 
@@ -31,10 +32,10 @@ class ContactsRepository(val context: Context) {
 
             contacts.forEach {
                 contactNumbers[it.id]?.let { numbers ->
-                    it.number = numbers[0]
+                    it.numbers = numbers.map { number -> number.removeWhiteSpace() }.toSet()
                 }
                 contactEmails[it.id]?.let { emails ->
-                    it.email = emails[0]
+                    it.emails = emails.toSet()
                 }
             }
 

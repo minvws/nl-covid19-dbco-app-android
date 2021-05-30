@@ -24,58 +24,54 @@ import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.LocalContactItem
 import nl.rijksoverheid.dbco.databinding.FragmentContactSelectionBinding
 import nl.rijksoverheid.dbco.items.input.SearchFieldItem
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.items.ui.TinyHeaderItem
-import nl.rijksoverheid.dbco.tasks.data.entity.Task
 import timber.log.Timber
 
-
 class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_selection) {
+
     private val adapter = GroupAdapter<GroupieViewHolder>()
+
     private val args: ContactPickerSelectionFragmentArgs by navArgs()
-    private val contactsViewModel by viewModels<ContactsViewModel>()
-    private var selectedTask: Task? = null
+
+    private val contactsViewModel: ContactsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val binding = FragmentContactSelectionBinding.bind(view)
-        binding.toolbar.title = getString(R.string.contacts_picker_title)
-        binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            ContactItemDecoration(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
-            )
-        )
+        initToolbar(binding)
 
-        args.indexTask?.let {
-            selectedTask = it
-        }
+        binding.content.adapter = adapter
+        binding.content.addItemDecoration(ContactItemDecoration(requireContext()))
 
         binding.manualEntryButton.setOnClickListener {
             // User chooses not to select an existing contact from their device, start fresh
             findNavController().navigate(
                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                    selectedTask,
-                    null
+                    indexTask = args.indexTask,
+                    enabled = true
                 )
             )
         }
 
-
         contactsViewModel.localContactsLiveDataItem.observe(
-            viewLifecycleOwner,
-            Observer { allContacts ->
+            viewLifecycleOwner, { allContacts ->
                 adapter.clear()
+                adapter.add(
+                    HeaderItem(
+                        getString(R.string.contacts_picker_title),
+                        R.dimen.activity_horizontal_margin
+                    )
+                )
                 adapter.add(SearchFieldItem({ content ->
                     Timber.d("Searching for ${content.toString()}")
                     contactsViewModel.filterLocalContactsOnName(content.toString())
                 }, R.string.contact_picker_search_hint))
 
                 // If the user has selected a task, see if we can suggest contacts that match the label of this task
-                if (selectedTask != null) {
+                if (!args.indexTask.label.isNullOrEmpty()) {
                     val suggestedContacts =
-                        contactsViewModel.filterSuggestedContacts(selectedTask?.label ?: "")
+                        contactsViewModel.filterSuggestedContacts(args.indexTask.label!!)
                     if (suggestedContacts.isNotEmpty()) {
                         val suggestedContactsSection = Section(
                             TinyHeaderItem(R.string.header_suggested_contacts)
@@ -101,10 +97,12 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
                     when (item) {
                         is LocalContactItem -> {
                             Timber.d("Clicked contact $item")
+                            val task = args.indexTask
+                            task.linkedContact = item.contact
                             findNavController().navigate(
                                 ContactPickerSelectionFragmentDirections.toContactDetails(
-                                    selectedTask,
-                                    item.contact
+                                    indexTask = task,
+                                    enabled = true
                                 )
                             )
                         }
@@ -116,9 +114,12 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
         contactsViewModel.fetchLocalContacts()
     }
 
+    private fun initToolbar(binding: FragmentContactSelectionBinding) {
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+    }
+
     override fun onPause() {
         super.onPause()
         view?.findViewById<View>(R.id.searchView)?.clearFocus() // make search input inactive
     }
-
 }

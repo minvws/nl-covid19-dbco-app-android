@@ -8,17 +8,20 @@
   -->
 
 <resources>
+    <dimen name="none">0dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="bullet_radius">4dp</dimen>
     <dimen name="bullet_gap_size">12dp</dimen>
     <dimen name="space_below_illustration">32dp</dimen>
     <dimen name="minimum_touch_area_size">48dp</dimen>
-    <dimen name="input_height">48dp</dimen>
+    <dimen name="input_height">90dp</dimen>
     <dimen name="list_spacing">8dp</dimen>
 
     <dimen name="onboarding_title_textsize">22sp</dimen>
     <dimen name="onboarding_subtext_textsize">17sp</dimen>
     <dimen name="fill_password_top_margin">25dp</dimen>
+
+    <dimen name="symptom_list_divider_height">1dp</dimen>
 
 </resources>

@@ -12,8 +12,8 @@ import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.Defaults
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfig
-import nl.rijksoverheid.dbco.contacts.data.entity.CaseResponse
+import nl.rijksoverheid.dbco.config.AppConfig
+import nl.rijksoverheid.dbco.network.request.CaseResponse
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnairyResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
@@ -24,37 +24,32 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Streaming
+import retrofit2.http.*
 
 interface DbcoApi {
 
-    @GET("v1/questionnaires")
+    @GET("v2/questionnaires")
     @Streaming
     suspend fun getQuestionnaires(): QuestionnairyResponse
 
-    @GET("v1/cases/{token}")
+    @GET("v2/cases/{token}")
     @Streaming
     suspend fun getCase(@Path("token") token: String): Response<CaseResponse>
 
-    @PUT("v1/cases/{token}")
+    @PUT("v2/cases/{token}")
     suspend fun uploadCase(@Path("token") token: String, @Body body: UploadCaseBody): Response<Unit>
 
-    @POST("v1/pairings")
+    @POST("v2/pairings")
     suspend fun pair(@Body body: PairingRequestBody): PairingResponse
 
-    @GET("v1/config")
+    @GET("v2/config")
     @Streaming
     suspend fun getAppConfig(): Response<AppConfig>
 
-    @POST("v1/pairingrequests")
+    @POST("v2/pairingrequests")
     suspend fun retrievePairingCode() : Response<ReversePairingResponse>
 
-    @GET("v1/pairingrequests/{token}")
+    @GET("v2/pairingrequests/{token}")
     suspend fun checkReversePairingStatus(@Path("token") token: String) : Response<ReversePairingStatusResponse>
 
 

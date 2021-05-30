@@ -16,7 +16,7 @@
 
         <variable
             name="task"
-            type="nl.rijksoverheid.dbco.tasks.data.entity.Task" />
+            type="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
 
 
     </data>
@@ -24,19 +24,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:paddingLeft="32dp">
+        android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/chevron"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginTop="22dp"
-            android:layout_marginRight="16dp"
             android:src="@drawable/ic_chevron_right"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
@@ -71,26 +68,26 @@
             android:id="@+id/index_contact_state"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="@string/cd_info_box"
+            android:contentDescription="@string/important"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/index_task_progress"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress_bar"
             android:background="@drawable/circular_progress_background"
-            style="?android:attr/progressBarStyleHorizontal"
+            android:clickable="false"
+            android:indeterminate="false"
             android:max="100"
             android:progress="0"
+            android:progressDrawable="@drawable/circular_progress_bar"
             android:visibility="invisible"
-            android:clickable="false"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <View

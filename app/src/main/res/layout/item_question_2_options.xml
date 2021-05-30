@@ -22,8 +22,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="14dp"
-        android:paddingHorizontal="@dimen/activity_horizontal_margin">
+        android:paddingTop="8dp">
 
         <TextView style="@style/QuestionText.Bold"
             android:id="@+id/question_label"

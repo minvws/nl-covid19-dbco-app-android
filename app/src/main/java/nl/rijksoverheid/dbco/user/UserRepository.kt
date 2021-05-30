@@ -13,6 +13,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.Constants.USER_IS_PAIRED
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
@@ -132,6 +133,7 @@ class UserRepository(context: Context) : IUserRepository { // TODO move to dagge
             .putString(KEY_RX, rx)
             .putString(KEY_TOKEN, token)
             .putString(KEY_CLIENT_SECRET_KEY, clientSecretKey)
+            .putBoolean(USER_IS_PAIRED, true)
             .commit()
     }
 

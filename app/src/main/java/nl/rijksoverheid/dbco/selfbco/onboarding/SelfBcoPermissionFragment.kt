@@ -9,7 +9,6 @@
 package nl.rijksoverheid.dbco.selfbco.onboarding
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,25 +20,24 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
-import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionBinding
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 
 class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permission) {
 
-    private val userPrefs by lazy {
-        activity?.getSharedPreferences(
-            Constants.USER_PREFS,
-            Context.MODE_PRIVATE
-        )
-    }
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toRoommateInputFragment()
+                    SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
                 )
             }
         }
@@ -64,20 +62,31 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoPermissionBinding.bind(view)
+
+        val content = Section(
+            listOf(
+                HeaderItem(getString(R.string.selfbco_permission_header)),
+                ParagraphItem(getString(R.string.selfbco_permission_summary), clickable = true),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item1)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item2)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_item3))
+            )
+        )
+        val adapter = GroupAdapter<GroupieViewHolder>()
+        adapter.add(content)
+
+        binding.content.adapter = adapter
+
         binding.btnNext.setOnClickListener {
             requestContactAccess()
         }
 
         binding.btnManual.setOnClickListener {
-            userPrefs?.edit()?.putBoolean(
-                Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
-                true
-            )?.apply()
             findNavController().navigate(
                 SelfBcoPermissionFragmentDirections.toRoommateInputFragment()
             )
         }
-        binding.backButton.setOnClickListener {
+        binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -97,7 +106,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
                 requestCallback.launch(Manifest.permission.READ_CONTACTS)
             } else {
                 activity?.let {
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(it)
+                    val builder = MaterialAlertDialogBuilder(it)
                     builder.setTitle(R.string.permissions_title)
                     builder.setCancelable(false)
                     builder.setMessage(R.string.permissions_some_permissions_denied)

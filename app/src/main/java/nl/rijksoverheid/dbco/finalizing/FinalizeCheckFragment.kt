@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.finalizing
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -18,20 +18,15 @@ import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFinalizingCheckBinding
-import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.TaskItem
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
-import nl.rijksoverheid.dbco.tasks.data.entity.CommunicationType
-import timber.log.Timber
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
 
 class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-    private val tasksViewModel by lazy {
-        ViewModelProvider(requireActivity(), requireActivity().defaultViewModelProviderFactory).get(
-            TasksOverviewViewModel::class.java
-        )
-    }
+
+    private val tasksViewModel: TasksOverviewViewModel by activityViewModels()
+
     private val contentSection = Section()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,63 +39,42 @@ class FinalizeCheckFragment : BaseFragment(R.layout.fragment_finalizing_check) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentFinalizingCheckBinding.bind(view)
+        initToolbar(binding)
         binding.content.adapter = adapter
 
-        tasksViewModel.getCachedCase().let { case ->
+        val case = tasksViewModel.getCachedCase()
+
+        if (case.hasEssentialTaskData()) {
+            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
+        } else {
             contentSection.clear()
-            val noPhoneOrEmailSection = Section()
-                .apply {
-                    setHeader(
-                        DuoHeaderItem(
-                            getString(R.string.finalize_no_phone_or_email_header),
-                            getString(R.string.finalize_no_phone_or_email_subtext)
-                        )
-                    )
-                }
-
-
-            case?.tasks?.forEach { task ->
-                Timber.d("Found task $task")
-                when (task.taskType) {
-                    "contact" -> {
-                        // Check if all (required) data has been filled in
-                        val hasEmailOrPhone = task.linkedContact?.hasValidEmailOrPhone() == true
-
-                        if (!hasEmailOrPhone) {
-                            noPhoneOrEmailSection.add(TaskItem(task))
-                        }
-                    }
+            val incompleteTasks = Section().apply {
+                case.tasks.filter { task ->
+                    !task.hasEssentialData()
+                }.forEach { task ->
+                    add(TaskItem(task))
                 }
             }
-
-
-            if (noPhoneOrEmailSection.groupCount > 1) {
-                contentSection.add(noPhoneOrEmailSection)
-            }
-
-            // Auto upload and continue if no contacts require extra checking. Check for groupcount <= 1 as preset headers can count against this
-            if (noPhoneOrEmailSection.groupCount <= 1) {
-                tasksViewModel.uploadCurrentCase()
-                findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
-            }
+            contentSection.add(incompleteTasks)
         }
 
         adapter.setOnItemClickListener { item, view ->
             if (item is TaskItem) {
                 findNavController().navigate(
                     FinalizeCheckFragmentDirections.toContactDetailsInputFragment(
-                        item.task,
-                        item.task.linkedContact
+                        indexTask = item.task,
+                        enabled = true
                     )
                 )
             }
         }
 
         binding.sendButton.setOnClickListener {
-            tasksViewModel.uploadCurrentCase()
-            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeSentFragment())
+            findNavController().navigate(FinalizeCheckFragmentDirections.toFinalizeLoadingFragment())
         }
     }
 
-
+    private fun initToolbar(binding: FragmentFinalizingCheckBinding) {
+        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+    }
 }

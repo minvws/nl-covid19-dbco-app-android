@@ -19,6 +19,11 @@ class QuestionnaireSection(
         headerItem.completed = completed
     }
 
+    override fun onToggleExpanded() {
+        super.onToggleExpanded()
+        headerItem.updateChevron()
+    }
+
     fun isCompleted() = headerItem.completed
 
     fun setEnabled(enabled: Boolean) {

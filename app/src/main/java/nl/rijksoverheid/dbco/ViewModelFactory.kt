@@ -11,28 +11,25 @@ package nl.rijksoverheid.dbco
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleManager
-import nl.rijksoverheid.dbco.applifecycle.AppLifecycleViewModel
-import nl.rijksoverheid.dbco.applifecycle.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.AppUpdateManager
+import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.onboarding.FillCodeViewModel
+import nl.rijksoverheid.dbco.onboarding.PairingViewModel
 import nl.rijksoverheid.dbco.onboarding.OnboardingConsentViewModel
-import nl.rijksoverheid.dbco.onboarding.OnboardingHelpViewModel
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingViewmodel
-import nl.rijksoverheid.dbco.tasks.ITaskRepository
-import nl.rijksoverheid.dbco.tasks.data.TasksDetailViewModel
-import nl.rijksoverheid.dbco.tasks.data.TasksOverviewViewModel
+import nl.rijksoverheid.dbco.bcocase.ICaseRepository
+import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
+import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel
 import nl.rijksoverheid.dbco.user.IUserRepository
 
 class ViewModelFactory(
     private val context: Context,
-    private val tasksRepository: ITaskRepository,
+    private val tasksRepository: ICaseRepository,
     private val contactsRepository: ContactsRepository,
-    private val questionnareRepository: IQuestionnaireRepository,
+    private val questionnaireRepository: IQuestionnaireRepository,
     private val userRepository: IUserRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModelProvider.Factory {
@@ -43,24 +40,32 @@ class ViewModelFactory(
             ContactsViewModel::class.java -> ContactsViewModel(contactsRepository) as T
             TasksOverviewViewModel::class.java -> TasksOverviewViewModel(
                 tasksRepository,
-                questionnareRepository
+                questionnaireRepository
             ) as T
             TasksDetailViewModel::class.java -> TasksDetailViewModel(
-                    tasksRepository,
-                    questionnareRepository
+                tasksRepository,
+                questionnaireRepository
             ) as T
-            FillCodeViewModel::class.java -> FillCodeViewModel(userRepository) as T
-            OnboardingHelpViewModel::class.java -> OnboardingHelpViewModel(userRepository, context) as T
-            AppLifecycleViewModel::class.java -> AppLifecycleViewModel(
-                AppLifecycleManager(
-                    context,
-                    context.getSharedPreferences("${BuildConfig.APPLICATION_ID}.config", 0),
-                    AppUpdateManagerFactory.create(context)
-                ), appConfigRepository
+            PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
+            SplashViewModel::class.java -> SplashViewModel(
+                context,
+                userRepository,
+                tasksRepository,
+                appConfigRepository
             ) as T
-            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel() as T
-            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(tasksRepository) as T
-            ReversePairingViewmodel::class.java -> ReversePairingViewmodel(userRepository) as T
+            AppViewModel::class.java -> AppViewModel(
+                AppUpdateManager(context),
+                appConfigRepository
+            ) as T
+            OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(
+                tasksRepository,
+                userRepository,
+                context
+            ) as T
+            SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(
+                tasksRepository,
+                appConfigRepository
+            ) as T
             else -> throw IllegalStateException("Unknown view model class $modelClass")
         }
     }
