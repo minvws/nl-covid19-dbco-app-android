@@ -218,6 +218,7 @@
     <string name="selfbco_checkdate_symptoms_title">Weet je zeker dat je geen klachten had op %s?</string>
     <string name="selfbco_chronic_symptoms_worsened_title">Was er een moment na %s dat je klachten erger werden?</string>
     <string name="selfbco_chronic_symptoms_title">Is een van deze zaken van toepassing?</string>
+    <string name="selfbco_chronic_symptoms_summary">Ben je tussen %s en je positieve test een keer negatief getest (geen corona)? Of heb je deze klachten altijd?</string>
     <string name="selfbco_chronic_symptoms_earlier_tested">Ik ben eerder getest (geen corona)</string>
     <string name="selfbco_chronic_symptoms_always_symptoms">Ik heb deze klachten altijd</string>
     <string name="selfbco_chronic_symptoms_all">Beide</string>
@@ -230,8 +231,8 @@
     <string name="selfbco_date_symptoms_positive_test_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
     <string name="selfbco_date_symptoms_increased_title">Wanneer namen je klachten toe?</string>
     <string name="selfbco_date_symptoms_increased_summary">Kies de datum na %s, maar die voor je (laatste) coronatest was.</string>
-    <string name="selfbco_date_negative_covid_title">Wanneer was je laatste negatieve coronatest?</string>
-    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Let op: een zelftest telt niet mee.]]></string>
+    <string name="selfbco_date_negative_covid_title">Wanneer was de laatste negatieve coronatest voordat je ontdekte dat je corona hebt?</string>
+    <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Je hebt deze test gedaan tussen %s en je positieve test. Let op: een zelftest telt niet mee.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
     <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
@@ -242,8 +243,9 @@
     <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
     <string name="selfbco_timeline_explanation_step1">Bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
     <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
-    <string name="selfbco_timeline_explanation_step3">Twijfel je? Voeg de persoon dan toch toe</string>
-    <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>hierna</b> niet nog een keer toe te voegen]]></string>
+    <string name="selfbco_timeline_explanation_step3"><![CDATA[Je hoeft <b>geen</b> mensen toe te voegen die je heel kort hebt ontmoet (zoals de kassamedewerker in een winkel)]]></string>
+    <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>niet</b> nog een keer toe te voegen]]></string>
+    <string name="selfbco_timeline_explanation_step5">Twijfel je? Voeg de persoon dan toch toe</string>
     <string name="selfbco_symptoms_explanation_title">Ziektedag bepalen</string>
     <string name="selfbco_symptoms_explanation_header_1">Je hebt chronische klachten</string>
     <string name="selfbco_symptoms_explanation_description_1">Werden je klachten erger voordat je de coronatest deed? Zo ja, wanneer kreeg je de klachten? Kies die dag als eerste ziektedag.</string>
