@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.items.input
 import android.content.Context
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
@@ -89,5 +90,11 @@ class QuestionMultipleOptionsItem(
             viewBinding.inputLabel.isEnabled = isEnabled
             viewBinding.questionLockedDescription.isVisible = false
         }
+    }
+
+    override fun onViewDetachedFromWindow(viewHolder: GroupieViewHolder<ItemQuestionMultipleOptionsBinding>) {
+        super.onViewDetachedFromWindow(viewHolder)
+        viewHolder.binding.inputLabel.setOnClickListener(null)
+        viewHolder.binding.inputLabel.onItemClickListener = null
     }
 }

@@ -44,11 +44,15 @@ class TimelineExplanationFragment : BaseFragment(R.layout.fragment_selfbco_timel
                 ),
                 ParagraphIconItem(
                     getString(R.string.selfbco_timeline_explanation_step3),
-                    R.drawable.ic_questionmark_round
+                    R.drawable.ic_minus_round
                 ),
                 ParagraphIconItem(
                     getString(R.string.selfbco_timeline_explanation_step4),
                     R.drawable.ic_minus_round
+                ),
+                ParagraphIconItem(
+                    getString(R.string.selfbco_timeline_explanation_step5),
+                    R.drawable.ic_questionmark_round
                 ),
             )
         )

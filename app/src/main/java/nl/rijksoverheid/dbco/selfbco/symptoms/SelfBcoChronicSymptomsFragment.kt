@@ -26,10 +26,21 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoChronicSymptomsBinding.bind(view)
 
+        val symptomOnsetDate =
+            selfBcoViewModel.getDateOfSymptomOnset().toString(DateFormats.selfBcoDateCheck)
+
+        binding.datecheckSubtext.text = getString(
+            R.string.selfbco_chronic_symptoms_summary,
+            symptomOnsetDate
+        )
+
         binding.btnEarlierTested.setOnClickListener {
             findNavController().navigate(
                 SelfBcoChronicSymptomsFragmentDirections.toSelfBcoDateCheckFragment(
-                    state = SelfBcoDateCheckState.createNegativeTestState(requireContext())
+                    state = SelfBcoDateCheckState.createNegativeTestState(
+                        context = requireContext(),
+                        symptomOnsetDate = symptomOnsetDate
+                    )
                 )
             )
         }
@@ -37,10 +48,7 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
         binding.btnAlwaysSymptoms.setOnClickListener {
             findNavController().navigate(
                 SelfBcoChronicSymptomsFragmentDirections.toSelfBcoChronicSymptomsWorsenedFragment(
-                    date = selfBcoViewModel
-                        .getDateOfSymptomOnset()
-                        .toString(DateFormats.selfBcoDateCheck)
-
+                    date = symptomOnsetDate
                 )
             )
         }
@@ -49,7 +57,8 @@ class SelfBcoChronicSymptomsFragment : BaseFragment(R.layout.fragment_selfbco_ch
             findNavController().navigate(
                 SelfBcoChronicSymptomsFragmentDirections.toSelfBcoDateCheckFragment(
                     state = SelfBcoDateCheckState.createNegativeTestWithChronicSymptomsState(
-                        requireContext()
+                        context = requireContext(),
+                        symptomOnsetDate = symptomOnsetDate
                     )
                 )
             )

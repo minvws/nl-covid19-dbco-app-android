@@ -67,11 +67,17 @@ data class SelfBcoDateCheckState(
         /**
          * State when selecting last negative COVID test date
          */
-        fun createNegativeTestState(context: Context): SelfBcoDateCheckState =
+        fun createNegativeTestState(
+            context: Context,
+            symptomOnsetDate: String
+        ): SelfBcoDateCheckState =
             SelfBcoDateCheckState(
                 type = NEGATIVE_TEST_DATE,
                 title = context.getString(R.string.selfbco_date_negative_covid_title),
-                summary = context.getString(R.string.selfbco_date_negative_covid_summary),
+                summary = context.getString(
+                    R.string.selfbco_date_negative_covid_summary,
+                    symptomOnsetDate
+                ),
                 nextAction = { _, _ -> SelfBcoDateCheckNavigation.PermissionCheck }
             )
 
@@ -79,8 +85,11 @@ data class SelfBcoDateCheckState(
          * State when selecting last negative COVID test date with the knowledge that the index
          * has chronic symptoms
          */
-        fun createNegativeTestWithChronicSymptomsState(context: Context): SelfBcoDateCheckState =
-            createNegativeTestState(context).copy(
+        fun createNegativeTestWithChronicSymptomsState(
+            context: Context,
+            symptomOnsetDate: String
+        ): SelfBcoDateCheckState =
+            createNegativeTestState(context, symptomOnsetDate).copy(
                 nextAction = { date, now ->
                     if (date.isBefore(now.minusDays(TWO_WEEKS))) {
                         SelfBcoDateCheckNavigation.SymptomsWorsenedCheck
