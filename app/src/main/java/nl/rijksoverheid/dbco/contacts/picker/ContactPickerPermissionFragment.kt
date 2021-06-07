@@ -28,6 +28,7 @@ import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
+import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragmentDirections
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
@@ -38,8 +39,8 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
 
     private val userPrefs by lazy {
         LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
-
     }
+
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
@@ -79,7 +80,13 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
         binding.onboardingHeader.text =
             String.format(getString(R.string.permission_name_header), nameToShow)
         binding.btnNext.setOnClickListener {
-            requestContactAccess()
+            requestPermission(requestCallback, Manifest.permission.READ_CONTACTS) {
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactPicker(
+                        indexTaskUuid = args.indexTaskUuid
+                    )
+                )
+            }
         }
 
         binding.btnManual.setOnClickListener {
@@ -89,58 +96,13 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             )?.apply()
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTaskUuid = args.indexTaskUuid
+                    indexTaskUuid = args.indexTaskUuid,
+                    newTask = true
                 )
             )
         }
         binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
-        }
-    }
-
-
-    private fun requestContactAccess() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    Manifest.permission.READ_CONTACTS
-                )
-            ) {
-                requestCallback.launch(Manifest.permission.READ_CONTACTS)
-            } else {
-                activity?.let {
-                    val builder = MaterialAlertDialogBuilder(it)
-                    builder.setTitle(R.string.permissions_title)
-                    builder.setCancelable(false)
-                    builder.setMessage(R.string.permissions_some_permissions_denied)
-                    builder.setPositiveButton(
-                        R.string.permissions_go_to_settings
-                    ) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                        // Go to app settings
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", it.packageName, null)
-                        )
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        it.startActivity(intent)
-                        it.finish()
-                    }
-                    builder.setNegativeButton(R.string.permissions_no) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                    }
-                    val alert: AlertDialog = builder.create()
-                    alert.show()
-                }
-            }
-        } else {
-            ContactPickerPermissionFragmentDirections.toContactPicker(
-                indexTaskUuid = args.indexTaskUuid
-            )
         }
     }
 }

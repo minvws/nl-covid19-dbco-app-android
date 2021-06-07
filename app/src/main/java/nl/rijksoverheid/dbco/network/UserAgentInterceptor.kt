@@ -4,6 +4,7 @@
  *
  *  SPDX-License-Identifier: EUPL-1.2
  */
+
 package nl.rijksoverheid.dbco.network
 
 import android.content.Context
@@ -18,7 +19,8 @@ import okhttp3.Response
  */
 class UserAgentInterceptor(val context: Context) : Interceptor {
 
-    private val userAgent: String = "${context.getString(R.string.app_name)}/${nl.rijksoverheid.dbco.BuildConfig.VERSION_CODE} (${Build.MANUFACTURER} ${Build.MODEL}) Android (${Build.VERSION.SDK_INT})"
+    private val userAgent: String =
+        "${context.getString(R.string.app_name)}/${nl.rijksoverheid.dbco.BuildConfig.VERSION_CODE} (${Build.MANUFACTURER} ${Build.MODEL}) Android (${Build.VERSION.SDK_INT})"
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestWithUserAgent = chain.request().newBuilder()
@@ -31,5 +33,4 @@ class UserAgentInterceptor(val context: Context) : Interceptor {
     companion object {
         private const val USER_AGENT = "User-Agent"
     }
-
 }

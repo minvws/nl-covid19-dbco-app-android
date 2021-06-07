@@ -1,3 +1,4 @@
+plugins { id "com.starter.easylauncher" version "4.0.0" }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
@@ -35,12 +36,14 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GIT_VERSION", "\"${getGitHash()}\""
         }
 
         debug {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GIT_VERSION", "\"dev\""
@@ -62,6 +65,7 @@ android {
         localDev {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
             buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
@@ -74,6 +78,7 @@ android {
         dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
@@ -87,6 +92,7 @@ android {
         dbcoAcc {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
@@ -97,10 +103,10 @@ android {
             signingConfig signingConfigs.firebase
         }
 
-
         dbcoProd {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "true"
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
@@ -110,7 +116,6 @@ android {
         }
     }
 
-
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -119,6 +124,18 @@ android {
     lintOptions {
         disable "UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning", "NullSafeMutableLiveData"
         // disable check in 3-rd party libs
+    }
+}
+
+easylauncher {
+    productFlavors {
+        localDev { filters chromeLike(label: "DEV") }
+        dbcoTest { filters chromeLike(label: "TEST") }
+        dbcoAcc { filters chromeLike(label: "ACC") }
+        dbcoProd { filters chromeLike(label: "PROD") }
+    }
+    variants {
+        dbcoProdRelease { enable false }
     }
 }
 
@@ -159,6 +176,7 @@ dependencies {
     //3rd-party dependency versions
     implementation "com.xwray:groupie:$groupie_version"
     implementation "com.xwray:groupie-viewbinding:$groupie_version"
+    implementation "com.github.qiujayen:sticky-layoutmanager:$sticky_header_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"

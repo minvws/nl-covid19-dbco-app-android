@@ -21,17 +21,21 @@ import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemInputWithOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.ui.BottomSheetDialogPicker
+import nl.rijksoverheid.dbco.items.ui.BottomSheetDialogPicker
 import nl.rijksoverheid.dbco.util.setCompleted
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
 import nl.rijksoverheid.dbco.items.input.InputQuestionMultipleOptionsItem.ViewState.MULTIPLE_OPTIONS
 import nl.rijksoverheid.dbco.items.input.InputQuestionMultipleOptionsItem.ViewState.SINGLE_EDIT
+import nl.rijksoverheid.dbco.util.setError
 import nl.rijksoverheid.dbco.util.showKeyboard
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Warning
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Error
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Valid
 
 abstract class InputQuestionMultipleOptionsItem(
     question: Question?,
     private var items: Set<String>,
-    private val validator: InputQuestionMultipleOptionsItemValidator,
+    private val validator: InputItemValidator,
     private val changeListener: (Set<String>) -> Unit,
     private val key: String,
     private val type: Int,
@@ -75,6 +79,8 @@ abstract class InputQuestionMultipleOptionsItem(
             editText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     checkCompleted(viewBinding)
+                } else {
+                    layout.error = null
                 }
             }
             editText.enableInput()
@@ -103,11 +109,25 @@ abstract class InputQuestionMultipleOptionsItem(
 
     private fun checkCompleted(viewBinding: ItemInputWithOptionsBinding) {
         val input = viewBinding.requireEditText().text.toString()
-        val (isValid, errorMessage) = validator.validate(input)
-        viewBinding.inputField.error = errorMessage?.let {
-            viewBinding.requireContext().getString(it)
+        val result = validator.validate(input)
+        when (result) {
+            is Error -> {
+                viewBinding.inputField.setError(R.drawable.ic_error_24, result.errorRes, R.color.red)
+            }
+            is Warning -> {
+                viewBinding.inputField.setError(
+                    R.drawable.ic_warning_24,
+                    result.warningRes,
+                    R.color.purple
+                )
+            }
+            else -> {
+                viewBinding.inputField.error = null
+            }
         }
-        viewBinding.inputField.setCompleted(isValid)
+        viewBinding.inputField.setCompleted(
+            result is Valid && result.isComplete
+        )
     }
 
     private fun ItemInputWithOptionsBinding.requireEditText(): EditText = this.inputField.editText!!

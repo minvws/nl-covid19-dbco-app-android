@@ -5,13 +5,13 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemStringHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-
 
 class StringHeaderItem(private val text: String) : BaseBindableItem<ItemStringHeaderBinding>() {
     override fun getLayout() = R.layout.item_string_header

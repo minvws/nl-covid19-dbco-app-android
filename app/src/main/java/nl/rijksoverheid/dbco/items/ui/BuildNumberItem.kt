@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import android.text.method.LinkMovementMethod
@@ -15,11 +16,11 @@ import nl.rijksoverheid.dbco.databinding.ItemBuildNumberBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 
-
 class BuildNumberItem(
-        private val text: String?,
-        private val clickable: Boolean = false
+    private val text: String?,
+    private val clickable: Boolean = false
 ) : BaseBindableItem<ItemBuildNumberBinding>() {
+
     override fun getLayout() = R.layout.item_build_number
 
     override fun bind(viewBinding: ItemBuildNumberBinding, position: Int) {
@@ -35,6 +36,8 @@ class BuildNumberItem(
     }
 
     override fun isClickable() = clickable
+
     override fun isSameAs(other: Item<*>): Boolean = other is BuildNumberItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is BuildNumberItem && other.text == text
 }

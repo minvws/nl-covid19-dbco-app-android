@@ -17,6 +17,7 @@ enum class ReversePairingState {
 
     @SerialName("pending")
     PENDING,
+
     @SerialName("completed")
     COMPLETED,
 }

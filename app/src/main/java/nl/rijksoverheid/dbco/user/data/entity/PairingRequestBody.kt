@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 data class PairingRequestBody(
     val pairingCode: String,
     val sealedClientPublicKey: String,
-    val generalHealthAuthorityPublicKeyVersion : String
+    val generalHealthAuthorityPublicKeyVersion: String
 )

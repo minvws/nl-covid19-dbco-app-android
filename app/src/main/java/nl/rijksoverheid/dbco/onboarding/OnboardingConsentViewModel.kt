@@ -8,28 +8,29 @@
 
 package nl.rijksoverheid.dbco.onboarding
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
 
+/**
+ * ViewModel used in the consent.
+ * Also determines that the next step in the flow is when moving to the next screen
+ */
 class OnboardingConsentViewModel(
     private val tasksRepository: ICaseRepository,
     private val userRepository: IUserRepository,
-    context: Context
+    private val storage: SharedPreferences,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
-
-    private val storage: SharedPreferences by lazy {
-        LocalStorageRepository.getInstance(context).getSharedPreferences()
-    }
 
     val isPaired: Boolean
         get() {
@@ -44,7 +45,7 @@ class OnboardingConsentViewModel(
 
     fun onNextClicked() {
         storage.edit().putBoolean(USER_GAVE_CONSENT, true).apply()
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             val case = tasksRepository.getCase()
             if (case.tasks.isEmpty() && isPaired && case.symptomsKnown) {
                 navigationChannel.send(Navigation.AddContacts)

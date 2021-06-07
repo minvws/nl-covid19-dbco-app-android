@@ -207,6 +207,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         flowType: Int
     ): TimelineSection {
         return TimelineSection(
+            context = requireActivity().applicationContext,
             date = date,
             contactNames = contactNames.toTypedArray(),
             startDate = startDate,
@@ -267,7 +268,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val dates = ArrayList<String>()
         sections.forEach {
             if (it.getContactItems().isEmpty()) {
-                dates.add(it.date.toString(DateFormats.selfBcoDateCheck))
+                dates.add(it.date.toString(DateFormats.selfBcoDateCheck).capitalize())
                 filledInAll = false
             }
         }
@@ -285,11 +286,11 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         builder.setMessage(
             String.format(
                 getString(R.string.selfbco_timeline_error_message),
-                dates.asReversed().joinToString()
+                dates.asReversed().joinToString(separator = "\n")
             )
         )
         builder.setPositiveButton(
-            getString(R.string.str_continue)
+            getString(R.string.selfbco_timeline_continue)
         ) { dialogInterface, _ ->
             dialogInterface.dismiss()
             handleInput()

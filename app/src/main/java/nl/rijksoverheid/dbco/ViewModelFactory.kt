@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import nl.rijksoverheid.dbco.config.AppUpdateManager
@@ -31,7 +32,8 @@ class ViewModelFactory(
     private val contactsRepository: ContactsRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
     private val userRepository: IUserRepository,
-    private val appConfigRepository: AppConfigRepository
+    private val appConfigRepository: AppConfigRepository,
+    private val encryptedSharedPreferences: SharedPreferences,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -51,7 +53,7 @@ class ViewModelFactory(
             ) as T
             PairingViewModel::class.java -> PairingViewModel(userRepository, tasksRepository) as T
             SplashViewModel::class.java -> SplashViewModel(
-                context,
+                encryptedSharedPreferences,
                 userRepository,
                 tasksRepository,
                 appConfigRepository
@@ -63,7 +65,7 @@ class ViewModelFactory(
             OnboardingConsentViewModel::class.java -> OnboardingConsentViewModel(
                 tasksRepository,
                 userRepository,
-                context
+                encryptedSharedPreferences
             ) as T
             SelfBcoCaseViewModel::class.java -> SelfBcoCaseViewModel(
                 tasksRepository,

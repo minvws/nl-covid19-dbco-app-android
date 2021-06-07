@@ -9,19 +9,23 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.text.InputType
-import android.util.Patterns
+import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Warning
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Error
+import nl.rijksoverheid.dbco.items.input.InputValidationResult.Valid
 
 class EmailAddressItem(
     emailAddresses: Set<String>,
     question: Question?,
     isEnabled: Boolean,
+    canShowEmptyWarning: Boolean = false,
     changeListener: (Set<String>) -> Unit
 ) : InputQuestionMultipleOptionsItem(
     question = question,
     items = emailAddresses,
-    validator = EmailAddressValidator(),
+    validator = EmailAddressValidator(canShowEmptyWarning),
     changeListener = changeListener,
     key = ANSWER_KEY,
     type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
@@ -30,14 +34,24 @@ class EmailAddressItem(
     isEnabled = isEnabled
 ) {
 
-    internal class EmailAddressValidator : InputQuestionMultipleOptionsItemValidator {
+    internal class EmailAddressValidator(
+        private val canShowEmptyWarning: Boolean
+    ) : InputItemValidator {
 
-        override fun validate(input: String?): Pair<Boolean, Int?> {
+        override fun validate(input: String?): InputValidationResult {
             return if (input.isNullOrEmpty()) {
-                return Pair(false, null)
+                return if (canShowEmptyWarning) {
+                    Warning(warningRes = R.string.warning_necessary)
+                } else {
+                    Valid(isComplete = false)
+                }
             } else {
-                val matches = Patterns.EMAIL_ADDRESS.matcher(input).matches()
-                if (matches) Pair(true, null) else Pair(false, R.string.error_valid_email)
+                val matches = Constants.EMAIL_VALIDATION_MATCHER.matcher(input).matches()
+                if (matches) {
+                    Valid(isComplete = true)
+                } else {
+                    Error(errorRes = R.string.error_valid_email)
+                }
             }
         }
     }

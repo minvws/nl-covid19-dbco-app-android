@@ -14,7 +14,7 @@ import androidx.databinding.ViewDataBinding
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 
-abstract class BaseBindableItem<T : ViewDataBinding>() : BindableItem<T>() {
+abstract class BaseBindableItem<T : ViewDataBinding> : BindableItem<T>() {
 
     override fun initializeViewBinding(view: View): T = DataBindingUtil.bind<T>(view)!!
 
@@ -24,7 +24,6 @@ abstract class BaseBindableItem<T : ViewDataBinding>() : BindableItem<T>() {
     }
 
     override fun isClickable() = false
+
     override fun isLongClickable() = false
-
 }
-

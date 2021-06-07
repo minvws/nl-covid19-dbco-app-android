@@ -19,8 +19,14 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.config.FeatureFlags
 import org.joda.time.LocalDate
 
+/**
+ * ViewModel responsible for handling changes in [Task] details
+ * exposes a number of [LiveData] objects which describe some attributes from
+ * the currently selected [Task], like what risk category the [Task] falls into.
+ */
 class TasksDetailViewModel(
     private val tasksRepository: ICaseRepository,
     questionnaireRepository: IQuestionnaireRepository
@@ -62,6 +68,18 @@ class TasksDetailViewModel(
         updateRiskFlagsFromCategory(task)
     }
 
+    fun commByIndex(): Boolean = communicationType.value != CommunicationType.Staff
+
+    private fun canCallTask(): Boolean = task.linkedContact?.hasSingleValidPhoneNumber() ?: false
+
+    fun callingEnabled(featureFlags: FeatureFlags): Boolean {
+        return canCallTask() && featureFlags.enableContactCalling
+    }
+
+    fun copyEnabled(featureFlags: FeatureFlags): Boolean {
+        return featureFlags.enablePerspectiveCopy
+    }
+
     fun getQuestionnaireAnswers(): List<Answer> = _task.questionnaireResult?.answers ?: emptyList()
 
     fun hasUpdatedExposureDate(): Boolean = _task.dateOfLastExposure != dateOfLastExposure.value
@@ -78,6 +96,18 @@ class TasksDetailViewModel(
             shouldMerge = { current -> current.uuid == task.uuid },
             shouldUpdate = { current -> task != current }
         )
+    }
+
+    fun isDeletionPossible(changesEnabled: Boolean): Boolean {
+        val hasInformation = (task.hasCategoryOrExposure() || task.isSaved())
+        return changesEnabled && task.isLocal() && hasInformation
+    }
+
+    fun onCancelled(changesEnabled: Boolean) {
+        val hasNoInformation = !task.isSaved() && !task.hasCategoryOrExposure()
+        if (changesEnabled && task.isLocal() && hasNoInformation) {
+            deleteCurrentTask()
+        }
     }
 
     fun deleteCurrentTask() = task.uuid?.let { uuid -> tasksRepository.deleteTask(uuid) }

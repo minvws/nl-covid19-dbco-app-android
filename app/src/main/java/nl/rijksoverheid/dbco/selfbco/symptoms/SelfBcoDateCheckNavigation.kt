@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.selfbco.symptoms
 
 import java.io.Serializable
 
-sealed class SelfBcoDateCheckNavigation: Serializable {
+sealed class SelfBcoDateCheckNavigation : Serializable {
 
     object PermissionCheck : SelfBcoDateCheckNavigation()
     object SymptomDateDoubleCheck : SelfBcoDateCheckNavigation()

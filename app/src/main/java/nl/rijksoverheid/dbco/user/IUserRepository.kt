@@ -16,13 +16,19 @@ import retrofit2.Response
 interface IUserRepository {
 
     suspend fun pair(pincode: String)
-    suspend fun retrieveReversePairingCode() : Response<ReversePairingResponse>
-    suspend fun checkReversePairingStatus(token : String) : Response<ReversePairingStatusResponse>
+
+    suspend fun retrieveReversePairingCode(): Response<ReversePairingResponse>
+
+    suspend fun checkReversePairingStatus(token: String): Response<ReversePairingStatusResponse>
+
     fun getRx(): String?
+
     fun getTx(): String?
+
     fun getToken(): String?
 
     companion object {
+
         const val BASE64_FLAGS = Base64.NO_WRAP
 
         const val KEY_TX = "KEY_TX"

@@ -11,24 +11,34 @@ package nl.rijksoverheid.dbco.contacts
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
+/**
+ * ViewModel which exposes local contacts to attach to a [Task] in the current [Case]
+ */
 class ContactsViewModel(
     private val repository: ContactsRepository,
-    private val caseRepository: ICaseRepository
+    private val caseRepository: ICaseRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _localContactsLiveData = SingleLiveEvent<ArrayList<LocalContact>>()
+
+    /**
+     * Exposes a list of contacts in the users phone book
+     */
     val localContactsLiveDataItem: LiveData<ArrayList<LocalContact>> = _localContactsLiveData
 
     private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList()
 
     fun fetchLocalContacts() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             val contacts = repository.fetchDeviceContacts()
             fullLocalContactItems.clear()
             fullLocalContactItems.addAll(contacts)
@@ -50,7 +60,6 @@ class ContactsViewModel(
         } as ArrayList<LocalContact>
     }
 
-
     fun getLocalContactNames(): ArrayList<String> {
         return fullLocalContactItems.map {
             it.getDisplayName()
@@ -67,5 +76,12 @@ class ContactsViewModel(
             shouldMerge = { current -> current.uuid == task.uuid },
             shouldUpdate = { current -> task != current }
         )
+    }
+
+    fun onNoContactPicked(indexTaskUuid: String) {
+        val task = caseRepository.getTask(indexTaskUuid)
+        if (!task.hasCategoryOrExposure()) {
+            caseRepository.deleteTask(uuid = indexTaskUuid)
+        }
     }
 }

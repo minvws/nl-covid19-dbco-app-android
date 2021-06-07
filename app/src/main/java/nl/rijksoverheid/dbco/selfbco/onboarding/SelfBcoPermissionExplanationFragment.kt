@@ -32,7 +32,10 @@ class SelfBcoPermissionExplanationFragment :
         val content = Section(
             listOf(
                 HeaderItem(getString(R.string.selfbco_permission_explanation_header)),
-                ParagraphItem(getString(R.string.selfbco_permission_extra_summary), clickable = true),
+                ParagraphItem(
+                    getString(R.string.selfbco_permission_extra_summary),
+                    clickable = true
+                ),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item1)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item2)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item3))

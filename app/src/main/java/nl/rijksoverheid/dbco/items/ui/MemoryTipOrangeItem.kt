@@ -12,13 +12,18 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemMemorytipTimelineOrangeBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
-
 /**
  * Simple class showing a static memory tip
  */
-class MemoryTipOrangeItem() : BaseBindableItem<ItemMemorytipTimelineOrangeBinding>() {
-    override fun bind(viewBinding: ItemMemorytipTimelineOrangeBinding, position: Int) {}
+class MemoryTipOrangeItem: BaseBindableItem<ItemMemorytipTimelineOrangeBinding>() {
+
+    override fun bind(viewBinding: ItemMemorytipTimelineOrangeBinding, position: Int) {
+        /* NO OP */
+    }
+
     override fun getLayout(): Int = R.layout.item_memorytip_timeline_orange
+
     override fun isClickable(): Boolean = true
+
     override fun isLongClickable() = true
 }

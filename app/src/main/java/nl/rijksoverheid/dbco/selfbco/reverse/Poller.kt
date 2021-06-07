@@ -11,7 +11,21 @@ package nl.rijksoverheid.dbco.selfbco.reverse
 import kotlinx.coroutines.flow.Flow
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus
 
+/**
+ * Poller used in the reverse pairing flow
+ */
 interface Poller {
+
+    /**
+     * Start polling for reverse pairing status
+     * @param delay polling interval in ms
+     * @param credentials given credentials to fetch polling status
+     * @return the status
+     */
     fun poll(delay: Long, credentials: ReversePairingCredentials): Flow<ReversePairingStatus>
+
+    /**
+     * Stop polling
+     */
     fun close()
 }

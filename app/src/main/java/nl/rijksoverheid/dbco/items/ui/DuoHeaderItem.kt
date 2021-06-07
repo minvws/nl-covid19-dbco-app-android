@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import com.xwray.groupie.Item
@@ -12,9 +13,11 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemDuoHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
+class DuoHeaderItem(
+    private val header: String,
+    private val subtitle: String
+) : BaseBindableItem<ItemDuoHeaderBinding>() {
 
-class DuoHeaderItem(private val header: String, private val subtitle: String) :
-    BaseBindableItem<ItemDuoHeaderBinding>() {
     override fun getLayout() = R.layout.item_duo_header
 
     override fun bind(viewBinding: ItemDuoHeaderBinding, position: Int) {

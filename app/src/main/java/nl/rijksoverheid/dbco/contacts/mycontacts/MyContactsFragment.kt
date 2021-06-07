@@ -26,7 +26,6 @@ import nl.rijksoverheid.dbco.*
 import nl.rijksoverheid.dbco.Constants.USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.bcocase.data.entity.Case
-import nl.rijksoverheid.dbco.contacts.picker.ContactPickerPermissionFragmentDirections
 import nl.rijksoverheid.dbco.databinding.FragmentMyContactsBinding
 import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
@@ -44,10 +43,6 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.Case
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.CaseResult.CaseError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireResult.QuestionnaireError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.ViewData
-
-/**
- * Overview fragment showing selected or suggested contacts of the user
- */
 
 class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
@@ -122,7 +117,10 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
         adapter.setOnItemClickListener { item, _ ->
             if (item is TaskItem) {
-                checkPermissionGoToTaskDetails(item.task)
+                checkPermissionGoToTaskDetails(
+                    task = item.task,
+                    newTask = false
+                )
             }
             if (item is MemoryTipMyContactsItem) {
                 findNavController().navigate(
@@ -318,7 +316,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (topSection.groupCount == 1) {
             contentSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         } else {
@@ -354,7 +353,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (notUploadedSection.groupCount > 1) {
             notUploadedSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         }
@@ -387,7 +387,8 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         if (inProgressSection.groupCount > 1) {
             inProgressSection.add(ButtonItem(getString(R.string.add_contact), {
                 checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact()
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
                 )
             }, type = ButtonType.BORDERLESS))
         }
@@ -400,20 +401,17 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         binding.swipeRefresh.isRefreshing = true
     }
 
-    private fun checkPermissionGoToTaskDetails(task: Task) {
+    private fun checkPermissionGoToTaskDetails(
+        task: Task,
+        newTask: Boolean
+    ) {
         if (tasksViewModel.getCachedQuestionnaire() == null) {
             showErrorDialog(getString(R.string.error_questionnaire_is_empty), { /* NO-OP */ })
             return
         }
 
         if (tasksViewModel.isCurrentCaseExpired()) {
-            // no need to check permissions, just show the task but disabled
-            findNavController().navigate(
-                ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTaskUuid = task.uuid!!,
-                    enabled = false
-                )
-            )
+            showTask(task = task, newTask = newTask, enabled = false)
             return
         }
 
@@ -422,41 +420,44 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (userPrefs.getBoolean(
-                    USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY,
-                    false
-                )
-            ) {
-                findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactDetails(
-                        indexTaskUuid = task.uuid!!,
-                        enabled = true
-                    )
-                )
+            if (userPrefs.getBoolean(USER_CHOSE_ADD_CONTACTS_MANUALLY_AFTER_PAIRING_KEY, false)) {
+                showTask(task = task, newTask = newTask, enabled = true)
             } else {
-                // If not granted permission - send users to permission grant screen (if he didn't see it before)
-                findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerPermission(
-                        indexTaskUuid = task.uuid!!
-                    )
-                )
+                showContactPermission(task = task)
             }
         } else {
             if (task.linkedContact != null) {
-                findNavController().navigate(
-                    MyContactsFragmentDirections.toContactDetails(
-                        indexTaskUuid = task.uuid!!,
-                        enabled = true
-                    )
-                )
+                showTask(task = task, newTask = newTask, enabled = true)
             } else {
-                findNavController().navigate(
-                    MyContactsFragmentDirections.toContactPickerSelection(
-                        indexTaskUuid = task.uuid!!
-                    )
-                )
+                showContactPicker(task = task)
             }
         }
+    }
+
+    private fun showContactPicker(task: Task) {
+        findNavController().navigate(
+            MyContactsFragmentDirections.toContactPickerSelection(
+                indexTaskUuid = task.uuid!!
+            )
+        )
+    }
+
+    private fun showContactPermission(task: Task) {
+        findNavController().navigate(
+            MyContactsFragmentDirections.toContactPickerPermission(
+                indexTaskUuid = task.uuid!!
+            )
+        )
+    }
+
+    private fun showTask(task: Task, newTask: Boolean, enabled: Boolean) {
+        findNavController().navigate(
+            MyContactsFragmentDirections.toContactDetails(
+                indexTaskUuid = task.uuid!!,
+                enabled = enabled,
+                newTask = newTask
+            )
+        )
     }
 
     private fun isUserPaired(): Boolean {

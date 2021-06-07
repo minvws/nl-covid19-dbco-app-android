@@ -16,8 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginHorizontal="16dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -33,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:nextFocusDown="@+id/last_name_edit"
+            app:errorEnabled="true"
             app:layout_constraintBottom_toBottomOf="@+id/last_name"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent">

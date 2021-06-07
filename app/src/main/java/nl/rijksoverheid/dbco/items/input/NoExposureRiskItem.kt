@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.input
 
 import com.xwray.groupie.Item

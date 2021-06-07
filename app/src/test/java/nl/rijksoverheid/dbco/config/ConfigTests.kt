@@ -1,3 +1,11 @@
+/*
+ *  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *   SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 package nl.rijksoverheid.dbco.config
 
 import org.junit.Assert
@@ -68,17 +76,45 @@ class ConfigTests {
     private fun createConfig(supportedZipCodeRanges: List<ZipCodeRange>): AppConfig {
         return AppConfig(
             androidMinimumVersionMessage = "test",
-            iosMinimumVersion = "1",
-            iosMinimumVersionMessage = "test",
             androidMinimumVersion = 1,
-            iosAppStoreURL = "test",
             featureFlags = FeatureFlags(
                 enableContactCalling = true,
                 enablePerspectiveCopy = true,
                 enableSelfBCO = true,
             ),
             symptoms = listOf(),
-            supportedZipCodeRanges = supportedZipCodeRanges
+            supportedZipCodeRanges = supportedZipCodeRanges,
+            guidelines = GuidelinesContainer(
+                introExposureDateKnown = Guidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                introExposureDateUnknown = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                guidelinesExposureDateKnown = RangedGuidelines(
+                    category1 = "test",
+                    category2 = RangedGuideline(
+                        withinRange = "test",
+                        outsideRange = "test"
+                    ),
+                    category3 = "test"
+                ),
+                guidelinesExposureDateUnknown = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                ),
+                referenceNumberItem = "test",
+                outro = GenericGuidelines(
+                    category1 = "test",
+                    category2 = "test",
+                    category3 = "test"
+                )
+            )
         )
     }
 }

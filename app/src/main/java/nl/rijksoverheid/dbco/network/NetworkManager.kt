@@ -45,7 +45,10 @@ internal fun createOkHttpClient(context: Context): OkHttpClient {
                 )
                 certificatePinner(
                     CertificatePinner.Builder()
-                        .add(Uri.parse(BuildConfig.BASE_API_URL).host!!, Obfuscator.deObfuscate(BuildConfig.OBFUSCATED_SSL_PIN))
+                        .add(
+                            Uri.parse(BuildConfig.BASE_API_URL).host!!,
+                            Obfuscator.deObfuscate(BuildConfig.OBFUSCATED_SSL_PIN)
+                        )
                         .build()
                 )
             }

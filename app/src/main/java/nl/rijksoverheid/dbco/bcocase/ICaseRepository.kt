@@ -15,6 +15,9 @@ import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 
+/**
+ * Repository for all [Case] related data, this includes [Task]s contained in the specific [Case]
+ */
 interface ICaseRepository {
 
     /**

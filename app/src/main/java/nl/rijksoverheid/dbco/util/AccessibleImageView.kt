@@ -14,11 +14,15 @@ import android.util.AttributeSet
 /**
  * Limits the height of the ImageView to 50% of the screen height in landscape orientation.
  */
-class AccessibleImageView: androidx.appcompat.widget.AppCompatImageView {
+class AccessibleImageView : androidx.appcompat.widget.AppCompatImageView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var maxHeightMeasureSpec = heightMeasureSpec
@@ -34,9 +38,12 @@ class AccessibleImageView: androidx.appcompat.widget.AppCompatImageView {
             val hMode = MeasureSpec.getMode(heightMeasureSpec)
 
             when (hMode) {
-                MeasureSpec.AT_MOST -> maxHeightMeasureSpec = MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.AT_MOST)
-                MeasureSpec.UNSPECIFIED -> maxHeightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST)
-                MeasureSpec.EXACTLY -> maxHeightMeasureSpec = MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.EXACTLY)
+                MeasureSpec.AT_MOST -> maxHeightMeasureSpec =
+                    MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.AT_MOST)
+                MeasureSpec.UNSPECIFIED -> maxHeightMeasureSpec =
+                    MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST)
+                MeasureSpec.EXACTLY -> maxHeightMeasureSpec =
+                    MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.EXACTLY)
             }
         }
 

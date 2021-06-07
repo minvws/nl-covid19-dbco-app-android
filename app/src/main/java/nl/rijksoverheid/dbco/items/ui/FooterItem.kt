@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import android.text.method.LinkMovementMethod
@@ -14,8 +15,6 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemFooterBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
-import timber.log.Timber
-
 
 class FooterItem(
         private val text: String?,
@@ -28,7 +27,6 @@ class FooterItem(
         viewBinding.content.linksClickable = true
         viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
 
-        Timber.d("Got value $text")
         text?.let {
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)

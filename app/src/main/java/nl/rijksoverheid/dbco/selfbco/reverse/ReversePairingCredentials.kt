@@ -10,4 +10,4 @@ package nl.rijksoverheid.dbco.selfbco.reverse
 
 import java.io.Serializable
 
-data class ReversePairingCredentials(val token: String, val code: String): Serializable
+data class ReversePairingCredentials(val token: String, val code: String) : Serializable

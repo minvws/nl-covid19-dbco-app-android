@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.DataDeletion
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation
 
 class SplashFragment : BaseFragment(R.layout.fragment_splash) {
@@ -45,6 +46,7 @@ class SplashFragment : BaseFragment(R.layout.fragment_splash) {
                 canGoBack = false
             )
             is Start -> SplashFragmentDirections.toOnboardingStartFragment()
+            is DataDeletion -> SplashFragmentDirections.toDataDeletedFragment()
         }
         findNavController().navigate(direction)
     }

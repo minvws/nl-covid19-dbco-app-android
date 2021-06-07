@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
@@ -24,7 +25,8 @@ class QuestionTwoOptionsItem(
     answerSelectedListener: (AnswerOption) -> Unit,
     previousAnswerValue: String? = null,
     private val isLocked: Boolean = false,
-    private val isEnabled: Boolean
+    private val isEnabled: Boolean,
+    private val canShowEmptyWarning: Boolean = false,
 ) : BaseOptionsQuestionItem<ItemQuestion2OptionsBinding>(
     context,
     question,
@@ -38,13 +40,13 @@ class QuestionTwoOptionsItem(
     override fun bind(viewBinding: ItemQuestion2OptionsBinding, position: Int) {
         viewBinding.item = this
         answerGroup = viewBinding.answerGroup
-
         viewBinding.option1.setOnCheckedChangeListener(null)
         viewBinding.option2.setOnCheckedChangeListener(null)
 
         // if there is no previous answer - reset clear selection
         if (selectedAnswer == null) {
             viewBinding.answerGroup.clearCheck()
+            viewBinding.questionWarning.isVisible = canShowEmptyWarning
         }
 
         question?.answerOptions?.indexOf(selectedAnswer)?.let { index ->
@@ -54,21 +56,12 @@ class QuestionTwoOptionsItem(
             }
         }
 
-        val onCheckedChangeListener =
-            CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
-                if (isChecked) {
-                    val answerOption = when (compoundButton.id) {
-                        R.id.option1 -> question?.answerOptions?.get(0)
-                        else -> question?.answerOptions?.get(1)
-                    }
-                    answerOption?.let {
-                        selectedAnswer = it
-                        answerSelectedListener.invoke(it)
-                    }
-                }
-            }
-        viewBinding.option1.setOnCheckedChangeListener(onCheckedChangeListener)
-        viewBinding.option2.setOnCheckedChangeListener(onCheckedChangeListener)
+        CompoundButton.OnCheckedChangeListener { button, isChecked ->
+            onCheckedChanged(isChecked, button, viewBinding)
+        }.apply {
+            viewBinding.option1.setOnCheckedChangeListener(this)
+            viewBinding.option2.setOnCheckedChangeListener(this)
+        }
 
         question?.description?.let {
             val context = viewBinding.root.context
@@ -77,15 +70,17 @@ class QuestionTwoOptionsItem(
         }
 
         // If the input it locked due to the combination of task source and risk, disable the buttons but show the selection based on GGD input
+        checkLocked(viewBinding)
+    }
+
+    private fun checkLocked(viewBinding: ItemQuestion2OptionsBinding) {
         if (isLocked) {
             viewBinding.answerGroup.isEnabled = false
             viewBinding.option1.isEnabled = false
             viewBinding.option2.isEnabled = false
             viewBinding.option1.setOnCheckedChangeListener(null)
             viewBinding.option2.setOnCheckedChangeListener(null)
-
             viewBinding.questionLockedDescription.isVisible = true
-
             if (viewBinding.option1.isChecked) {
                 viewBinding.option2.isVisible = false
                 viewBinding.option1.isVisible = true
@@ -93,7 +88,6 @@ class QuestionTwoOptionsItem(
                 viewBinding.option1.isVisible = false
                 viewBinding.option2.isVisible = true
             }
-
         } else {
             viewBinding.answerGroup.isEnabled = isEnabled
             viewBinding.option1.isEnabled = isEnabled
@@ -101,6 +95,24 @@ class QuestionTwoOptionsItem(
             viewBinding.option1.isVisible = true
             viewBinding.option2.isVisible = true
             viewBinding.questionLockedDescription.isVisible = false
+        }
+    }
+
+    private fun onCheckedChanged(
+        checked: Boolean,
+        button: CompoundButton,
+        viewBinding: ItemQuestion2OptionsBinding
+    ) {
+        if (checked) {
+            val answerOption = when (button.id) {
+                R.id.option1 -> question?.answerOptions?.get(0)
+                else -> question?.answerOptions?.get(1)
+            }
+            answerOption?.let {
+                selectedAnswer = it
+                answerSelectedListener.invoke(it)
+                viewBinding.questionWarning.isVisible = false
+            }
         }
     }
 

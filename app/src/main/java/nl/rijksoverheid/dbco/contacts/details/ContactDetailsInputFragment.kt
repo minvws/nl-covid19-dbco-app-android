@@ -12,14 +12,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
+import com.jay.widget.StickyHeadersLinearLayoutManager
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -30,7 +31,6 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.details.TaskDetailItemsStorage.Companion.ANSWER_EARLIER
 import nl.rijksoverheid.dbco.databinding.FragmentContactInputBinding
-import nl.rijksoverheid.dbco.items.QuestionnaireSectionDecorator
 import nl.rijksoverheid.dbco.items.input.BaseQuestionItem
 import nl.rijksoverheid.dbco.items.ui.QuestionnaireSection
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Answer
@@ -46,6 +46,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
 
@@ -57,7 +58,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private val args: ContactDetailsInputFragmentArgs by navArgs()
 
-    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val adapter = ContactDetailsAdapter()
 
     private lateinit var itemsStorage: TaskDetailItemsStorage
     private lateinit var binding: FragmentContactInputBinding
@@ -71,7 +72,10 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         }
         initToolbar()
         initContent()
-        initItemStorage(args.enabled)
+        initItemStorage(
+            enabled = args.enabled,
+            newTask = args.newTask
+        )
 
         viewModel.category.observe(viewLifecycleOwner, { cat -> onCategoryChanged(cat) })
         viewModel.communicationType.observe(viewLifecycleOwner, { onTypeChanged() })
@@ -86,7 +90,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun initToolbar() {
         binding.toolbar.backButton.setOnClickListener { checkUnsavedChanges() }
-        binding.delete.isVisible = viewModel.task.isLocalAndSaved() && args.enabled
+        binding.delete.isVisible = viewModel.isDeletionPossible(args.enabled)
         binding.delete.setOnClickListener { showDeleteItemDialog(noRisk = false) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             checkUnsavedChanges()
@@ -95,27 +99,34 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun initContent() {
         binding.content.adapter = adapter
-        binding.content.addItemDecoration(
-            QuestionnaireSectionDecorator(
-                requireContext(),
-                resources.getDimensionPixelOffset(R.dimen.activity_horizontal_margin)
-            )
+        binding.content.layoutManager = StickyHeadersLinearLayoutManager<ContactDetailsAdapter>(
+            requireContext()
         )
         var contactName = viewModel.task.linkedContact?.getDisplayName()
         if (contactName.isNullOrEmpty()) {
             contactName = getString(R.string.mycontacts_add_contact)
         }
-        adapter.add(HeaderItem(contactName))
+        adapter.add(
+            HeaderItem(
+                text = contactName,
+                horizontalMargin = R.dimen.activity_horizontal_margin
+            )
+        )
         updateButton()
     }
 
-    private fun initItemStorage(enabled: Boolean) {
+    private fun initItemStorage(
+        enabled: Boolean,
+        newTask: Boolean
+    ) {
         itemsStorage = TaskDetailItemsStorage(
-            enabled,
-            viewModel,
-            requireContext(),
-            viewLifecycleOwner,
-            appViewModel.getFeatureFlags()
+            enabled = enabled,
+            newTask = newTask,
+            viewModel = viewModel,
+            context = requireContext(),
+            viewLifecycleOwner = viewLifecycleOwner,
+            featureFlags = appViewModel.getFeatureFlags(),
+            guidelines = appViewModel.getGuidelines()
         ).apply {
             if (viewModel.task.source != Source.Portal) {
                 adapter.add(classificationSection)
@@ -128,6 +139,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             adapter.add(informSection)
 
             classificationSection.removeAllChildren()
+            classificationSection.add(VerticalSpaceItem(R.dimen.activity_vertical_margin))
             classificationSection.add(dateOfLastExposureItem)
             val questions = viewModel.questionnaire?.questions?.filterNotNull() ?: emptyList()
             questions.forEach { question ->
@@ -180,11 +192,33 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             setOnClickListener {
                 when {
                     shouldCloseWithWarning || shouldCancelWithWarning -> showDeleteItemDialog(noRisk = true)
-                    shouldCancel || shouldClose -> findNavController().popBackStack()
+                    shouldCancel -> checkUnsavedChanges()
+                    shouldClose -> findNavController().popBackStack()
                     indexShouldInform() -> showDidYouInformDialog()
                     else -> saveContact()
                 }
             }
+        }
+        setButtonType(binding.saveButton)
+    }
+
+    private fun setButtonType(saveButton: MaterialButton) {
+        val featureFlags = appViewModel.getFeatureFlags()
+        val byGGD = !viewModel.commByIndex()
+        val callAndCopyDisabled = !viewModel.callingEnabled(featureFlags) &&
+                !viewModel.copyEnabled(featureFlags)
+        if (byGGD || callAndCopyDisabled) {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_primary
+            )
+            saveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
+        } else {
+            saveButton.backgroundTintList = ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.button_secondary
+            )
+            saveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
         }
     }
 
@@ -196,6 +230,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         // in their data rather than during a scroll.
         if (!binding.content.isComputingLayout) {
             itemsStorage.refreshInformSection()
+            updateButton()
         }
     }
 
@@ -255,12 +290,17 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
             builder.setNegativeButton(R.string.yes) { dialog, _ ->
                 dialog.dismiss()
-                findNavController().popBackStack()
+                cancel()
             }
             builder.create().show()
         } else {
             findNavController().popBackStack()
         }
+    }
+
+    private fun cancel() {
+        viewModel.onCancelled(args.enabled)
+        findNavController().popBackStack()
     }
 
     private fun hasMadeChanges(): Boolean {
@@ -288,6 +328,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             itemsStorage.informSection.isExpanded = true
             itemsStorage.classificationSection.isExpanded = false
             itemsStorage.contactDetailsSection.isExpanded = false
+            binding.content.smoothScrollToPosition(adapter.itemCount - 1)
         }
         builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
             dialog.dismiss()
@@ -425,9 +466,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         return viewModel.communicationType.value != Staff && !viewModel.task.didInform
     }
 
-    private fun Task.isLocalAndSaved() = source == Source.App && isSaved()
+    private fun Task.isLocalAndSaved() = isLocal() && isSaved()
 
-    private fun Task.isLocalAndNotSaved() = source == Source.App && !isSaved()
-
-    private fun Task.isSaved() = uuid != null
+    private fun Task.isLocalAndNotSaved() = isLocal() && !isSaved()
 }

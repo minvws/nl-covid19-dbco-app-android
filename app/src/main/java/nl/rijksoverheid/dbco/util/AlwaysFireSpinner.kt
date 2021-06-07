@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.util
 
 import android.content.Context
@@ -21,7 +22,11 @@ class AlwaysFireSpinner : AppCompatSpinner {
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle)
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context!!,
+        attrs,
+        defStyle
+    )
 
     override fun setSelection(position: Int, animate: Boolean) {
         val sameSelected = position == selectedItemPosition

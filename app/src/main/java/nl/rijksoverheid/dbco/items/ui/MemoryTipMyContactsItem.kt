@@ -15,7 +15,6 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 import org.joda.time.LocalDate
 
-
 /**
  * Simple class showing a static memory tip on My Contacts
  */
@@ -36,6 +35,8 @@ class MemoryTipMyContactsItem(val date: LocalDate) :
     }
 
     override fun getLayout(): Int = R.layout.item_memorytip_mycontacts_gray
+
     override fun isClickable(): Boolean = true
+
     override fun isLongClickable() = true
 }

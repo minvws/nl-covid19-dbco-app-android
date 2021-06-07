@@ -23,20 +23,20 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Start
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.MyTasks
 import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.Consent
+import nl.rijksoverheid.dbco.onboarding.SplashViewModel.Navigation.DataDeletion
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 
+/**
+ * ViewModel which, when starting the app, determines where in the flow the app should start
+ */
 class SplashViewModel(
-    context: Context,
+    private val storage: SharedPreferences,
     private val userRepository: IUserRepository,
     private val tasksRepository: ICaseRepository,
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
-
-    private val storage: SharedPreferences by lazy {
-        LocalStorageRepository.getInstance(context).getSharedPreferences()
-    }
 
     private val _navigation = SingleLiveEvent<Navigation>()
     val navigation: LiveData<Navigation> = _navigation
@@ -53,7 +53,7 @@ class SplashViewModel(
         if (lastEdited.isBefore(now.minusDays(TWO_WEEKS))) {
             wipeStorage()
             appConfigRepository.storeConfig(config)
-            _navigation.value = Start
+            _navigation.value = DataDeletion
         } else if (skipOnboarding) {
             _navigation.value = MyTasks
         } else if (isPaired && !gaveConsent) {
@@ -78,5 +78,6 @@ class SplashViewModel(
         object MyTasks : Navigation()
         object Consent : Navigation()
         object Start : Navigation()
+        object DataDeletion : Navigation()
     }
 }
