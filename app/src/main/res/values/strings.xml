@@ -73,10 +73,10 @@
     <!--    Onboarding privacy consent -->
     <string name="onboarding_privacy_title">Zo gaat GGD Contact om met je gegevens</string>
     <string name="onboarding_privacy_summary"><![CDATA[In de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
-    <string name="onboarding_privacy_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
-    <string name="onboarding_privacy_item2">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
-    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invult worden gedeeld</string>
-    <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
+    <string name="onboarding_privacy_item1">De gegevens die je invult worden alleen in de app opgeslagen</string>
+    <string name="onboarding_privacy_item2">De app heeft geen toegang tot andere gegevens op je telefoon</string>
+    <string name="onboarding_privacy_item3">Het gebruik van de app is vrijwillig</string>
+    <string name="onboarding_privacy_item4">Met een aantal GGD’en kun je veilig gegevens uit de app delen. Gegevens worden alleen gedeeld als jij laat weten dat je dat wilt</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -278,7 +278,7 @@
     <string name="selfbco_permission_extra_item1">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_extra_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
     <string name="selfbco_permission_extra_item3">Gegevens worden pas met de GGD gedeeld als jij op \`Deel gegevens met GGD\` klikt</string>
-    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Bijvoorbeeld een achternaam of een telefoonnummer.</string>
+    <string name="selfbco_permission_summary"><![CDATA[Geef toegang tot je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen.<br/><br/>Alleen de contactgegevens die jij kiest worden gebruikt in de app. Bijvoorbeeld een achternaam of een telefoonnummer.<br/><br/>Je verzamelt deze gegevens om ze aan de GGD door te geven tijdens het bron- en contactonderzoek. Zo kan de GGD deze mensen waarschuwen en persoonlijk advies geven.]]></string>
     <string name="selfbco_permission_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
     <string name="selfbco_permission_item2">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_item3"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
