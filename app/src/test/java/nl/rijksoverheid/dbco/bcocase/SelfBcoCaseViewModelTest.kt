@@ -48,36 +48,6 @@ class SelfBcoCaseViewModelTest {
     }
 
     @Test
-    fun `given a repository with supported zip code, when zipcode supported is checked, it should be true`() {
-        // given
-        val zipCode = 1000
-        val appConfigMockk = mockk<AppConfigRepository>()
-        val tasksMock = mockk<ICaseRepository>()
-        every { appConfigMockk.isSelfBcoSupportedForZipCode(zipCode = zipCode) } returns true
-
-        // when
-        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
-
-        // then
-        Assert.assertTrue(viewModel.isZipCodeSupported(zipCode))
-    }
-
-    @Test
-    fun `given a repository with unsupported zip code, when zipcode supported is checked, it should be false`() {
-        // given
-        val zipCode = 1000
-        val appConfigMockk = mockk<AppConfigRepository>()
-        val tasksMock = mockk<ICaseRepository>()
-        every { appConfigMockk.isSelfBcoSupportedForZipCode(zipCode = zipCode) } returns false
-
-        // when
-        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
-
-        // then
-        Assert.assertFalse(viewModel.isZipCodeSupported(zipCode))
-    }
-
-    @Test
     fun `given a list of selected symptoms, when these are saved, then they should be saved in the repository`() {
         // given
         val symptoms = listOf(Symptom("test", "test"))

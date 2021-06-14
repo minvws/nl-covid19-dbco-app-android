@@ -36,14 +36,6 @@ class SelfBcoCaseViewModel(
     fun getSymptoms(): List<Symptom> = appConfigRepository.getSymptoms()
 
     /**
-     * @return whether SelfBCO flow is supported for a given zip code
-     * @param zipCode the zip-code
-     */
-    fun isZipCodeSupported(zipCode: Int): Boolean {
-        return appConfigRepository.isSelfBcoSupportedForZipCode(zipCode)
-    }
-
-    /**
      * The index has moved to the next step in the flow and selected symptoms or
      * the lack thereof
      * @param symptoms list of selected symptoms, can be empty

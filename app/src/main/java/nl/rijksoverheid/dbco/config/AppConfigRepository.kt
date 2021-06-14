@@ -82,10 +82,6 @@ class AppConfigRepository(
 
     fun getGuidelines(): GuidelinesContainer = requireConfig().guidelines
 
-    fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
-        return requireConfig().isSelfBcoSupportedForZipCode(zipCode)
-    }
-
     private fun requireConfig(): AppConfig = getCachedConfig()!!
 
     private fun getCachedConfig(): AppConfig? {
