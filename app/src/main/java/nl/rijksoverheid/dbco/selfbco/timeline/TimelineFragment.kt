@@ -119,7 +119,9 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                 ParagraphItem(
                     getString(R.string.selfbco_timeline_summary), clickable = true
                 ),
-                LinkItem(getString(R.string.selfbco_timeline_summary_more), ::onMoreInfoClicked),
+                // TODO: revert back to changes prior to DBCO-1908
+                VerticalSpaceItem(R.dimen.list_spacing),
+                //LinkItem(getString(R.string.selfbco_timeline_summary_more), ::onMoreInfoClicked),
                 MemoryTipOrangeItem()
             )
         )
