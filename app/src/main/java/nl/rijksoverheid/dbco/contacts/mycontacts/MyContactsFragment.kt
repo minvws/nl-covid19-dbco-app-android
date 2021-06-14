@@ -196,13 +196,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         pairingCredentials: ReversePairingCredentials? = null,
         initReversePairingWithInvalidState: Boolean = false
     ) {
-        findNavController()
-            .navigate(
-                MyContactsFragmentDirections.toReversePairingFragment(
-                    credentials = pairingCredentials,
-                    initWithInvalidCodeState = initReversePairingWithInvalidState
-                )
+        val direction = if (pairingCredentials == null && !initReversePairingWithInvalidState) {
+            MyContactsFragmentDirections.toReversePairingExplanationFragment()
+        } else {
+            MyContactsFragmentDirections.toReversePairingFragment(
+                credentials = pairingCredentials,
+                initWithInvalidCodeState = initReversePairingWithInvalidState
             )
+        }
+        findNavController().navigate(direction)
     }
 
     private fun setUpPairingListeners() {

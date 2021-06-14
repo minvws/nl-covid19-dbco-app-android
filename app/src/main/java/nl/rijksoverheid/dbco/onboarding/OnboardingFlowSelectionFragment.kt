@@ -31,7 +31,7 @@ class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboardin
 
         binding.btnNoCode.setOnClickListener {
             findNavController().navigate(
-                OnboardingFlowSelectionFragmentDirections.toZipCodeSupportedFragment()
+                OnboardingFlowSelectionFragmentDirections.toSelfBcoExplanationFragment()
             )
         }
 

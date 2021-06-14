@@ -30,7 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/appbar"
-            android:clipToPadding="false"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -38,35 +37,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="@dimen/activity_horizontal_margin"
-                android:paddingBottom="16dp">
-
-                <nl.rijksoverheid.dbco.util.AccessibleImageView
-                    android:id="@+id/onboarding_header_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/illustration_general_user" />
+                android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView
-                    android:id="@+id/onboarding_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/selfbco_explanation_title"
+                    android:text="@string/selfbco_reverse_pairing_explanation_title"
                     android:textAppearance="@style/TextAppearance.App.Headline5"
                     android:textSize="@dimen/onboarding_title_textsize"
                     app:accessibilityHeading="@{true}" />
 
                 <TextView
-                    android:id="@+id/onboarding_subtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
-                    android:text="@string/selfbco_explanation_summary"
+                    android:text="@string/selfbco_reverse_pairing_explanation_subtext"
                     android:textSize="@dimen/onboarding_subtext_textsize" />
 
                 <Space
@@ -75,14 +61,22 @@
                     android:layout_weight="1" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_next"
+                    android:id="@+id/btn_yes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/next" />
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/yes" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no" />
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

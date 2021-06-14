@@ -37,21 +37,10 @@ data class AppConfig(
     val symptoms: List<Symptom>,
 
     /**
-     * List of zip-code ranges associated with GGD instances which currently
-     * support the SelfBCO part of the app
-     */
-    val supportedZipCodeRanges: List<ZipCodeRange>,
-
-    /**
      * Guidelines specific for risk categories to show for a given [Task]
      */
     val guidelines: GuidelinesContainer
-) {
-
-    fun isSelfBcoSupportedForZipCode(zipCode: Int): Boolean {
-        return supportedZipCodeRanges.any { it.contains(zipCode) }
-    }
-}
+)
 
 @Serializable
 data class GuidelinesContainer(
@@ -166,14 +155,3 @@ data class Symptom(
     val label: String,
     val value: String
 )
-
-@Serializable
-data class ZipCodeRange(
-    val start: Int,
-    val end: Int
-) {
-
-    fun contains(zipCode: Int): Boolean {
-        return zipCode in start..end
-    }
-}
