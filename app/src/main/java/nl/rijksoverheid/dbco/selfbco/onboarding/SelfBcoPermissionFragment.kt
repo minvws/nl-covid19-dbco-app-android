@@ -60,7 +60,7 @@ class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permiss
         val content = Section(
             listOf(
                 HeaderItem(getString(R.string.selfbco_permission_header)),
-                ParagraphItem(getString(R.string.selfbco_permission_summary), clickable = true),
+                ParagraphItem(getString(R.string.selfbco_permission_summary), clickable = true)
                 // TODO: revert back to changes prior to DBCO-1908
 //              ParagraphIconItem(getString(R.string.selfbco_permission_item1)),
 //              ParagraphIconItem(getString(R.string.selfbco_permission_item2)),
