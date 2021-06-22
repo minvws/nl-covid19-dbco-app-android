@@ -27,62 +27,47 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/appbar"
+            android:clipToPadding="false"
             android:fillViewport="true"
-            android:padding="16dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/fill_password_top_margin">
+                android:paddingHorizontal="@dimen/activity_horizontal_margin"
+                android:paddingBottom="16dp">
+
+                <nl.rijksoverheid.dbco.util.AccessibleImageView
+                    android:id="@+id/onboarding_header_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/illustration_onboarding" />
 
                 <TextView
+                    android:id="@+id/onboarding_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/zelfbco_zipcode_support_title"
+                    android:text="@string/selfbco_explanation_title"
                     android:textAppearance="@style/TextAppearance.App.Headline5"
-                    android:textSize="@dimen/onboarding_title_textsize" />
+                    android:textSize="@dimen/onboarding_title_textsize"
+                    app:accessibilityHeading="@{true}" />
 
                 <TextView
+                    android:id="@+id/onboarding_subtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/zelfbco_zipcode_support_summary"
-                    android:textSize="17sp" />
-
-                <FrameLayout
-                    android:id="@+id/code_input_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp">
-
-                    <TextView
-                        android:id="@+id/code_placeholder"
-                        style="@style/CodeEntryEditText"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:importantForAccessibility="no"
-                        android:text="@string/zelfbco_zipcode_support_placeholder"
-                        android:textColor="@color/disabled" />
-
-                    <nl.rijksoverheid.dbco.onboarding.FillCodeField
-                        android:id="@+id/code_entry"
-                        style="@style/CodeEntryEditText"
-                        android:backgroundTint="@color/primary"
-                        android:contentDescription="@string/zelfbco_zipcode_support_title"
-                        android:digits="0123456789"
-                        android:inputType="number"
-                        android:maxLength="4"
-                        app:groupSize="4"
-                        app:maxLength="4"
-                        app:separator="" />
-
-                </FrameLayout>
+                    android:layout_marginBottom="32dp"
+                    android:text="@string/selfbco_explanation_summary"
+                    android:textSize="@dimen/onboarding_subtext_textsize" />
 
                 <Space
                     android:layout_width="match_parent"
@@ -90,15 +75,14 @@
                     android:layout_weight="1" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/next_button"
+                    android:id="@+id/btn_next"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:text="@string/next" />
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </layout>

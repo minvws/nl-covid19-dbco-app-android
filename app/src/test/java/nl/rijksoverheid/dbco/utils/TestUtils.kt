@@ -45,7 +45,6 @@ fun createAppConfig(
             category3 = "test"
         )
     ),
-    supportedZipCodeRange: List<ZipCodeRange> = emptyList(),
     featureFlags: FeatureFlags = FeatureFlags(
         enableSelfBCO = true,
         enableContactCalling = true,
@@ -56,6 +55,5 @@ fun createAppConfig(
     androidMinimumVersionMessage = androidMinimumVersionMessage,
     featureFlags = featureFlags,
     symptoms = symptoms,
-    supportedZipCodeRanges = supportedZipCodeRange,
     guidelines = guidelines
 )

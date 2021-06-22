@@ -287,52 +287,6 @@ class ConfigRepositoryTest {
         Assert.assertEquals(result, guidelines)
     }
 
-    @Test
-    fun `given a zipcode which is supported in the config, when zipcode is checked, then it should be supported`() {
-        // given
-        val zip = 1010
-        val config = createAppConfig(supportedZipCodeRange = listOf(ZipCodeRange(start = 0, end = 9999)))
-        val mockContext = mockk<Context>()
-        val mockApi = mockk<DbcoApi>()
-        val mockStorage = mockk<SharedPreferences>()
-        val configString = Defaults.json.encodeToString(config)
-        every {
-            mockStorage.getString(
-                AppConfigRepository.KEY_CONFIG,
-                null
-            )
-        } returns configString
-
-        // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
-
-        // then
-        Assert.assertTrue(repo.isSelfBcoSupportedForZipCode(zip))
-    }
-
-    @Test
-    fun `given a zipcode which is not supported in the config, when zipcode is checked, then it should not be supported`() {
-        // given
-        val zip = 1010
-        val config = createAppConfig(supportedZipCodeRange = listOf(ZipCodeRange(start = 9998, end = 9999)))
-        val mockContext = mockk<Context>()
-        val mockApi = mockk<DbcoApi>()
-        val mockStorage = mockk<SharedPreferences>()
-        val configString = Defaults.json.encodeToString(config)
-        every {
-            mockStorage.getString(
-                AppConfigRepository.KEY_CONFIG,
-                null
-            )
-        } returns configString
-
-        // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
-
-        // then
-        Assert.assertFalse(repo.isSelfBcoSupportedForZipCode(zip))
-    }
-
     private fun createGuidelines(cat1: String) = GuidelinesContainer(
         introExposureDateKnown = Guidelines(
             category1 = cat1,

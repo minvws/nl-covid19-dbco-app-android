@@ -62,10 +62,10 @@
     <!--    Onboarding-->
     <string name="onboarding_data_deleted_title">Alle ingevulde gegevens zijn verwijderd</string>
     <string name="onboarding_data_deleted_subtext">Je hebt de app al een tijd niet gebruikt. Om de gegevens van je contacten te beschermen, zijn deze verwijderd.</string>
-    <string name="onboarding_start_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
-    <string name="onboarding_start_subtext">Het advies verschilt per persoon. Dit hangt af van of jullie afstand hielden en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet blijven en tot wanneer. Deze informatie kan jij daarna makkelijk delen.</string>
+    <string name="onboarding_start_title">Help de verspreiding van corona te voorkomen</string>
+    <string name="onboarding_start_subtext"><![CDATA[Heb je corona? Dan helpt deze app de mensen die misschien ook besmet zijn zo snel mogelijk te waarschuwen.<br/><br/>Zo zorg je dat het bron- en contactonderzoek van de GGD sneller gaat.]]></string>
     <string name="onboarding_flow_selection_title">Heb je aan de telefoon een code van de GGD gekregen?</string>
-    <string name="onboarding_flow_selection_subtext">Let op: dit is niet de GGD-sleutel die je in de CoronaMelder-app vindt.</string>
+    <string name="onboarding_flow_selection_subtext">Een GGD Contact-koppelcode bestaat uit 12 cijfers, bijvoorbeeld 9999-9999-9999.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
     <string name="fill_code_title">Vul de code in die je hebt gekregen van de GGD-medewerker</string>
     <string name="fill_code_placeholder">0000-0000-0000</string>
@@ -73,10 +73,10 @@
     <!--    Onboarding privacy consent -->
     <string name="onboarding_privacy_title">Zo gaat GGD Contact om met je gegevens</string>
     <string name="onboarding_privacy_summary"><![CDATA[In de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a> staat hoe GGD Contact jouw gegevens gebruikt. Dit zijn de belangrijkste punten:]]></string>
-    <string name="onboarding_privacy_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
-    <string name="onboarding_privacy_item2">Gegevens worden versleuteld en via een veilige verbinding gedeeld</string>
-    <string name="onboarding_privacy_item3">Alleen gegevens die je zelf invult worden gedeeld</string>
-    <string name="onboarding_privacy_item4">Het gebruik van de app en het delen van gegevens is vrijwillig</string>
+    <string name="onboarding_privacy_item1">De gegevens die je invult worden alleen in de app opgeslagen</string>
+    <string name="onboarding_privacy_item2">De app heeft geen toegang tot andere gegevens op je telefoon</string>
+    <string name="onboarding_privacy_item3">Het gebruik van de app is vrijwillig</string>
+    <string name="onboarding_privacy_item4">Met een aantal GGD’en kun je veilig gegevens uit de app delen. Gegevens worden alleen gedeeld als jij laat weten dat je dat wilt</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -204,13 +204,10 @@
     <!-- Zelf BCO -->
     <string name="zelfbco_have_code">Ja, ik heb een code</string>
     <string name="zelfbco_no_code">Nee, geen code</string>
-    <string name="zelfbco_zipcode_support_title">Wat zijn de eerste vier cijfers van je postcode?</string>
-    <string name="zelfbco_zipcode_support_summary">Zo kunnen we bepalen in welke GGD-regio je woont. Wat je precies in de app kunt doen, verschilt per regio.</string>
-    <string name="zelfbco_zipcode_support_placeholder">0000</string>
-    <string name="selfbco_explanation_title">Bepaal wie misschien zijn besmet en informeer hen</string>
-    <string name="selfbco_explanation_supported_summary"><![CDATA[We gaan een overzicht maken contacten die je misschien hebt besmet. Goed om te weten: niet iedereen hoeft direct in quarantaine.<br/><br/>Ook kun je in jouw GGD-regio contactgegevens met de GGD delen voor het contactonderzoek.]]></string>
-    <string name="selfbco_explanation_unsupported_summary">Je kunt in jouw regio nog geen gegevens delen met de GGD. Je kunt via de app wel zelf bepalen wie van je contacten misschien besmet zijn en daarna de juiste leefregels met hen delen.</string>
-    <string name="selfbco_explanation_unsupported_button">Ik snap het</string>
+    <string name="selfbco_explanation_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
+    <string name="onboarding_explanation_title">Maak een overzicht van contacten die misschien zijn besmet</string>
+    <string name="onboarding_explanation_summary">Zo weet je wie gewaarschuwd moet worden. En ben je ook alvast voorbereid op het bron- en contactonderzoek van de GGD.</string>
+    <string name="selfbco_explanation_summary">Het advies verschilt per persoon. Dit hangt af van of jullie afstand hielden en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet blijven en tot wanneer.</string>
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
     <string name="selfbco_symptoms_nosymptoms">Ik heb geen klachten</string>
@@ -281,7 +278,7 @@
     <string name="selfbco_permission_extra_item1">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_extra_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
     <string name="selfbco_permission_extra_item3">Gegevens worden pas met de GGD gedeeld als jij op \`Deel gegevens met GGD\` klikt</string>
-    <string name="selfbco_permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Bijvoorbeeld een achternaam of een telefoonnummer.</string>
+    <string name="selfbco_permission_summary"><![CDATA[Geef toegang tot je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen.<br/><br/>Alleen de contactgegevens die jij kiest worden gebruikt in de app. Bijvoorbeeld een achternaam of een telefoonnummer.<br/><br/>Je verzamelt deze gegevens om ze aan de GGD door te geven tijdens het bron- en contactonderzoek. Zo kan de GGD deze mensen waarschuwen en persoonlijk advies geven.]]></string>
     <string name="selfbco_permission_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
     <string name="selfbco_permission_item2">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_item3"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
@@ -296,8 +293,10 @@
     <string name="no_add_manually">Nee, zelf toevoegen</string>
     <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
     <string name="this_contact">Dit contact</string>
+    <string name="selfbco_reverse_pairing_explanation_title">Heeft de GGD je verteld dat je gegevens kunt delen?</string>
+    <string name="selfbco_reverse_pairing_explanation_subtext">De GGD belt je voor het bron- en contactonderzoek. Tijdens dit gesprek hoor je of het in jouw GGD-regio mogelijk is om  via de app contactgegevens te delen.</string>
     <string name="selfbco_reverse_pairing_title">Koppel de app met de GGD om je gegevens te delen</string>
-    <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens en locaties delen.</string>
+    <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens delen.</string>
     <string name="selfbco_reverse_pairing_step_1_title">Geef deze code door aan de GGD-medewerker:</string>
     <string name="selfbco_reverse_pairing_step_2_title">Wacht tot de GGD-medewerker de code heeft ingevoerd</string>
     <string name="selfbco_reverse_pairing_step_2_subtitle">Wil je ondertussen nog gegevens aanvullen? Dan kun je dit scherm sluiten.</string>

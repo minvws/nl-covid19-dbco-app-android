@@ -112,6 +112,14 @@
             app:popExitAnim="@anim/fragment_close_exit" />
 
         <action
+            android:id="@+id/to_reversePairingExplanationFragment"
+            app:destination="@id/reversePairingExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
             android:id="@+id/to_reversePairingFragment"
             app:destination="@id/reversePairingFragment"
             app:enterAnim="@anim/fragment_open_enter"
@@ -212,8 +220,8 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/toZipCodeSupportedFragment"
-            app:destination="@id/zipCodeSupportFragment"
+            android:id="@+id/toSelfBcoExplanationFragment"
+            app:destination="@id/selfBcoExplanationFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -240,10 +248,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/zipCodeSupportFragment"
-        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ZipCodeSupportFragment"
-        android:label="ZipCodeSupportFragment"
-        tools:layout="@layout/fragment_zipcode_support">
+        android:id="@+id/selfBcoExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
+        android:label="SelfBcoExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_explanation">
 
         <action
             android:id="@+id/to_ExplanationFragment"
@@ -675,6 +683,23 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/selfBcoPermissionFragment"
             app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reversePairingExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingExplanationFragment"
+        android:label="ReversePairingExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_pairing_explanation">
+
+        <action
+            android:id="@+id/to_reversePairingFragment"
+            app:destination="@id/reversePairingFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/myContactsFragment" />
 
     </fragment>
 
