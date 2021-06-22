@@ -10,9 +10,14 @@ package nl.rijksoverheid.dbco
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.viewModels
@@ -35,6 +40,7 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
 import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,6 +77,27 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         currentFocus?.hideKeyboard()
         currentFocus?.clearFocus()
+    }
+
+    @Suppress("DEPRECATION")
+    override fun attachBaseContext(newBase: Context) {
+        val locale = Locale("nl") // force app language to NL
+        var context = newBase
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val localeList = LocaleList(locale)
+            LocaleList.setDefault(localeList)
+            configuration.setLocales(localeList)
+        } else {
+            configuration.locale = locale
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            context = context.createConfigurationContext(configuration)
+        } else {
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+        super.attachBaseContext(ContextWrapper(context))
     }
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
