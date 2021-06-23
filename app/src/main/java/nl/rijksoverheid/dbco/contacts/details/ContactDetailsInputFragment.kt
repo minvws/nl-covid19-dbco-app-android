@@ -374,11 +374,15 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                 viewModel.questionnaire?.uuid ?: "",
                 answers
             )
-            if (label.isNullOrEmpty()) {
-                label = if (!linkedContact?.getDisplayName().isNullOrEmpty()) {
+            if (isLocal()) {
+                label = if (!linkedContact?.getDisplayName().isNullOrBlank()) {
                     linkedContact?.getDisplayName()
                 } else {
-                    getString(R.string.mycontacts_name_unknown)
+                    if (label.isNullOrBlank()) {
+                        getString(R.string.mycontacts_name_unknown)
+                    } else {
+                        label
+                    }
                 }
             }
             communication = viewModel.communicationType.value
