@@ -29,6 +29,7 @@
     <string name="collapsed">Ingeklapt</string>
     <string name="expanded">Uitgeklapt</string>
     <string name="other">Anders</string>
+    <string name="change">Wijzig</string>
     <!--    Generic error-->
     <string name="generic_error_prompt_message">Controleer de internetverbinding en probeer het opnieuw.</string>
     <!--    My contacts-->
@@ -222,6 +223,7 @@
     <string name="selfbco_chronic_symptoms_next">Nee, volgende</string>
     <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
     <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
+    <string name="selfbco_date_title">Kies een datum</string>
     <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
     <string name="selfbco_date_covid_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
     <string name="selfbco_date_symptoms_positive_test_title">Wanneer was de test waaruit bleek dat je corona hebt?</string>

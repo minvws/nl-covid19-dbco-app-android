@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.datepicker.*
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -21,13 +22,15 @@ import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBinding
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoDateCheckBindingImpl
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckNavigation.*
+import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType
+import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType.*
 import nl.rijksoverheid.dbco.util.HtmlHelper
-import nl.rijksoverheid.dbco.util.getDate
 import nl.rijksoverheid.dbco.util.hideKeyboard
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import java.io.Serializable
-import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType.*
-import nl.rijksoverheid.dbco.selfbco.symptoms.SelfBcoDateCheckState.DateCheckType
+import java.util.*
 
 /**
  * Handles both date checking for testing and symptoms
@@ -70,11 +73,9 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
             requireContext()
         )
 
-        binding.datePicker.apply {
-            updateDate(date.year, date.monthOfYear - 1, date.dayOfMonth)
-        }
+        displayDate(date)
 
-        binding.datePicker.maxDate = System.currentTimeMillis()
+        binding.datePickerContainer.setOnClickListener { showDatePicker() }
 
         binding.btnNext.setOnClickListener {
             val result = save(state)
@@ -89,6 +90,40 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         }
 
         binding.btnInfo.isVisible = state.showExplanation
+    }
+
+    private fun displayDate(date: LocalDate) {
+        binding.date.text =
+            date.toString(DateFormats.datePickerDate).capitalize(Locale.getDefault())
+        binding.year.text = date.toString(DateFormats.datePickerYear)
+    }
+
+    private fun showDatePicker() {
+        val constrains = CalendarConstraints.Builder()
+            .setValidator(
+                CompositeDateValidator.allOf(
+                    listOf(
+                        DateValidatorPointForward.from(
+                            DateTime().dayOfYear().withMinimumValue().withTimeAtStartOfDay().millis
+                        ),
+                        DateValidatorPointBackward.before(
+                            MaterialDatePicker.todayInUtcMilliseconds()
+                        )
+                    )
+                )
+            )
+            .build()
+
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText(R.string.selfbco_date_title)
+            .setSelection(requireDate().toDateTimeAtStartOfDay(DateTimeZone.UTC).millis)
+            .setCalendarConstraints(constrains)
+            .build()
+            .apply {
+                addOnPositiveButtonClickListener {
+                    displayDate(LocalDate(selection))
+                }
+            }.also { it.show(parentFragmentManager, "DatePicker"); }
     }
 
     private fun save(state: SelfBcoDateCheckState): LocalDate {
@@ -121,7 +156,12 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
     private fun getState(): State? {
         return if (::binding.isInitialized) {
-            State(date = LocalDate(binding.datePicker.getDate().time))
+            State(
+                date = LocalDate.parse(
+                    "${binding.date.text.toString().lowercase()} ${binding.year.text}",
+                    DateFormats.datePicker
+                )
+            )
         } else null
     }
 
