@@ -18,6 +18,8 @@ platform :android do
 
         deploy_acc
 
+        deploy_staging
+
         deploy_prod
 
 
@@ -58,7 +60,20 @@ platform :android do
             )
      end
 
+    private_lane :deploy_staging do
+            build_android_app(
+                        task: "assemble",
+                        flavor: "dbcoStaging",
+                        build_type: "Release"
+             )
 
+            firebase_app_distribution(
+                app: "1:514196416954:android:9716beeae89478dc8f9583",
+                firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+                groups: "testers",
+                release_notes: "Release on staging environment via Firebase"
+            )
+    end
 
     private_lane :deploy_prod do
              build_android_app(
