@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.bcocase.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.IQuestionnaireRepository
@@ -18,8 +19,14 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
+import nl.rijksoverheid.dbco.config.FeatureFlags
 import org.joda.time.LocalDate
 
+/**
+ * ViewModel responsible for handling changes in [Task] details
+ * exposes a number of [LiveData] objects which describe some attributes from
+ * the currently selected [Task], like what risk category the [Task] falls into.
+ */
 class TasksDetailViewModel(
     private val tasksRepository: ICaseRepository,
     questionnaireRepository: IQuestionnaireRepository
@@ -38,12 +45,15 @@ class TasksDetailViewModel(
     val name = MutableLiveData<String?>(null)
     val dateOfLastExposure = MutableLiveData<String>(null)
 
+    val textAnswers: MutableMap<String, String> = mutableMapOf()
+
     private lateinit var _task: Task
 
     val task: Task
         get() = _task
 
-    fun init(task: Task) {
+    fun init(taskId: String) {
+        val task = tasksRepository.getTask(taskId)
         this._task = task
         if (task.linkedContact == null) {
             task.linkedContact = LocalContact.fromLabel(task.label)
@@ -53,7 +63,21 @@ class TasksDetailViewModel(
         communicationType.value = task.communication
         dateOfLastExposure.value = task.dateOfLastExposure
         category.value = task.category
+
+        cacheTextAnswers(task)
         updateRiskFlagsFromCategory(task)
+    }
+
+    fun commByIndex(): Boolean = communicationType.value != CommunicationType.Staff
+
+    private fun canCallTask(): Boolean = task.linkedContact?.hasSingleValidPhoneNumber() ?: false
+
+    fun callingEnabled(featureFlags: FeatureFlags): Boolean {
+        return canCallTask() && featureFlags.enableContactCalling
+    }
+
+    fun copyEnabled(featureFlags: FeatureFlags): Boolean {
+        return featureFlags.enablePerspectiveCopy
     }
 
     fun getQuestionnaireAnswers(): List<Answer> = _task.questionnaireResult?.answers ?: emptyList()
@@ -72,6 +96,18 @@ class TasksDetailViewModel(
             shouldMerge = { current -> current.uuid == task.uuid },
             shouldUpdate = { current -> task != current }
         )
+    }
+
+    fun isDeletionPossible(changesEnabled: Boolean): Boolean {
+        val hasInformation = (task.hasCategoryOrExposure() || task.isSaved())
+        return changesEnabled && task.isLocal() && hasInformation
+    }
+
+    fun onCancelled(changesEnabled: Boolean) {
+        val hasNoInformation = !task.isSaved() && !task.hasCategoryOrExposure()
+        if (changesEnabled && task.isLocal() && hasNoInformation) {
+            deleteCurrentTask()
+        }
     }
 
     fun deleteCurrentTask() = task.uuid?.let { uuid -> tasksRepository.deleteTask(uuid) }
@@ -123,6 +159,18 @@ class TasksDetailViewModel(
         }
     }
 
+    /**
+     * Keep a local cache of answers which come from generic questions without backing live data
+     * so the view can reference initial and updated values
+     */
+    private fun cacheTextAnswers(task: Task) {
+        task.questionnaireResult?.answers?.let { answers ->
+            answers.filter { answer -> answer.isTextQuestion() }.forEach { result ->
+                textAnswers[result.questionUuid!!] = result.textValue
+            }
+        }
+    }
+
     fun updateCategoryFromRiskFlags() {
         category.value = when {
             sameHouseholdRisk.value == true -> Category.ONE
@@ -136,4 +184,13 @@ class TasksDetailViewModel(
             else -> null
         }
     }
+
+    private fun Answer.isTextQuestion(): Boolean {
+        return !questionUuid.isNullOrEmpty() &&
+                value != null &&
+                value!!.containsKey("value")
+    }
+
+    private val Answer.textValue: String
+        get() = value!!["value"]!!.jsonPrimitive.content
 }

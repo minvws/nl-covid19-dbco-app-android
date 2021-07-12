@@ -32,13 +32,14 @@ buildscript {
 
     //3rd-party dependency versions
     ext.desugar_jdk_libs_version = "1.1.5"
-    ext.libsodium_jni_version = "2.0.1"
+    ext.libsodium_jni_version = "2.0.2"
     ext.rootbeer_version = "0.0.8"
     ext.joda_time_version = "2.10.6.2"
     ext.groupie_version = "2.8.0"
     ext.okhttp3_version = "4.8.1"
     ext.retrofit_version = "2.9.0"
     ext.timber_version = "4.7.1"
+    ext.sticky_header_version = "1.0.1"
 
     repositories {
         google()
@@ -81,6 +82,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 
     afterEvaluate {
@@ -89,6 +91,7 @@ allprojects {
                 jvmTarget = "1.8"
                 freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"]
                 freeCompilerArgs += ["-Xuse-experimental=kotlinx.serialization.ExperimentalSerializationApi"]
+                freeCompilerArgs += ["-Xuse-experimental=kotlin.ExperimentalStdlibApi"]
             }
         }
 

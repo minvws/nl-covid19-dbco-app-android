@@ -1,3 +1,11 @@
+/*
+ *  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *   SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 package nl.rijksoverheid.dbco.network.request
 
 import kotlinx.serialization.Serializable
@@ -30,7 +38,12 @@ data class TaskRequest(
             source = task.source,
             label = task.label,
             category = task.category,
-            communication = task.communication,
+            // API cannot handle type None. TODO [DBCO-1810] should remove enum altogether since it is not used in the codebase
+            communication = if (task.communication != CommunicationType.None) {
+                task.communication
+            } else {
+                null
+            },
             uuid = task.uuid,
             dateOfLastExposure = task.dateOfLastExposure,
             questionnaireResult = task.questionnaireResult,

@@ -58,6 +58,14 @@
                     android:textAppearance="@style/TextAppearance.App.Headline5"
                     android:textSize="@dimen/onboarding_title_textsize" />
 
+                <TextView
+                    android:id="@+id/datecheck_subtext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:text="@string/selfbco_chronic_symptoms_summary"
+                    android:textSize="@dimen/onboarding_subtext_textsize" />
+
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

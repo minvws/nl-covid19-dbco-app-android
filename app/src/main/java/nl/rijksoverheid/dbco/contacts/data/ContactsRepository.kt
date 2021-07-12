@@ -17,6 +17,9 @@ import kotlinx.coroutines.withContext
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.util.removeWhiteSpace
 
+/**
+ * Repository used to fetch device contacts from the users' phone
+ */
 class ContactsRepository(val context: Context) {
 
     suspend fun fetchDeviceContacts(): ArrayList<LocalContact> {
@@ -42,9 +45,6 @@ class ContactsRepository(val context: Context) {
             return@withContext contacts
         }
     }
-
-
-//region Local contacts
 
     private fun getPhoneContacts(): ArrayList<LocalContact> {
         val contactsList = ArrayList<LocalContact>()
@@ -129,7 +129,4 @@ class ContactsRepository(val context: Context) {
         }
         return contactsEmailMap
     }
-
-    //endregion local
-
 }

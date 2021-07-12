@@ -18,31 +18,27 @@ import java.util.*
 
 @SuppressLint("LogNotTimber")
 class FileTree(directory: File?) : Timber.DebugTree() {
-    private val writer: FileWriter?
 
-    init {
-        writer = try {
-            directory?.mkdirs()
-            val initTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
-                .format(Date())
-            val file: File? = File(directory, "log-${initTimeStamp}.txt")
-            if (file != null) {
-                FileWriter(file, true)
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("FileTree", "Error while logging into file : $e")
-            null
-        }
+    private val writer: FileWriter? = try {
+        directory?.mkdirs()
+        val initTimestamp = SimpleDateFormat(TIMESTAMP_FORMAT_INIT, Locale.ROOT).format(Date())
+        FileWriter(File(directory, "log-${initTimestamp}.txt"), true)
+    } catch (e: Exception) {
+        Log.e("FileTree", "Error while logging into file : $e")
+        null
     }
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        val logTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ROOT)
-            .format(Date())
+        val logTimestamp = SimpleDateFormat(TIMESTAMP_FORMAT, Locale.ROOT).format(Date())
         writer?.apply {
-            appendln("$logTimeStamp/$tag: $message")
+            appendLine("$logTimestamp/$tag: $message")
             flush()
         }
+    }
+
+    companion object {
+
+        private const val TIMESTAMP_FORMAT_INIT = "yyyy-MM-dd HH:mm:ss"
+        private const val TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
     }
 }

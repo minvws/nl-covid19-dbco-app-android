@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.DrawableRes
@@ -16,6 +17,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 class IllustrationItem(
     @DrawableRes private val image: Int
 ) : BaseBindableItem<ItemIllustrationBinding>() {
+
     override fun getLayout() = R.layout.item_illustration
 
     override fun bind(viewBinding: ItemIllustrationBinding, position: Int) {

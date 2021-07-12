@@ -9,8 +9,17 @@
 package nl.rijksoverheid.dbco.selfbco
 
 class SelfBcoConstants {
+
     companion object {
+
+        /**
+         * Index has symptoms
+         */
         const val SYMPTOM_CHECK_FLOW = 0
+
+        /**
+         * User has no symptoms but a positive test result
+         */
         const val COVID_CHECK_FLOW = 1
     }
 }

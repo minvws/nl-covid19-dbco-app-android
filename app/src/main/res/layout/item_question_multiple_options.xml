@@ -6,7 +6,8 @@
   ~
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,24 +18,24 @@
 
     <LinearLayout
         android:id="@+id/input_container"
+        android:layout_marginHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <AutoCompleteTextView
                 android:id="@+id/input_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="@integer/max_value"
-                android:inputType="none"/>
+                android:inputType="none"
+                android:maxLines="@integer/max_value" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

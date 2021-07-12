@@ -5,25 +5,27 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
-import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
-import kotlinx.serialization.json.JsonObject
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemQuestionMultipleOptionsBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
+import nl.rijksoverheid.dbco.util.setError
 
 class QuestionMultipleOptionsItem(
     context: Context,
     question: Question?,
     answerSelectedListener: (AnswerOption) -> Unit,
-    previousAnswer: JsonObject? = null,
+    previousAnswer: String? = null,
     private val isLocked: Boolean = false,
     val isEnabled: Boolean,
+    private val canShowEmptyWarning: Boolean = false
 ) : BaseOptionsQuestionItem<ItemQuestionMultipleOptionsBinding>(
     context,
     question,
@@ -54,16 +56,23 @@ class QuestionMultipleOptionsItem(
             viewBinding.inputLabel.showDropDown()
         }
 
+        if (selectedAnswer == null && canShowEmptyWarning) {
+            viewBinding.inputLayout.setError(
+                R.drawable.ic_warning_24,
+                R.string.warning_necessary,
+                R.color.purple
+            )
+        } else {
+            viewBinding.inputLayout.error = null
+        }
+
         // Listen to selections that happen in the dropdown
         viewBinding.inputLabel.setOnItemClickListener { _, _, position, _ ->
             question?.answerOptions?.getOrNull(position)?.let { answer ->
                 answerSelectedListener.invoke(answer)
                 selectedAnswer = answer
+                viewBinding.inputLayout.error = null
             }
-        }
-
-        if (selectedAnswer == null) {
-            fillInPreviousAnswer()
         }
 
         selectedAnswer?.let {
@@ -81,5 +90,11 @@ class QuestionMultipleOptionsItem(
             viewBinding.inputLabel.isEnabled = isEnabled
             viewBinding.questionLockedDescription.isVisible = false
         }
+    }
+
+    override fun onViewDetachedFromWindow(viewHolder: GroupieViewHolder<ItemQuestionMultipleOptionsBinding>) {
+        super.onViewDetachedFromWindow(viewHolder)
+        viewHolder.binding.inputLabel.setOnClickListener(null)
+        viewHolder.binding.inputLabel.onItemClickListener = null
     }
 }

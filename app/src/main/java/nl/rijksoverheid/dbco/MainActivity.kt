@@ -10,9 +10,14 @@ package nl.rijksoverheid.dbco
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.viewModels
@@ -33,6 +38,9 @@ import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
 import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
+import nl.rijksoverheid.dbco.network.DbcoApi
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,8 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Set FLAG_SECURE to hide content on non-debug builds
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.FEATURE_SECURE_WINDOW) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
@@ -72,18 +79,42 @@ class MainActivity : AppCompatActivity() {
         currentFocus?.clearFocus()
     }
 
+    @Suppress("DEPRECATION")
+    override fun attachBaseContext(newBase: Context) {
+        val locale = Locale("nl") // force app language to NL
+        var context = newBase
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val localeList = LocaleList(locale)
+            LocaleList.setDefault(localeList)
+            configuration.setLocales(localeList)
+        } else {
+            configuration.locale = locale
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            context = context.createConfigurationContext(configuration)
+        } else {
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+        super.attachBaseContext(ContextWrapper(context))
+    }
+
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         if (factory != null) {
             return factory as ViewModelFactory
         }
         val userRepository = UserRepository(this)
+        val storage = LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
+        val api = DbcoApi.create(baseContext)
         return ViewModelFactory(
             baseContext,
             CaseRepository(this, userRepository),
             ContactsRepository(this),
-            QuestionnaireRepository(this),
+            QuestionnaireRepository(storage, api),
             userRepository,
-            AppConfigRepository(this)
+            AppConfigRepository(this, api, storage),
+            LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
         ).also {
             factory = it
         }
@@ -110,7 +141,8 @@ class MainActivity : AppCompatActivity() {
                     closeAction = { finish() }
                 )
             }
-            else -> { /* NO-OP*/ }
+            else -> { /* NO-OP*/
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import org.joda.time.LocalDate
+import java.util.*
 
 typealias JavaSerializable = java.io.Serializable
 
@@ -93,12 +94,22 @@ data class Task(
         return displayName
     }
 
+    fun hasCategoryOrExposure(): Boolean = category != null || dateOfLastExposure != null
+
+    fun isLocal(): Boolean = source == Source.App
+
+    fun isSaved(): Boolean = questionnaireResult != null
+
     override fun toString(): String {
         return "Task(taskType=$taskType, taskContext=$taskContext, source=$source, label=$label, category=$category, communication=$communication, uuid=$uuid, dateOfLastExposure=$dateOfLastExposure, linkedContact=$linkedContact, questionnaireResult=$questionnaireResult)"
     }
 
     companion object {
-        fun createAppContact(): Task = Task(taskType = TaskType.Contact, source = Source.App)
+        fun createAppContact(): Task = Task(
+            uuid = UUID.randomUUID().toString(),
+            taskType = TaskType.Contact,
+            source = Source.App
+        )
     }
 }
 

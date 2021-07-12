@@ -31,15 +31,15 @@ public class Obfuscator {
         for (int i = 0; i < bytes.length; ++i) {
             byte current = bytes[i];
             if (current + OFFSET < 0) {
-                offsetted[i] = (byte)(0xff + (current + OFFSET));
+                offsetted[i] = (byte) (0xff + (current + OFFSET));
             } else {
-                offsetted[i] = (byte)(current + OFFSET);
+                offsetted[i] = (byte) (current + OFFSET);
             }
         }
         // byte value and order invert
         byte[] unordered = new byte[offsetted.length];
         for (int i = 0; i < offsetted.length; ++i) {
-            unordered[unordered.length - i - 1] = (byte)(~offsetted[i] & 0xff);
+            unordered[unordered.length - i - 1] = (byte) (~offsetted[i] & 0xff);
         }
         // base64 encode
         byte[] result = Base64.encode(unordered, Base64.DEFAULT);
@@ -58,16 +58,16 @@ public class Obfuscator {
         // Bytes are inverted in value and also order
         byte[] ordered = new byte[base64Decoded.length];
         for (int i = 0; i < base64Decoded.length; ++i) {
-            ordered[ordered.length - i - 1] = (byte)(~base64Decoded[i] & 0xff);
+            ordered[ordered.length - i - 1] = (byte) (~base64Decoded[i] & 0xff);
         }
         // they also have an offset
         byte[] result = new byte[ordered.length];
         for (int i = 0; i < ordered.length; ++i) {
             byte current = ordered[i];
             if (current - OFFSET > 0xff) {
-                result[i] = (byte)(current - OFFSET - 0xff);
+                result[i] = (byte) (current - OFFSET - 0xff);
             } else {
-                result[i] = (byte)(current - OFFSET);
+                result[i] = (byte) (current - OFFSET);
             }
         }
         return new String(result, StandardCharsets.UTF_8);

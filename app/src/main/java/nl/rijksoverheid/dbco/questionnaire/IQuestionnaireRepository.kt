@@ -9,8 +9,18 @@ package nl.rijksoverheid.dbco.questionnaire
 
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
+/**
+ * Repository for the [Questionnaire] as shown in [Task] details
+ */
 interface IQuestionnaireRepository {
-    suspend fun syncQuestionnaires()
-    fun getCachedQuestionnaire(): Questionnaire?
 
+    /**
+     * Sync the [Questionnaire] with the back-end
+     */
+    suspend fun syncQuestionnaires()
+
+    /**
+     * @return a cached version of the [Questionnaire] or null when no cached version exist
+     */
+    fun getCachedQuestionnaire(): Questionnaire?
 }

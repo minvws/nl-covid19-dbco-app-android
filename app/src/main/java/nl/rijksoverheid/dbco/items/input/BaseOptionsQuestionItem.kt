@@ -5,13 +5,12 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import androidx.databinding.ViewDataBinding
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
@@ -20,10 +19,10 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
     val context: Context,
     question: Question?,
     val answerSelectedListener: (AnswerOption) -> Unit,
-    private val previousAnswerValue: JsonObject? = null
+    private val previousAnswerValue: String? = null
 ) : BaseQuestionItem<T>(question) {
 
-    var selectedAnswer: AnswerOption? = null
+    var selectedAnswer: AnswerOption? = getPreviousAnswer()
 
     override fun getUserAnswers(): Map<String, JsonElement> {
         val answers = HashMap<String, JsonElement>()
@@ -35,17 +34,15 @@ abstract class BaseOptionsQuestionItem<T : ViewDataBinding>(
         return answers
     }
 
-    open fun fillInPreviousAnswer() {
+    private fun getPreviousAnswer(): AnswerOption? {
         previousAnswerValue?.let { prevAnswer ->
-            prevAnswer["value"]?.jsonPrimitive?.content?.let { value ->
-                question?.answerOptions?.forEach { option ->
-                    if (option?.value == value) {
-                        selectedAnswer = option
-                        return
-                    }
+            question?.answerOptions?.forEach { option ->
+                if (option?.value == prevAnswer) {
+                    return option
                 }
             }
         }
+        return null
     }
 
     open fun clearPreviousAnswer() {

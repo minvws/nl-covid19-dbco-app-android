@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.StringRes
@@ -13,8 +14,8 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemTinyHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
-
 class TinyHeaderItem(@StringRes private val text: Int) : BaseBindableItem<ItemTinyHeaderBinding>() {
+
     override fun getLayout() = R.layout.item_tiny_header
 
     override fun bind(viewBinding: ItemTinyHeaderBinding, position: Int) {
@@ -22,5 +23,6 @@ class TinyHeaderItem(@StringRes private val text: Int) : BaseBindableItem<ItemTi
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is TinyHeaderItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is TinyHeaderItem && other.text == text
 }

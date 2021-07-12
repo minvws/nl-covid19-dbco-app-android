@@ -16,6 +16,7 @@ import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentOnboardingStartBinding
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class OnboardingStartFragment : BaseFragment(R.layout.fragment_onboarding_start) {
 
@@ -24,6 +25,11 @@ class OnboardingStartFragment : BaseFragment(R.layout.fragment_onboarding_start)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingStartBinding.bind(view)
+
+        binding.onboardingStartSubtext.text = HtmlHelper.buildSpannableFromHtml(
+            getString(R.string.onboarding_start_subtext),
+            requireContext()
+        )
 
         binding.btnNext.setOnClickListener {
             val direction = if (appViewModel.getFeatureFlags().enableSelfBCO) {

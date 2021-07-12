@@ -5,6 +5,7 @@
  *   SPDX-License-Identifier: EUPL-1.2
  *
  */
+
 package nl.rijksoverheid.dbco.items.ui
 
 import androidx.annotation.StringRes
@@ -14,10 +15,10 @@ import nl.rijksoverheid.dbco.databinding.ItemParagraphBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.util.HtmlHelper
 
-
 class BulletedListItem(
     @StringRes private val text: Int
 ) : BaseBindableItem<ItemParagraphBinding>() {
+
     override fun getLayout() = R.layout.item_paragraph
 
     override fun bind(viewBinding: ItemParagraphBinding, position: Int) {
@@ -29,5 +30,6 @@ class BulletedListItem(
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is BulletedListItem && other.text == text
+
     override fun hasSameContentAs(other: Item<*>) = other is BulletedListItem && other.text == text
 }

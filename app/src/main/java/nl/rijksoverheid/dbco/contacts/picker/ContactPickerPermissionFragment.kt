@@ -19,26 +19,35 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
+import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragmentDirections
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
 
+    private val contactsViewModel: ContactsViewModel by viewModels()
+
     private val args: ContactPickerPermissionFragmentArgs by navArgs()
+
     private val userPrefs by lazy {
         LocalStorageRepository.getInstance(requireContext()).getSharedPreferences()
     }
+
     private val requestCallback =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
                 findNavController().navigate(
-                    ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
+                    ContactPickerPermissionFragmentDirections.toContactPicker(
+                        indexTaskUuid = args.indexTaskUuid
+                    )
                 )
             }
         }
@@ -54,7 +63,9 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             findNavController().navigate(
-                ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
+                ContactPickerPermissionFragmentDirections.toContactPicker(
+                    indexTaskUuid = args.indexTaskUuid
+                )
             )
         }
     }
@@ -63,12 +74,19 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentPermissionBinding.bind(view)
 
-        val nameToShow = args.indexTask.label ?: getString(R.string.this_contact)
+        val label = contactsViewModel.getTaskLabel(args.indexTaskUuid)
+        val nameToShow = label ?: getString(R.string.this_contact)
 
         binding.onboardingHeader.text =
             String.format(getString(R.string.permission_name_header), nameToShow)
         binding.btnNext.setOnClickListener {
-            requestContactAccess()
+            requestPermission(requestCallback, Manifest.permission.READ_CONTACTS) {
+                findNavController().navigate(
+                    ContactPickerPermissionFragmentDirections.toContactPicker(
+                        indexTaskUuid = args.indexTaskUuid
+                    )
+                )
+            }
         }
 
         binding.btnManual.setOnClickListener {
@@ -78,56 +96,13 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
             )?.apply()
             findNavController().navigate(
                 ContactPickerPermissionFragmentDirections.toContactDetails(
-                    indexTask = args.indexTask
+                    indexTaskUuid = args.indexTaskUuid,
+                    newTask = true
                 )
             )
         }
         binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
-        }
-    }
-
-
-    private fun requestContactAccess() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    Manifest.permission.READ_CONTACTS
-                )
-            ) {
-                requestCallback.launch(Manifest.permission.READ_CONTACTS)
-            } else {
-                activity?.let {
-                    val builder = MaterialAlertDialogBuilder(it)
-                    builder.setTitle(R.string.permissions_title)
-                    builder.setCancelable(false)
-                    builder.setMessage(R.string.permissions_some_permissions_denied)
-                    builder.setPositiveButton(
-                        R.string.permissions_go_to_settings
-                    ) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                        // Go to app settings
-                        val intent = Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", it.packageName, null)
-                        )
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        it.startActivity(intent)
-                        it.finish()
-                    }
-                    builder.setNegativeButton(R.string.permissions_no) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                    }
-                    val alert: AlertDialog = builder.create()
-                    alert.show()
-                }
-            }
-        } else {
-            ContactPickerPermissionFragmentDirections.toContactPicker(indexTask = args.indexTask)
         }
     }
 }

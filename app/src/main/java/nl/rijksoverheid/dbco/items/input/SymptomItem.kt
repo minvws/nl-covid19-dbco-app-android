@@ -12,7 +12,6 @@ import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemSymptomBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import timber.log.Timber
 
 class SymptomItem(
     val label: CharSequence,
@@ -36,7 +35,6 @@ class SymptomItem(
     private var binding: ItemSymptomBinding? = null
 
     override fun bind(viewBinding: ItemSymptomBinding, position: Int) {
-        Timber.d("For $label we've stored selected = $selected")
         binding = viewBinding
         viewBinding.text = label
         viewBinding.checked = selected

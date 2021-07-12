@@ -29,7 +29,12 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.QuestionnaireRe
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadError
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
+import timber.log.Timber
 
+/**
+ * ViewModel used to fetch and show all [Task]s currently added to the [Case].
+ * Is also used to upload changes in the current [Case]
+ */
 class TasksOverviewViewModel(
     private val tasksRepository: ICaseRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
@@ -37,9 +42,17 @@ class TasksOverviewViewModel(
 ) : ViewModel() {
 
     private val _viewData = SingleLiveEvent<ViewData>()
+
+    /**
+     * Exposes all data needed to show the [Task]s in the current case
+     */
     val viewData: LiveData<ViewData> = _viewData
 
     private val _uploadStatus = SingleLiveEvent<UploadStatus>()
+
+    /**
+     * Exposes the upload state when uploading all changes in the current [Case]
+     */
     val uploadStatus: LiveData<UploadStatus> = _uploadStatus
 
     fun getCachedCase() = tasksRepository.getCase()
@@ -61,6 +74,7 @@ class TasksOverviewViewModel(
                     CaseResult.CaseSuccess(sorted)
                 }
             } catch (ex: Exception) {
+                Timber.e(ex, "Exception during case fetch!")
                 CaseResult.CaseError(getCachedCase())
             }
 
@@ -68,6 +82,7 @@ class TasksOverviewViewModel(
                 questionnaireRepository.syncQuestionnaires()
                 QuestionnaireSuccess
             } catch (ex: Exception) {
+                Timber.e(ex, "Exception during questionnaire fetch!")
                 QuestionnaireError
             }
             _viewData.value = ViewData(caseResult, questionnaireResult)
@@ -95,6 +110,10 @@ class TasksOverviewViewModel(
         return tasksRepository.getStartOfContagiousPeriod() ?: LocalDate.now()
     }
 
+    /**
+     * Sort the list of [Task]s in the current case.
+     * First on category, then on last exposure date and finally on alphabetic name
+     */
     private fun sortTasks(tasks: List<Task>): List<Task> {
         val fallbackDate = "9999-01-01".numeric()
         return tasks.sortedWith(Comparator<Task> { a, b ->
@@ -110,6 +129,16 @@ class TasksOverviewViewModel(
         }.thenBy {
             it.getDisplayName("")
         })
+    }
+
+    fun createEmptyContact(): Task {
+        val task = Task.createAppContact()
+        tasksRepository.saveTask(
+            task = task,
+            shouldMerge = { false },
+            shouldUpdate = { false }
+        )
+        return task
     }
 
     data class ViewData(val caseResult: CaseResult, val questionnaireResult: QuestionnaireResult)

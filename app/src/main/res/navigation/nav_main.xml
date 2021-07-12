@@ -25,8 +25,8 @@
         tools:layout="@layout/fragment_permission">
 
         <argument
-            android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
+            android:name="indexTaskUuid"
+            app:argType="string"
             app:nullable="false" />
 
         <action
@@ -56,8 +56,8 @@
         tools:layout="@layout/fragment_contact_selection">
 
         <argument
-            android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task"
+            android:name="indexTaskUuid"
+            app:argType="string"
             app:nullable="false" />
 
         <action
@@ -112,6 +112,14 @@
             app:popExitAnim="@anim/fragment_close_exit" />
 
         <action
+            android:id="@+id/to_reversePairingExplanationFragment"
+            app:destination="@id/reversePairingExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+
+        <action
             android:id="@+id/to_reversePairingFragment"
             app:destination="@id/reversePairingFragment"
             app:enterAnim="@anim/fragment_open_enter"
@@ -142,8 +150,34 @@
             app:nullable="false" />
 
         <argument
-            android:name="indexTask"
-            app:argType="nl.rijksoverheid.dbco.bcocase.data.entity.Task" />
+            android:name="newTask"
+            app:argType="boolean"
+            android:defaultValue="false"
+            app:nullable="false" />
+
+        <argument
+            android:name="indexTaskUuid"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/dataDeletedFragment"
+        android:name="nl.rijksoverheid.dbco.onboarding.DataDeletedFragment"
+        android:label="DataDeletedFragment"
+        tools:layout="@layout/fragment_data_deleted">
+
+        <action
+            android:id="@+id/toOnboardingStartFragment"
+            app:destination="@id/onboardingStartFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -186,8 +220,8 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/toZipCodeSupportedFragment"
-            app:destination="@id/zipCodeSupportFragment"
+            android:id="@+id/toSelfBcoExplanationFragment"
+            app:destination="@id/selfBcoExplanationFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -214,10 +248,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/zipCodeSupportFragment"
-        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.ZipCodeSupportFragment"
-        android:label="ZipCodeSupportFragment"
-        tools:layout="@layout/fragment_zipcode_support">
+        android:id="@+id/selfBcoExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoExplanationFragment"
+        android:label="SelfBcoExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_explanation">
 
         <action
             android:id="@+id/to_ExplanationFragment"
@@ -384,6 +418,13 @@
         <action
             android:id="@+id/toOnboardingStartFragment"
             app:destination="@id/onboardingStartFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/toDataDeletedFragment"
+            app:destination="@id/dataDeletedFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true" />
@@ -642,6 +683,23 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/selfBcoPermissionFragment"
             app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reversePairingExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingExplanationFragment"
+        android:label="ReversePairingExplanationFragment"
+        tools:layout="@layout/fragment_selfbco_pairing_explanation">
+
+        <action
+            android:id="@+id/to_reversePairingFragment"
+            app:destination="@id/reversePairingFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/myContactsFragment" />
 
     </fragment>
 

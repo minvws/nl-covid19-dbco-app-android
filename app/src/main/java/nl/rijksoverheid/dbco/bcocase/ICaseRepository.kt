@@ -15,6 +15,9 @@ import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 
+/**
+ * Repository for all [Case] related data, this includes [Task]s contained in the specific [Case]
+ */
 interface ICaseRepository {
 
     /**
@@ -50,6 +53,12 @@ interface ICaseRepository {
      * @param uuid -> id of the task
      */
     fun deleteTask(uuid: String)
+
+    /**
+     * @return a [Task] in the current [Case]
+     * @param uuid -> id of the task
+     */
+    fun getTask(uuid: String): Task
 
     /**
      * @return the current local representation of the [Case]

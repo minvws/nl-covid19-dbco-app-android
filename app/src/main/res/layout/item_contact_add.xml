@@ -16,11 +16,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginBottom="8dp">
+        android:orientation="vertical">
+
         <requestFocus />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,14 +45,11 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="4dp"
-                android:hint="Voeg contact toe"
+                android:hint="@string/contact_item_add_hint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/icon_add"
                 app:layout_constraintTop_toTopOf="parent" />
-
-
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
