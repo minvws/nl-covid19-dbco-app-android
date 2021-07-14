@@ -236,7 +236,7 @@
     <string name="selfbco_date_negative_covid_title">Wanneer was de laatste negatieve coronatest voordat je ontdekte dat je corona hebt?</string>
     <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Je hebt deze test gedaan tussen %s en je positieve test. Let op: een zelftest telt niet mee.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
-    <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
+    <string name="selfbco_date_symptoms_summary">Kies een datum voordat je de coronatest deed. Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
     <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
     <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
