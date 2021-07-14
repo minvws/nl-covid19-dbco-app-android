@@ -56,6 +56,7 @@ class TaskDetailItemsStorage(
         QuestionnaireSectionHeader(
             R.string.contact_section_typeofcontact_header,
             R.string.contact_section_typeofcontact_subtext,
+            R.string.contact_section_typeofcontact_subtext,
             1
         ), true
     )
@@ -242,6 +243,7 @@ class TaskDetailItemsStorage(
         QuestionnaireSectionHeader(
             R.string.contact_section_contactdetails_header,
             R.string.contact_section_contactdetails_subtext,
+            R.string.contact_section_contactdetails_subtext_disabled,
             2
         ), false
     )
@@ -290,6 +292,7 @@ class TaskDetailItemsStorage(
 
     fun refreshContactDetailsSection() {
         contactDetailsSection.removeAllChildren()
+        contactDetailsSection.add(SimpleTextItem(R.string.contact_section_contactdetails_extra_info))
         val questions = viewModel.questionnaire?.questions?.filterNotNull()
         questions?.forEach { question ->
             if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
@@ -441,6 +444,7 @@ class TaskDetailItemsStorage(
         QuestionnaireSectionHeader(
             R.string.contact_section_inform_header,
             R.string.contact_section_inform_subtext,
+            R.string.contact_section_inform_subtext_disabled,
             3
         ), false
     )

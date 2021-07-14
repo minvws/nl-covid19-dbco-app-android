@@ -21,6 +21,7 @@ import nl.rijksoverheid.dbco.util.setImageResource
 class QuestionnaireSectionHeader(
     @StringRes val sectionTitle: Int,
     @StringRes val sectionSubtext: Int,
+    @StringRes val sectionSubtextDisabled: Int,
     var sectionNumber: Int = 1
 ) : BaseBindableItem<ItemQuestionnaireSectionBinding>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
@@ -69,6 +70,7 @@ class QuestionnaireSectionHeader(
         binding?.sectionStatusIcon?.isEnabled = enabled
 
         binding?.sectionContainer?.isEnabled = enabled
+        binding?.sectionSubtext?.setText(if (enabled) sectionSubtext else sectionSubtextDisabled)
 
         if (completed) {
             getAnnouncement()?.let { announcementId ->
