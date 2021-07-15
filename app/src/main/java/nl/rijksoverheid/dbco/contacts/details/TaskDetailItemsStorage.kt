@@ -559,13 +559,16 @@ class TaskDetailItemsStorage(
                 else -> ""
             }
         } else {
+            val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
             when (viewModel.category.value) {
-                Category.ONE -> guidelines.introExposureDateKnown.getCategory1()
+                Category.ONE -> guidelines.introExposureDateKnown.getCategory1(
+                    exposureDate = exposureDate
+                )
                 Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateKnown.getCategory2(
-                    exposureDate = dateLastExposure
+                    exposureDate = exposureDate
                 )
                 Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateKnown.getCategory3(
-                    exposureDate = dateLastExposure
+                    exposureDate = exposureDate
                 )
                 else -> ""
             }
@@ -606,28 +609,20 @@ class TaskDetailItemsStorage(
         } else {
             // Handle with dates
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            val exposureDatePlusTen =
-                exposureDate.plusDays(10).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusEleven =
-                exposureDate.plusDays(11).toString(DateFormats.informContactGuidelinesUI)
-            val exposureDatePlusFive =
-                exposureDate.plusDays(5).toString(DateFormats.informContactGuidelinesUI)
-
             val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
 
             when (viewModel.category.value) {
                 Category.ONE -> guidelines.guidelinesExposureDateKnown.getCategory1(
-                    exposureDatePlusEleven = exposureDatePlusEleven,
+                    exposureDate = exposureDate,
                     referenceNumberItem = referenceItem
                 )
                 Category.TWO_A, Category.TWO_B -> guidelines.guidelinesExposureDateKnown.getCategory2(
                     withinRange = daysBetweenEncounterAndNow < 4,
-                    exposureDatePlusFive = exposureDatePlusFive,
-                    exposureDatePlusTen = exposureDatePlusTen,
+                    exposureDate = exposureDate,
                     referenceNumberItem = referenceItem
                 )
                 Category.THREE_A, Category.THREE_B -> guidelines.guidelinesExposureDateKnown.getCategory3(
-                    exposureDatePlusFive = exposureDatePlusFive,
+                    exposureDate = exposureDate,
                     referenceNumberItem = referenceItem
                 )
                 else -> ""
