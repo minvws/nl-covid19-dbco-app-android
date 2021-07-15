@@ -28,6 +28,7 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
+import org.joda.time.tz.UTCProvider
 import java.lang.IllegalStateException
 
 @RunWith(MockitoJUnitRunner::class)
@@ -318,6 +319,18 @@ class ConfigRepositoryTest {
             category3 = "test"
         )
     )
+
+    @Test
+    fun `given a date and string with dynamic blocks, then return the correct formatted dates`() {
+        // given
+        DateTimeZone.setProvider(UTCProvider())
+        val localDate = LocalDate.parse("2021-07-15", DateFormats.dateInputData)
+        val input = "en {ExposureDate+10} en {ExposureDate+2} en {ExposureDate-1} en {ExposureDate-10} en {ExposureDate}"
+        val expected = "en 25 juli en 17 juli en 14 juli en 5 juli en 15 juli"
+
+        // then
+        Assert.assertEquals(expected, Guidelines.replaceExposureDateInstances(input, localDate))
+    }
 
     private fun createRepository(context: Context, api: DbcoApi, storage: SharedPreferences) =
         AppConfigRepository(
