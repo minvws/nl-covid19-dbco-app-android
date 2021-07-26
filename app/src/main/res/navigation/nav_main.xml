@@ -196,8 +196,8 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/toExplanationFragment"
-            app:destination="@id/ExplanationFragment"
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -212,8 +212,8 @@
         tools:layout="@layout/fragment_onboarding_flow_selection">
 
         <action
-            android:id="@+id/toExplanationFragment"
-            app:destination="@id/ExplanationFragment"
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -236,14 +236,12 @@
         tools:layout="@layout/fragment_fill_code">
 
         <action
-            android:id="@+id/to_onboardingPrivacyConsentFragment"
-            app:destination="@+id/onboardingPrivacyConsentFragment"
+            android:id="@+id/to_ExplanationFragment"
+            app:destination="@id/ExplanationFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/nav_main"
-            app:popUpToInclusive="true" />
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
 
@@ -388,6 +386,11 @@
         android:label="ExplanationFragment">
 
         <argument
+            android:name="canGoBack"
+            app:argType="boolean"
+            app:nullable="false" />
+
+        <argument
             android:name="flow"
             app:argType="integer"
             app:nullable="false" />
@@ -395,14 +398,6 @@
         <action
             android:id="@+id/toPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-
-        <action
-            android:id="@+id/toCodeFillFragment"
-            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentFillCodeBinding
+import nl.rijksoverheid.dbco.onboarding.OnboardingExplanationFragment.Companion.REGULAR_FLOW
 import nl.rijksoverheid.dbco.util.*
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingError
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingSuccess
@@ -60,7 +61,8 @@ class FillCodeFragment : BaseFragment(R.layout.fragment_fill_code), FillCodeFiel
                     binding.nextButton.postDelayed({
                         findNavController()
                             .navigate(
-                                FillCodeFragmentDirections.toOnboardingPrivacyConsentFragment(
+                                FillCodeFragmentDirections.toExplanationFragment(
+                                    flow = REGULAR_FLOW,
                                     canGoBack = false
                                 )
                             )

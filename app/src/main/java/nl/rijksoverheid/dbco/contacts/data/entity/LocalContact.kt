@@ -46,15 +46,16 @@ data class LocalContact(
 
     fun getDisplayName(): String {
         var result = ""
-        firstName?.let {
-            result += it
+        if (!firstName.isNullOrBlank()) {
+            result += firstName
         }
-        lastName?.let {
+        if (!lastName.isNullOrBlank()) {
             if (result.isNotEmpty()) {
                 result += " "
             }
-            result += it
+            result += lastName
         }
+
         return result
     }
 
