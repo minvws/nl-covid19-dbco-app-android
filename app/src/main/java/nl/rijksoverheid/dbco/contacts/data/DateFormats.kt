@@ -25,7 +25,7 @@ object DateFormats {
     val expiryData: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val informDate: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val exposureUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy").withLocale(Locale("nl"))
-    val informContactGuidelinesUI: DateTimeFormatter = DateTimeFormat.forPattern("d MMMM").withLocale(Locale("nl"))
+    val informContactGuidelinesUI: DateTimeFormatter = DateTimeFormat.forPattern("EEEE d MMMM").withLocale(Locale("nl"))
     val dateInputUI: DateTimeFormatter = DateTimeFormat.forPattern("dd MMMM yyyy").withLocale(Locale("nl"))
     val selfBcoDateCheck : DateTimeFormatter = DateTimeFormat.forPattern("EEEE d MMMM").withLocale(Locale("nl"))
     val selfBcoDateOnly : DateTimeFormatter = DateTimeFormat.forPattern("d MMMM").withLocale(Locale("nl"))

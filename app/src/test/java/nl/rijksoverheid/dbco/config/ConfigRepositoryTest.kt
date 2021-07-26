@@ -326,7 +326,7 @@ class ConfigRepositoryTest {
         DateTimeZone.setProvider(UTCProvider())
         val localDate = LocalDate.parse("2021-07-15", DateFormats.dateInputData)
         val input = "en {ExposureDate+10} en {ExposureDate+2} en {ExposureDate-1} en {ExposureDate-10} en {ExposureDate}"
-        val expected = "en 25 juli en 17 juli en 14 juli en 5 juli en 15 juli"
+        val expected = "en zondag 25 juli en zaterdag 17 juli en woensdag 14 juli en maandag 5 juli en donderdag 15 juli"
 
         // then
         Assert.assertEquals(expected, Guidelines.replaceExposureDateInstances(input, localDate))

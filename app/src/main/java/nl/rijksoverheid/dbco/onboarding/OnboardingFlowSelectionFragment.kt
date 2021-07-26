@@ -23,9 +23,7 @@ class OnboardingFlowSelectionFragment : BaseFragment(R.layout.fragment_onboardin
 
         binding.btnNext.setOnClickListener {
             findNavController().navigate(
-                OnboardingFlowSelectionFragmentDirections.toExplanationFragment(
-                    OnboardingExplanationFragment.REGULAR_FLOW
-                )
+                OnboardingFlowSelectionFragmentDirections.toCodeFillFragment()
             )
         }
 
