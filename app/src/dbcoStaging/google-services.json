@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "645386815351",
+    "project_id": "ggd-contact-staging-86c51",
+    "storage_bucket": "ggd-contact-staging-86c51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645386815351:android:2076f37379f351626c8372",
+        "android_client_info": {
+          "package_name": "nl.rijksoverheid.dbco.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645386815351-tpo3v4ikf9db9jkd6336qq0d35e6ihgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBenudHVkNP4RCXcsa-nRTHo95hHxT0nNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645386815351-tpo3v4ikf9db9jkd6336qq0d35e6ihgf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "645386815351-urasvqqvc7gbvll5m4qgvpdok7u8o09k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nl.rijksoverheid.dbco"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
