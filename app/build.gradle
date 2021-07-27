@@ -90,7 +90,7 @@ android {
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
             signingConfig signingConfigs.firebase
-            applicationIdSuffix ".acceptance"
+            applicationIdSuffix ".acc"
         }
 
         dbcoStaging {
