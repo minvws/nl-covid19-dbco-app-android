@@ -310,7 +310,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
     private fun showDidYouInformDialog() {
         val builder = MaterialAlertDialogBuilder(requireContext())
-        val name = viewModel.task.linkedContact?.getDisplayName()
+        val name = viewModel.task.linkedContact?.firstName
         val string = getString(
             R.string.contact_inform_prompt_title,
             if (!name.isNullOrBlank()) name else getString(R.string.inform_header_this_person)
