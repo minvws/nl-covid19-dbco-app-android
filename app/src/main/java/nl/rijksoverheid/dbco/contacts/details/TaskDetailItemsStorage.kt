@@ -86,7 +86,7 @@ class TaskDetailItemsStorage(
     private val distanceRiskItem = QuestionThreeOptionsItem(
         context = context,
         question = Question(
-            null,
+            context.getString(R.string.distance_risk_description),
             context.getString(R.string.distance_risk_label),
             QuestionType.ClassificationDetails,
             Group.Classification,
