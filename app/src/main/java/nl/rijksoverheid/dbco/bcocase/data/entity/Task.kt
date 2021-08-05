@@ -38,6 +38,9 @@ data class Task(
     val didInform: Boolean
         get() = informedByIndexAt != null
 
+    val shouldInform: Boolean
+        get() = communication != CommunicationType.Staff && !didInform && !notGoingToBeInformedByIndex
+
     fun hasEssentialData(): Boolean {
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false
         val hasNames =

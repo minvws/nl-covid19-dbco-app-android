@@ -29,9 +29,9 @@ class TaskItem(
             viewBinding.root.resources.getString(R.string.mycontacts_name_unknown)
         )
 
-        if (!task.hasEssentialData() || task.linkedContact == null) {
+        if (!task.hasEssentialData()) {
             setWarningStatus(viewBinding)
-        } else if (task.communication != Staff && (!task.didInform && !task.notGoingToBeInformedByIndex)) {
+        } else if (task.shouldInform) {
             setInformStatus(viewBinding)
         } else {
             setCompletionStatus(task.getPercentageCompletion(), viewBinding)

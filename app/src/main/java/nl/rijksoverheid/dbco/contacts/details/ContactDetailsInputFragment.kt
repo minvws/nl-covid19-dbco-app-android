@@ -196,7 +196,7 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
                     shouldCloseWithWarning || shouldCancelWithWarning -> showDeleteItemDialog(noRisk = true)
                     shouldCancel -> checkUnsavedChanges()
                     shouldClose -> findNavController().popBackStack()
-                    indexShouldInform() -> showDidYouInformDialog()
+                    viewModel.task.shouldInform -> showDidYouInformDialog()
                     else -> saveContact()
                 }
             }
@@ -477,13 +477,6 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             }
         }
         return finalAnswers
-    }
-
-    /**
-     * @return whether the index should be asked whether the contact was informed by the index
-     */
-    private fun indexShouldInform(): Boolean {
-        return viewModel.communicationType.value != Staff && !viewModel.task.didInform
     }
 
     private fun Task.isLocalAndSaved() = isLocal() && isSaved()
