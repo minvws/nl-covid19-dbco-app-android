@@ -143,6 +143,7 @@
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
     <string name="contact_inform_option_done">Ja</string>
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
+    <string name="contact_inform_action_inform_not">Ik informeer niet</string>
     <string name="contact_inform_action_inform_now">Nu doen</string>
     <string name="contact_disabled_prompt_title">Je kunt geen gegevens meer in de app aanpassen</string>
     <string name="contact_disabled_prompt_message">Neem contact op met de GGD om aanpassingen door te geven</string>
@@ -194,10 +195,11 @@
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
     <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
-    <string name="communication_context_staff_data">GGD gaat informeren</string>
+    <string name="communication_context_staff_data">De GGD informeert</string>
     <string name="communication_context_no_data">Vul gegevens aan</string>
     <string name="communication_context_index_not_informed">Informeer dit contact</string>
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
+    <string name="communication_context_index_informed_denied">Jij informeert niet</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>

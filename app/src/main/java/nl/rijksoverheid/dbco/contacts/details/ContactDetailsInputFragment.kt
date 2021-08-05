@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.contacts.details
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
@@ -46,6 +47,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.Category.NO_RISK
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
+import nl.rijksoverheid.dbco.databinding.FourOptionsDialogContentBinding
 import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import java.util.*
@@ -316,26 +318,39 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
             if (!name.isNullOrBlank()) name else getString(R.string.inform_header_this_person)
         )
         builder.setTitle(string)
-        builder.setMessage(R.string.contact_inform_prompt_message)
-        builder.setPositiveButton(R.string.contact_inform_option_done) { dialog, _ ->
+        val content = FourOptionsDialogContentBinding.inflate(LayoutInflater.from(context))
+        content.message.text = getString(R.string.contact_inform_prompt_message)
+        content.button1.text = getString(R.string.contact_inform_option_done)
+        content.button2.text = getString(R.string.contact_inform_action_inform_later)
+        content.button3.text = getString(R.string.contact_inform_action_inform_now)
+        content.button4.text = getString(R.string.contact_inform_action_inform_not)
+        builder.setView(content.root)
+        val dialog = builder.create()
+        content.button1.setOnClickListener {
             val date = LocalDateTime.now().toString(DateFormats.informDate)
             viewModel.task.informedByIndexAt = date
             dialog.dismiss()
             checkIfInformSectionComplete()
             saveContact()
         }
-        builder.setNeutralButton(R.string.contact_inform_action_inform_now) { dialog, _ ->
+        content.button2.setOnClickListener {
+            dialog.dismiss()
+            saveContact()
+
+        }
+        content.button3.setOnClickListener {
             dialog.dismiss()
             itemsStorage.informSection.isExpanded = true
             itemsStorage.classificationSection.isExpanded = false
             itemsStorage.contactDetailsSection.isExpanded = false
             binding.content.smoothScrollToPosition(adapter.itemCount - 1)
         }
-        builder.setNegativeButton(R.string.contact_inform_action_inform_later) { dialog, _ ->
+        content.button4.setOnClickListener {
+            viewModel.task.notGoingToBeInformedByIndex = true
             dialog.dismiss()
             saveContact()
         }
-        builder.create().show()
+        dialog.show()
     }
 
     private fun showDisabledDialog() {

@@ -31,6 +31,7 @@ data class Task(
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
     var informedByIndexAt: String? = null,
+    var notGoingToBeInformedByIndex: Boolean = false,
     var linkedContact: LocalContact? = null
 ) : JavaSerializable {
 

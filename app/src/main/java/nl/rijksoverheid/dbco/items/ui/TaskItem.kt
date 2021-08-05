@@ -31,7 +31,7 @@ class TaskItem(
 
         if (!task.hasEssentialData() || task.linkedContact == null) {
             setWarningStatus(viewBinding)
-        } else if (task.communication != Staff && !task.didInform) {
+        } else if (task.communication != Staff && (!task.didInform && !task.notGoingToBeInformedByIndex)) {
             setInformStatus(viewBinding)
         } else {
             setCompletionStatus(task.getPercentageCompletion(), viewBinding)
@@ -66,10 +66,10 @@ class TaskItem(
         viewBinding.indexContactState.setImageResource(R.drawable.ic_check_icon, R.string.completed)
         viewBinding.indexTaskProgress.isVisible = true
         viewBinding.indexTaskProgress.progress = progress
-        val subtext = if (task.communication == Staff) {
-            R.string.communication_context_staff_data
-        } else {
-            R.string.communication_context_index_informed
+        val subtext = when {
+            task.communication == Staff -> R.string.communication_context_staff_data
+            task.notGoingToBeInformedByIndex -> R.string.communication_context_index_informed_denied
+            else -> R.string.communication_context_index_informed
         }
         viewBinding.indexContactSubtitle.setText(subtext)
         viewBinding.indexContactSubtitle.setTextColor(
