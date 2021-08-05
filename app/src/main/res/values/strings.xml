@@ -90,6 +90,7 @@
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
     <string name="distance_risk_label">Zijn jullie die dag dicht bij elkaar geweest? (minder dan 1,5 meter)</string>
+    <string name="distance_risk_description">Let op: de vraag gaat over alle dagen dat jullie elkaar ontmoet hebben. Zijn jullie op een van deze dagen dicht bij elkaar geweest (minder dan 1,5 meter)?</string>
     <string name="distance_risk_answer_long">Ja, in totaal langer dan een kwartier</string>
     <string name="distance_risk_answer_short">Ja, in totaal korter dan een kwartier</string>
     <string name="distance_risk_answer_no">Nee, we hielden genoeg afstand</string>
