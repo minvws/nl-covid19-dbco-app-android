@@ -66,10 +66,29 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         super.onCreate(savedInstanceState)
 
         headerSection = Section().apply {
-            add(MemoryTipMyContactsItem(tasksViewModel.getStartOfContagiousPeriod()))
+            add(
+                HugeHeaderItem(
+                    getString(R.string.mycontacts_header),
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
         }
 
         footerSection = Section().apply {
+            add(
+                DividerItem(
+                    height = R.dimen.large_divider_height,
+                    verticalMargin = R.dimen.activity_vertical_margin,
+                    color = R.color.gray_lighter
+                )
+            )
+            add(MemoryTipMyContactsItem(tasksViewModel.getStartOfContagiousPeriod()))
+            add(ButtonItem(getString(R.string.add_contact), {
+                checkPermissionGoToTaskDetails(
+                    task = tasksViewModel.createEmptyContact(),
+                    newTask = true
+                )
+            }, type = ButtonType.BORDERLESS, horizontalMargin = R.dimen.activity_horizontal_margin))
             add(
                 FooterItem(
                     getString(R.string.mycontact_privacy_footer),
@@ -88,13 +107,12 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
             add(
                 ButtonItem(getString(R.string.mycontacts_delete_data), {
                     showLocalDeletionDialog()
-                }, type = ButtonType.DANGER)
+                }, type = ButtonType.DANGER, horizontalMargin = R.dimen.activity_horizontal_margin)
             )
         }
 
-        // pre-set header and footer section to show content even if no tasks are available
-        contentSection.setFooter(footerSection)
         contentSection.setHeader(headerSection)
+        contentSection.setFooter(footerSection)
 
         adapter.add(contentSection)
     }
@@ -143,19 +161,22 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         var error = false
         when (caseResult) {
             is CaseExpired -> {
-                binding.windowClosedView.visibility = View.VISIBLE
-                binding.sendButton.visibility = View.VISIBLE
+                binding.sendButtonHolder.isVisible = true
+                binding.windowClosedView.isVisible = true
                 binding.sendButton.setText(R.string.mycontacts_delete_data_button)
                 fillContentSection(caseResult.cachedCase)
             }
             is CaseError -> {
                 error = true
+                binding.sendButtonHolder.isVisible = false
                 fillContentSection(caseResult.cachedCase)
             }
             is CaseSuccess -> {
                 fillContentSection(caseResult.case)
                 if (isUserPaired()) {
                     binding.sendButtonHolder.isVisible = caseResult.case.canBeUploaded
+                } else {
+                    binding.sendButtonHolder.isVisible = true
                 }
             }
         }
@@ -214,7 +235,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     binding.pairingContainer.isVisible = false
                     toggleButtonStyle(isPairing = false)
                     binding.sendButton.text = getString(R.string.send_data)
-                    binding.sendButton.isVisible = true
                     tasksViewModel.syncData()
                     setupSendButton()
                 }
@@ -315,14 +335,7 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         val topSection = sections.first()
         val bottomSection = sections.last()
 
-        if (topSection.groupCount == 1) {
-            contentSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact(),
-                    newTask = true
-                )
-            }, type = ButtonType.BORDERLESS))
-        } else {
+        if (topSection.groupCount > 1) {
             contentSection.add(topSection)
         }
 
@@ -335,10 +348,24 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
 
     private fun createUploadedSections(case: Case): List<Section> {
         val notUploadedSection = Section().apply {
-            setHeader(SubHeaderItem(getString(R.string.mycontacts_not_uploaded_header)))
+            setHeader(
+                SubHeaderItem(
+                    getString(R.string.mycontacts_not_uploaded_header),
+                    horizontalMargin = R.dimen.activity_horizontal_margin,
+                    marginTop = R.dimen.activity_vertical_margin,
+                    marginBottom = R.dimen.list_spacing,
+                )
+            )
         }
         val uploadedSection = Section().apply {
-            setHeader(SubHeaderItem(getString(R.string.mycontacts_uploaded_header)))
+            setHeader(
+                SubHeaderItem(
+                    getString(R.string.mycontacts_uploaded_header),
+                    horizontalMargin = R.dimen.activity_horizontal_margin,
+                    marginTop = R.dimen.activity_vertical_margin,
+                    marginBottom = R.dimen.list_spacing,
+                )
+            )
         }
 
         case.tasks.forEach { task ->
@@ -352,23 +379,29 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 }
             }
         }
-        if (notUploadedSection.groupCount > 1) {
-            notUploadedSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact(),
-                    newTask = true
-                )
-            }, type = ButtonType.BORDERLESS))
-        }
         return listOf(notUploadedSection, uploadedSection)
     }
 
     private fun createNotUploadedSections(case: Case): List<Section> {
         val inProgressSection = Section().apply {
-            setHeader(SubHeaderItem(getString(R.string.mycontacts_in_progress_header)))
+            setHeader(
+                SubHeaderItem(
+                    getString(R.string.mycontacts_in_progress_header),
+                    marginTop = R.dimen.activity_vertical_margin,
+                    marginBottom = R.dimen.list_spacing,
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
         }
         val doneSection = Section().apply {
-            setHeader(SubHeaderItem(getString(R.string.mycontacts_done_header)))
+            setHeader(
+                SubHeaderItem(
+                    getString(R.string.mycontacts_done_header),
+                    marginTop = R.dimen.activity_vertical_margin,
+                    marginBottom = R.dimen.list_spacing,
+                    horizontalMargin = R.dimen.activity_horizontal_margin
+                )
+            )
         }
 
         case.tasks.forEach { task ->
@@ -385,14 +418,6 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                     }
                 }
             }
-        }
-        if (inProgressSection.groupCount > 1) {
-            inProgressSection.add(ButtonItem(getString(R.string.add_contact), {
-                checkPermissionGoToTaskDetails(
-                    task = tasksViewModel.createEmptyContact(),
-                    newTask = true
-                )
-            }, type = ButtonType.BORDERLESS))
         }
         return listOf(inProgressSection, doneSection)
     }

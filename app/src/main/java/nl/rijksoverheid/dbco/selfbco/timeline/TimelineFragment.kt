@@ -308,7 +308,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
     private fun handleInput() {
         markOnboardingAsComplete()
         saveInput()
-        findNavController().navigate(TimelineFragmentDirections.toMyContactsFragment())
+        findNavController().navigate(TimelineFragmentDirections.toMyContactsExplanationFragment())
     }
 
     private fun markOnboardingAsComplete() {
