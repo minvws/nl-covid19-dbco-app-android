@@ -72,6 +72,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/MyContactsExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsExplanationFragment"
+        android:label="MyContactsExplanationFragment">
+
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/myContactsFragment"
         android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsFragment"
         android:label="MyContactsFragment"
@@ -374,9 +391,13 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/to_myContactsFragment"
-            app:destination="@id/myContactsFragment"
+            android:id="@+id/to_myContactsExplanationFragment"
+            app:destination="@id/MyContactsExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/nav_main"
             app:popUpToInclusive="true" />
 
@@ -649,9 +670,13 @@
         android:label="TimelineFragment">
 
         <action
-            android:id="@+id/to_myContactsFragment"
-            app:destination="@id/myContactsFragment"
+            android:id="@+id/to_myContactsExplanationFragment"
+            app:destination="@id/MyContactsExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/nav_main"
             app:popUpToInclusive="true" />
 

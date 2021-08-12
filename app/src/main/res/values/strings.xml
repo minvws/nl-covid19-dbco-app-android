@@ -33,14 +33,14 @@
     <string name="generic_error_prompt_message">Controleer de internetverbinding en probeer het opnieuw.</string>
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
-    <string name="mycontacts_header">Mijn contacten</string>
+    <string name="mycontacts_header">Adviezen</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
     <string name="mycontacts_uploaded_header">Gedeeld met de GGD</string>
     <string name="mycontacts_not_uploaded_header">Nog niet gedeeld met de GGD</string>
-    <string name="mycontacts_in_progress_header">Ga hiermee aan de slag</string>
-    <string name="mycontacts_done_header">Dit is al gedaan</string>
+    <string name="mycontacts_in_progress_header">Beantwoord de vragen en bekijk de leefregels voor al jouw contacten</string>
+    <string name="mycontacts_done_header">Dit is al gedaan door de GGD of door jou</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
     <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
     <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
@@ -329,5 +329,7 @@
     <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
     <string name="mycontacts_delete_data">Verwijder gegevens</string>
+    <string name="mycontacts_explanation_title">Beantwoord een paar vragen over deze ontmoetingen</string>
+    <string name="mycontacts_explanation_summary">Het is belangrijk dat elke persoon het juiste advies krijgt. Vul daarom zo snel mogelijk de vragenlijst in, zodat je de gegevens kunt delen als je de GGD aan de telefoon hebt.</string>
     <string name="contact_item_add_hint">Voeg contact toe</string>
 </resources>

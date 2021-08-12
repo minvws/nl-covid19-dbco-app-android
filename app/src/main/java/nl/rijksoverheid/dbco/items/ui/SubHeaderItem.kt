@@ -18,7 +18,9 @@ import nl.rijksoverheid.dbco.util.margin
 
 class SubHeaderItem(
     private val text: String,
-    @DimenRes private val horizontalMargin: Int? = null
+    @DimenRes private val horizontalMargin: Int? = null,
+    @DimenRes private val marginTop: Int? = null,
+    @DimenRes private val marginBottom: Int? = null
 ) : BaseBindableItem<ItemSubHeaderBinding>() {
 
     override fun getLayout() = R.layout.item_sub_header
@@ -27,7 +29,12 @@ class SubHeaderItem(
         val context = viewBinding.root.context
         val spannableBuilder = HtmlHelper.buildSpannableFromHtml(text, context)
         viewBinding.content.text = spannableBuilder
-        viewBinding.content.margin(start = horizontalMargin, end = horizontalMargin)
+        viewBinding.content.margin(
+            start = horizontalMargin,
+            end = horizontalMargin,
+            top = marginTop,
+            bottom = marginBottom
+        )
     }
 
     override fun isSameAs(other: Item<*>): Boolean = other is SubHeaderItem && other.text == text

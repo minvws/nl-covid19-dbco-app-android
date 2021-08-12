@@ -53,7 +53,7 @@ class OnboardingPrivacyConsentFragment : BaseFragment(R.layout.fragment_onboardi
                 val direction = when (it) {
                     Symptoms -> OnboardingPrivacyConsentFragmentDirections.toSymptomSelectionFragment()
                     AddContacts -> OnboardingPrivacyConsentFragmentDirections.toSelfBcoPermissionFragment()
-                    MyTasks -> OnboardingPrivacyConsentFragmentDirections.toMyContactsFragment()
+                    MyTasks -> OnboardingPrivacyConsentFragmentDirections.toMyContactsExplanationFragment()
                 }
                 findNavController().navigate(direction)
             }
