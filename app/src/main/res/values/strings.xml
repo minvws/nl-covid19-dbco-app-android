@@ -244,9 +244,9 @@
     <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
     <string name="selfbco_roommates_alone_button_text">Ik woon alleen</string>
     <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
-    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
-    <string name="selfbco_timeline_explanation_step1">Bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
-    <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
+    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar:</string>
+    <string name="selfbco_timeline_explanation_step1">Mensen bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
+    <string name="selfbco_timeline_explanation_step2">Mensen met wie je fysiek contact hebt gehad</string>
     <string name="selfbco_timeline_explanation_step3"><![CDATA[Je hoeft <b>geen</b> mensen toe te voegen die je heel kort hebt ontmoet (zoals de kassamedewerker in een winkel)]]></string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>niet</b> nog een keer toe te voegen]]></string>
     <string name="selfbco_timeline_explanation_step5">Twijfel je? Voeg de persoon dan toch toe</string>
