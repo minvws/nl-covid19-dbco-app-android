@@ -115,9 +115,9 @@ class QuestionnaireSectionHeader(
     }
 
     private enum class Icon(val imageId: Int, val stringId: Int) {
-        ONE(R.drawable.ic_section_one, R.string.contact_section_icon_one),
-        TWO(R.drawable.ic_section_two, R.string.contact_section_icon_two),
-        THREE(R.drawable.ic_section_three, R.string.contact_section_icon_three),
+        ONE(R.drawable.ic_section_one, R.string.contact_section_step_one),
+        TWO(R.drawable.ic_section_two, R.string.contact_section_step_two),
+        THREE(R.drawable.ic_section_three, R.string.contact_section_step_three),
         VALID(R.drawable.ic_valid, R.string.completed)
     }
 

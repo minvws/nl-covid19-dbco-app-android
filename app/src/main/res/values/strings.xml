@@ -84,6 +84,8 @@
     <string name="contact_permission_summary">Zo kun je makkelijk contactgegevens aanvullen. Je bepaalt daarna zelf welke gegevens je met de GGD deelt. Wil je de app geen toegang geven? Dan kun je contactgegevens ook handmatig toevoegen.</string>
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
+    <string name="add_contact_edit_field_contentDescription">Contact</string>
+    <string name="add_contact_delete_contact_contentDescription">Verwijder contact</string>
     <!--    Contact details and questions-->
     <string name="unsaved_changes_title">Weet je zeker dat je wilt teruggaan?</string>
     <string name="unsaved_changes_message">De gegevens die je hebt ingevuld worden niet opgeslagen.</string>
@@ -130,9 +132,9 @@
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
-    <string name="contact_section_icon_one">Stap 1</string>
-    <string name="contact_section_icon_two">Stap 2</string>
-    <string name="contact_section_icon_three">Stap 3</string>
+    <string name="contact_section_step_one">Stap 1</string>
+    <string name="contact_section_step_two">Stap 2</string>
+    <string name="contact_section_step_three">Stap 3</string>
     <string name="contact_section_announcement_one">Je hebt stap 1 afgerond</string>
     <string name="contact_section_announcement_two">Je hebt stap 2 afgerond</string>
     <string name="contact_section_announcement_three">Je hebt stap 3 afgerond</string>
