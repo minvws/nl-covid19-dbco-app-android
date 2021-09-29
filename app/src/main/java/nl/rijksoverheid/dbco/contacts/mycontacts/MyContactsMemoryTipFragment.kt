@@ -49,8 +49,9 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
                 ParagraphItem(getString(R.string.mycontacts_memory_summary)),
                 // Section 1
                 HeaderIconItem(
-                    getString(R.string.mycontacts_memory_sectionheader1),
-                    R.drawable.ic_section_one
+                    text = getString(R.string.mycontacts_memory_sectionheader1),
+                    contentDescriptionPrefix = getString(R.string.contact_section_step_one),
+                    icon = R.drawable.ic_section_one
                 ),
                 ParagraphIconItem(getString(R.string.selfbco_memory_photos), R.drawable.ic_photos),
                 ParagraphIconItem(
@@ -71,8 +72,9 @@ class MyContactsMemoryTipFragment : BaseFragment(R.layout.fragment_mycontacts_me
                 ),
                 // Section 2
                 HeaderIconItem(
-                    getString(R.string.mycontacts_memory_sectionheader2),
-                    R.drawable.ic_section_two
+                    text = getString(R.string.mycontacts_memory_sectionheader2),
+                    contentDescriptionPrefix = getString(R.string.contact_section_step_two),
+                    icon = R.drawable.ic_section_two
                 ),
                 ParagraphItem(getString(R.string.selfbco_timeline_explanation_summary)),
                 ParagraphIconItem(
