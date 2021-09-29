@@ -54,6 +54,10 @@ class TimelineSection(
         val item = ContactInputItem(
             contactName = name,
             contactUuid = uuid,
+            contentDescriptionSuffix = context.getString(
+                R.string.add_contact_edit_field_contentDescription_date_suffix,
+                date.toString(DateFormats.selfBcoDateOnly)
+            ),
             focusOnBind = focusOnBind,
             contactNames = contactNames,
             trashListener = object : ContactInputItem.OnTrashClickedListener {
