@@ -85,6 +85,7 @@
     <string name="contact_picker_search_hint">Zoek een contact</string>
     <string name="contact_question_select_option">Kiezen</string>
     <string name="add_contact_edit_field_contentDescription">Contact</string>
+    <string name="add_contact_edit_field_contentDescription_date_suffix">toevoegen voor %s</string>
     <string name="add_contact_delete_contact_contentDescription">Verwijder contact</string>
     <!--    Contact details and questions-->
     <string name="unsaved_changes_title">Weet je zeker dat je wilt teruggaan?</string>
