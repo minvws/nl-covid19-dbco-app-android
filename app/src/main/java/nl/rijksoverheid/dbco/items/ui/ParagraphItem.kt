@@ -9,7 +9,6 @@ package nl.rijksoverheid.dbco.items.ui
 
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import androidx.annotation.DimenRes
 import androidx.core.view.ViewCompat
 import com.xwray.groupie.Item
