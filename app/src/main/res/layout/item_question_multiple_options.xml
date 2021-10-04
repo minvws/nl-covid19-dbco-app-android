@@ -11,9 +11,6 @@
 
     <data>
 
-        <variable
-            name="item"
-            type="nl.rijksoverheid.dbco.items.input.QuestionMultipleOptionsItem" />
     </data>
 
     <LinearLayout
@@ -31,7 +28,6 @@
             app:errorEnabled="true">
 
             <AutoCompleteTextView
-                android:id="@+id/input_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"

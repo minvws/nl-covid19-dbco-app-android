@@ -23,7 +23,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode project.getVersionCode()
-        versionName '1.1.0.' + project.getVersionCode()
+        versionName '1.2.0.' + project.getVersionCode()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -62,18 +62,6 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        localDev {
-            dimension "environment"
-            buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
-            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
-            buildConfigField "boolean", "FEATURE_LOGGING", "true"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
-            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\""
-            manifestPlaceholders = [appLabel: "@string/app_name"]
-            apply plugin: 'com.google.gms.google-services'
-            apply plugin: 'com.google.firebase.crashlytics'
-        }
 
         dbcoTest {
             dimension "environment"
@@ -87,6 +75,7 @@ android {
             signingConfig signingConfigs.firebase
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
+            applicationIdSuffix ".test"
         }
 
         dbcoAcc {
@@ -101,6 +90,22 @@ android {
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
             signingConfig signingConfigs.firebase
+            applicationIdSuffix ".acc"
+        }
+
+        dbcoStaging {
+            dimension "environment"
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
+            buildConfigField "boolean", "FEATURE_LOGGING", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"09ylocqm26msveC4yb3Yma6s3s+qqM+lmtykzsLDm5rCqqyouKqX3pbfr9o=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://api-staging.bco-portaal.nl/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
+            signingConfig signingConfigs.firebase
+            applicationIdSuffix ".staging"
         }
 
         dbcoProd {
@@ -129,9 +134,9 @@ android {
 
 easylauncher {
     productFlavors {
-        localDev { filters chromeLike(label: "DEV") }
         dbcoTest { filters chromeLike(label: "TEST") }
         dbcoAcc { filters chromeLike(label: "ACC") }
+        dbcoStaging { filters chromeLike(label: "STAGING") }
         dbcoProd { filters chromeLike(label: "PROD") }
     }
     variants {

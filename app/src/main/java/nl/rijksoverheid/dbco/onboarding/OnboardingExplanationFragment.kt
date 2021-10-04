@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.onboarding
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
@@ -24,6 +25,8 @@ class OnboardingExplanationFragment : BaseFragment(R.layout.fragment_onboarding_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentOnboardingExplanationBinding.bind(view)
+
+        initToolbar(binding)
 
         binding.onboardingHeader.text = if (args.flow == REGULAR_FLOW) {
             getString(R.string.normal_flow_explanation_title)
@@ -41,18 +44,17 @@ class OnboardingExplanationFragment : BaseFragment(R.layout.fragment_onboarding_
         )
 
         binding.btnNext.setOnClickListener {
-            if (args.flow == REGULAR_FLOW) {
-                findNavController().navigate(OnboardingExplanationFragmentDirections.toCodeFillFragment())
-            } else {
-                findNavController().navigate(
-                    OnboardingExplanationFragmentDirections.toPrivacyConsentFragment(
-                        canGoBack = true
-                    )
+            findNavController().navigate(
+                OnboardingExplanationFragmentDirections.toPrivacyConsentFragment(
+                    canGoBack = true
                 )
-            }
+            )
         }
+    }
 
+    private fun initToolbar(binding: FragmentOnboardingExplanationBinding) {
         binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.appbar.isVisible = args.canGoBack
     }
 
     companion object {

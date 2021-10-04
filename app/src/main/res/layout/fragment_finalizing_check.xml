@@ -31,6 +31,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/appbar"
             android:fillViewport="true"
+            android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
@@ -56,30 +57,24 @@
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:clipToPadding="false"
-                    android:paddingHorizontal="@dimen/activity_horizontal_margin"
-                    android:paddingBottom="32dp"
+                    android:overScrollMode="never"
+                    android:paddingBottom="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <FrameLayout
-                    android:id="@+id/send_button_holder"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white">
+                    android:layout_marginHorizontal="16dp"
+                    android:text="@string/finalize_check_contact_description"
+                    android:textSize="@dimen/onboarding_subtext_textsize"
+                    app:accessibilityHeading="@{true}" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_gravity="top"
-                        android:background="@color/gray_lighter" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/send_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:text="@string/send_data" />
-
-                </FrameLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/send_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="@string/finalize_check_send" />
 
             </LinearLayout>
 

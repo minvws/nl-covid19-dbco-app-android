@@ -23,7 +23,6 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentSelfbcoExplanationBinding.bind(view)
 
-
         // Setup back button
         binding.toolbar.backButton.setOnClickListener {
             findNavController().popBackStack()
@@ -34,7 +33,8 @@ class SelfBcoExplanationFragment : BaseFragment(R.layout.fragment_selfbco_explan
         binding.btnNext.setOnClickListener {
             findNavController().navigate(
                 SelfBcoExplanationFragmentDirections.toExplanationFragment(
-                    OnboardingExplanationFragment.SELF_BCO_FLOW
+                    flow = OnboardingExplanationFragment.SELF_BCO_FLOW,
+                    canGoBack = true
                 )
             )
         }

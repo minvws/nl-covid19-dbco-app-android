@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-    <!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
   ~   Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
   ~
@@ -34,14 +33,14 @@
     <string name="generic_error_prompt_message">Controleer de internetverbinding en probeer het opnieuw.</string>
     <!--    My contacts-->
     <string name="about_app_title">Over de app</string>
-    <string name="mycontacts_header">Mijn contacten</string>
+    <string name="mycontacts_header">Adviezen</string>
     <string name="mycontacts_add_contact">Contact toevoegen</string>
     <string name="mycontacts_grant_permission">Geef toegang</string>
     <string name="mycontacts_deny_permission">Ik doe alles met de hand</string>
     <string name="mycontacts_uploaded_header">Gedeeld met de GGD</string>
     <string name="mycontacts_not_uploaded_header">Nog niet gedeeld met de GGD</string>
-    <string name="mycontacts_in_progress_header">Ga hiermee aan de slag</string>
-    <string name="mycontacts_done_header">Dit is al gedaan</string>
+    <string name="mycontacts_in_progress_header">Beantwoord de vragen en bekijk de leefregels voor al jouw contacten</string>
+    <string name="mycontacts_done_header">Dit is al gedaan door de GGD of door jou</string>
     <string name="mycontacts_name_unknown">Geen naam bekend</string>
     <string name="mycontacts_delete_data_title">Wil je de gegevens verwijderen?</string>
     <string name="mycontacts_delete_data_summary">Zo worden alle gegevens verwijderd van de contacten die in deze app staan.</string>
@@ -90,7 +89,8 @@
     <string name="unsaved_changes_message">De gegevens die je hebt ingevuld worden niet opgeslagen.</string>
     <!--    Classification questions-->
     <string name="lived_together_risk_label">Woon je in hetzelfde huis?</string>
-    <string name="distance_risk_label">Zijn jullie die dag dicht bij elkaar geweest? (minder dan 1,5 meter)</string>
+    <string name="distance_risk_label">Zijn jullie die dag(en) dicht bij elkaar geweest? (minder dan 1,5 meter)</string>
+    <string name="distance_risk_description">Let op: de vraag gaat over een of meerdere dagen dat jullie elkaar ontmoet hebben. Zijn jullie toen dicht bij elkaar geweest (minder dan 1,5 meter)?</string>
     <string name="distance_risk_answer_long">Ja, in totaal langer dan een kwartier</string>
     <string name="distance_risk_answer_short">Ja, in totaal korter dan een kwartier</string>
     <string name="distance_risk_answer_no">Nee, we hielden genoeg afstand</string>
@@ -100,7 +100,9 @@
     <string name="contact_section_typeofcontact_header">Over de ontmoeting</string>
     <string name="contact_section_typeofcontact_subtext">Beantwoord een paar vragen</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
+    <string name="contact_section_contactdetails_extra_info">Vul de gegevens in die je nu weet. Gegevens die je nog niet hebt kun je later toevoegen.</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
+    <string name="contact_section_contactdetails_subtext_disabled">Vul eerst stap 1 in</string>
     <string name="contact_section_classification_header">Soort contact</string>
     <string name="contact_section_classification_subtext">Vragen over jullie ontmoeting</string>
     <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
@@ -124,6 +126,7 @@
     <!--    Inform section-->
     <string name="contact_section_inform_header">Informatie voor dit contact</string>
     <string name="contact_section_inform_subtext">De leefregels voor deze persoon</string>
+    <string name="contact_section_inform_subtext_disabled">Vul eerst stap 1 in</string>
     <string name="contact_section_inform_copy">Kopieer leefregels</string>
     <string name="contact_section_inform_copied">Gekopieerd</string>
     <string name="contact_section_inform_call">Bel %s</string>
@@ -137,10 +140,11 @@
     <string name="inform_contact_title_staff"><![CDATA[Je hebt met de GGD afgesproken dat zij %s informeren. Je kunt natuurlijk wel zelf alvast de leefregels delen.]]></string>
     <string name="inform_contact_title_unknown"><![CDATA[De GGD raadt aan om %s alvast te informeren en deze leefregels te delen.]]></string>
     <string name="inform_header"><![CDATA[Dit zijn de leefregels voor %s:]]></string>
-    <string name="contact_inform_prompt_title">Heb jij %s geinformeerd en de leefregels gedeeld?</string>
+    <string name="contact_inform_prompt_title">Heb jij %s geïnformeerd?</string>
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
     <string name="contact_inform_option_done">Ja</string>
     <string name="contact_inform_action_inform_later">Nee, doe ik later</string>
+    <string name="contact_inform_action_inform_not">Ik informeer niet</string>
     <string name="contact_inform_action_inform_now">Nu doen</string>
     <string name="contact_disabled_prompt_title">Je kunt geen gegevens meer in de app aanpassen</string>
     <string name="contact_disabled_prompt_message">Neem contact op met de GGD om aanpassingen door te geven</string>
@@ -192,10 +196,11 @@
     <string name="question_locked_summary">Ingevuld door een GGD-medewerker</string>
     <string name="no_exposure_risk_title">Je hoeft geen gegevens te delen van deze persoon</string>
     <string name="no_exposure_risk_summary">Jullie waren namelijk bij elkaar in de buurt toen je nog niet besmettelijk was</string>
-    <string name="communication_context_staff_data">GGD gaat informeren</string>
+    <string name="communication_context_staff_data">De GGD informeert</string>
     <string name="communication_context_no_data">Vul gegevens aan</string>
     <string name="communication_context_index_not_informed">Informeer dit contact</string>
     <string name="communication_context_index_informed">Jij hebt geïnformeerd</string>
+    <string name="communication_context_index_informed_denied">Jij informeert niet</string>
     <string name="communication_context_blank"></string>
     <string name="inform_header_this_person">deze persoon</string>
     <string name="submit_window_ended_explanation">De periode voor het delen van gegevens met de GGD is afgelopen.</string>
@@ -233,15 +238,15 @@
     <string name="selfbco_date_negative_covid_title">Wanneer was de laatste negatieve coronatest voordat je ontdekte dat je corona hebt?</string>
     <string name="selfbco_date_negative_covid_summary"><![CDATA[Dit is een coronatest van de GGD waaruit bleek dat je <b>geen</b> corona had. Je hebt deze test gedaan tussen %s en je positieve test. Let op: een zelftest telt niet mee.]]></string>
     <string name="selfbco_date_symptoms_title">Sinds wanneer heb je deze klachten?</string>
-    <string name="selfbco_date_symptoms_summary">Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
+    <string name="selfbco_date_symptoms_summary">Kies een datum voordat je de coronatest deed. Twijfel je over je eerste ziektedag? Kies dan een dag eerder.</string>
     <string name="selfbco_not_sure">Ik weet het niet</string>
     <string name="selfbco_roommates_header">Wie zijn je huisgenoten?</string>
     <string name="selfbco_roommates_summary">Dit zijn de mensen met wie je in één huis woont.</string>
     <string name="selfbco_roommates_alone_button_text">Ik woon alleen</string>
     <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
-    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar mensen met wie je:</string>
-    <string name="selfbco_timeline_explanation_step1">Bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
-    <string name="selfbco_timeline_explanation_step2">Intens contact hebt  gehad door zoenen of seksueel contact</string>
+    <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar:</string>
+    <string name="selfbco_timeline_explanation_step1">Mensen bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
+    <string name="selfbco_timeline_explanation_step2">Mensen met wie je fysiek contact hebt gehad</string>
     <string name="selfbco_timeline_explanation_step3"><![CDATA[Je hoeft <b>geen</b> mensen toe te voegen die je heel kort hebt ontmoet (zoals de kassamedewerker in een winkel)]]></string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>niet</b> nog een keer toe te voegen]]></string>
     <string name="selfbco_timeline_explanation_step5">Twijfel je? Voeg de persoon dan toch toe</string>
@@ -289,7 +294,9 @@
     <string name="selfbco_had_symptoms">Ik had ook die dag klachten</string>
     <string name="selfbco_covid_had_symptoms">Ik had toch klachten</string>
     <string name="selfbco_no_symptoms">Geen klachten</string>
-    <string name="finalize_check_contact_header">Bijna klaar. Je gaat de gegevens delen met de GGD. Wil je dit nu doen?</string>
+    <string name="finalize_check_contact_header">Bijna klaar. Controleer bij deze personen of je nog iets kunt doen:</string>
+    <string name="finalize_check_contact_description">Hoe meer gegevens je aanvult, hoe sneller het bron- en contactonderzoek gaat. Heb je alles gedaan wat je nu kunt doen? En alle gegevens aangevuld die je weet? Dan kun je de gegevens delen.</string>
+    <string name="finalize_check_send">Nu delen</string>
     <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>
     <string name="permission_summary">Zo kun je snel de gegevens van dit contact aanvullen. Je bepaalt altijd zelf welke gegevens je met de GGD deelt.</string>
     <string name="no_add_manually">Nee, zelf toevoegen</string>
@@ -322,5 +329,7 @@
     <string name="mycontacts_memory_section3_summary">Denk hierbij aan plekken die je voor je werk bezoekt, horeca, sportverenigingen en andere plekken waar je met meer dan 10 mensen was.</string>
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
     <string name="mycontacts_delete_data">Verwijder gegevens</string>
+    <string name="mycontacts_explanation_title">Beantwoord een paar vragen over deze ontmoetingen</string>
+    <string name="mycontacts_explanation_summary">Het is belangrijk dat elke persoon het juiste advies krijgt. Vul daarom zo snel mogelijk de vragenlijst in, zodat je de gegevens kunt delen als je de GGD aan de telefoon hebt.</string>
     <string name="contact_item_add_hint">Voeg contact toe</string>
 </resources>
