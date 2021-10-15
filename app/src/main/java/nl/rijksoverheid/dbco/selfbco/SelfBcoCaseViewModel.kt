@@ -17,6 +17,8 @@ import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.bcocase.data.entity.TaskType
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import org.joda.time.LocalDate
 import java.util.*
 
@@ -98,11 +100,33 @@ class SelfBcoCaseViewModel(
     }
 
     /**
+     * @return whether the start of contagious period is too far in the past
+     */
+    fun isStartOfContagiousPeriodTooFarInPast(): Boolean {
+        val maxHistoryTested = 15 // no more than 14 days in past
+        val maxHistorySymptoms = 13 // no more than 12 days in past
+        val window = if (testedOrSymptoms == COVID_CHECK_FLOW) {
+            maxHistoryTested
+        } else {
+            maxHistorySymptoms
+        }
+        return !getStartOfContagiousPeriod().isAfter(LocalDate.now().minusDays(window))
+    }
+
+    /**
+     * @return the start of the contagious period for which the index is allowed
+     * to enter data
+     */
+    fun getStartOfAllowedContagiousPeriod(): LocalDate {
+        return tasksRepository.getStartOfAllowedContagiousPeriod() ?: LocalDate.now()
+    }
+
+    /**
      * @return the start date of the flow, can be either the start of symptoms
      * or the date the index has been tested depending on previous answers
      */
     fun getStartDate(): LocalDate {
-        return if (getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+        return if (getTypeOfFlow() == SYMPTOM_CHECK_FLOW) {
             getDateOfSymptomOnset()
         } else {
             getDateOfTest()

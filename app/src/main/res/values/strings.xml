@@ -124,6 +124,7 @@
     <string name="hint_first_name">Voornaam</string>
     <string name="hint_last_name">Achternaam</string>
     <string name="contact_information_last_exposure_label">Wanneer was de laatste ontmoeting?</string>
+    <string name="contact_information_last_exposure_explanation">We vragen alleen naar je contacten van de afgelopen 14 dagen. Daarom kun je geen datum van daarvoor kiezen.</string>
     <string name="contact_information_last_exposure_earlier">Eerder</string>
     <string name="contact_information_last_exposure_every_day">Bijna iedere dag</string>
     <!--    Inform section-->
@@ -232,6 +233,10 @@
     <string name="selfbco_checkdate_covid_title">Weet je zeker dat je geen klachten hebt die passen bij corona?</string>
     <string name="selfbco_checkdate_summary">Ook lichtere klachten zoals een snotneus of vermoeidheid tellen mee.</string>
     <string name="selfbco_date_title">Kies een datum</string>
+    <string name="selfbco_date_old_dialog_title">Weet je zeker dat de datum klopt?</string>
+    <string name="selfbco_date_old_dialog_description">%s is al een tijdje geleden.</string>
+    <string name="selfbco_date_old_dialog_yes">Ja, verder</string>
+    <string name="selfbco_date_old_dialog_no">Nee, terug</string>
     <string name="selfbco_date_covid_title">Wanneer heb je je laten testen op corona?</string>
     <string name="selfbco_date_covid_summary">Kies de datum waarop je de (laatste) coronatest hebt gedaan.</string>
     <string name="selfbco_date_symptoms_positive_test_title">Wanneer was de test waaruit bleek dat je corona hebt?</string>
@@ -253,6 +258,7 @@
     <string name="selfbco_timeline_explanation_step3"><![CDATA[Je hoeft <b>geen</b> mensen toe te voegen die je heel kort hebt ontmoet (zoals de kassamedewerker in een winkel)]]></string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>niet</b> nog een keer toe te voegen]]></string>
     <string name="selfbco_timeline_explanation_step5">Twijfel je? Voeg de persoon dan toch toe</string>
+    <string name="selfbco_timeline_explanation_cap">Je kunt alleen mensen toevoegen die je in de afgelopen 14 dagen hebt ontmoet.</string>
     <string name="selfbco_symptoms_explanation_title">Ziektedag bepalen</string>
     <string name="selfbco_symptoms_explanation_header_1">Je hebt chronische klachten</string>
     <string name="selfbco_symptoms_explanation_description_1">Werden je klachten erger voordat je de coronatest deed? Zo ja, wanneer kreeg je de klachten? Kies die dag als eerste ziektedag.</string>
@@ -263,6 +269,7 @@
     <string name="selfbco_timeline_summary_more">Wat deel ik precies met de GGD?</string>
     <string name="selfbco_timeline_error_header">Je hebt niet aan iedere dag contacten toegevoegd</string>
     <string name="selfbco_timeline_error_message">Klopt het dat je deze dag(en) niemand hebt ontmoet?\n \n%s</string>
+    <string name="selfbco_timeline_cap">We vragen alleen naar je contacten van de afgelopen 14 dagen. Daarom kun je geen datum van daarvoor kiezen.</string>
     <string name="selfbco_timeline_today_date">Vandaag (%s)</string>
     <string name="selfbco_timeline_yesterday_date">Gisteren (%s)</string>
     <string name="selfbco_timeline_day_before_yesterday_date">Eergisteren (%s)</string>

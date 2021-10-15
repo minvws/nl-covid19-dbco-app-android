@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.CategoryHolder
 data class Question(
     val description: String? = null,
     val label: String? = null,
+    val explanation: String? = null,
     val questionType: QuestionType? = null,
     val group: Group? = null,
     val answerOptions: List<AnswerOption?>? = null
