@@ -30,7 +30,7 @@ class SelfBcoCaseViewModel(
     private val appConfigRepository: AppConfigRepository
 ) : ViewModel() {
 
-    private var testedOrSymptoms = SelfBcoConstants.COVID_CHECK_FLOW
+    private var testedOrSymptoms = COVID_CHECK_FLOW
 
     /**
      * @return the list of symptoms an index can select
