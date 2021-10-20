@@ -32,7 +32,7 @@ import nl.rijksoverheid.dbco.items.input.ButtonItem
 import nl.rijksoverheid.dbco.items.input.ButtonType
 import nl.rijksoverheid.dbco.items.ui.*
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.Days
@@ -62,7 +62,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         contactNames.clear()
         val content = Section()
 
-        firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
+        firstDayInTimeLine = selfBcoViewModel.getStartOfAllowedContagiousPeriod()
 
         val state: State = State.fromBundle(savedInstanceState) ?: State(
             selfBcoViewModel.getTimelineContacts().map {
@@ -129,7 +129,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         binding.content.adapter = adapter
 
-        setFooterForContent(content)
+        setFooterForContent(content, !selfBcoViewModel.isStartOfContagiousPeriodTooFarInPast())
     }
 
     private fun createHeader(): StringHeaderItem {
@@ -149,7 +149,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
         selfBcoViewModel.updateDateOfSymptomOnset(newSymptomOnsetDate)
 
-        firstDayInTimeLine = selfBcoViewModel.getStartOfContagiousPeriod()
+        firstDayInTimeLine = selfBcoViewModel.getStartOfAllowedContagiousPeriod()
 
         val section = createTimelineSection(
             date = firstDayInTimeLine,
@@ -162,7 +162,7 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         sections.add(section)
         content.add(section)
         setHeaderForContent(content)
-        setFooterForContent(content)
+        setFooterForContent(content, !selfBcoViewModel.isStartOfContagiousPeriodTooFarInPast())
         binding.content.smoothScrollToPosition(adapter.itemCount)
     }
 
@@ -228,9 +228,9 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         content.add(0, createHeader())
     }
 
-    private fun setFooterForContent(content: Section) {
+    private fun setFooterForContent(content: Section, allowExtraDays: Boolean) {
         val groups = mutableListOf<Group>()
-        if (selfBcoViewModel.getTypeOfFlow() == SelfBcoConstants.SYMPTOM_CHECK_FLOW) {
+        if (selfBcoViewModel.getTypeOfFlow() == SYMPTOM_CHECK_FLOW && allowExtraDays) {
             groups.add(
                 SubHeaderItem(
                     getString(
@@ -245,6 +245,13 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
                     getString(R.string.selfbco_add_extra_day),
                     { addExtraDay(content) },
                     type = ButtonType.LIGHT
+                )
+            )
+        } else {
+            groups.add(
+                ParagraphIconItem(
+                    text = getString(R.string.selfbco_timeline_cap),
+                    icon = R.drawable.ic_error_purple_small
                 )
             )
         }

@@ -64,11 +64,11 @@ class TaskDetailItemsStorage(
     private val sameHouseholdRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.lived_together_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = null,
+            label = context.getString(R.string.lived_together_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_no), false.toString()),
                 AnswerOption(context.getString(R.string.answer_yes), true.toString())
             )
@@ -86,11 +86,11 @@ class TaskDetailItemsStorage(
     private val distanceRiskItem = QuestionThreeOptionsItem(
         context = context,
         question = Question(
-            context.getString(R.string.distance_risk_description),
-            context.getString(R.string.distance_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = context.getString(R.string.distance_risk_description),
+            label = context.getString(R.string.distance_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(
                     context.getString(R.string.distance_risk_answer_long),
                     "true, true"
@@ -118,11 +118,11 @@ class TaskDetailItemsStorage(
     private val physicalContactRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            context.getString(R.string.physical_risk_description),
-            context.getString(R.string.physical_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = context.getString(R.string.physical_risk_description),
+            label = context.getString(R.string.physical_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
                 AnswerOption(context.getString(R.string.answer_know_no), false.toString())
             )
@@ -139,11 +139,11 @@ class TaskDetailItemsStorage(
     private val sameRoomRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.same_room_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = null,
+            label = context.getString(R.string.same_room_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
                 AnswerOption(context.getString(R.string.answer_think_no), false.toString())
             )
@@ -251,12 +251,13 @@ class TaskDetailItemsStorage(
     val dateOfLastExposureItem = QuestionMultipleOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.contact_information_last_exposure_label),
-            QuestionType.Multiplechoice,
-            Group.ContactDetails,
-            mutableListOf<AnswerOption>().apply {
-                viewModel.getStartOfContagiousPeriod()?.let {
+            description = null,
+            label = context.getString(R.string.contact_information_last_exposure_label),
+            explanation = context.getString(R.string.contact_information_last_exposure_explanation),
+            questionType = QuestionType.Multiplechoice,
+            group = Group.ContactDetails,
+            answerOptions = mutableListOf<AnswerOption>().apply {
+                viewModel.getEarliestExposureDateOption()?.let {
 
                     add(
                         AnswerOption(

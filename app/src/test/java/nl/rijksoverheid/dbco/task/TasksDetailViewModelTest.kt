@@ -578,18 +578,18 @@ class TasksDetailViewModelTest {
     }
 
     @Test
-    fun `when repository has start of contagious period, when start date is fetched, then it should be the same`() {
+    fun `when repository has start of allowed contagious period, when earliest exposure date is fetched, then it should be the same`() {
         // given
         val tasksMock = mockk<ICaseRepository>()
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
         val date = LocalDate.now(DateTimeZone.UTC)
-        every { tasksMock.getStartOfContagiousPeriod() } returns date
+        every { tasksMock.getStartOfAllowedContagiousPeriod() } returns date
 
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
 
         // then
-        Assert.assertEquals(viewModel.getStartOfContagiousPeriod(), date)
+        Assert.assertEquals(viewModel.getEarliestExposureDateOption(), date)
     }
 
     @Test

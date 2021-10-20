@@ -236,6 +236,12 @@ class CaseRepository(
         }
     }
 
+    override fun getStartOfAllowedContagiousPeriod(): LocalDate? {
+        val date = getStartOfContagiousPeriod()
+        val maxHistory = LocalDate.now().minusDays(14)
+        return if (date?.isBefore(maxHistory) == true) maxHistory else date
+    }
+
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {
         val new = _case.copy(dateOfSymptomOnset = dateOfSymptomOnset)
         persistCase(

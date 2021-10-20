@@ -87,6 +87,9 @@ class QuestionMultipleOptionsItem(
             viewBinding.requireEditText().isEnabled = isEnabled
             viewBinding.questionLockedDescription.isVisible = false
         }
+
+        viewBinding.questionExplanationContainer.isVisible = question?.explanation != null
+        viewBinding.questionExplanation.text = question?.explanation
     }
 
     override fun unbind(viewHolder: GroupieViewHolder<ItemQuestionMultipleOptionsBinding>) {

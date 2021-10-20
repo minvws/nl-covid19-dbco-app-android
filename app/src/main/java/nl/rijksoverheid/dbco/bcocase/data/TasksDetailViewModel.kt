@@ -88,7 +88,7 @@ class TasksDetailViewModel(
 
     fun hasCaseReference(): Boolean = tasksRepository.getCaseReference() != null
 
-    fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
+    fun getEarliestExposureDateOption(): LocalDate? = tasksRepository.getStartOfAllowedContagiousPeriod()
 
     fun saveTask() {
         tasksRepository.saveTask(
