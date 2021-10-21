@@ -317,7 +317,9 @@
     <string name="selfbco_reverse_pairing_title">Koppel de app met de GGD om je gegevens te delen</string>
     <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens delen.</string>
     <string name="selfbco_reverse_pairing_step_1_title">Geef deze code door aan de GGD-medewerker:</string>
+    <string name="selfbco_reverse_pairing_step_1_content_description">Stap 1: geef deze code door aan de GGD-medewerker:</string>
     <string name="selfbco_reverse_pairing_step_2_title">Wacht tot de GGD-medewerker de code heeft ingevoerd</string>
+    <string name="selfbco_reverse_pairing_step_2_content_description">Stap 2: wacht tot de GGD-medewerker de code heeft ingevoerd</string>
     <string name="selfbco_reverse_pairing_step_2_subtitle">Wil je ondertussen nog gegevens aanvullen? Dan kun je dit scherm sluiten.</string>
     <string name="selfbco_reverse_pairing_pairing">Wachten op GGD-medewerker</string>
     <string name="selfbco_reverse_pairing_pairing_waiting">Wachten op koppeling met de GGD</string>
