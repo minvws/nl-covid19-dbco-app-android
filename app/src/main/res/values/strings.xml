@@ -117,8 +117,8 @@
     <string name="answer_know_no">Nee, zeker niet</string>
     <string name="answer_think_no">Nee, denk het niet</string>
     <!--    Fields-->
-    <string name="hint_phone_number">Telefoonnummer</string>
-    <string name="hint_phone_number_multiple">Selecteer telefoonnummer</string>
+    <string name="hint_phone_number">Telefoonnummer (bij voorkeur mobiel)</string>
+    <string name="hint_phone_number_multiple">Selecteer (mobiel) telefoonnummer</string>
     <string name="hint_email_address">E-mailadres</string>
     <string name="hint_email_address_multiple">Selecteer e-mailadres</string>
     <string name="hint_first_name">Voornaam</string>
