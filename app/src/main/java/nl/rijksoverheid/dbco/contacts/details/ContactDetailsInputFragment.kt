@@ -49,8 +49,10 @@ import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
 import nl.rijksoverheid.dbco.databinding.FourOptionsDialogContentBinding
 import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
+import nl.rijksoverheid.dbco.onboarding.OnboardingPrivacyConsentFragment
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
+import java.io.Serializable
 import java.util.*
 
 class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input) {
@@ -74,7 +76,12 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
 
         if (savedInstanceState == null) {
             taskDetailViewModel.init(args.indexTaskUuid)
+        } else {
+            State.fromBundle(savedInstanceState)?.taskId?.let {
+                taskDetailViewModel.init(taskId = it)
+            }
         }
+
         initToolbar()
         initContent()
         initItemStorage(
@@ -91,6 +98,13 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
         if (!args.enabled) {
             showDisabledDialog()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (!requireActivity().isChangingConfigurations) {
+            getState()?.addToBundle(outState)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     private fun initToolbar() {
@@ -486,4 +500,27 @@ class ContactDetailsInputFragment : BaseFragment(R.layout.fragment_contact_input
     private fun Task.isLocalAndSaved() = isLocal() && isSaved()
 
     private fun Task.isLocalAndNotSaved() = isLocal() && !isSaved()
+
+    private fun getState(): State? {
+        return if (::binding.isInitialized) {
+            State(taskDetailViewModel.task.uuid!!)
+        } else null
+    }
+
+    private data class State(
+        val taskId: String
+    ) : Serializable {
+
+        fun addToBundle(bundle: Bundle) {
+            bundle.putSerializable(STATE_KEY, this)
+        }
+
+        companion object {
+            private const val STATE_KEY = "ContactDetailsInputFragment_State"
+
+            fun fromBundle(bundle: Bundle?): State? {
+                return bundle?.getSerializable(STATE_KEY) as? State
+            }
+        }
+    }
 }
