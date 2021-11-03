@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.onboarding
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.accessibility.AccessibilityEvent
@@ -40,36 +41,34 @@ class FillCodeField : androidx.appcompat.widget.AppCompatEditText {
         fun onTextChanged(field: FillCodeField, string: CharSequence?)
     }
 
-    var separator: String = "-"
+    var groupSeparator: String = "-"
 
-    var maxLength: Int = 12
+    var maxDigits: Int = 12
 
-    var groupSize: Int = 4
+    var digitsPerGroup: Int = 4
 
     var callback: Callback? = null
 
     val code: String
         get() {
-            return text?.numbers(maxLength) ?: ""
+            return text?.numbers(maxDigits) ?: ""
         }
 
     val isFilled: Boolean
         get() {
-            return code.length == maxLength
+            return code.length == maxDigits
         }
 
     private fun initialize(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.FillCodeField)
-            separator = a.getString(R.styleable.FillCodeField_separator) ?: "-"
-            maxLength = a.getInt(R.styleable.FillCodeField_maxLength, 12)
-            groupSize = a.getInt(R.styleable.FillCodeField_groupSize, 4)
+            groupSeparator = a.getString(R.styleable.FillCodeField_groupSeparator) ?: groupSeparator
+            maxDigits = a.getInt(R.styleable.FillCodeField_maxDigits, maxDigits)
+            digitsPerGroup = a.getInt(R.styleable.FillCodeField_digitsPerGroup, digitsPerGroup)
             a.recycle()
-        } else {
-            separator = "-"
-            maxLength = 12
-            groupSize = 4
         }
+
+        filters = arrayOf(InputFilter.LengthFilter(maxDigits + (groupSeparator.length * ((maxDigits / digitsPerGroup) - 1))))
 
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -87,7 +86,7 @@ class FillCodeField : androidx.appcompat.widget.AppCompatEditText {
                 val text = string.toString()
 
                 // Extract numbers, convert into separated groups
-                val formatted = text.numbers(maxLength).chunked(groupSize).joinToString(separator)
+                val formatted = text.numbers(maxDigits).chunked(digitsPerGroup).joinToString(groupSeparator)
 
                 // Only update text if format has changed to avoid unwanted keyboard accessibility events (Android bug)
                 if (text != formatted) {
@@ -120,6 +119,6 @@ class FillCodeField : androidx.appcompat.widget.AppCompatEditText {
 
     @SuppressLint("MissingSuperCall")
     override fun onSelectionChanged(start: Int, end: Int) {
-        setSelection(length()) // Disables cursor movement
+        post {  setSelection(length()) } // Disables cursor movement
     }
 }

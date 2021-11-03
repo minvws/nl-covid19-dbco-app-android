@@ -70,11 +70,7 @@
                         android:backgroundTint="@color/primary"
                         android:contentDescription="@string/fill_code_title"
                         android:digits="0123456789"
-                        android:inputType="number"
-                        android:maxLength="14"
-                        app:groupSize="4"
-                        app:maxLength="12"
-                        app:separator="-" />
+                        android:inputType="number"/>
                 </FrameLayout>
 
                 <TextView
