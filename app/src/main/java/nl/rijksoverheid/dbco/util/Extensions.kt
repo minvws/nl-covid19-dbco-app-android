@@ -113,11 +113,15 @@ fun NestedScrollView.scrollTo(view: View, delay: Long = 0) {
 }
 
 fun String.removeHtmlTags(): String {
-    return this.replace("<br/>", "\n")
+    return this
+        .replace("<br/>", "\n")
+        .replace("<br>", "\n")
         .replace("<b>", "")
         .replace("</b>", "")
         .replace("<ul>", "")
         .replace("</ul>", "")
+        .replace("<u>", "")
+        .replace("</u>", "")
         .replace("</li>", "")
         .replace("<li>", "\n• ")
         .replace("<a href=\"", "")

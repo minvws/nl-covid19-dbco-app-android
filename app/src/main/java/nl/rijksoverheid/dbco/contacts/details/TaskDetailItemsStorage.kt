@@ -19,10 +19,6 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.*
-import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
@@ -36,6 +32,9 @@ import org.joda.time.LocalDate
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.items.input.ButtonType.DARK
 import nl.rijksoverheid.dbco.items.input.ButtonType.LIGHT
+import nl.rijksoverheid.dbco.questionnaire.data.entity.*
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameAllowed
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameDisallowed
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 
 /**
@@ -301,13 +300,22 @@ class TaskDetailItemsStorage(
     )
 
     fun refreshContactDetailsSection() {
+        val questions = taskDetailViewModel.questionnaire?.questions?.filterNotNull()?.toMutableList()
+        val task = taskDetailViewModel.task
+        questions ?: return
+
         contactDetailsSection.removeAllChildren()
         contactDetailsSection.add(SimpleTextItem(R.string.contact_section_contactdetails_extra_info))
-        val questions = taskDetailViewModel.questionnaire?.questions?.filterNotNull()
-        questions?.forEach { question ->
-            if (question.group == Group.ContactDetails && question.isRelevantForCategory(
-                    taskDetailViewModel.category.value
-                )
+
+        val shareIndexNameQuestion = questions.find {
+            it.hasTrigger(ShareIndexNameAllowed, ShareIndexNameDisallowed)
+        }
+
+        if (task.shareIndexNameAlreadyAnswered) questions.remove(shareIndexNameQuestion)
+
+        questions.forEach { question ->
+            if (question.group == Group.ContactDetails &&
+                question.isRelevantForCategory(taskDetailViewModel.category.value)
             ) {
                 when (question.questionType) {
                     QuestionType.Multiplechoice -> {
@@ -356,15 +364,18 @@ class TaskDetailItemsStorage(
         val size = question.answerOptions?.size ?: return
         if (size == 1) return
         val previousValue = taskDetailViewModel.textAnswers[question.uuid!!]
+        val answerSelectedClosure = { answer: AnswerOption ->
+            taskDetailViewModel.textAnswers[question.uuid!!] = answer.value!!
+            answer.trigger?.let { taskDetailViewModel.onAnswerTrigger(it) }
+            Unit
+        }
         section.add(
             when (size) {
                 2 -> {
                     QuestionTwoOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            taskDetailViewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -373,9 +384,7 @@ class TaskDetailItemsStorage(
                     QuestionThreeOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            taskDetailViewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -384,9 +393,7 @@ class TaskDetailItemsStorage(
                     QuestionMultipleOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            taskDetailViewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswer = previousValue,
                         isEnabled = enabled
                     )

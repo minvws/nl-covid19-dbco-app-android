@@ -39,6 +39,18 @@ data class Question(
         }
         return false
     }
+
+    fun hasTrigger(vararg triggers: Trigger): Boolean {
+        answerOptions ?: return false
+        val triggerList = triggers.asList()
+        for (answer in answerOptions.filterNotNull()) {
+            answer.trigger ?: continue
+            if (triggerList.contains(answer.trigger)) {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 @Keep
