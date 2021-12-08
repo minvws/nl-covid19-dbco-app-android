@@ -20,6 +20,9 @@ import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.config.FeatureFlags
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameDisallowed
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameAllowed
 import org.joda.time.LocalDate
 
 /**
@@ -107,6 +110,14 @@ class TasksDetailViewModel(
         val hasNoInformation = !task.isSaved() && !task.hasCategoryOrExposure()
         if (changesEnabled && task.isLocal() && hasNoInformation) {
             deleteCurrentTask()
+        }
+    }
+
+    fun onAnswerTrigger(trigger: Trigger) {
+        when (trigger) {
+            ShareIndexNameAllowed, ShareIndexNameDisallowed -> {
+                task.shareIndexNameWithContact = trigger == ShareIndexNameAllowed
+            }
         }
     }
 

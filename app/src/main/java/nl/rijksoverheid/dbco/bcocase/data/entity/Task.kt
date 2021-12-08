@@ -21,6 +21,7 @@ typealias JavaSerializable = java.io.Serializable
 @Serializable
 data class Task(
     var canBeUploaded: Boolean = true, // used only locally
+    var shareIndexNameAlreadyAnswered: Boolean = false,
     val taskType: TaskType? = null,
     var taskContext: String? = null,
     val source: Source? = null,
@@ -32,6 +33,7 @@ data class Task(
     var questionnaireResult: QuestionnaireResult? = null,
     var informedByIndexAt: String? = null,
     var notGoingToBeInformedByIndex: Boolean = false,
+    var shareIndexNameWithContact: Boolean? = null,
     var linkedContact: LocalContact? = null
 ) : JavaSerializable {
 

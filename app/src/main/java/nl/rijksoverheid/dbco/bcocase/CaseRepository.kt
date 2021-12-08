@@ -99,7 +99,12 @@ class CaseRepository(
                     }
                 }
             }
-            mergedCase = mergedCase.copy(tasks = localTasks)
+            mergedCase = mergedCase.copy(tasks = localTasks.map { task ->
+                if (remoteTasks.find { it.uuid == task.uuid }?.shareIndexNameWithContact != null) {
+                    return@map task.copy(shareIndexNameAlreadyAnswered = true)
+                }
+                return@map task
+            })
         }
         persistCase(mergedCase)
 
@@ -216,7 +221,14 @@ class CaseRepository(
         val new = old.copy(
             canBeUploaded = false,
             isUploaded = true,
-            tasks = old.tasks.map { it.apply { canBeUploaded = false } }
+            tasks = old.tasks.map {
+                it.apply {
+                    canBeUploaded = false
+                    if (shareIndexNameWithContact != null) {
+                        shareIndexNameAlreadyAnswered = true
+                    }
+                }
+            }
         )
         persistCase(new)
     }

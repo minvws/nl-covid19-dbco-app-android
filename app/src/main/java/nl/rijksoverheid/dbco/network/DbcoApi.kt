@@ -28,7 +28,7 @@ import retrofit2.http.*
 
 interface DbcoApi {
 
-    @GET("v2/questionnaires")
+    @GET("v3/questionnaires")
     @Streaming
     suspend fun getQuestionnaires(): QuestionnaireResponse
 
