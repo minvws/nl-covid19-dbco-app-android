@@ -50,7 +50,7 @@
     <string name="upload_data_dialog_title">Wil je nu de gegevens met de GGD delen?</string>
     <string name="upload_data_dialog_summary">Goed om te weten: je kunt hierna nog gegevens aanpassen en deze opnieuw delen.</string>
     <string name="upload_data_dialog_ok">Delen</string>
-    <string name="mycontact_privacy_footer"><![CDATA[Help bij het bron- en contactonderzoek. Gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a>.<br/><br/><a href="https://www.toegankelijkheidsverklaring.nl/register/4379">Digitale toegankelijkheidsverklaring</a>]]></string>
+    <string name="mycontact_privacy_footer"><![CDATA[Alle gegevens blijven op jouw telefoon totdat je ze deelt met de GGD. Lees meer in de <a href="https://ggdcontact.nl/nl/privacy-in-app">privacyverklaring</a>.<br/><br/><a href="https://www.toegankelijkheidsverklaring.nl/register/4379">Digitale toegankelijkheidsverklaring</a>]]></string>
     <string name="header_all_contacts">ALLE CONTACTEN</string>
     <string name="warning_name">Klopt deze naam?</string>
     <string name="warning_necessary">Vul dit in</string>
@@ -63,7 +63,7 @@
     <string name="onboarding_data_deleted_title">Alle ingevulde gegevens zijn verwijderd</string>
     <string name="onboarding_data_deleted_subtext">Je hebt de app al een tijd niet gebruikt. Om de gegevens van je contacten te beschermen, zijn deze verwijderd.</string>
     <string name="onboarding_start_title">Help de verspreiding van corona te voorkomen</string>
-    <string name="onboarding_start_subtext"><![CDATA[Heb je corona? Dan helpt deze app de mensen die misschien ook besmet zijn zo snel mogelijk te waarschuwen.<br/><br/>Zo zorg je dat het bron- en contactonderzoek van de GGD sneller gaat.]]></string>
+    <string name="onboarding_start_subtext"><![CDATA[Heb je corona? Dan heb je mogelijk anderen besmet. Deze app helpt je bepalen welke adviezen per persoon gelden, zodat je ze gelijk zelf kunt waarschuwen. Ook kun je alle verzamelde informatie gemakkelijk delen met de GGD die je misschien belt voor bron- en contactonderzoek.]]></string>
     <string name="onboarding_flow_selection_title">Heb je aan de telefoon een code van de GGD gekregen?</string>
     <string name="onboarding_flow_selection_subtext">Een GGD Contact-koppelcode bestaat uit 12 cijfers, bijvoorbeeld 9999-9999-9999.</string>
     <string name="status_app_version">Versie %1$s build %2$s</string>
@@ -76,7 +76,7 @@
     <string name="onboarding_privacy_item1">De gegevens die je invult worden alleen in de app opgeslagen</string>
     <string name="onboarding_privacy_item2">De app heeft geen toegang tot andere gegevens op je telefoon</string>
     <string name="onboarding_privacy_item3">Het gebruik van de app is vrijwillig</string>
-    <string name="onboarding_privacy_item4">Met een aantal GGD’en kun je veilig gegevens uit de app delen. Gegevens worden alleen gedeeld als jij laat weten dat je dat wilt</string>
+    <string name="onboarding_privacy_item4">Het kan zijn dat de GGD je vraagt  gegevens via de app te delen. Gegevens worden alleen gedeeld als jij laat weten dat je dat wilt</string>
     <string name="onboarding_consent_button_text">Ik heb de privacyverklaring gelezen en begrijp hoe GGD Contact mijn gegevens gebruikt</string>
     <!--    Contacts Picker-->
     <string name="contacts_picker_title">Selecteer contact</string>
@@ -103,14 +103,14 @@
     <string name="contact_section_typeofcontact_header">Over de ontmoeting</string>
     <string name="contact_section_typeofcontact_subtext">Beantwoord een paar vragen</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
-    <string name="contact_section_contactdetails_extra_info">Vul de gegevens in die je nu weet. Gegevens die je nog niet hebt kun je later toevoegen.</string>
+    <string name="contact_section_contactdetails_extra_info">Verzamel contactgegevens zodat je die kunt delen met de GGD als die je belt voor bron- en contactonderzoek.</string>
     <string name="contact_section_contactdetails_subtext">Vul zo veel mogelijk gegevens aan</string>
     <string name="contact_section_contactdetails_subtext_disabled">Vul eerst stap 1 in</string>
     <string name="contact_section_classification_header">Soort contact</string>
     <string name="contact_section_classification_subtext">Vragen over jullie ontmoeting</string>
     <string name="delete_contact_message">Weet je zeker dat je dit contact wilt verwijderen?</string>
     <string name="delete_contact_no_risk_title">Dit contact heeft geen extra risico op besmetting gelopen</string>
-    <string name="delete_contact_no_risk_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent. Ook heeft de GGD geen gegevens van deze persoon nodig.</string>
+    <string name="delete_contact_no_risk_message">Je hoeft dus niet te laten weten dat je besmet bent.</string>
     <string name="answer_no">Nee</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_think_yes">Ja, denk het wel</string>
@@ -216,7 +216,7 @@
     <string name="zelfbco_no_code">Nee, geen code</string>
     <string name="selfbco_explanation_title">Wat moeten de mensen doen bij wie jij in de buurt bent geweest?</string>
     <string name="onboarding_explanation_title">Maak een overzicht van contacten die misschien zijn besmet</string>
-    <string name="onboarding_explanation_summary">Zo weet je wie gewaarschuwd moet worden. En ben je ook alvast voorbereid op het bron- en contactonderzoek van de GGD.</string>
+    <string name="onboarding_explanation_summary">Zo wordt snel duidelijk wie gewaarschuwd moet worden en welk advies dan geldt.</string>
     <string name="selfbco_explanation_summary">Het advies verschilt per persoon. Dit hangt af van of jullie afstand hielden en hoe lang de ontmoeting duurde. De app geeft aan of iemand thuis moet blijven en tot wanneer.</string>
     <string name="selfbco_symptom_header">Welke klachten heb je die bij COVID-19 passen?</string>
     <string name="selfbco_symptom_summary">Ook lichte klachten tellen mee. Je kunt meerdere klachten kiezen.</string>
@@ -295,7 +295,7 @@
     <string name="selfbco_permission_extra_item1">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_extra_item2"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
     <string name="selfbco_permission_extra_item3">Gegevens worden pas met de GGD gedeeld als jij op \`Deel gegevens met GGD\` klikt</string>
-    <string name="selfbco_permission_summary"><![CDATA[Geef toegang tot je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen.<br/><br/>Alleen de contactgegevens die jij kiest worden gebruikt in de app. Bijvoorbeeld een achternaam of een telefoonnummer.<br/><br/>Je verzamelt deze gegevens om ze aan de GGD door te geven tijdens het bron- en contactonderzoek. Zo kan de GGD deze mensen waarschuwen en persoonlijk advies geven.]]></string>
+    <string name="selfbco_permission_summary"><![CDATA[Geef toegang tot je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen.<br/><br/>Alleen de contactgegevens die jij kiest worden gebruikt in de app. Bijvoorbeeld een achternaam of een telefoonnummer.<br/><br/><b>Waarom verzamel je contactgegevens?</b><br/>De GGD belt je misschien voor het bron- en contactonderzoek. Dat hangt af van het aantal besmettingen in Nederland. Tijdens dit telefoongesprek vraagt de GGD je naar je contacten en hun contactgegevens<br/><br/>Door alvast gegevens in de app te verzamelen, kun je deze later gemakkelijk delen met de GGD als dat nodig is. En dat bespaart zowel jou als de GGD veel tijd.]]></string>
     <string name="selfbco_permission_item1">Gegevens worden pas met de GGD gedeeld als jij laat weten dat je klaar bent en je GGD de app ondersteunt</string>
     <string name="selfbco_permission_item2">Alleen gegevens die jij invult worden gedeeld</string>
     <string name="selfbco_permission_item3"><![CDATA[De GGD heeft <b>geen</b> toegang tot je hele contactenlijst]]></string>
@@ -313,9 +313,9 @@
     <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
     <string name="this_contact">Dit contact</string>
     <string name="selfbco_reverse_pairing_explanation_title">Heeft de GGD je verteld dat je gegevens kunt delen?</string>
-    <string name="selfbco_reverse_pairing_explanation_subtext">De GGD belt je voor het bron- en contactonderzoek. Tijdens dit gesprek hoor je of het in jouw GGD-regio mogelijk is om  via de app contactgegevens te delen.</string>
+    <string name="selfbco_reverse_pairing_explanation_subtext"><![CDATA[De GGD belt je misschien voor het bron- en contactonderzoek. Dat hangt af van het aantal besmettingen in Nederland. Tijdens of na dit gesprek kun je de ingevulde gegevens met de GGD delen.<br/><br/>Als je de GGD (nog) niet gesproken hebt, is het belangrijk dat je voor de zekerheid zelf je contacten informeert.]]></string>
     <string name="selfbco_reverse_pairing_title">Koppel de app met de GGD om je gegevens te delen</string>
-    <string name="selfbco_reverse_pairing_subtitle">Heb je de app nog niet gekoppeld? Dan belt de GGD je om dit samen te doen. Daarna kun je via de app contactgegevens delen.</string>
+    <string name="selfbco_reverse_pairing_subtitle">Heb je de GGD nu aan de telefoon? Dan kunnen jullie samen de app koppelen. Daarna kun jij via de app contactgegevens delen.</string>
     <string name="selfbco_reverse_pairing_step_1_title">Geef deze code door aan de GGD-medewerker:</string>
     <string name="selfbco_reverse_pairing_step_1_content_description">Stap 1: geef deze code door aan de GGD-medewerker:</string>
     <string name="selfbco_reverse_pairing_step_2_title">Wacht tot de GGD-medewerker de code heeft ingevoerd</string>
@@ -342,6 +342,6 @@
     <string name="mycontacts_memory_tip_summary"><![CDATA[Maak een overzicht van wie je hebt ontmoet <b>vanaf %s</b>]]></string>
     <string name="mycontacts_delete_data">Verwijder gegevens</string>
     <string name="mycontacts_explanation_title">Beantwoord een paar vragen over deze ontmoetingen</string>
-    <string name="mycontacts_explanation_summary">Het is belangrijk dat elke persoon het juiste advies krijgt. Vul daarom zo snel mogelijk de vragenlijst in, zodat je de gegevens kunt delen als je de GGD aan de telefoon hebt.</string>
+    <string name="mycontacts_explanation_summary">Zo bepaal je per persoon welk advies geldt en kun je iedereen snel waarschuwen. Ook kan het zijn dat de GGD je vraagt gegevens via de app te delen. Het is daarom belangrijk dat je zo veel mogelijk gegevens invult.</string>
     <string name="contact_item_add_hint">Voeg contact toe</string>
 </resources>
