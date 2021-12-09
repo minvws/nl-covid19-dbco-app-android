@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPairingExplanationBinding
+import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class ReversePairingExplanationFragment :
     BaseFragment(R.layout.fragment_selfbco_pairing_explanation) {
@@ -33,6 +34,8 @@ class ReversePairingExplanationFragment :
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        val desc = HtmlHelper.buildSpannableFromHtml(getString(R.string.selfbco_reverse_pairing_explanation_subtext), requireContext())
+        binding.pairingExplanationDescription.text = desc
 
         binding.btnYes.setOnClickListener {
             findNavController().navigate(
