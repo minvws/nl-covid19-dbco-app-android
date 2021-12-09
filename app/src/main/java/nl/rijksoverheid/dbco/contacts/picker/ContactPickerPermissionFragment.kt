@@ -80,7 +80,7 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
                 HeaderItem(String.format(getString(R.string.permission_name_header), nameToShow)),
                 ParagraphItem(getString(R.string.permission_summary), clickable = false),
                 ParagraphIconItem(getString(R.string.onboarding_privacy_item4)),
-                ParagraphIconItem(getString(R.string.onboarding_privacy_item1)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item5)),
                 ParagraphIconItem(getString(R.string.selfbco_permission_extra_item2)),
             )
         )
