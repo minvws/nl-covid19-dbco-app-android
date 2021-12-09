@@ -39,38 +39,13 @@
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
-                <nl.rijksoverheid.dbco.util.AccessibleImageView
-                    android:id="@+id/onboarding_header_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/illustration_general_user" />
-
-                <TextView
-                    android:id="@+id/onboarding_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/permission_name_header"
-                    android:textAppearance="@style/TextAppearance.App.Headline5"
-                    android:textSize="@dimen/onboarding_title_textsize"
-                    app:accessibilityHeading="@{true}" />
-
-                <TextView
-                    android:id="@+id/onboarding_subtext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
-                    android:text="@string/permission_summary"
-                    android:textSize="@dimen/onboarding_subtext_textsize" />
-
-                <Space
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_manual"
@@ -85,7 +60,6 @@
                     android:id="@+id/btn_next"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:text="@string/yes_use_help" />
 
             </LinearLayout>

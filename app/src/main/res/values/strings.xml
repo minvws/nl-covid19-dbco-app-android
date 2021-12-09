@@ -307,9 +307,9 @@
     <string name="finalize_check_contact_header">Bijna klaar. Controleer bij deze personen of je nog iets kunt doen:</string>
     <string name="finalize_check_contact_description">Hoe meer gegevens je aanvult, hoe sneller het bron- en contactonderzoek gaat. Heb je alles gedaan wat je nu kunt doen? En alle gegevens aangevuld die je weet? Dan kun je de gegevens delen.</string>
     <string name="finalize_check_send">Nu delen</string>
-    <string name="permission_name_header">%s opzoeken in je telefoonboek?</string>
-    <string name="permission_summary">Zo kun je snel de gegevens van dit contact aanvullen. Je bepaalt altijd zelf welke gegevens je met de GGD deelt.</string>
-    <string name="no_add_manually">Nee, zelf toevoegen</string>
+    <string name="permission_name_header">%s opzoeken in je contactenlijst?</string>
+    <string name="permission_summary">Gebruik je contactenlijst om makkelijk contacten te vinden en contactgegevens in te vullen. Bijvoorbeeld een achternaam of een telefoonnummer. Dit scheelt je veel tijd.</string>
+    <string name="no_add_manually">Nee, zelf invullen</string>
     <string name="yes_use_help">Ja, opzoekhulp gebruiken</string>
     <string name="this_contact">Dit contact</string>
     <string name="selfbco_reverse_pairing_explanation_title">Heeft de GGD je verteld dat je gegevens kunt delen?</string>
