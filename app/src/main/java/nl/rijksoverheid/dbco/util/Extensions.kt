@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.util
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
@@ -32,7 +33,7 @@ import nl.rijksoverheid.dbco.R
 import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
-    Handler().postDelayed(Runnable(block), milliseconds)
+    Handler(Looper.getMainLooper()).postDelayed(Runnable(block), milliseconds)
 }
 
 fun View.showKeyboard() {
@@ -128,8 +129,6 @@ fun String.removeHtmlTags(): String {
         .replace(Regex("\">(.*)</a>"), "")
 }
 
-fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
-
 fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
 
 fun String.removeWhiteSpace(): String = this.filter { char -> !char.isWhitespace() }
@@ -149,7 +148,6 @@ fun ExpandableGroup.removeAllChildren() {
     }
 }
 
-@ExperimentalUnsignedTypes
 fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
 fun EditText.updateText(text: CharSequence) {
@@ -163,12 +161,6 @@ fun CharSequence.numbers(limit: Int? = null): String {
         true -> numbers.take(limit)
         false -> numbers
     }
-}
-
-fun DatePicker.getDate(): Date {
-    val calendar = Calendar.getInstance()
-    calendar.set(year, month, dayOfMonth)
-    return calendar.time
 }
 
 fun View.margin(

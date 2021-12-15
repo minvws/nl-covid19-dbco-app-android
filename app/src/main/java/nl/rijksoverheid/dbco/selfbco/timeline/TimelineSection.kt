@@ -119,7 +119,8 @@ class TimelineSection(
                 R.string.selfbco_timeline_day_before_yesterday_date,
                 formattedDate
             )
-            else -> date.toString(DateFormats.selfBcoDateCheck).capitalize(Locale.getDefault())
+            else -> date.toString(DateFormats.selfBcoDateCheck)
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) }
         }
 
         return if (subtitle != null) {

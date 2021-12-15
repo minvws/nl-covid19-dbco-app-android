@@ -16,14 +16,14 @@ def getGitHash = { ->
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "nl.rijksoverheid.dbco"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode project.getVersionCode()
-        versionName '1.2.0.' + project.getVersionCode()
+        versionName '1.3.0.' + project.getVersionCode()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -122,8 +122,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
-        dataBinding = true
+        viewBinding true
+        dataBinding true
     }
 
     lintOptions {
@@ -141,15 +141,6 @@ easylauncher {
     }
     variants {
         dbcoProdRelease { enable false }
-    }
-}
-
-repositories {
-    maven {
-        url 'https://dl.bintray.com/lisawray/maven/'
-        content {
-            includeGroup "com.xwray"
-        }
     }
 }
 
@@ -179,8 +170,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization_json_version")
 
     //3rd-party dependency versions
-    implementation "com.xwray:groupie:$groupie_version"
-    implementation "com.xwray:groupie-viewbinding:$groupie_version"
+    implementation "com.github.lisawray.groupie:groupie:$groupie_version"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
     implementation "com.github.qiujayen:sticky-layoutmanager:$sticky_header_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlin_serialization_converter_version"
