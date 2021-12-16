@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.ColorRes
@@ -30,7 +29,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
-import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
     Handler(Looper.getMainLooper()).postDelayed(Runnable(block), milliseconds)

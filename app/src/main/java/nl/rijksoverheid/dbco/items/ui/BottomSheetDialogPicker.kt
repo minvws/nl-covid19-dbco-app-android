@@ -77,9 +77,9 @@ class BottomSheetDialogPicker(
         override fun bind(viewBinding: BottomSheetPickerDialogItemBinding, position: Int) {
             with(viewBinding.itemText) {
                 typeface = if (bold) {
-                    Typeface.DEFAULT_BOLD;
+                    Typeface.DEFAULT_BOLD
                 } else {
-                    Typeface.DEFAULT;
+                    Typeface.DEFAULT
                 }
                 text = itemText
                 setOnClickListener { clickListener(itemText) }

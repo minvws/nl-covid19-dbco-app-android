@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.questionnaire
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 
 /**
- * Repository for the [Questionnaire] as shown in [Task] details
+ * Repository for the [Questionnaire] as shown in Task details
  */
 interface IQuestionnaireRepository {
 

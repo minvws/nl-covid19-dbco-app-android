@@ -132,7 +132,7 @@ class ContactNameItem(
 
         private val vowels: List<Char> = "aeiouy".toList()
 
-        private val consonants: List<Char> = ('a'..'z').toList() - vowels
+        private val consonants: List<Char> = ('a'..'z').toList() - vowels.toSet()
 
         private val validCharacters: List<Char> = ('a'..'z').toList() + "-'’".toList()
 

@@ -12,7 +12,7 @@ import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 
 /**
- * Risk category for a [Task]
+ * Risk category for a Task
  */
 @Keep
 @kotlinx.serialization.Serializable

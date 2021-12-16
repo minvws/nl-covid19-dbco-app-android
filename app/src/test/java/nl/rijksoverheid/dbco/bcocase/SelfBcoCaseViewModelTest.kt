@@ -20,7 +20,6 @@ import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import org.joda.time.DateTimeZone

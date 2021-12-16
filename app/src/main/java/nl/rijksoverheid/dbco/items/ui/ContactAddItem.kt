@@ -12,7 +12,7 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemContactAddBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
 
-class ContactAddItem() : BaseBindableItem<ItemContactAddBinding>() {
+class ContactAddItem : BaseBindableItem<ItemContactAddBinding>() {
 
     override fun bind(viewBinding: ItemContactAddBinding, position: Int) {
         /* NO OP */

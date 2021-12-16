@@ -11,9 +11,7 @@ package nl.rijksoverheid.dbco.items.ui
 import com.xwray.groupie.Item
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.ItemLinkBinding
-import nl.rijksoverheid.dbco.databinding.ItemSubHeaderBinding
 import nl.rijksoverheid.dbco.items.BaseBindableItem
-import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class LinkItem(
     private val text: String,

@@ -21,9 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragmentDirections
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
 abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layout) {

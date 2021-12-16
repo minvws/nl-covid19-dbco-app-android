@@ -20,7 +20,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 
 /**
- * ViewModel which exposes local contacts to attach to a [Task] in the current [Case]
+ * ViewModel which exposes local contacts to attach to a Task in the current Case
  */
 class ContactsViewModel(
     private val repository: ContactsRepository,

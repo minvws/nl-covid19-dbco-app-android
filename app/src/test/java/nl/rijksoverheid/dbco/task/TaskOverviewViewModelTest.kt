@@ -38,7 +38,6 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
-import org.mockito.ArgumentMatchers.any
 import java.lang.IllegalStateException
 
 @RunWith(MockitoJUnitRunner::class)
