@@ -38,7 +38,7 @@ buildscript {
     ext.groupie_version = "2.10.0"
     ext.okhttp3_version = "4.8.1"
     ext.retrofit_version = "2.9.0"
-    ext.timber_version = "4.7.1"
+    ext.timber_version = "5.0.1"
     ext.sticky_header_version = "1.0.1"
 
     repositories {
