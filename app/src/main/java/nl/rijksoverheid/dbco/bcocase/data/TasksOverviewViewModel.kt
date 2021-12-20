@@ -11,9 +11,9 @@ package nl.rijksoverheid.dbco.bcocase.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import nl.rijksoverheid.dbco.DefaultDispatcherProvider
+import nl.rijksoverheid.dbco.DispatcherProvider
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -38,7 +38,7 @@ import timber.log.Timber
 class TasksOverviewViewModel(
     private val tasksRepository: ICaseRepository,
     private val questionnaireRepository: IQuestionnaireRepository,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     private val _viewData = SingleLiveEvent<ViewData>()
@@ -58,7 +58,7 @@ class TasksOverviewViewModel(
     fun getCachedCase() = tasksRepository.getCase()
 
     fun syncData() {
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(dispatchers.main()) {
             val caseResult = try {
                 val cachedCase = getCachedCase()
                 val now = LocalDateTime.now(DateTimeZone.UTC)
@@ -90,7 +90,7 @@ class TasksOverviewViewModel(
     }
 
     fun uploadCurrentCase() {
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(dispatchers.main()) {
             try {
                 tasksRepository.uploadCase()
                 _uploadStatus.value = UploadSuccess

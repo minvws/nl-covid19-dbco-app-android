@@ -10,8 +10,7 @@ package nl.rijksoverheid.dbco.task
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.*
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -35,6 +34,7 @@ import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.Up
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus.UploadSuccess
 import nl.rijksoverheid.dbco.bcocase.data.TasksOverviewViewModel.UploadStatus
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Questionnaire
+import nl.rijksoverheid.dbco.utils.CoroutineTestRule
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
@@ -45,6 +45,9 @@ class TaskOverviewViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `when repository has cache, when cached case is fetched, return that case`() {
@@ -77,7 +80,7 @@ class TaskOverviewViewModelTest {
     }
 
     @Test
-    fun `when case is uploaded, when error is encountered, post error to live data`() = runBlockingTest {
+    fun `when case is uploaded, when error is encountered, post error to live data`() = runTest {
         // given
         val tasksMock = mockk<ICaseRepository>()
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -91,7 +94,7 @@ class TaskOverviewViewModelTest {
     }
 
     @Test
-    fun `when case is uploaded, when no error is encountered, post success to live data`() = runBlockingTest {
+    fun `when case is uploaded, when no error is encountered, post success to live data`() = runTest {
         // given
         val tasksMock = mockk<ICaseRepository>()
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -106,7 +109,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when current case is expired, when case expiration is checked, then the case should be expired`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -127,7 +130,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when current case is not expired, when case expiration is checked, then the case should not be expired`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -148,7 +151,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when case has task with not all data, when essential data is checked, then it should be false`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -165,7 +168,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when case has tasks with all data, when essential data is checked, then it should be true`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -182,7 +185,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when repository has start of contagious period, when start date is fetched, then it should be the same`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -199,7 +202,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when cat is not the same, when the list is sorted, category one should be first`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -253,7 +256,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `when cat is the same, when the list is sorted, then the later date should be first`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -292,7 +295,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given tasks with same category and date, when the list is sorted, then the label a should be first`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -331,7 +334,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given a expiry date in the future, when case is fetched it should be in success state`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -369,7 +372,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given a expiry date equal to now, when case is fetched it should return cached in expired state`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -407,7 +410,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given a expiry date in past, when case is fetched it should return cached in expired state`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -445,7 +448,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given a expiry date in past, when case is fetched it should be in error state with cached case`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -483,7 +486,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given a case without expiry date, when case is fetched it should be in success state with new case`() =
-        runBlockingTest {
+        runTest {
             // given
             val now = LocalDateTime.now(DateTimeZone.UTC)
             mockkStatic(LocalDateTime::class)
@@ -535,7 +538,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given questionnaire throws error, when questionnaire is synced, then pass error state`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -555,7 +558,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given questionnaire throws no error, when questionnaire is synced, then pass CaseSuccess state`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -574,7 +577,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given upload fails, when case is uploaded, then pass error state`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>()
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -592,7 +595,7 @@ class TaskOverviewViewModelTest {
 
     @Test
     fun `given upload succeeds, when case is uploaded, then pass success state`() =
-        runBlockingTest {
+        runTest {
             // given
             val tasksMock = mockk<ICaseRepository>(relaxed = true)
             val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -613,6 +616,6 @@ class TaskOverviewViewModelTest {
     ) = TasksOverviewViewModel(
         tasksRepository,
         questionnaireRepository,
-        TestCoroutineDispatcher()
+        coroutineTestRule.testDispatcherProvider
     )
 }

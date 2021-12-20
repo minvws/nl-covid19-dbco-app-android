@@ -167,7 +167,8 @@ dependencies {
     dbcoTestImplementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_crashlytics_ktx_version"
 
     //kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization_json_version")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_android_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization_json_version"
 
     //3rd-party dependency versions
     implementation "com.github.lisawray.groupie:groupie:$groupie_version"

@@ -11,8 +11,6 @@ package nl.rijksoverheid.dbco.onboarding
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -20,6 +18,8 @@ import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT
+import nl.rijksoverheid.dbco.DefaultDispatcherProvider
+import nl.rijksoverheid.dbco.DispatcherProvider
 
 /**
  * ViewModel used in the consent.
@@ -29,7 +29,7 @@ class OnboardingConsentViewModel(
     private val tasksRepository: ICaseRepository,
     private val userRepository: IUserRepository,
     private val storage: SharedPreferences,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     val isPaired: Boolean
@@ -45,7 +45,7 @@ class OnboardingConsentViewModel(
 
     fun onNextClicked() {
         storage.edit().putBoolean(USER_GAVE_CONSENT, true).apply()
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(dispatchers.main()) {
             val case = tasksRepository.getCase()
             if (case.tasks.isEmpty() && isPaired && case.symptomsKnown) {
                 navigationChannel.send(Navigation.AddContacts)

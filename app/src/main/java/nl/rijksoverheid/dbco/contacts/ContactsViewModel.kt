@@ -11,9 +11,9 @@ package nl.rijksoverheid.dbco.contacts
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import nl.rijksoverheid.dbco.DefaultDispatcherProvider
+import nl.rijksoverheid.dbco.DispatcherProvider
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
@@ -25,7 +25,7 @@ import nl.rijksoverheid.dbco.util.SingleLiveEvent
 class ContactsViewModel(
     private val repository: ContactsRepository,
     private val caseRepository: ICaseRepository,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) : ViewModel() {
 
     private val _localContactsLiveData = SingleLiveEvent<ArrayList<LocalContact>>()
@@ -38,7 +38,7 @@ class ContactsViewModel(
     private val fullLocalContactItems: ArrayList<LocalContact> = ArrayList()
 
     fun fetchLocalContacts() {
-        viewModelScope.launch(coroutineDispatcher) {
+        viewModelScope.launch(dispatchers.main()) {
             val contacts = repository.fetchDeviceContacts()
             fullLocalContactItems.clear()
             fullLocalContactItems.addAll(contacts)
