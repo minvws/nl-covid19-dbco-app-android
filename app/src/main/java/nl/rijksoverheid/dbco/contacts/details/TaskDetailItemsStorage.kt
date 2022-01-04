@@ -38,7 +38,7 @@ import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameDis
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 
 /**
- * Used to display all questions and data for a [Task]
+ * Used to display all questions and data for a Task
  */
 class TaskDetailItemsStorage(
     val enabled: Boolean,

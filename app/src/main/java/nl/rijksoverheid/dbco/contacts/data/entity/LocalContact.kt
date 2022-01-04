@@ -16,7 +16,7 @@ import java.util.*
 typealias JavaSerializable = java.io.Serializable
 
 /**
- * Contact attached to a [Task]
+ * Contact attached to a Task
  */
 @Serializable
 @Keep

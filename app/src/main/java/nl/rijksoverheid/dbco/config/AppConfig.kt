@@ -39,7 +39,7 @@ data class AppConfig(
     val symptoms: List<Symptom>,
 
     /**
-     * Guidelines specific for risk categories to show for a given [Task]
+     * Guidelines specific for risk categories to show for a given Task
      */
     val guidelines: GuidelinesContainer
 )

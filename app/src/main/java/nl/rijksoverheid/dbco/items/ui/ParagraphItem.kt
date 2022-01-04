@@ -35,7 +35,7 @@ class ParagraphItem(
             if (spans.isNotEmpty()) {
                 ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
                 viewBinding.content.linksClickable = true
-                viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
+                viewBinding.content.movementMethod = LinkMovementMethod.getInstance()
             }
             viewBinding.text = spannableBuilder
         }

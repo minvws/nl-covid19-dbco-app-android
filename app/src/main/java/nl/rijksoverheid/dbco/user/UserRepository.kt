@@ -60,7 +60,6 @@ class UserRepository(context: Context) : IUserRepository {
         }
     }
 
-    @ExperimentalUnsignedTypes
     override suspend fun pair(pincode: String) {
         // generating local keys
         val clientSecretKeyBytes = ByteArray(Sodium.crypto_box_secretkeybytes())

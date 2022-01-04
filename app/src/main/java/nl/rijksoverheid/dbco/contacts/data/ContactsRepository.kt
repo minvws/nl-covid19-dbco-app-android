@@ -81,7 +81,7 @@ class ContactsRepository(val context: Context) {
         )
         if (phoneCursor != null && phoneCursor.count > 0) {
             val contactIdIndex =
-                phoneCursor!!.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
+                phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
             val numberIndex =
                 phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
             while (phoneCursor.moveToNext()) {

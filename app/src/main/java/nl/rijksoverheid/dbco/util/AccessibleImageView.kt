@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.util
 
 import android.content.Context
 import android.util.AttributeSet
+import kotlin.math.min
 
 /**
  * Limits the height of the ImageView to 50% of the screen height in landscape orientation.
@@ -35,15 +36,14 @@ class AccessibleImageView : androidx.appcompat.widget.AppCompatImageView {
             val maxHeight = screenHeight / 2
 
             val hSize = MeasureSpec.getSize(heightMeasureSpec)
-            val hMode = MeasureSpec.getMode(heightMeasureSpec)
 
-            when (hMode) {
+            when (MeasureSpec.getMode(heightMeasureSpec)) {
                 MeasureSpec.AT_MOST -> maxHeightMeasureSpec =
-                    MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.AT_MOST)
+                    MeasureSpec.makeMeasureSpec(min(hSize, maxHeight), MeasureSpec.AT_MOST)
                 MeasureSpec.UNSPECIFIED -> maxHeightMeasureSpec =
                     MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST)
                 MeasureSpec.EXACTLY -> maxHeightMeasureSpec =
-                    MeasureSpec.makeMeasureSpec(Math.min(hSize, maxHeight), MeasureSpec.EXACTLY)
+                    MeasureSpec.makeMeasureSpec(min(hSize, maxHeight), MeasureSpec.EXACTLY)
             }
         }
 

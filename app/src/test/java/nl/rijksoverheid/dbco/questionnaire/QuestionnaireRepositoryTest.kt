@@ -10,7 +10,7 @@ package nl.rijksoverheid.dbco.questionnaire
 
 import android.content.SharedPreferences
 import io.mockk.*
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.contacts.data.entity.QuestionnaireResponse
@@ -25,7 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class QuestionnaireRepositoryTest {
 
     @Test
-    fun `given storage is not empty, when syncing questionnaire, do nothing`() = runBlockingTest {
+    fun `given storage is not empty, when syncing questionnaire, do nothing`() = runTest {
         // given
         val mockStorage = mockk<SharedPreferences>()
         val mockApi = mockk<DbcoApi>()
@@ -42,7 +42,7 @@ class QuestionnaireRepositoryTest {
 
     @Test
     fun `given storage is empty, when syncing questionnaire, fetch from api and store questionnaire`() =
-        runBlockingTest {
+        runTest {
             // given
             val questionnaire = Questionnaire(uuid = "test")
             val questionnaireResponse = QuestionnaireResponse(

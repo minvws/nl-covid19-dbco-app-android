@@ -38,6 +38,8 @@ import nl.rijksoverheid.dbco.util.hideKeyboard
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
@@ -277,7 +279,8 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
         val dates = ArrayList<String>()
         sections.forEach {
             if (it.getContactItems().isEmpty()) {
-                dates.add(it.date.toString(DateFormats.selfBcoDateCheck).capitalize())
+                dates.add(it.date.toString(DateFormats.selfBcoDateCheck)
+                    .replaceFirstChar { char -> char.titlecase(Locale.getDefault()) })
                 filledInAll = false
             }
         }
