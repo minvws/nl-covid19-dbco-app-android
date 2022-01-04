@@ -234,13 +234,13 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 is ReversePairingSuccess -> {
                     binding.pairingContainer.isVisible = false
                     toggleButtonStyle(isPairing = false)
-                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.text = getString(R.string.send_data_im_ready)
                     tasksViewModel.syncData()
                     setupSendButton()
                 }
                 is ReversePairingStopped -> {
                     toggleButtonStyle(isPairing = false)
-                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.text = getString(R.string.send_data_im_ready)
                     setupSendButton()
                 }
                 is ReversePairingError -> {
