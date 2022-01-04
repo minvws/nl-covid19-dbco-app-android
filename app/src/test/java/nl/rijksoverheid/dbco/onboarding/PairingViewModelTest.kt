@@ -48,7 +48,6 @@ class PairingViewModelTest {
     val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
-    // RUNS
     fun `given pairing throws no exception and case can be retrieved, when pairing is done with pin, pairing status should be success`() {
         runTest {
             // given
@@ -68,7 +67,6 @@ class PairingViewModelTest {
     }
 
     @Test
-    // RUNS
     fun `given pairing throws regular exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() {
         runTest {
             // given
@@ -91,7 +89,6 @@ class PairingViewModelTest {
 
     @Test
     fun `given pairing throws http 400 exception and case can be retrieved, when pairing is done with pin, pairing status should be invalid`() {
-        // RUNS
         runTest {
             // given
             val pin = "pin"
@@ -116,7 +113,6 @@ class PairingViewModelTest {
 
     @Test
     fun `given pairing throws http 500 exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() {
-        // RUNS
         runTest {
             // given
             val pin = "pin"
@@ -141,7 +137,6 @@ class PairingViewModelTest {
 
     @Test
     fun `given pairing succeeds but case retrieval gives error, when pairing is done with pin, pairing status should be error`() {
-        // RUNS
         runTest {
             // given
             val pin = "pin"
@@ -161,7 +156,6 @@ class PairingViewModelTest {
 
     @Test
     fun `given pairing succeeds but case retrieval gives http 400 error, when pairing is done with pin, pairing status should be invalid`() {
-        // RUNS
         runTest {
             // given
             val pin = "pin"
@@ -184,7 +178,6 @@ class PairingViewModelTest {
 
     @Test
     fun `given pairing succeeds but case retrieval gives http 500 error, when pairing is done with pin, pairing status should be error`() {
-        // RUNS
         runTest {
             // given
             val pin = "pin"
