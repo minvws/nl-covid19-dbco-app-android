@@ -232,30 +232,32 @@ class TimelineFragment : BaseFragment(R.layout.fragment_selfbco_timeline) {
 
     private fun setFooterForContent(content: Section, allowExtraDays: Boolean) {
         val groups = mutableListOf<Group>()
-        if (selfBcoViewModel.getTypeOfFlow() == SYMPTOM_CHECK_FLOW && allowExtraDays) {
-            groups.add(
-                SubHeaderItem(
-                    getString(
-                        R.string.selfbco_timeline_extra_day_header,
-                        selfBcoViewModel.getDateOfSymptomOnset()
-                            .toString(DateFormats.selfBcoDateOnly)
+        if (selfBcoViewModel.getTypeOfFlow() == SYMPTOM_CHECK_FLOW) {
+            if (allowExtraDays) {
+                groups.add(
+                    SubHeaderItem(
+                        getString(
+                            R.string.selfbco_timeline_extra_day_header,
+                            selfBcoViewModel.getDateOfSymptomOnset()
+                                .toString(DateFormats.selfBcoDateOnly)
+                        )
                     )
                 )
-            )
-            groups.add(
-                ButtonItem(
-                    getString(R.string.selfbco_add_extra_day),
-                    { addExtraDay(content) },
-                    type = ButtonType.LIGHT
+                groups.add(
+                    ButtonItem(
+                        getString(R.string.selfbco_add_extra_day),
+                        { addExtraDay(content) },
+                        type = ButtonType.LIGHT
+                    )
                 )
-            )
-        } else {
-            groups.add(
-                ParagraphIconItem(
-                    text = getString(R.string.selfbco_timeline_cap),
-                    icon = R.drawable.ic_error_purple_small
+            } else {
+                groups.add(
+                    ParagraphIconItem(
+                        text = getString(R.string.selfbco_timeline_cap),
+                        icon = R.drawable.ic_error_purple_small
+                    )
                 )
-            )
+            }
         }
         groups.add(
             ButtonItem(

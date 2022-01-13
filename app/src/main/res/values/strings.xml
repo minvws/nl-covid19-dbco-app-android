@@ -135,7 +135,7 @@
     <string name="contact_section_announcement_three">Je hebt stap 3 afgerond</string>
     <string name="inform_contact_title_index"><![CDATA[Je hebt met de GGD afgesproken dat jij %s informeert]]></string>
     <string name="inform_contact_title_staff"><![CDATA[Je hebt met de GGD afgesproken dat zij %s informeren. Je kunt natuurlijk wel zelf alvast de leefregels delen.]]></string>
-    <string name="inform_contact_title_unknown"><![CDATA[De GGD raadt aan om %s alvast te informeren en deze leefregels te delen.]]></string>
+    <string name="inform_contact_title_unknown"><![CDATA[De GGD raadt aan om %s te informeren en deze leefregels te delen.]]></string>
     <string name="inform_header"><![CDATA[Dit zijn de leefregels voor %s:]]></string>
     <string name="contact_inform_prompt_title">Heb jij %s geïnformeerd?</string>
     <string name="contact_inform_prompt_message">Dit is niet verplicht, maar het is belangrijk dat deze persoon weet dat je besmet bent.</string>
