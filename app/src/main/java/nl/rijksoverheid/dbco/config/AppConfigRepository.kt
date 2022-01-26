@@ -11,12 +11,12 @@ package nl.rijksoverheid.dbco.config
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import nl.rijksoverheid.dbco.DefaultDispatcherProvider
 import nl.rijksoverheid.dbco.Defaults
+import nl.rijksoverheid.dbco.DispatcherProvider
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.network.DbcoApi
@@ -33,7 +33,7 @@ class AppConfigRepository(
     private val context: Context,
     private val api: DbcoApi,
     private val storage: SharedPreferences,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()
 ) {
 
     /**
@@ -44,7 +44,7 @@ class AppConfigRepository(
      */
     suspend fun getAppConfig(): AppConfig {
         return try {
-            val config = withContext(coroutineDispatcher) { api.getAppConfig() }.body()!!
+            val config = withContext(dispatchers.io()) { api.getAppConfig() }.body()!!
             storeConfig(config)
             config
         } catch (ex: Exception) {
@@ -100,8 +100,10 @@ class AppConfigRepository(
 
         @VisibleForTesting
         const val KEY_CONFIG = "KEY_CONFIG"
+
         @VisibleForTesting
         const val KEY_CONFIG_CACHE_DATE = "KEY_CONFIG_CACHE_DATE"
+
         @VisibleForTesting
         const val CACHE_VALIDITY_DAYS = 7
     }

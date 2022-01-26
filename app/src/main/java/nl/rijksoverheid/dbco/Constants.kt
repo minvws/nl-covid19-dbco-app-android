@@ -27,7 +27,7 @@ object Constants {
 
     // Validation patterns
     val PHONE_VALIDATION_MATCHER: Pattern = Pattern.compile("[+]?[0-9]{10,13}$")
-    val EMAIL_VALIDATION_MATCHER = Pattern.compile(
+    val EMAIL_VALIDATION_MATCHER: Pattern = Pattern.compile(
         "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                 "\\@" +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +

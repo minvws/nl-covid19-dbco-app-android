@@ -8,6 +8,7 @@
 package nl.rijksoverheid.dbco.config
 
 import android.content.Context
+import android.os.Build
 import nl.rijksoverheid.dbco.BuildConfig
 
 /**
@@ -25,11 +26,21 @@ class AppUpdateManager(
     fun getUpdateState(config: AppConfig): UpdateState {
         val minimumVersionCode = config.androidMinimumVersion
         return if (minimumVersionCode > currentVersionCode) {
-            val source = context.packageManager.getInstallerPackageName(context.packageName)
+            val source = getInstallerPackageName(context, context.packageName)
             UpdateState.UpdateRequired(source)
         } else {
             UpdateState.UpToDate
         }
+    }
+
+    private fun getInstallerPackageName(context: Context, packageName: String): String? {
+        runCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                return context.packageManager.getInstallSourceInfo(packageName).installingPackageName
+            @Suppress("DEPRECATION")
+            return context.packageManager.getInstallerPackageName(packageName)
+        }
+        return null
     }
 
     sealed class UpdateState {

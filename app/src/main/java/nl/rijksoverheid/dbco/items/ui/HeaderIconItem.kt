@@ -18,6 +18,7 @@ import nl.rijksoverheid.dbco.util.HtmlHelper
 
 class HeaderIconItem(
     private val text: String?,
+    private val contentDescriptionPrefix: String? = null,
     @DrawableRes private val icon: Int = R.drawable.ic_privacy_lock
 ) : BaseBindableItem<ItemHeaderIconBinding>() {
 
@@ -30,6 +31,7 @@ class HeaderIconItem(
             val context = viewBinding.root.context
             val spannableBuilder = HtmlHelper.buildSpannableFromHtml(it, context)
             viewBinding.text = spannableBuilder
+            viewBinding.contentDescription = "$contentDescriptionPrefix $text"
         }
         viewBinding.icon.setImageResource(icon)
     }

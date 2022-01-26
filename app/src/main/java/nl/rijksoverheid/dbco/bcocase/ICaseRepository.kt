@@ -87,6 +87,12 @@ interface ICaseRepository {
     fun getStartOfContagiousPeriod(): LocalDate?
 
     /**
+     * @return the [LocalDate] when the index could be contagious for which the index is allowed
+     * to enter data
+     */
+    fun getStartOfAllowedContagiousPeriod(): LocalDate?
+
+    /**
      * Used to store the test date when index has no symptoms
      */
     fun getTestDate(): String?

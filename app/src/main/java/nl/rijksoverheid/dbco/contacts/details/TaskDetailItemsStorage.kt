@@ -19,10 +19,6 @@ import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.items.input.*
-import nl.rijksoverheid.dbco.questionnaire.data.entity.AnswerOption
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Group
-import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
-import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionType
 import nl.rijksoverheid.dbco.bcocase.data.TasksDetailViewModel
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
@@ -36,14 +32,19 @@ import org.joda.time.LocalDate
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.items.input.ButtonType.DARK
 import nl.rijksoverheid.dbco.items.input.ButtonType.LIGHT
+import nl.rijksoverheid.dbco.questionnaire.data.entity.*
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameAllowed
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameDisallowed
+import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 
 /**
- * Used to display all questions and data for a [Task]
+ * Used to display all questions and data for a Task
  */
 class TaskDetailItemsStorage(
     val enabled: Boolean,
     val newTask: Boolean,
-    val viewModel: TasksDetailViewModel,
+    val taskDetailViewModel: TasksDetailViewModel,
+    val selfBcoCaseViewModel: SelfBcoCaseViewModel,
     val context: Context,
     private val viewLifecycleOwner: LifecycleOwner,
     private val featureFlags: FeatureFlags,
@@ -64,21 +65,21 @@ class TaskDetailItemsStorage(
     private val sameHouseholdRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.lived_together_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = null,
+            label = context.getString(R.string.lived_together_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_no), false.toString()),
                 AnswerOption(context.getString(R.string.answer_yes), true.toString())
             )
         ),
         answerSelectedListener = {
-            viewModel.sameHouseholdRisk.value = it.value.toBoolean()
-            viewModel.updateCategoryFromRiskFlags()
+            taskDetailViewModel.sameHouseholdRisk.value = it.value.toBoolean()
+            taskDetailViewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = viewModel.sameHouseholdRisk.value.toString(),
-        isLocked = viewModel.task.source == Source.Portal,
+        previousAnswerValue = taskDetailViewModel.sameHouseholdRisk.value.toString(),
+        isLocked = taskDetailViewModel.task.source == Source.Portal,
         isEnabled = enabled,
         canShowEmptyWarning = canShowEmptyWarnings()
     )
@@ -86,11 +87,11 @@ class TaskDetailItemsStorage(
     private val distanceRiskItem = QuestionThreeOptionsItem(
         context = context,
         question = Question(
-            context.getString(R.string.distance_risk_description),
-            context.getString(R.string.distance_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = context.getString(R.string.distance_risk_description),
+            label = context.getString(R.string.distance_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(
                     context.getString(R.string.distance_risk_answer_long),
                     "true, true"
@@ -104,55 +105,57 @@ class TaskDetailItemsStorage(
         ),
         answerSelectedListener = {
             when (it.value) {
-                "true, true" -> viewModel.distanceRisk.value = Pair(first = true, second = true)
-                "true, false" -> viewModel.distanceRisk.value = Pair(first = true, second = false)
-                else -> viewModel.distanceRisk.value = Pair(first = false, second = false)
+                "true, true" -> taskDetailViewModel.distanceRisk.value =
+                    Pair(first = true, second = true)
+                "true, false" -> taskDetailViewModel.distanceRisk.value =
+                    Pair(first = true, second = false)
+                else -> taskDetailViewModel.distanceRisk.value = Pair(first = false, second = false)
             }
-            viewModel.updateCategoryFromRiskFlags()
+            taskDetailViewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = "${viewModel.distanceRisk.value?.first}, ${viewModel.distanceRisk.value?.second}",
-        isLocked = viewModel.task.source == Source.Portal,
+        previousAnswerValue = "${taskDetailViewModel.distanceRisk.value?.first}, ${taskDetailViewModel.distanceRisk.value?.second}",
+        isLocked = taskDetailViewModel.task.source == Source.Portal,
         isEnabled = enabled
     )
 
     private val physicalContactRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            context.getString(R.string.physical_risk_description),
-            context.getString(R.string.physical_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = context.getString(R.string.physical_risk_description),
+            label = context.getString(R.string.physical_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
                 AnswerOption(context.getString(R.string.answer_know_no), false.toString())
             )
         ),
         answerSelectedListener = {
-            viewModel.physicalContactRisk.value = it.value.toBoolean()
-            viewModel.updateCategoryFromRiskFlags()
+            taskDetailViewModel.physicalContactRisk.value = it.value.toBoolean()
+            taskDetailViewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = viewModel.physicalContactRisk.value.toString(),
-        isLocked = viewModel.task.source == Source.Portal,
+        previousAnswerValue = taskDetailViewModel.physicalContactRisk.value.toString(),
+        isLocked = taskDetailViewModel.task.source == Source.Portal,
         isEnabled = enabled,
     )
 
     private val sameRoomRiskItem = QuestionTwoOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.same_room_risk_label),
-            QuestionType.ClassificationDetails,
-            Group.Classification,
-            listOf(
+            description = null,
+            label = context.getString(R.string.same_room_risk_label),
+            questionType = QuestionType.ClassificationDetails,
+            group = Group.Classification,
+            answerOptions = listOf(
                 AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
                 AnswerOption(context.getString(R.string.answer_think_no), false.toString())
             )
         ),
         answerSelectedListener = {
-            viewModel.sameRoomRisk.value = it.value.toBoolean()
-            viewModel.updateCategoryFromRiskFlags()
+            taskDetailViewModel.sameRoomRisk.value = it.value.toBoolean()
+            taskDetailViewModel.updateCategoryFromRiskFlags()
         },
-        previousAnswerValue = viewModel.sameRoomRisk.value.toString(),
+        previousAnswerValue = taskDetailViewModel.sameRoomRisk.value.toString(),
         isEnabled = enabled
     )
 
@@ -166,19 +169,19 @@ class TaskDetailItemsStorage(
         classificationQuestion = question
         section?.add(sameHouseholdRiskItem) // always added
 
-        viewModel.sameHouseholdRisk.observe(viewLifecycleOwner, { risk ->
+        taskDetailViewModel.sameHouseholdRisk.observe(viewLifecycleOwner, { risk ->
             onSameHouseRiskChanged(risk = risk, section = section)
         })
 
-        viewModel.distanceRisk.observe(viewLifecycleOwner, { risk ->
+        taskDetailViewModel.distanceRisk.observe(viewLifecycleOwner, { risk ->
             onDistanceRiskChanged(risk = risk, section = section)
         })
 
-        viewModel.physicalContactRisk.observe(viewLifecycleOwner, {
+        taskDetailViewModel.physicalContactRisk.observe(viewLifecycleOwner, {
             section?.remove(noRiskItem)
         })
 
-        viewModel.sameRoomRisk.observe(viewLifecycleOwner, { risk ->
+        taskDetailViewModel.sameRoomRisk.observe(viewLifecycleOwner, { risk ->
             onSameRoomRiskChanged(risk = risk, section = section)
         })
 
@@ -248,15 +251,21 @@ class TaskDetailItemsStorage(
         ), false
     )
 
+    private val lastExposureExplanation: String?
+        get() = if (selfBcoCaseViewModel.isStartOfContagiousPeriodTooFarInPast()) {
+            context.getString(R.string.contact_information_last_exposure_explanation)
+        } else null
+
     val dateOfLastExposureItem = QuestionMultipleOptionsItem(
         context = context,
         question = Question(
-            null,
-            context.getString(R.string.contact_information_last_exposure_label),
-            QuestionType.Multiplechoice,
-            Group.ContactDetails,
-            mutableListOf<AnswerOption>().apply {
-                viewModel.getStartOfContagiousPeriod()?.let {
+            description = null,
+            label = context.getString(R.string.contact_information_last_exposure_label),
+            explanation = lastExposureExplanation,
+            questionType = QuestionType.Multiplechoice,
+            group = Group.ContactDetails,
+            answerOptions = mutableListOf<AnswerOption>().apply {
+                taskDetailViewModel.getEarliestExposureDateOption()?.let {
 
                     add(
                         AnswerOption(
@@ -283,19 +292,31 @@ class TaskDetailItemsStorage(
             }
         ),
         answerSelectedListener = {
-            viewModel.dateOfLastExposure.postValue(it.value)
+            taskDetailViewModel.dateOfLastExposure.postValue(it.value)
         },
-        previousAnswer = viewModel.dateOfLastExposure.value,
+        previousAnswer = taskDetailViewModel.dateOfLastExposure.value,
         isEnabled = enabled,
         canShowEmptyWarning = canShowEmptyWarnings()
     )
 
     fun refreshContactDetailsSection() {
+        val questions = taskDetailViewModel.questionnaire?.questions?.filterNotNull()?.toMutableList()
+        val task = taskDetailViewModel.task
+        questions ?: return
+
         contactDetailsSection.removeAllChildren()
         contactDetailsSection.add(SimpleTextItem(R.string.contact_section_contactdetails_extra_info))
-        val questions = viewModel.questionnaire?.questions?.filterNotNull()
-        questions?.forEach { question ->
-            if (question.group == Group.ContactDetails && question.isRelevantForCategory(viewModel.category.value)) {
+
+        val shareIndexNameQuestion = questions.find {
+            it.hasTrigger(ShareIndexNameAllowed, ShareIndexNameDisallowed)
+        }
+
+        if (task.shareIndexNameAlreadyAnswered) questions.remove(shareIndexNameQuestion)
+
+        questions.forEach { question ->
+            if (question.group == Group.ContactDetails &&
+                question.isRelevantForCategory(taskDetailViewModel.category.value)
+            ) {
                 when (question.questionType) {
                     QuestionType.Multiplechoice -> {
                         addMultiChoiceItem(question, contactDetailsSection)
@@ -306,9 +327,9 @@ class TaskDetailItemsStorage(
                                 context = context,
                                 question = question,
                                 answerSelectedListener = {
-                                    viewModel.textAnswers[question.uuid!!] = it
+                                    taskDetailViewModel.textAnswers[question.uuid!!] = it
                                 },
-                                previousAnswerValue = viewModel.textAnswers[question.uuid],
+                                previousAnswerValue = taskDetailViewModel.textAnswers[question.uuid],
                                 isEnabled = enabled
                             )
                         )
@@ -319,9 +340,9 @@ class TaskDetailItemsStorage(
                                 context = context,
                                 question = question,
                                 answerSelectedListener = {
-                                    viewModel.textAnswers[question.uuid!!] = it
+                                    taskDetailViewModel.textAnswers[question.uuid!!] = it
                                 },
-                                previousAnswerValue = viewModel.textAnswers[question.uuid],
+                                previousAnswerValue = taskDetailViewModel.textAnswers[question.uuid],
                                 isEnabled = enabled
                             )
                         )
@@ -342,16 +363,19 @@ class TaskDetailItemsStorage(
     ) {
         val size = question.answerOptions?.size ?: return
         if (size == 1) return
-        val previousValue = viewModel.textAnswers[question.uuid!!]
+        val previousValue = taskDetailViewModel.textAnswers[question.uuid!!]
+        val answerSelectedClosure = { answer: AnswerOption ->
+            taskDetailViewModel.textAnswers[question.uuid!!] = answer.value!!
+            answer.trigger?.let { taskDetailViewModel.onAnswerTrigger(it) }
+            Unit
+        }
         section.add(
             when (size) {
                 2 -> {
                     QuestionTwoOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            viewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -360,9 +384,7 @@ class TaskDetailItemsStorage(
                     QuestionThreeOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            viewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswerValue = previousValue,
                         isEnabled = enabled
                     )
@@ -371,9 +393,7 @@ class TaskDetailItemsStorage(
                     QuestionMultipleOptionsItem(
                         context = context,
                         question = question,
-                        answerSelectedListener = {
-                            viewModel.textAnswers[question.uuid!!] = it.value!!
-                        },
+                        answerSelectedListener = answerSelectedClosure,
                         previousAnswer = previousValue,
                         isEnabled = enabled
                     )
@@ -390,41 +410,41 @@ class TaskDetailItemsStorage(
             listOf(
                 VerticalSpaceItem(R.dimen.activity_vertical_margin),
                 ContactNameItem(
-                    firstName = viewModel.task.linkedContact?.firstName,
-                    lastName = viewModel.task.linkedContact?.lastName,
+                    firstName = taskDetailViewModel.task.linkedContact?.firstName,
+                    lastName = taskDetailViewModel.task.linkedContact?.lastName,
                     question = question,
                     isEnabled = enabled,
                     canShowEmptyWarning = canShowEmptyWarnings(),
                     canShowFakeNameWarning = canShowWarnings(),
                 ) { newFirstName, newLastName ->
-                    viewModel.task.linkedContact?.firstName = newFirstName
-                    viewModel.task.linkedContact?.lastName = newLastName
-                    viewModel.name.value = newFirstName
+                    taskDetailViewModel.task.linkedContact?.firstName = newFirstName
+                    taskDetailViewModel.task.linkedContact?.lastName = newLastName
+                    taskDetailViewModel.name.value = newFirstName
                 },
                 PhoneNumberItem(
-                    numbers = viewModel.task.linkedContact?.numbers ?: emptySet(),
+                    numbers = taskDetailViewModel.task.linkedContact?.numbers ?: emptySet(),
                     question = question,
                     isEnabled = enabled,
-                    canShowEmptyWarning = canShowEmptyWarnings() && viewModel.hasEmailOrPhone.value == false
+                    canShowEmptyWarning = canShowEmptyWarnings() && taskDetailViewModel.hasEmailOrPhone.value == false
                 ) {
-                    viewModel.task.linkedContact?.numbers = it
-                    viewModel.hasEmailOrPhone.value =
-                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
+                    taskDetailViewModel.task.linkedContact?.numbers = it
+                    taskDetailViewModel.hasEmailOrPhone.value =
+                        taskDetailViewModel.task.linkedContact?.hasValidEmailOrPhone()
                 },
                 EmailAddressItem(
-                    emailAddresses = viewModel.task.linkedContact?.emails ?: emptySet(),
+                    emailAddresses = taskDetailViewModel.task.linkedContact?.emails ?: emptySet(),
                     question = question,
                     isEnabled = enabled,
-                    canShowEmptyWarning = canShowEmptyWarnings() && viewModel.hasEmailOrPhone.value == false
+                    canShowEmptyWarning = canShowEmptyWarnings() && taskDetailViewModel.hasEmailOrPhone.value == false
                 ) {
-                    viewModel.task.linkedContact?.emails = it
-                    viewModel.hasEmailOrPhone.value =
-                        viewModel.task.linkedContact?.hasValidEmailOrPhone()
+                    taskDetailViewModel.task.linkedContact?.emails = it
+                    taskDetailViewModel.hasEmailOrPhone.value =
+                        taskDetailViewModel.task.linkedContact?.hasValidEmailOrPhone()
                 }
             )
         )
 
-        viewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
+        taskDetailViewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
             if (it == ANSWER_EARLIER) {
                 classificationSection.remove(noExposureRiskItem)
                 classificationSection.add(
@@ -456,7 +476,7 @@ class TaskDetailItemsStorage(
         val header = context.getString(R.string.inform_header, contactName)
         val footer = getInformFooter(contactName)
 
-        val dateLastExposure = viewModel.dateOfLastExposure.value
+        val dateLastExposure = taskDetailViewModel.dateOfLastExposure.value
         val referenceItem = getInformCaseReferenceItem()
         val message = getInformMessage(dateLastExposure, referenceItem)
 
@@ -478,7 +498,7 @@ class TaskDetailItemsStorage(
             val callButtonType = getCallButtonType()
             val copyButtonType = getCopyButtonType()
 
-            if (viewModel.copyEnabled(featureFlags)) {
+            if (taskDetailViewModel.copyEnabled(featureFlags)) {
                 add(
                     ButtonItem(
                         text = context.getString(R.string.contact_section_inform_copy),
@@ -489,9 +509,9 @@ class TaskDetailItemsStorage(
                 )
             }
 
-            if (viewModel.callingEnabled(featureFlags)) {
-                val name = viewModel.task.linkedContact!!.firstName ?: "contact"
-                val number = viewModel.task.linkedContact!!.numbers.first()
+            if (taskDetailViewModel.callingEnabled(featureFlags)) {
+                val name = taskDetailViewModel.task.linkedContact!!.firstName ?: "contact"
+                val number = taskDetailViewModel.task.linkedContact!!.numbers.first()
                 add(
                     ButtonItem(
                         text = context.getString(R.string.contact_section_inform_call, name),
@@ -506,9 +526,9 @@ class TaskDetailItemsStorage(
 
     private fun getCopyButtonType(): ButtonType {
         return if (
-            viewModel.commByIndex() &&
-            viewModel.copyEnabled(featureFlags) &&
-            !viewModel.callingEnabled(featureFlags)
+            taskDetailViewModel.commByIndex() &&
+            taskDetailViewModel.copyEnabled(featureFlags) &&
+            !taskDetailViewModel.callingEnabled(featureFlags)
         ) {
             DARK
         } else {
@@ -517,7 +537,10 @@ class TaskDetailItemsStorage(
     }
 
     private fun getCallButtonType(): ButtonType {
-        return if (viewModel.commByIndex() && viewModel.callingEnabled(featureFlags)) {
+        return if (taskDetailViewModel.commByIndex() && taskDetailViewModel.callingEnabled(
+                featureFlags
+            )
+        ) {
             DARK
         } else {
             LIGHT
@@ -525,7 +548,7 @@ class TaskDetailItemsStorage(
     }
 
     private fun getInformFooter(contactName: String): String {
-        return when (viewModel.communicationType.value) {
+        return when (taskDetailViewModel.communicationType.value) {
             CommunicationType.Staff -> context.getString(
                 R.string.inform_contact_title_staff,
                 contactName
@@ -539,12 +562,12 @@ class TaskDetailItemsStorage(
     }
 
     private fun isInformSectionEnabled(): Boolean {
-        return viewModel.category.value != null && viewModel.category.value != Category.NO_RISK
+        return taskDetailViewModel.category.value != null && taskDetailViewModel.category.value != Category.NO_RISK
     }
 
     private fun getContactName(): String {
-        return if (!viewModel.name.value.isNullOrEmpty()) {
-            viewModel.name.value!!
+        return if (!taskDetailViewModel.name.value.isNullOrEmpty()) {
+            taskDetailViewModel.name.value!!
         } else {
             context.getString(R.string.inform_header_this_person)
         }
@@ -552,7 +575,7 @@ class TaskDetailItemsStorage(
 
     private fun getInformIntroMessage(dateLastExposure: String?): String {
         return if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
-            when (viewModel.category.value) {
+            when (taskDetailViewModel.category.value) {
                 Category.ONE -> guidelines.introExposureDateUnknown.getCategory1()
                 Category.TWO_A, Category.TWO_B -> guidelines.introExposureDateUnknown.getCategory2()
                 Category.THREE_A, Category.THREE_B -> guidelines.introExposureDateUnknown.getCategory3()
@@ -560,7 +583,7 @@ class TaskDetailItemsStorage(
             }
         } else {
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
-            when (viewModel.category.value) {
+            when (taskDetailViewModel.category.value) {
                 Category.ONE -> guidelines.introExposureDateKnown.getCategory1(
                     exposureDate = exposureDate
                 )
@@ -576,7 +599,7 @@ class TaskDetailItemsStorage(
     }
 
     private fun getInformLink(): String {
-        return when (viewModel.category.value) {
+        return when (taskDetailViewModel.category.value) {
             Category.ONE -> guidelines.outro.getCategory1()
             Category.TWO_A, Category.TWO_B -> guidelines.outro.getCategory2()
             Category.THREE_A, Category.THREE_B -> guidelines.outro.getCategory3()
@@ -585,15 +608,15 @@ class TaskDetailItemsStorage(
     }
 
     private fun getInformCaseReferenceItem(): String? {
-        return if (viewModel.hasCaseReference()) {
-            guidelines.getReferenceNumberItem(viewModel.getCaseReference()!!)
+        return if (taskDetailViewModel.hasCaseReference()) {
+            guidelines.getReferenceNumberItem(taskDetailViewModel.getCaseReference()!!)
         } else null
     }
 
     private fun getInformMessage(dateLastExposure: String?, referenceItem: String?): String {
         val message = if (dateLastExposure == null || dateLastExposure == ANSWER_EARLIER) {
             // Handle generic texts
-            when (viewModel.category.value) {
+            when (taskDetailViewModel.category.value) {
                 Category.ONE -> guidelines.guidelinesExposureDateUnknown.getCategory1(
                     referenceNumberItem = referenceItem
                 )
@@ -611,7 +634,7 @@ class TaskDetailItemsStorage(
             val exposureDate = LocalDate.parse(dateLastExposure, DateFormats.dateInputData)
             val daysBetweenEncounterAndNow = Days.daysBetween(exposureDate, LocalDate.now()).days
 
-            when (viewModel.category.value) {
+            when (taskDetailViewModel.category.value) {
                 Category.ONE -> guidelines.guidelinesExposureDateKnown.getCategory1(
                     exposureDate = exposureDate,
                     referenceNumberItem = referenceItem

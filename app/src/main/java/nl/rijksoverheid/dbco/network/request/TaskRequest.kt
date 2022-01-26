@@ -28,7 +28,8 @@ data class TaskRequest(
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
     var informedByIndexAt: String? = null,
-) {
+    var shareIndexNameWithContact: Boolean? = null,
+    ) {
 
     companion object {
 
@@ -47,7 +48,8 @@ data class TaskRequest(
             uuid = task.uuid,
             dateOfLastExposure = task.dateOfLastExposure,
             questionnaireResult = task.questionnaireResult,
-            informedByIndexAt = task.informedByIndexAt
+            informedByIndexAt = task.informedByIndexAt,
+            shareIndexNameWithContact = task.shareIndexNameWithContact
         )
     }
 }

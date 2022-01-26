@@ -11,12 +11,12 @@ package nl.rijksoverheid.dbco.util
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.ColorRes
@@ -29,10 +29,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.ExpandableGroup
 import kotlinx.serialization.json.JsonPrimitive
 import nl.rijksoverheid.dbco.R
-import java.util.*
 
 fun delay(milliseconds: Long, block: () -> Unit) {
-    Handler().postDelayed(Runnable(block), milliseconds)
+    Handler(Looper.getMainLooper()).postDelayed(Runnable(block), milliseconds)
 }
 
 fun View.showKeyboard() {
@@ -113,18 +112,20 @@ fun NestedScrollView.scrollTo(view: View, delay: Long = 0) {
 }
 
 fun String.removeHtmlTags(): String {
-    return this.replace("<br/>", "\n")
+    return this
+        .replace("<br/>", "\n")
+        .replace("<br>", "\n")
         .replace("<b>", "")
         .replace("</b>", "")
         .replace("<ul>", "")
         .replace("</ul>", "")
+        .replace("<u>", "")
+        .replace("</u>", "")
         .replace("</li>", "")
         .replace("<li>", "\n• ")
         .replace("<a href=\"", "")
         .replace(Regex("\">(.*)</a>"), "")
 }
-
-fun String.capitalizeWords(): String = split(" ").map { it.capitalize() }.joinToString(" ")
 
 fun String.toJsonPrimitive(): JsonPrimitive = JsonPrimitive(this)
 
@@ -145,7 +146,6 @@ fun ExpandableGroup.removeAllChildren() {
     }
 }
 
-@ExperimentalUnsignedTypes
 fun ByteArray.toHexString() = asUByteArray().joinToString("") { it.toString(16).padStart(2, '0') }
 
 fun EditText.updateText(text: CharSequence) {
@@ -159,12 +159,6 @@ fun CharSequence.numbers(limit: Int? = null): String {
         true -> numbers.take(limit)
         false -> numbers
     }
-}
-
-fun DatePicker.getDate(): Date {
-    val calendar = Calendar.getInstance()
-    calendar.set(year, month, dayOfMonth)
-    return calendar.time
 }
 
 fun View.margin(

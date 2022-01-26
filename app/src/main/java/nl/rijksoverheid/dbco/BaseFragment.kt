@@ -21,15 +21,36 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragmentDirections
 import nl.rijksoverheid.dbco.util.hideKeyboard
 
 abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layout) {
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
         return requireActivity().defaultViewModelProviderFactory
+    }
+
+    fun showDialog(
+        title: String,
+        message: String,
+        positiveButtonText: String,
+        positiveAction: () -> Unit,
+        negativeButtonText: String,
+        negativeAction: (() -> Unit)? = null
+    ) {
+
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton(positiveButtonText) { dialog, _ ->
+            positiveAction()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(negativeButtonText) { dialog, _ ->
+            negativeAction?.invoke()
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
     fun showErrorDialog(message: String, tryAgainAction: () -> Unit, throwable: Throwable? = null) {

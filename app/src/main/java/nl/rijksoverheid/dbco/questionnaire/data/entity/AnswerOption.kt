@@ -8,10 +8,22 @@
 
 package nl.rijksoverheid.dbco.questionnaire.data.entity
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class AnswerOption(
     val label: String? = null,
-    val value: String? = null
+    val value: String? = null,
+    val trigger: Trigger? = null
 )
+
+@Serializable
+enum class Trigger {
+
+    @SerialName("setShareIndexNameToYes")
+    ShareIndexNameAllowed,
+
+    @SerialName("setShareIndexNameToNo")
+    ShareIndexNameDisallowed
+}

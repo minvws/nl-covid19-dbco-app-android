@@ -20,7 +20,8 @@ import nl.rijksoverheid.dbco.config.Symptom
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
+import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.junit.Assert
@@ -166,6 +167,87 @@ class SelfBcoCaseViewModelTest {
     }
 
     @Test
+    fun `given a start of allowd contagious period in repository, when it is fetched in viewmodel then return the same`() {
+        // given
+        val date = LocalDate.now(DateTimeZone.UTC)
+        val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        every { tasksMock.getStartOfAllowedContagiousPeriod() } returns date
+
+        // when
+        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
+
+        // then
+        Assert.assertEquals(viewModel.getStartOfAllowedContagiousPeriod(), date)
+    }
+
+    @Test
+    fun `given a old start of contagious period in repository and symptomatic index, when allowed contagious period is fetched in viewmodel then return true`() {
+        // given
+        val date = LocalDate.now(DateTimeZone.UTC).minusDays(13)
+        val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        every { tasksMock.getStartOfContagiousPeriod() } returns date
+
+        // when
+        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
+        viewModel.setTypeOfFlow(SYMPTOM_CHECK_FLOW)
+
+        // then
+        Assert.assertTrue(viewModel.isStartOfContagiousPeriodTooFarInPast())
+    }
+
+
+    @Test
+    fun `given a old start of contagious period in repository and tested index, when allowed contagious period is fetched in viewmodel then return true`() {
+        // given
+        val date = LocalDate.now(DateTimeZone.UTC).minusDays(15)
+        val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        every { tasksMock.getStartOfContagiousPeriod() } returns date
+
+        // when
+        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
+        viewModel.setTypeOfFlow(COVID_CHECK_FLOW)
+
+        // then
+        Assert.assertTrue(viewModel.isStartOfContagiousPeriodTooFarInPast())
+    }
+
+    @Test
+    fun `given a recent start of contagious period in repository and symptomatic index, when allowed contagious period is fetched in viewmodel then return true`() {
+        // given
+        val date = LocalDate.now(DateTimeZone.UTC).minusDays(12)
+        val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        every { tasksMock.getStartOfContagiousPeriod() } returns date
+
+        // when
+        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
+        viewModel.setTypeOfFlow(SYMPTOM_CHECK_FLOW)
+
+        // then
+        Assert.assertFalse(viewModel.isStartOfContagiousPeriodTooFarInPast())
+    }
+
+
+    @Test
+    fun `given a recent start of contagious period in repository and tested index, when allowed contagious period is fetched in viewmodel then return true`() {
+        // given
+        val date = LocalDate.now(DateTimeZone.UTC).minusDays(14)
+        val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        every { tasksMock.getStartOfContagiousPeriod() } returns date
+
+        // when
+        val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
+        viewModel.setTypeOfFlow(COVID_CHECK_FLOW)
+
+        // then
+        Assert.assertFalse(viewModel.isStartOfContagiousPeriodTooFarInPast())
+    }
+
+    @Test
     fun `given a symptom onset date in repository, when view model is in symptom state, the symptom onset date should be the start date`() {
         // given
         mockkStatic(LocalDate::class)
@@ -177,7 +259,7 @@ class SelfBcoCaseViewModelTest {
 
         // when
         val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
-        viewModel.setTypeOfFlow(SelfBcoConstants.SYMPTOM_CHECK_FLOW)
+        viewModel.setTypeOfFlow(SYMPTOM_CHECK_FLOW)
 
         // then
         Assert.assertEquals(viewModel.getStartDate(), date)
@@ -195,7 +277,7 @@ class SelfBcoCaseViewModelTest {
 
         // when
         val viewModel = SelfBcoCaseViewModel(tasksMock, appConfigMockk)
-        viewModel.setTypeOfFlow(SelfBcoConstants.COVID_CHECK_FLOW)
+        viewModel.setTypeOfFlow(COVID_CHECK_FLOW)
 
         // then
         Assert.assertEquals(viewModel.getStartDate(), date)
@@ -364,7 +446,7 @@ class SelfBcoCaseViewModelTest {
     @Test
     fun `given a test flow, when the flow is updated, it should be the same when retrieved`() {
         // given
-        val flow = SelfBcoConstants.COVID_CHECK_FLOW
+        val flow = COVID_CHECK_FLOW
         val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
 
@@ -379,7 +461,7 @@ class SelfBcoCaseViewModelTest {
     @Test
     fun `given a symptom flow, when the flow is updated, it should be the same when retrieved`() {
         // given
-        val flow = SelfBcoConstants.SYMPTOM_CHECK_FLOW
+        val flow = SYMPTOM_CHECK_FLOW
         val appConfigMockk = mockk<AppConfigRepository>(relaxed = true)
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
 

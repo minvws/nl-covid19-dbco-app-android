@@ -15,6 +15,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import kotlinx.serialization.json.JsonElement
@@ -72,9 +74,15 @@ abstract class InputQuestionMultipleOptionsItem(
         if (state == MULTIPLE_OPTIONS) {
             editText.clearFocus()
             layout.hint = viewBinding.requireContext().getString(multipleHint)
+            layout.defaultHintTextColor = ContextCompat.getColorStateList(viewBinding.requireContext(), R.color.black)
+            layout.endIconMode = TextInputLayout.END_ICON_CUSTOM
+            layout.endIconDrawable = ContextCompat.getDrawable(viewBinding.requireContext(), R.drawable.ic_chevron_down)
             editText.disableInput { showOptionsPicker(viewBinding, layout.context) }
         } else {
             layout.hint = viewBinding.requireContext().getString(singleHint)
+            layout.defaultHintTextColor = ContextCompat.getColorStateList(viewBinding.requireContext(), R.color.secondary_text)
+            layout.endIconMode = TextInputLayout.END_ICON_NONE
+            layout.endIconDrawable = null
             editText.setText(items.firstOrNull())
             editText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {

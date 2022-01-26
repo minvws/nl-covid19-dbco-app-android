@@ -22,7 +22,6 @@ import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.databinding.FragmentSelfbcoPermissionBinding
 import nl.rijksoverheid.dbco.items.ui.HeaderItem
-import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
 import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 
 class SelfBcoPermissionFragment : BaseFragment(R.layout.fragment_selfbco_permission) {

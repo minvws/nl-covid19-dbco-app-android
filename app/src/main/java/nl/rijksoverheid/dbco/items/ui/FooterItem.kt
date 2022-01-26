@@ -25,7 +25,7 @@ class FooterItem(
     override fun bind(viewBinding: ItemFooterBinding, position: Int) {
         ViewCompat.enableAccessibleClickableSpanSupport(viewBinding.content)
         viewBinding.content.linksClickable = true
-        viewBinding.content.movementMethod = LinkMovementMethod.getInstance();
+        viewBinding.content.movementMethod = LinkMovementMethod.getInstance()
 
         text?.let {
             val context = viewBinding.root.context

@@ -7,8 +7,8 @@
       -->
 <resources>
     <declare-styleable name="FillCodeField">
-        <attr name="separator" format="string" />
-        <attr name="maxLength" format="integer" />
-        <attr name="groupSize" format="integer" />
+        <attr name="groupSeparator" format="string" />
+        <attr name="maxDigits" format="integer" />
+        <attr name="digitsPerGroup" format="integer" />
     </declare-styleable>
 </resources>

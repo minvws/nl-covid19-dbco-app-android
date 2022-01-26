@@ -25,6 +25,7 @@ class ContactInputItem(
     private val contactNames: Array<String>,
     var contactName: String = "",
     var contactUuid: String? = null,
+    private val contentDescriptionSuffix: String? = null,
     val trashListener: OnTrashClickedListener
 ) : BaseBindableItem<ItemContactInputBinding>(), TextWatcher {
 
@@ -33,22 +34,22 @@ class ContactInputItem(
     }
 
     override fun bind(viewBinding: ItemContactInputBinding, position: Int) {
-        viewBinding.contactInput.setText(contactName)
-
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             viewBinding.contactInput.context,
             android.R.layout.simple_dropdown_item_1line, contactNames
         )
-
-        viewBinding.contactInput.setAdapter(adapter)
-
-        viewBinding.contactInput.addTextChangedListener(this)
-
-        viewBinding.iconTrash.setOnClickListener(onClickListener)
-
-        viewBinding.contactInput.setOnItemClickListener { _, _, _, _ ->
-            viewBinding.contactInput.clearFocus()
-            viewBinding.contactInput.hideKeyboard()
+        with(viewBinding) {
+            contactInput.setText(contactName)
+            contactInput.setAdapter(adapter)
+            contactInput.contentDescription = contentDescriptionSuffix?.let {
+                "${contactInput.contentDescription} $contentDescriptionSuffix"
+            } ?: contactInput.contentDescription
+            contactInput.addTextChangedListener(this@ContactInputItem)
+            iconTrash.setOnClickListener(onClickListener)
+            contactInput.setOnItemClickListener { _, _, _, _ ->
+                viewBinding.contactInput.clearFocus()
+                viewBinding.contactInput.hideKeyboard()
+            }
         }
     }
 
@@ -74,9 +75,11 @@ class ContactInputItem(
         fun onTrashClicked(item: ContactInputItem)
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* */ }
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* */
+    }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* */ }
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* */
+    }
 
     override fun afterTextChanged(s: Editable?) {
         contactName = s.toString()

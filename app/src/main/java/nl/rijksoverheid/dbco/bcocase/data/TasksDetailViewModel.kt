@@ -20,11 +20,14 @@ import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.config.FeatureFlags
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameDisallowed
+import nl.rijksoverheid.dbco.questionnaire.data.entity.Trigger.ShareIndexNameAllowed
 import org.joda.time.LocalDate
 
 /**
  * ViewModel responsible for handling changes in [Task] details
- * exposes a number of [LiveData] objects which describe some attributes from
+ * exposes a number of LiveData objects which describe some attributes from
  * the currently selected [Task], like what risk category the [Task] falls into.
  */
 class TasksDetailViewModel(
@@ -88,7 +91,7 @@ class TasksDetailViewModel(
 
     fun hasCaseReference(): Boolean = tasksRepository.getCaseReference() != null
 
-    fun getStartOfContagiousPeriod(): LocalDate? = tasksRepository.getStartOfContagiousPeriod()
+    fun getEarliestExposureDateOption(): LocalDate? = tasksRepository.getStartOfAllowedContagiousPeriod()
 
     fun saveTask() {
         tasksRepository.saveTask(
@@ -107,6 +110,14 @@ class TasksDetailViewModel(
         val hasNoInformation = !task.isSaved() && !task.hasCategoryOrExposure()
         if (changesEnabled && task.isLocal() && hasNoInformation) {
             deleteCurrentTask()
+        }
+    }
+
+    fun onAnswerTrigger(trigger: Trigger) {
+        when (trigger) {
+            ShareIndexNameAllowed, ShareIndexNameDisallowed -> {
+                task.shareIndexNameWithContact = trigger == ShareIndexNameAllowed
+            }
         }
     }
 

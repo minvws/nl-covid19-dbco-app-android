@@ -7,7 +7,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -15,9 +16,9 @@
 
     <LinearLayout
         android:id="@+id/input_container"
-        android:layout_marginHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -41,7 +42,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/question_locked_summary"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/question_explanation_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_error_purple_small" />
+
+            <TextView
+                android:id="@+id/question_explanation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="We vragen alleen naar je contacten van de afgelopen 14 dagen. Daarom kun je geen datum van daarvoor kiezen."
+                android:textColor="@color/secondary_text"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

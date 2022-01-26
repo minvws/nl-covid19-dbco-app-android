@@ -9,26 +9,25 @@
 package nl.rijksoverheid.dbco.contacts.picker
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Section
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.Constants
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.ContactsViewModel
 import nl.rijksoverheid.dbco.databinding.FragmentPermissionBinding
-import nl.rijksoverheid.dbco.selfbco.onboarding.SelfBcoPermissionFragmentDirections
+import nl.rijksoverheid.dbco.items.ui.HeaderItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphIconItem
+import nl.rijksoverheid.dbco.items.ui.ParagraphItem
 import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 
 class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permission) {
@@ -76,9 +75,20 @@ class ContactPickerPermissionFragment : BaseFragment(R.layout.fragment_permissio
 
         val label = contactsViewModel.getTaskLabel(args.indexTaskUuid)
         val nameToShow = label ?: getString(R.string.this_contact)
+        val content = Section(
+            listOf(
+                HeaderItem(String.format(getString(R.string.permission_name_header), nameToShow)),
+                ParagraphItem(getString(R.string.permission_summary), clickable = false),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item4)),
+                ParagraphIconItem(getString(R.string.onboarding_privacy_item5)),
+                ParagraphIconItem(getString(R.string.selfbco_permission_extra_item2)),
+            )
+        )
+        val adapter = GroupAdapter<GroupieViewHolder>()
+        adapter.add(content)
 
-        binding.onboardingHeader.text =
-            String.format(getString(R.string.permission_name_header), nameToShow)
+        binding.content.adapter = adapter
+
         binding.btnNext.setOnClickListener {
             requestPermission(requestCallback, Manifest.permission.READ_CONTACTS) {
                 findNavController().navigate(

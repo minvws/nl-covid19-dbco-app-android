@@ -16,7 +16,6 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 import nl.rijksoverheid.dbco.items.input.ContactInputItem
 import nl.rijksoverheid.dbco.items.ui.DuoHeaderItem
 import nl.rijksoverheid.dbco.items.ui.SubHeaderItem
-import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.COVID_CHECK_FLOW
 import nl.rijksoverheid.dbco.selfbco.SelfBcoConstants.Companion.SYMPTOM_CHECK_FLOW
 import org.joda.time.LocalDate
@@ -54,6 +53,10 @@ class TimelineSection(
         val item = ContactInputItem(
             contactName = name,
             contactUuid = uuid,
+            contentDescriptionSuffix = context.getString(
+                R.string.add_contact_edit_field_contentDescription_date_suffix,
+                date.toString(DateFormats.selfBcoDateOnly)
+            ),
             focusOnBind = focusOnBind,
             contactNames = contactNames,
             trashListener = object : ContactInputItem.OnTrashClickedListener {
@@ -115,7 +118,8 @@ class TimelineSection(
                 R.string.selfbco_timeline_day_before_yesterday_date,
                 formattedDate
             )
-            else -> date.toString(DateFormats.selfBcoDateCheck).capitalize(Locale.getDefault())
+            else -> date.toString(DateFormats.selfBcoDateCheck)
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) }
         }
 
         return if (subtitle != null) {

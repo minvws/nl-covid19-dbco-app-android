@@ -234,13 +234,13 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
                 is ReversePairingSuccess -> {
                     binding.pairingContainer.isVisible = false
                     toggleButtonStyle(isPairing = false)
-                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.text = getString(R.string.send_data_im_ready)
                     tasksViewModel.syncData()
                     setupSendButton()
                 }
                 is ReversePairingStopped -> {
                     toggleButtonStyle(isPairing = false)
-                    binding.sendButton.text = getString(R.string.send_data)
+                    binding.sendButton.text = getString(R.string.send_data_im_ready)
                     setupSendButton()
                 }
                 is ReversePairingError -> {
@@ -369,13 +369,11 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         case.tasks.forEach { task ->
-            when (task.taskType) {
-                TaskType.Contact -> {
-                    if (task.canBeUploaded) {
-                        notUploadedSection.add(TaskItem(task))
-                    } else {
-                        uploadedSection.add(TaskItem(task))
-                    }
+            if (task.taskType == TaskType.Contact) {
+                if (task.canBeUploaded) {
+                    notUploadedSection.add(TaskItem(task))
+                } else {
+                    uploadedSection.add(TaskItem(task))
                 }
             }
         }
@@ -405,17 +403,15 @@ class MyContactsFragment : BaseFragment(R.layout.fragment_my_contacts) {
         }
 
         case.tasks.forEach { task ->
-            when (task.taskType) {
-                TaskType.Contact -> {
-                    val informed = when (task.communication) {
-                        CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
-                        else -> task.didInform
-                    }
-                    if (informed) {
-                        doneSection.add(TaskItem(task))
-                    } else {
-                        inProgressSection.add(TaskItem(task))
-                    }
+            if (task.taskType == TaskType.Contact) {
+                val informed = when (task.communication) {
+                    CommunicationType.Staff -> task.linkedContact?.hasValidEmailOrPhone() == true
+                    else -> task.didInform
+                }
+                if (informed) {
+                    doneSection.add(TaskItem(task))
+                } else {
+                    inProgressSection.add(TaskItem(task))
                 }
             }
         }
