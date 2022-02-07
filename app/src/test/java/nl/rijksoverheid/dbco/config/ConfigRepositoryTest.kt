@@ -11,7 +11,8 @@ package nl.rijksoverheid.dbco.config
 import android.content.Context
 import android.content.SharedPreferences
 import io.mockk.*
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import nl.rijksoverheid.dbco.Defaults
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.utils.createAppConfig
@@ -24,23 +25,18 @@ import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.config.AppConfigRepository.Companion.CACHE_VALIDITY_DAYS
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import nl.rijksoverheid.dbco.utils.CoroutineTestRule
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.tz.UTCProvider
-import org.junit.Rule
 import java.lang.IllegalStateException
 
 @RunWith(MockitoJUnitRunner::class)
 class ConfigRepositoryTest {
 
-    @get:Rule
-    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
-
     @Test
     fun `given api returns a valid config, when fetching config, then store config and return it`() =
-        runTest {
+        runBlockingTest {
             // given
             val config = createAppConfig()
             val mockContext = mockk<Context>()
@@ -71,7 +67,7 @@ class ConfigRepositoryTest {
 
     @Test
     fun `given api returns an error and a recent cached config exists, when fetching config, then return stored cache`() =
-        runTest {
+        runBlockingTest {
             // given
             mockkStatic(LocalDate::class)
             val cacheConfig = createAppConfig()
@@ -106,7 +102,7 @@ class ConfigRepositoryTest {
 
     @Test(expected = IllegalStateException::class)
     fun `given api returns an error and no recent cached config exists, when fetching config, then error should be thrown`() =
-        runTest {
+        runBlockingTest {
             // given
             mockkStatic(LocalDate::class)
             val cacheConfig = createAppConfig()
@@ -341,6 +337,6 @@ class ConfigRepositoryTest {
             context,
             api,
             storage,
-            coroutineTestRule.testDispatcherProvider
+            TestCoroutineDispatcher()
         )
 }

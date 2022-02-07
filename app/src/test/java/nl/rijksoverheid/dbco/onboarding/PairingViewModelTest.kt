@@ -11,7 +11,8 @@ package nl.rijksoverheid.dbco.onboarding
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import io.mockk.*
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.Case
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
@@ -22,6 +23,9 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingEr
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.PairingStatus.PairingInvalid
 import nl.rijksoverheid.dbco.selfbco.reverse.ReversePairingCredentials
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingResponse
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.HttpException
@@ -33,10 +37,8 @@ import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus
 import nl.rijksoverheid.dbco.onboarding.PairingViewModel.ReversePairingStatus.ReversePairingStopped
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingState
 import nl.rijksoverheid.dbco.selfbco.reverse.data.entity.ReversePairingStatusResponse
-import nl.rijksoverheid.dbco.utils.CoroutineTestRule
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
-import org.junit.*
 
 @RunWith(MockitoJUnitRunner::class)
 class PairingViewModelTest {
@@ -44,12 +46,9 @@ class PairingViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
-
     @Test
-    fun `given pairing throws no exception and case can be retrieved, when pairing is done with pin, pairing status should be success`() {
-        runTest {
+    fun `given pairing throws no exception and case can be retrieved, when pairing is done with pin, pairing status should be success`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val case = Case()
@@ -64,11 +63,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingSuccess(case))
         }
-    }
 
     @Test
-    fun `given pairing throws regular exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() {
-        runTest {
+    fun `given pairing throws regular exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val error = IllegalStateException("test")
@@ -85,11 +83,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingError(error))
         }
-    }
 
     @Test
-    fun `given pairing throws http 400 exception and case can be retrieved, when pairing is done with pin, pairing status should be invalid`() {
-        runTest {
+    fun `given pairing throws http 400 exception and case can be retrieved, when pairing is done with pin, pairing status should be invalid`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val response = mockk<Response<Any>>()
@@ -109,11 +106,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingInvalid)
         }
-    }
 
     @Test
-    fun `given pairing throws http 500 exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() {
-        runTest {
+    fun `given pairing throws http 500 exception and case can be retrieved, when pairing is done with pin, pairing status should be error`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val response = mockk<Response<Any>>()
@@ -133,11 +129,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingError(error))
         }
-    }
 
     @Test
-    fun `given pairing succeeds but case retrieval gives error, when pairing is done with pin, pairing status should be error`() {
-        runTest {
+    fun `given pairing succeeds but case retrieval gives error, when pairing is done with pin, pairing status should be error`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val error = IllegalStateException("test")
@@ -152,11 +147,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingError(error))
         }
-    }
 
     @Test
-    fun `given pairing succeeds but case retrieval gives http 400 error, when pairing is done with pin, pairing status should be invalid`() {
-        runTest {
+    fun `given pairing succeeds but case retrieval gives http 400 error, when pairing is done with pin, pairing status should be invalid`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val response = mockk<Response<Any>>()
@@ -174,11 +168,10 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingInvalid)
         }
-    }
 
     @Test
-    fun `given pairing succeeds but case retrieval gives http 500 error, when pairing is done with pin, pairing status should be error`() {
-        runTest {
+    fun `given pairing succeeds but case retrieval gives http 500 error, when pairing is done with pin, pairing status should be error`() =
+        runBlockingTest {
             // given
             val pin = "pin"
             val response = mockk<Response<Any>>()
@@ -196,51 +189,47 @@ class PairingViewModelTest {
             // then
             Assert.assertEquals(viewModel.pairingStatus.value, PairingError(error))
         }
-    }
 
     @Test
     fun `given no pairing credentials and pairing process succeeds, when reverse pairing starts, then pairing code should have code and reverse pairing should be successful`() {
-        // give
-        runTest {
-            val code = "testCode"
-            val token = "testToken"
-            val pairingCode = "pairingCode"
-            val credentialsResponse = Response.success(
-                ReversePairingResponse(
-                    code = code,
-                    token = token
-                )
-            )
-            val reversePairingResponse = Response.success(
-                ReversePairingStatusResponse(
-                    status = ReversePairingState.COMPLETED,
-                    pairingCode = pairingCode
-                )
-            )
-            val credentials = ReversePairingCredentials(
+        // given
+        val code = "testCode"
+        val token = "testToken"
+        val pairingCode = "pairingCode"
+        val credentialsResponse = Response.success(
+            ReversePairingResponse(
                 code = code,
                 token = token
             )
-            val case = Case()
-            val userMock = mockk<UserRepository>(relaxed = true)
-            val tasksMock = mockk<ICaseRepository>(relaxed = true)
-            coEvery { tasksMock.fetchCase() } returns case
-            coEvery { userMock.retrieveReversePairingCode() } returns credentialsResponse
-            coEvery { userMock.checkReversePairingStatus(credentials.token) } returns reversePairingResponse
-            val observer =
-                mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
+        )
+        val reversePairingResponse = Response.success(
+            ReversePairingStatusResponse(
+                status = ReversePairingState.COMPLETED,
+                pairingCode = pairingCode
+            )
+        )
+        val credentials = ReversePairingCredentials(
+            code = code,
+            token = token
+        )
+        val case = Case()
+        val userMock = mockk<UserRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        coEvery { tasksMock.fetchCase() } returns case
+        coEvery { userMock.retrieveReversePairingCode() } returns credentialsResponse
+        coEvery { userMock.checkReversePairingStatus(credentials.token) } returns reversePairingResponse
+        val observer = mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
 
-            // when
-            val viewModel = createViewModel(userMock, tasksMock)
-            viewModel.reversePairingStatus.observeForever(observer)
-            viewModel.startReversePairing(credentials = null)
+        // when
+        val viewModel = createViewModel(userMock, tasksMock)
+        viewModel.reversePairingStatus.observeForever(observer)
+        viewModel.startReversePairing(credentials = null)
 
-            // then
-            Assert.assertEquals(viewModel.pairingCode.value, code)
-            verifySequence {
-                observer.onChanged(ReversePairing(credentials))
-                observer.onChanged(ReversePairingSuccess(pairingCode))
-            }
+        // then
+        Assert.assertEquals(viewModel.pairingCode.value, code)
+        verifySequence {
+            observer.onChanged(ReversePairing(credentials))
+            observer.onChanged(ReversePairingSuccess(pairingCode))
         }
     }
 
@@ -265,8 +254,7 @@ class PairingViewModelTest {
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         coEvery { tasksMock.fetchCase() } returns case
         coEvery { userMock.checkReversePairingStatus(credentials.token) } returns reversePairingResponse
-        val observer =
-            mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
+        val observer = mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
 
         // when
         val viewModel = createViewModel(userMock, tasksMock)
@@ -310,8 +298,7 @@ class PairingViewModelTest {
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         coEvery { tasksMock.fetchCase() } returns case
         coEvery { userMock.checkReversePairingStatus(credentials.token) } returns reversePairingResponse
-        val observer =
-            mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
+        val observer = mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
 
         // when
         val viewModel = createViewModel(userMock, tasksMock)
@@ -327,7 +314,7 @@ class PairingViewModelTest {
     }
 
     @Test
-    fun `when polling is stopped, then stopped status should be present`() = runTest {
+    fun `when polling is stopped, then stopped status should be present`() {
         // given
         val code = "testCode"
         val token = "testToken"
@@ -347,8 +334,7 @@ class PairingViewModelTest {
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         coEvery { tasksMock.fetchCase() } returns case
         coEvery { userMock.checkReversePairingStatus(credentials.token) } returns reversePairingResponse
-        val observer =
-            mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
+        val observer = mockk<Observer<ReversePairingStatus>> { every { onChanged(any()) } just Runs }
 
         // when
         val viewModel = createViewModel(userMock, tasksMock)
@@ -368,30 +354,26 @@ class PairingViewModelTest {
 
     @Test
     fun `when user has shared code, then the value should be propagated in livedata`() {
-        runTest {
-            // when
-            val value = true
-            val userMock = mockk<UserRepository>(relaxed = true)
-            val tasksMock = mockk<ICaseRepository>(relaxed = true)
-            val viewModel = createViewModel(userMock, tasksMock)
-            viewModel.setUserHasSharedCode(value)
+        // when
+        val value = true
+        val userMock = mockk<UserRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val viewModel = createViewModel(userMock, tasksMock)
+        viewModel.setUserHasSharedCode(value)
 
-            Assert.assertEquals(value, viewModel.userHasSharedCode.value)
-        }
+        Assert.assertEquals(value, viewModel.userHasSharedCode.value)
     }
 
     @Test
     fun `when user has not shared code, then the value should be propagated in livedata`() {
-        runTest {
-            // when
-            val value = false
-            val userMock = mockk<UserRepository>(relaxed = true)
-            val tasksMock = mockk<ICaseRepository>(relaxed = true)
-            val viewModel = createViewModel(userMock, tasksMock)
-            viewModel.setUserHasSharedCode(value)
+        // when
+        val value = false
+        val userMock = mockk<UserRepository>(relaxed = true)
+        val tasksMock = mockk<ICaseRepository>(relaxed = true)
+        val viewModel = createViewModel(userMock, tasksMock)
+        viewModel.setUserHasSharedCode(value)
 
-            Assert.assertEquals(value, viewModel.userHasSharedCode.value)
-        }
+        Assert.assertEquals(value, viewModel.userHasSharedCode.value)
     }
 
     private fun createViewModel(
@@ -400,6 +382,7 @@ class PairingViewModelTest {
     ) = PairingViewModel(
         userRepository,
         tasksRepository,
-        coroutineTestRule.testDispatcherProvider
+        TestCoroutineDispatcher(),
+        TestCoroutineDispatcher()
     )
 }

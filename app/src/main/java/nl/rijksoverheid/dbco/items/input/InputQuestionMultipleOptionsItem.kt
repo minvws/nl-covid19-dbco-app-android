@@ -9,6 +9,7 @@
 package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View

@@ -119,8 +119,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
     private fun displayDate(date: LocalDate) {
         binding.date.text =
-            date.toString(DateFormats.datePickerDate)
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+            date.toString(DateFormats.datePickerDate).capitalize(Locale.getDefault())
         binding.year.text = date.toString(DateFormats.datePickerYear)
     }
 
