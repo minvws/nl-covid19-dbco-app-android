@@ -27,7 +27,7 @@ import org.joda.time.LocalDate
 
 /**
  * ViewModel responsible for handling changes in [Task] details
- * exposes a number of LiveData objects which describe some attributes from
+ * exposes a number of [LiveData] objects which describe some attributes from
  * the currently selected [Task], like what risk category the [Task] falls into.
  */
 class TasksDetailViewModel(

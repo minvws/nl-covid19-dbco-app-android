@@ -61,7 +61,7 @@ object HtmlHelper {
             html,
             HtmlCompat.FROM_HTML_MODE_COMPACT,
             null,
-            { opening, tag, output, _ ->
+            Html.TagHandler { opening, tag, output, _ ->
                 if (tag == "li" && opening) {
                     output.setSpan(
                         Bullet(),

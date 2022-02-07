@@ -16,12 +16,14 @@
     <color name="secondary_variant">@color/gray_light</color>
     <color name="control_highlight">#240047FF</color>
 
+    <color name="error">@color/red</color>
     <color name="error_surface">@color/red_light</color>
     <color name="background_mask">#000000</color>
     <color name="disabled">#8A898D</color>
 
     <!-- Color palette -->
     <color name="black">#000</color>
+    <color name="blue_light">#D0F0F3</color>
     <color name="gray">#aaa</color>
     <color name="gray_lighter">#F2F2F7</color>
     <color name="gray_light">#DDDDDD</color>
@@ -29,8 +31,11 @@
     <color name="red">#ED395A</color>
     <color name="red_light">#FFECF0</color>
     <color name="red_danger">#FF002E</color>
+    <color name="pink">#B8275D</color>
     <color name="purple">#5616FF</color>
     <color name="purple_dark">#2A0098</color>
     <color name="white">#fff</color>
+    <color name="yellow_dark">#ff9d12</color>
     <color name="orange">#E18B10</color>
+    <color name="yellow_light">#FADD9D</color>
 </resources>

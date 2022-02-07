@@ -15,7 +15,7 @@ import nl.rijksoverheid.dbco.items.BaseBindableItem
 /**
  * Simple class showing a static memory tip
  */
-class MemoryTipGrayItem : BaseBindableItem<ItemMemorytipTimelineGrayBinding>() {
+class MemoryTipGrayItem() : BaseBindableItem<ItemMemorytipTimelineGrayBinding>() {
 
     override fun bind(viewBinding: ItemMemorytipTimelineGrayBinding, position: Int) {
         /* NO OP */

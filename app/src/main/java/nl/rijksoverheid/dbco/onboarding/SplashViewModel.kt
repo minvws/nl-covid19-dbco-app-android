@@ -9,9 +9,11 @@
 package nl.rijksoverheid.dbco.onboarding
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.IUserRepository
 import nl.rijksoverheid.dbco.Constants.USER_COMPLETED_ONBOARDING
 import nl.rijksoverheid.dbco.Constants.USER_GAVE_CONSENT

@@ -37,7 +37,7 @@ class DateInputItem(
 
     private var date: LocalDate? = getPreviousAnswer()
 
-    private val datePickerListener = { _: View ->
+    private val datePickerListener = { view: View ->
         showDatePicker()
     }
 
