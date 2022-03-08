@@ -49,7 +49,7 @@ class PairingViewModel(
     val reversePairingStatus: LiveData<ReversePairingStatus> = _reversePairingStatus
 
     private var pollingJob: Job? = null
-    private lateinit var poller: Poller
+    private var poller: Poller? = null
 
     /**
      * Pair with regular pin given by an GGD employee
@@ -111,37 +111,38 @@ class PairingViewModel(
     private fun startPolling(credentials: ReversePairingCredentials) {
         cancelPollingForChanges()
         pollingJob = viewModelScope.launch(mainDispatcher) {
-            poller = ReversePairingStatePoller(userRepository, ioDispatcher)
-            val flow = poller.poll(POLLING_DELAY, credentials).onEach { result ->
-                when (result) {
-                    is ReversePairingSuccess -> {
-                        _userHasSharedCode.postValue(true)
-                        when (pairWithCode(result.code)) {
-                            is PairingSuccess -> {
-                                _reversePairingStatus.postValue(ReversePairingSuccess(result.code))
-                            }
-                            is PairingInvalid -> {
-                                _reversePairingStatus.postValue(ReversePairingExpired)
-                            }
-                            is PairingError -> {
-                                _reversePairingStatus.postValue(ReversePairingError(credentials))
+            poller = ReversePairingStatePoller(userRepository, ioDispatcher).also {
+                val flow = it.poll(POLLING_DELAY, credentials).onEach { result ->
+                    when (result) {
+                        is ReversePairingSuccess -> {
+                            _userHasSharedCode.postValue(true)
+                            when (pairWithCode(result.code)) {
+                                is PairingSuccess -> {
+                                    _reversePairingStatus.postValue(ReversePairingSuccess(result.code))
+                                }
+                                is PairingInvalid -> {
+                                    _reversePairingStatus.postValue(ReversePairingExpired)
+                                }
+                                is PairingError -> {
+                                    _reversePairingStatus.postValue(ReversePairingError(credentials))
+                                }
                             }
                         }
+                        else -> _reversePairingStatus.postValue(result)
                     }
-                    else -> _reversePairingStatus.postValue(result)
+                    if (result !is ReversePairing) {
+                        it.close()
+                        cancelPollingForChanges()
+                    }
                 }
-                if (result !is ReversePairing) {
-                    poller.close()
-                    cancelPollingForChanges()
-                }
+                flow.collect()
             }
-            flow.collect()
         }
     }
 
 
     fun cancelPairing() {
-        poller.close()
+        poller?.close()
         cancelPollingForChanges()
         _reversePairingStatus.postValue(ReversePairingStopped)
     }
@@ -150,7 +151,7 @@ class PairingViewModel(
         _userHasSharedCode.postValue(hasShared)
     }
 
-    fun cancelPollingForChanges() = pollingJob?.cancel()
+    private fun cancelPollingForChanges() = pollingJob?.cancel()
 
     companion object {
         private const val POLLING_DELAY = 10_000L
