@@ -12,9 +12,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.config.*
-import nl.rijksoverheid.dbco.utils.CoroutineTestRule
 import nl.rijksoverheid.dbco.utils.createAppConfig
 import org.junit.Assert
 import org.junit.Rule
@@ -28,9 +28,6 @@ class AppViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `given app needs updating, when config is fetched, then update event should be present`() {
@@ -119,6 +116,6 @@ class AppViewModelTest {
     ) = AppViewModel(
         appUpdateManager,
         appConfigRepository,
-        coroutineTestRule.testDispatcherProvider
+        TestCoroutineDispatcher()
     )
 }

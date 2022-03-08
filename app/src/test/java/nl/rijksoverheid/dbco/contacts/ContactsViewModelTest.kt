@@ -10,12 +10,12 @@ package nl.rijksoverheid.dbco.contacts
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import nl.rijksoverheid.dbco.bcocase.ICaseRepository
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
 import nl.rijksoverheid.dbco.contacts.data.entity.LocalContact
-import nl.rijksoverheid.dbco.utils.CoroutineTestRule
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -27,9 +27,6 @@ class ContactsViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule: CoroutineTestRule = CoroutineTestRule()
 
     @Test
     fun `given a list of contacts, when local contacts are fetched, then livedata should contain those contacts`() {
@@ -294,6 +291,6 @@ class ContactsViewModelTest {
     ) = ContactsViewModel(
         contactsRepository,
         caseRepository,
-        coroutineTestRule.testDispatcherProvider
+        TestCoroutineDispatcher()
     )
 }

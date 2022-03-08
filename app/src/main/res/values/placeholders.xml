@@ -8,4 +8,23 @@
 
 <resources>
     <string name="placeholder" translatable="false">Placeholder</string>
+    <string name="placeholder_long" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit nibh sed eros commodo, nec efficitur nibh iaculis. Ut eu.</string>
+    <string name="placeholder_list" translatable="false"><![CDATA[<ul><li>This is a list item</li><li>This is list item #2</li><li>This is list item #3</li></ul>]]></string>
+    <string name="headline6" translatable="false">Headline6</string>
+    <string name="headline5" translatable="false">Headline5</string>
+    <string name="headline4" translatable="false">Headline4</string>
+    <string name="subtitle1" translatable="false">Subtitle1</string>
+    <string name="subtitle2" translatable="false">Subtitle2</string>
+    <string name="body1" translatable="false">Body1</string>
+    <string name="body2" translatable="false">Body2</string>
+    <string name="button" translatable="false">Button</string>
+    <string name="textual_button" translatable="false">Textual Button</string>
+    <string name="spinner" translatable="false">Spinner</string>
+    <string name="input_field_bordered" translatable="false">Input field - Bordered</string>
+    <string name="placeholder_hint" translatable="false">Placeholder hint</string>
+    <string name="input_field_filled" translatable="false">Input field - Filled</string>
+    <string name="input_field_filled_dense" translatable="false">Input field - Filled - Dense</string>
+    <string name="open_styling_page" translatable="false">Open Styling Page</string>
+    <string name="open_about_page" translatable="false">Open About page</string>
+    <string name="open_my_contacts" translatable="false">Open My Contacts</string>
 </resources>

@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.contacts.picker
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -46,9 +47,15 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
         binding.content.addItemDecoration(ContactItemDecoration(requireContext()))
         binding.manualEntryButton.setOnClickListener { onManualEntryClicked() }
 
-        contactsViewModel.localContactsLiveDataItem.observe(viewLifecycleOwner, { allContacts ->
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() = onCancel()
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        contactsViewModel.localContactsLiveDataItem.observe(viewLifecycleOwner) { allContacts ->
             onContacts(allContacts)
-        })
+        }
         contactsViewModel.fetchLocalContacts()
     }
 
@@ -116,9 +123,13 @@ class ContactPickerSelectionFragment : BaseFragment(R.layout.fragment_contact_se
 
     private fun initToolbar(binding: FragmentContactSelectionBinding) {
         binding.toolbar.backButton.setOnClickListener {
-            contactsViewModel.onNoContactPicked(args.indexTaskUuid)
-            findNavController().popBackStack()
+            onCancel()
         }
+    }
+
+    private fun onCancel() {
+        contactsViewModel.onNoContactPicked(args.indexTaskUuid)
+        findNavController().popBackStack()
     }
 
     override fun onPause() {

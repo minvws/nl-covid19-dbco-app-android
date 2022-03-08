@@ -49,6 +49,7 @@ import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Index
 import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType.Staff
 import nl.rijksoverheid.dbco.databinding.FourOptionsDialogContentBinding
 import nl.rijksoverheid.dbco.items.ui.VerticalSpaceItem
+import nl.rijksoverheid.dbco.onboarding.OnboardingPrivacyConsentFragment
 import nl.rijksoverheid.dbco.questionnaire.data.entity.QuestionnaireResult
 import nl.rijksoverheid.dbco.selfbco.SelfBcoCaseViewModel
 import java.io.Serializable
