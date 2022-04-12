@@ -12,6 +12,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
@@ -28,19 +29,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.scottyab.rootbeer.RootBeer
-import nl.rijksoverheid.dbco.config.AppConfigRepository
-import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
-import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
+import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
+import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
+import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.bcocase.CaseRepository
+import nl.rijksoverheid.dbco.config.AppConfigRepository
+import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
+import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
+import nl.rijksoverheid.dbco.network.DbcoApi
+import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
+import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
-import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
-import nl.rijksoverheid.dbco.network.DbcoApi
-import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -176,7 +178,13 @@ class MainActivity : AppCompatActivity() {
                 message = R.string.unsecure_device_warning_message,
                 positiveButton = R.string.unsecure_device_warning_positive_button,
                 negativeButton = R.string.unsecure_device_warning_negative_button,
-                positiveAction = { startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS)) }
+                positiveAction = {
+                    try {
+                        startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
+                    } catch (ex: Exception) {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+                }
             )
         }
     }
