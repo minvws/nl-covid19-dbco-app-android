@@ -41,7 +41,6 @@ class TasksDetailViewModel(
     val sameHouseholdRisk = MutableLiveData<Boolean?>(null)
     val distanceRisk = MutableLiveData<Pair<Boolean?, Boolean?>>(null)
     val physicalContactRisk = MutableLiveData<Boolean?>(null)
-    val sameRoomRisk = MutableLiveData<Boolean?>(null)
 
     val communicationType = MutableLiveData<CommunicationType?>(null)
     val hasEmailOrPhone = MutableLiveData<Boolean>(null)
@@ -129,44 +128,38 @@ class TasksDetailViewModel(
                 sameHouseholdRisk.value = true
                 distanceRisk.value = null
                 physicalContactRisk.value = null
-                sameRoomRisk.value = null
             }
             Category.TWO_A -> {
                 sameHouseholdRisk.value = false
                 distanceRisk.value = Pair(first = true, second = true)
                 physicalContactRisk.value = null
-                sameRoomRisk.value = null
             }
             Category.TWO_B -> {
                 sameHouseholdRisk.value = false
                 distanceRisk.value = Pair(first = true, second = false)
                 physicalContactRisk.value = true
-                sameRoomRisk.value = null
             }
             Category.THREE_A -> {
                 sameHouseholdRisk.value = false
                 distanceRisk.value = Pair(first = true, second = false)
                 physicalContactRisk.value = false
-                sameRoomRisk.value = null
             }
-            Category.THREE_B -> {
-                sameHouseholdRisk.value = false
-                distanceRisk.value = Pair(first = false, second = false)
-                physicalContactRisk.value = null
-                sameRoomRisk.value = true
-            }
-            Category.NO_RISK -> {
+            Category.NO_RISK, Category.THREE_B -> {
                 sameHouseholdRisk.value = false
                 distanceRisk.value = Pair(first = false, second = false)
                 physicalContactRisk.value = false
-                sameRoomRisk.value = false
             }
             null -> {
                 sameHouseholdRisk.value = null
                 distanceRisk.value = null
                 physicalContactRisk.value = null
-                sameRoomRisk.value = null
             }
+        }
+        // for backwards compatibility we change the contact category
+        // from 3a or 3b to no risk
+        // see: https://egeniq.atlassian.net/browse/DBCO-4624
+        if (task.category == Category.THREE_A || task.category == Category.THREE_B) {
+            updateCategoryFromRiskFlags()
         }
     }
 
@@ -186,12 +179,18 @@ class TasksDetailViewModel(
         category.value = when {
             sameHouseholdRisk.value == true -> Category.ONE
             distanceRisk.value == Pair(first = true, second = true) -> Category.TWO_A
-            distanceRisk.value == Pair(first = true, second = false) &&
-                    physicalContactRisk.value == true -> Category.TWO_B
-            distanceRisk.value == Pair(first = true, second = false) &&
-                    physicalContactRisk.value == false -> Category.THREE_A
-            sameRoomRisk.value == true -> Category.THREE_B
-            sameRoomRisk.value == false -> Category.NO_RISK
+            distanceRisk.value == Pair(
+                first = true,
+                second = false
+            ) && physicalContactRisk.value == true -> Category.TWO_B
+            distanceRisk.value == Pair(
+                first = false,
+                second = false
+            ) -> Category.NO_RISK
+            distanceRisk.value == Pair(
+                first = true,
+                second = false
+            ) && physicalContactRisk.value == false -> Category.NO_RISK
             else -> null
         }
     }

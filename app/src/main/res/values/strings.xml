@@ -100,7 +100,6 @@
     <string name="distance_risk_answer_no">Nee, we hielden genoeg afstand</string>
     <string name="physical_risk_label">Hebben jullie één of meerdere van deze dingen tijdens jullie ontmoeting gedaan?</string>
     <string name="physical_risk_description"><![CDATA[<ul><li>In het gezicht van de ander gehoest of geniesd</li><li>Gezoend</li><li>Seksueel contact</li><ul>]]></string>
-    <string name="same_room_risk_label">Was je langer dan 15 minuten in dezelfde ruimte?</string>
     <string name="contact_section_typeofcontact_header">Over de ontmoeting</string>
     <string name="contact_section_typeofcontact_subtext">Beantwoord een paar vragen</string>
     <string name="contact_section_contactdetails_header">Contactgegevens</string>
@@ -255,7 +254,7 @@
     <string name="selfbco_roommates_alone_button_text">Ik woon alleen</string>
     <string name="selfbco_timeline_explanation_header">We gaan een overzicht maken van mensen die je hebt ontmoet</string>
     <string name="selfbco_timeline_explanation_summary">Niet iedereen die je hebt ontmoet heeft risico op besmetting gelopen. We zijn op zoek naar:</string>
-    <string name="selfbco_timeline_explanation_step1">Mensen bij wie je in de buurt en/of een tijdje in dezelfde ruimte bent geweest</string>
+    <string name="selfbco_timeline_explanation_step1">Mensen bij wie je een tijdje in de buurt bent geweest</string>
     <string name="selfbco_timeline_explanation_step2">Mensen met wie je fysiek contact hebt gehad</string>
     <string name="selfbco_timeline_explanation_step3"><![CDATA[Je hoeft <b>geen</b> mensen toe te voegen die je heel kort hebt ontmoet (zoals de kassamedewerker in een winkel)]]></string>
     <string name="selfbco_timeline_explanation_step4"><![CDATA[Je hoeft je huisgenoten <b>niet</b> nog een keer toe te voegen]]></string>
