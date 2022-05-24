@@ -139,26 +139,6 @@ class TaskDetailItemsStorage(
         isEnabled = enabled,
     )
 
-    private val sameRoomRiskItem = QuestionTwoOptionsItem(
-        context = context,
-        question = Question(
-            description = null,
-            label = context.getString(R.string.same_room_risk_label),
-            questionType = QuestionType.ClassificationDetails,
-            group = Group.Classification,
-            answerOptions = listOf(
-                AnswerOption(context.getString(R.string.answer_think_yes), true.toString()),
-                AnswerOption(context.getString(R.string.answer_think_no), false.toString())
-            )
-        ),
-        answerSelectedListener = {
-            taskDetailViewModel.sameRoomRisk.value = it.value.toBoolean()
-            taskDetailViewModel.updateCategoryFromRiskFlags()
-        },
-        previousAnswerValue = taskDetailViewModel.sameRoomRisk.value.toString(),
-        isEnabled = enabled
-    )
-
     private val noRiskItem = NoRiskItem(horizontalMargin = R.dimen.activity_horizontal_margin)
     private val noExposureRiskItem = NoExposureRiskItem()
 
@@ -169,39 +149,24 @@ class TaskDetailItemsStorage(
         classificationQuestion = question
         section?.add(sameHouseholdRiskItem) // always added
 
-        taskDetailViewModel.sameHouseholdRisk.observe(viewLifecycleOwner, { risk ->
+        taskDetailViewModel.sameHouseholdRisk.observe(viewLifecycleOwner) { risk ->
             onSameHouseRiskChanged(risk = risk, section = section)
-        })
+        }
 
-        taskDetailViewModel.distanceRisk.observe(viewLifecycleOwner, { risk ->
+        taskDetailViewModel.distanceRisk.observe(viewLifecycleOwner) { risk ->
             onDistanceRiskChanged(risk = risk, section = section)
-        })
+        }
 
-        taskDetailViewModel.physicalContactRisk.observe(viewLifecycleOwner, {
-            section?.remove(noRiskItem)
-        })
-
-        taskDetailViewModel.sameRoomRisk.observe(viewLifecycleOwner, { risk ->
-            onSameRoomRiskChanged(risk = risk, section = section)
-        })
+        taskDetailViewModel.physicalContactRisk.observe(viewLifecycleOwner) { risk ->
+            onPhysicalContactRiskChanged(risk = risk, section = section)
+        }
 
         listOf(
             sameHouseholdRiskItem,
             distanceRiskItem,
-            physicalContactRiskItem,
-            sameRoomRiskItem
+            physicalContactRiskItem
         ).forEach {
             it.question?.uuid = question.uuid
-        }
-    }
-
-    private fun onSameRoomRiskChanged(risk: Boolean?, section: QuestionnaireSection?) {
-        if (risk == false) {
-            if (section?.getPosition(noRiskItem) == -1) {
-                section.add(noRiskItem)
-            }
-        } else {
-            section?.remove(noRiskItem)
         }
     }
 
@@ -211,31 +176,33 @@ class TaskDetailItemsStorage(
     ) {
         if (risk != null && risk.first == false) {
             section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-            if (section?.getPosition(sameRoomRiskItem) == -1) {
-                section.add(sameRoomRiskItem)
-            }
+            section.addItem(noRiskItem)
         } else if (risk != null && risk.second == false) {
-            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
             section?.remove(noRiskItem)
-            if (section?.getPosition(physicalContactRiskItem) == -1) {
-                section.add(physicalContactRiskItem)
-            }
+            section.addItem(physicalContactRiskItem)
         } else {
             section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
+            section?.remove(noRiskItem)
+        }
+    }
+
+    private fun onPhysicalContactRiskChanged(
+        risk: Boolean?,
+        section: QuestionnaireSection?
+    ) {
+        if (risk != null && risk == false) {
+            section.addItem(noRiskItem)
+        } else {
             section?.remove(noRiskItem)
         }
     }
 
     private fun onSameHouseRiskChanged(risk: Boolean?, section: QuestionnaireSection?) {
         if (risk == false) {
-            if (section?.getPosition(distanceRiskItem) == -1) {
-                section.add(distanceRiskItem)
-            }
+            section.addItem(distanceRiskItem)
         } else {
             section?.remove(distanceRiskItem.apply { clearPreviousAnswer() })
             section?.remove(physicalContactRiskItem.apply { clearPreviousAnswer() })
-            section?.remove(sameRoomRiskItem.apply { clearPreviousAnswer() })
             section?.remove(noRiskItem)
         }
     }
@@ -444,7 +411,7 @@ class TaskDetailItemsStorage(
             )
         )
 
-        taskDetailViewModel.dateOfLastExposure.observe(viewLifecycleOwner, {
+        taskDetailViewModel.dateOfLastExposure.observe(viewLifecycleOwner) {
             if (it == ANSWER_EARLIER) {
                 classificationSection.remove(noExposureRiskItem)
                 classificationSection.add(
@@ -455,7 +422,7 @@ class TaskDetailItemsStorage(
             } else {
                 classificationSection.remove(noExposureRiskItem)
             }
-        })
+        }
     }
 
     // Inform
@@ -676,6 +643,12 @@ class TaskDetailItemsStorage(
     private fun canShowWarnings(): Boolean = enabled
 
     private fun canShowEmptyWarnings(): Boolean = canShowWarnings() && !newTask
+
+    private fun QuestionnaireSection?.addItem(group: com.xwray.groupie.Group) {
+        if (this != null && getPosition(noRiskItem) == -1) {
+            add(group)
+        }
+    }
 
     companion object {
 
