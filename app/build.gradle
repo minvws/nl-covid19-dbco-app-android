@@ -70,7 +70,8 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.firebase
             apply plugin: 'com.google.gms.google-services'
@@ -85,7 +86,8 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
@@ -100,7 +102,8 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09ylocqm26msveC4yb3Yma6s3s+qqM+lmtykzsLDm5rCqqyouKqX3pbfr9o=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-staging.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
@@ -115,7 +118,8 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.firebase
         }
