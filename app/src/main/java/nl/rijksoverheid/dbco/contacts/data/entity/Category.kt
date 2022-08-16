@@ -27,9 +27,13 @@ enum class Category(val label: String) {
 	@SerialName("2b")
 	TWO_B("2b"),
 
+	// Currently unused, see: https://egeniq.atlassian.net/browse/DBCO-4624
+	// Only exists for backwards compatibility
 	@SerialName("3a")
 	THREE_A("3a"),
 
+	// Currently unused, see: https://egeniq.atlassian.net/browse/DBCO-4624
+	// Only exists for backwards compatibility
 	@SerialName("3b")
 	THREE_B("3b"),
 
