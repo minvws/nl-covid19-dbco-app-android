@@ -49,7 +49,6 @@ android {
             buildConfigField "String", "GIT_VERSION", "\"dev\""
         }
     }
-
     signingConfigs {
         firebase {
             storeFile file('demo_keystore.jks')
@@ -62,7 +61,6 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-
         dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"

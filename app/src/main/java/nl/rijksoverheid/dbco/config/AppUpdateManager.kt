@@ -9,6 +9,9 @@ package nl.rijksoverheid.dbco.config
 
 import android.content.Context
 import nl.rijksoverheid.dbco.BuildConfig
+import nl.rijksoverheid.dbco.R
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.NotSupported.*
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.UpToDate
 
 /**
  * Manager responsible for providing state related to the current app version
@@ -20,29 +23,72 @@ class AppUpdateManager(
 ) {
 
     /**
-     * Checks if a forced update is necessary and if so returns the info to force the update.
+     * Checks if a forced update is necessary or the app is not supported anymore
      */
-    fun getUpdateState(config: AppConfig): UpdateState {
+    fun getAppLifecycleState(config: AppConfig): AppLifecycleState {
         val minimumVersionCode = config.androidMinimumVersion
         return if (minimumVersionCode > currentVersionCode) {
-            val source = context.packageManager.getInstallerPackageName(context.packageName)
-            UpdateState.UpdateRequired(source)
+            AppUpdateRequired(
+                title = context.getString(R.string.update_app_headline),
+                description = config.androidMinimumVersionMessage,
+                action = context.getString(R.string.update_app_action)
+            )
+        } else if (minimumVersionCode == currentVersionCode) {
+            // Intentional: this is our way of ending the app, when the min version is the same as the current app version
+            // the end of life screen is shown. This way we can leverage both the update app message
+            // and the end of life message from the same API config
+            EndOfLife(
+                title = context.getString(R.string.end_of_life_headline),
+                description = context.getString(R.string.end_of_life_description),
+                action = context.getString(R.string.end_of_life_action),
+                actionUrl = context.getString(R.string.end_of_life_action_url),
+            )
         } else {
-            UpdateState.UpToDate
+            UpToDate
         }
     }
 
-    sealed class UpdateState {
+    sealed class AppLifecycleState {
 
-        /**
-         * Current app has to be updated in the relevant store where it was downloaded
-         * @param installerPackageName package name used to open the store
-         */
-        data class UpdateRequired(val installerPackageName: String?) : UpdateState()
+        sealed class NotSupported(
+            open val title: String,
+            open val description: String,
+            open val action: String,
+            open val actionUrl: String? = null
+        ) : AppLifecycleState() {
+
+            /**
+             * Current app has to be updated in the relevant store where it was downloaded
+             */
+            data class AppUpdateRequired(
+                override val title: String,
+                override val description: String,
+                override val action: String
+            ) : NotSupported(
+                title = title, description = description, action = action
+            )
+
+            /**
+             * The app is end of life
+             */
+            data class EndOfLife(
+                override val title: String,
+                override val description: String,
+                override val action: String,
+                override val actionUrl: String
+            ) : NotSupported(
+                title = title,
+                description = description,
+                action = action,
+                actionUrl = actionUrl
+            )
+        }
 
         /**
          * Current app version is fully supported
          */
-        object UpToDate : UpdateState()
+        object UpToDate : AppLifecycleState()
+
+        object ConfigError : AppLifecycleState()
     }
 }

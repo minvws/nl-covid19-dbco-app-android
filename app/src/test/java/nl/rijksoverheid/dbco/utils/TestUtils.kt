@@ -12,7 +12,7 @@ import nl.rijksoverheid.dbco.config.*
 
 fun createAppConfig(
     androidMinimumVersionCode: Int = 0,
-    androidMinimumVersionMessage: String? = "test",
+    androidMinimumVersionMessage: String = "test",
     symptoms: List<Symptom> = emptyList(),
     guidelines: GuidelinesContainer = GuidelinesContainer(
         introExposureDateKnown = Guidelines(

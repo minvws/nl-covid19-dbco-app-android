@@ -167,11 +167,11 @@
     <string name="other_category_message">Je hoeft deze persoon dus niet te laten weten dat je besmet bent.</string>
     <!--    Update and end of life -->
     <string name="update_app_headline">De app heeft een update nodig</string>
-    <string name="update_app_description">Update de app op je telefoon om te zorgen dat GGD Contact goed blijft werken.</string>
+    <string name="update_app_action">Updaten</string>
     <string name="end_of_life_action">Lees meer</string>
+    <string name="end_of_life_action_url">https://www.ggdcontact.nl/</string>
     <string name="end_of_life_description">Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is.</string>
-    <string name="end_of_life_headline">CoronaMelder is gestopt</string>
-    <string name="update_google_play_services">Updaten</string>
+    <string name="end_of_life_headline">GGD contact is gestopt</string>
     <!--    Permissions-->
     <string name="permissions_title">Rechten</string>
     <string name="permissions_no">Nee</string>

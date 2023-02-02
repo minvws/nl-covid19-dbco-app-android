@@ -21,7 +21,7 @@ data class AppConfig(
     /**
      * The message to show when the current version of the app is not supported anymore
      */
-    val androidMinimumVersionMessage: String?,
+    val androidMinimumVersionMessage: String,
 
     /**
      * The minimum version code of the app which is supported by the back-end
