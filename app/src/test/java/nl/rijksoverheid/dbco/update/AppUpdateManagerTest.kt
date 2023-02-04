@@ -55,14 +55,13 @@ class AppUpdateManagerTest {
     }
 
     @Test
-    fun `given a min version that is the same than the current version, when update state is fetched, then the app should be end of life`() {
+    fun `given end of life, when update state is fetched, then the app should be end of life`() {
         // given
-        val minVersion = 10
         val endOfLifeTitle = "title"
         val endOfLifeMessage = "minVersionMessage"
         val endOfLifeAction = "action"
         val endOfLifeActionUrl = "actionUrl"
-        val config = createAppConfig(androidMinimumVersionCode = minVersion)
+        val config = createAppConfig(isEndOfLife = true)
         val mockContext = mockk<Context>()
         val currentVersionCode = 10
 

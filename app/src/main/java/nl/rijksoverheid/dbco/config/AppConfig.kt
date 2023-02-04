@@ -29,6 +29,11 @@ data class AppConfig(
     val androidMinimumVersion: Int,
 
     /**
+     * Whether the app is end of life or not
+     */
+    val isEndOfLife: Boolean = false,
+
+    /**
      * Current feature flag values, used to disable/enable some features in the app
      */
     val featureFlags: FeatureFlags,

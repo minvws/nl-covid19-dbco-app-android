@@ -30,20 +30,13 @@ class AppUpdateManager(
      */
     fun getAppLifecycleState(config: AppConfig): AppLifecycleState {
         val minimumVersionCode = config.androidMinimumVersion
-        val currentDate = LocalDate.now()
-        // TODO proper date
-        val endOfLifeDate = LocalDate.parse("20-02-2023", DateTimeFormat.forPattern("dd-MM-yyyy"))
         return if (minimumVersionCode > currentVersionCode) {
             AppUpdateRequired(
                 title = context.getString(R.string.update_app_headline),
                 description = config.androidMinimumVersionMessage,
                 action = context.getString(R.string.update_app_action)
             )
-        } else if (minimumVersionCode == currentVersionCode && currentDate.isAfter(endOfLifeDate)) {
-            // Intentional: this is our way of ending the app, when the min version is the same as the current app version
-            // and after a certain date
-            // the end of life screen is shown. This way we can leverage both the update app message
-            // and the end of life message from the same API config
+        } else if (config.isEndOfLife) {
             EndOfLife(
                 title = context.getString(R.string.end_of_life_headline),
                 description = context.getString(R.string.end_of_life_description),
