@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.config
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +16,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import nl.rijksoverheid.dbco.Defaults
-import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import nl.rijksoverheid.dbco.network.DbcoApi
 import org.joda.time.DateTimeZone
@@ -30,7 +28,6 @@ import kotlin.Exception
  * used throughout the app
  */
 class AppConfigRepository(
-    private val context: Context,
     private val api: DbcoApi,
     private val storage: SharedPreferences,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -69,11 +66,6 @@ class AppConfigRepository(
                 LocalDate.now(DateTimeZone.UTC).toString(DateFormats.dateInputData)
             )
             .apply()
-    }
-
-    fun getUpdateMessage(): String {
-        val fallback = context.getString(R.string.update_app_description)
-        return requireConfig().androidMinimumVersionMessage ?: fallback
     }
 
     fun getFeatureFlags(): FeatureFlags = requireConfig().featureFlags

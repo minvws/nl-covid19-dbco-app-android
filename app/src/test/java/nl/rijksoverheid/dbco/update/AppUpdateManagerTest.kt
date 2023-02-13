@@ -11,12 +11,15 @@ package nl.rijksoverheid.dbco.update
 import android.content.Context
 import io.mockk.every
 import io.mockk.mockk
+import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.config.AppUpdateManager
 import nl.rijksoverheid.dbco.utils.createAppConfig
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.NotSupported.*
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.UpToDate
 
 @RunWith(MockitoJUnitRunner::class)
 class AppUpdateManagerTest {
@@ -24,34 +27,57 @@ class AppUpdateManagerTest {
     @Test
     fun `given a min version that is higher than the current version, when update state is fetched, then the state should require an update`() {
         // given
-        val packageName = "test"
         val minVersion = 10
-        val config = createAppConfig(androidMinimumVersionCode = minVersion)
+        val updateTitle = "title"
+        val minVersionMessage = "minVersionMessage"
+        val updateAction = "action"
+        val config = createAppConfig(
+            androidMinimumVersionCode = minVersion,
+            androidMinimumVersionMessage = minVersionMessage
+        )
         val mockContext = mockk<Context>()
         val currentVersionCode = 9
-        every { mockContext.packageName } returns packageName
-        every { mockContext.packageManager.getInstallerPackageName(packageName) } returns packageName
+        every { mockContext.getString(R.string.update_app_headline) } returns updateTitle
+        every { mockContext.getString(R.string.update_app_action) } returns updateAction
 
         // when
         val manager = createManager(mockContext, currentVersionCode)
 
         // then
-        Assert.assertEquals(manager.getUpdateState(config), AppUpdateManager.UpdateState.UpdateRequired(packageName))
+        Assert.assertEquals(
+            manager.getAppLifecycleState(config),
+            AppUpdateRequired(
+                title = updateTitle,
+                description = minVersionMessage,
+                action = updateAction
+            )
+        )
     }
 
     @Test
-    fun `given a min version that is the same than the current version, when update state is fetched, then the state should be up to date`() {
+    fun `given end of life, when update state is fetched, then the app should be end of life`() {
         // given
-        val minVersion = 10
-        val config = createAppConfig(androidMinimumVersionCode = minVersion)
+        val endOfLifeTitle = "title"
+        val endOfLifeMessage = "minVersionMessage"
+        val endOfLifeAction = "action"
+        val endOfLifeActionUrl = "actionUrl"
+        val config = createAppConfig(isEndOfLife = true)
         val mockContext = mockk<Context>()
         val currentVersionCode = 10
+
+        every { mockContext.getString(R.string.end_of_life_headline) } returns endOfLifeTitle
+        every { mockContext.getString(R.string.end_of_life_description) } returns endOfLifeMessage
 
         // when
         val manager = createManager(mockContext, currentVersionCode)
 
         // then
-        Assert.assertEquals(manager.getUpdateState(config), AppUpdateManager.UpdateState.UpToDate)
+        Assert.assertEquals(
+            manager.getAppLifecycleState(config), EndOfLife(
+                title = endOfLifeTitle,
+                description = endOfLifeMessage
+            )
+        )
     }
 
     @Test
@@ -66,7 +92,7 @@ class AppUpdateManagerTest {
         val manager = createManager(mockContext, currentVersionCode)
 
         // then
-        Assert.assertEquals(manager.getUpdateState(config), AppUpdateManager.UpdateState.UpToDate)
+        Assert.assertEquals(manager.getAppLifecycleState(config), UpToDate)
     }
 
     private fun createManager(

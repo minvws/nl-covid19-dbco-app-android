@@ -17,14 +17,13 @@ import kotlinx.coroutines.launch
 import nl.rijksoverheid.dbco.config.AppConfig
 import nl.rijksoverheid.dbco.config.AppConfigRepository
 import nl.rijksoverheid.dbco.config.FeatureFlags
-import nl.rijksoverheid.dbco.config.AppUpdateManager.UpdateState.UpdateRequired
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.UpToDate
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
 import nl.rijksoverheid.dbco.config.AppUpdateManager
 import nl.rijksoverheid.dbco.config.GuidelinesContainer
 import nl.rijksoverheid.dbco.util.SingleLiveEvent
 import timber.log.Timber
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.UpToDate
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.ConfigError
 
 /**
  * ViewModel used in the app scope.
@@ -36,8 +35,8 @@ class AppViewModel(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
-    private val _updateEvent = SingleLiveEvent<AppLifecycleStatus>()
-    val updateEvent: LiveData<AppLifecycleStatus> = _updateEvent
+    private val _appLifecycleState = SingleLiveEvent<AppLifecycleState>()
+    val appLifecycleState: LiveData<AppLifecycleState> = _appLifecycleState
 
     private val _appConfig: MutableLiveData<AppConfig> = MutableLiveData()
     val appConfig: LiveData<AppConfig> = _appConfig
@@ -46,32 +45,18 @@ class AppViewModel(
         viewModelScope.launch(coroutineDispatcher) {
             try {
                 val config = appConfigRepository.getAppConfig()
-                val state = appUpdateManager.getUpdateState(config)
-                if (state is UpdateRequired) {
-                    _updateEvent.value = Update(state.installerPackageName)
-                } else {
-                    _appConfig.postValue(config)
-                    _updateEvent.value = UpToDate
-                }
+                _appLifecycleState.value =
+                    appUpdateManager.getAppLifecycleState(config).also { state ->
+                        if (state is UpToDate) _appConfig.postValue(config)
+                    }
             } catch (ex: Exception) {
                 Timber.e(ex, "Exception during config/update state fetch!")
-                _updateEvent.value = ConfigError
+                _appLifecycleState.value = ConfigError
             }
         }
     }
 
-    fun getUpdateMessage(): String = appConfigRepository.getUpdateMessage()
-
     fun getFeatureFlags(): FeatureFlags = appConfigRepository.getFeatureFlags()
 
     fun getGuidelines(): GuidelinesContainer = appConfigRepository.getGuidelines()
-
-    sealed class AppLifecycleStatus {
-
-        object UpToDate : AppLifecycleStatus()
-
-        data class Update(val installerPackageName: String?) : AppLifecycleStatus()
-
-        object ConfigError : AppLifecycleStatus()
-    }
 }

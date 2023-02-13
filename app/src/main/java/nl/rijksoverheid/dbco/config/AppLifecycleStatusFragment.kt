@@ -13,41 +13,38 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
-import androidx.fragment.app.activityViewModels
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
-import nl.rijksoverheid.dbco.AppViewModel
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
-import nl.rijksoverheid.dbco.databinding.FragmentAppUpdateRequiredBinding
+import nl.rijksoverheid.dbco.databinding.FragmentAppLifecycleStatusBinding
 import timber.log.Timber
 
 private const val APP_GALLERY_PACKAGE = "com.huawei.appmarket"
 
-class AppUpdateRequiredFragment : BaseFragment(R.layout.fragment_app_update_required) {
+class AppLifecycleStatusFragment : BaseFragment(R.layout.fragment_app_lifecycle_status) {
 
-    private val args: AppUpdateRequiredFragmentArgs by navArgs()
-
-    private val appViewModel: AppViewModel by activityViewModels()
+    private val args: AppLifecycleStatusFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentAppUpdateRequiredBinding.bind(view)
+        val binding = FragmentAppLifecycleStatusBinding.bind(view)
 
-        val updateMessage = appViewModel.getUpdateMessage()
-        binding.text = updateMessage
+        binding.title = args.title
+        binding.descriptionText = args.description
+        binding.buttonText = args.action
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             requireActivity().finish()
         }
 
-        binding.next.setOnClickListener {
-            openAppStore()
-        }
+        binding.next.isVisible = args.action != null
+        binding.next.setOnClickListener { openAppStore() }
     }
 
     private fun openAppStore() {
-        when (args.appStorePackage) {
+        when (requireContext().packageManager.getInstallerPackageName(requireContext().packageName)) {
             APP_GALLERY_PACKAGE -> openAppGallery()
             else -> openPlayStore()
         }

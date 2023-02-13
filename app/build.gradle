@@ -15,13 +15,13 @@ def getGitHash = { ->
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "nl.rijksoverheid.dbco"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode project.getVersionCode()
         versionName '1.3.3.' + project.getVersionCode()
 
@@ -49,7 +49,6 @@ android {
             buildConfigField "String", "GIT_VERSION", "\"dev\""
         }
     }
-
     signingConfigs {
         firebase {
             storeFile file('demo_keystore.jks')
@@ -62,7 +61,6 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-
         dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
