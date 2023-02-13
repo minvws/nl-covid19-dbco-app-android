@@ -12,9 +12,6 @@ import nl.rijksoverheid.dbco.BuildConfig
 import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.NotSupported.*
 import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.UpToDate
-import nl.rijksoverheid.dbco.contacts.data.DateFormats
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
 
 /**
  * Manager responsible for providing state related to the current app version
@@ -39,9 +36,7 @@ class AppUpdateManager(
         } else if (config.isEndOfLife) {
             EndOfLife(
                 title = context.getString(R.string.end_of_life_headline),
-                description = context.getString(R.string.end_of_life_description),
-                action = context.getString(R.string.end_of_life_action),
-                actionUrl = context.getString(R.string.end_of_life_action_url),
+                description = context.getString(R.string.end_of_life_description)
             )
         } else {
             UpToDate
@@ -53,8 +48,7 @@ class AppUpdateManager(
         sealed class NotSupported(
             open val title: String,
             open val description: String,
-            open val action: String,
-            open val actionUrl: String? = null
+            open val action: String? = null
         ) : AppLifecycleState() {
 
             /**
@@ -65,7 +59,9 @@ class AppUpdateManager(
                 override val description: String,
                 override val action: String
             ) : NotSupported(
-                title = title, description = description, action = action
+                title = title,
+                description = description,
+                action = action
             )
 
             /**
@@ -73,14 +69,10 @@ class AppUpdateManager(
              */
             data class EndOfLife(
                 override val title: String,
-                override val description: String,
-                override val action: String,
-                override val actionUrl: String
+                override val description: String
             ) : NotSupported(
                 title = title,
                 description = description,
-                action = action,
-                actionUrl = actionUrl
             )
         }
 
@@ -89,6 +81,9 @@ class AppUpdateManager(
          */
         object UpToDate : AppLifecycleState()
 
+        /**
+         * Config could not be retrieved
+         */
         object ConfigError : AppLifecycleState()
     }
 }

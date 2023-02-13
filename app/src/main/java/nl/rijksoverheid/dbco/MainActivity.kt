@@ -129,8 +129,7 @@ class MainActivity : AppCompatActivity() {
                     AppLifecycleStatusFragmentDirections.actionAppLifecycleStatus(
                         title = updateEvent.title,
                         description = updateEvent.description,
-                        action = updateEvent.action,
-                        actionUrl = updateEvent.actionUrl
+                        action = updateEvent.action
                     )
                 )
             }

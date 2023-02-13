@@ -369,11 +369,6 @@
         <argument
             android:name="action"
             app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="actionUrl"
-            app:argType="string"
             app:nullable="true" />
 
     </fragment>

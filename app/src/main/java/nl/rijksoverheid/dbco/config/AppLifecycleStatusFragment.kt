@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import nl.rijksoverheid.dbco.BaseFragment
 import nl.rijksoverheid.dbco.BuildConfig
@@ -38,12 +39,9 @@ class AppLifecycleStatusFragment : BaseFragment(R.layout.fragment_app_lifecycle_
             requireActivity().finish()
         }
 
-        binding.next.setOnClickListener {
-            args.actionUrl?.let { url -> openLink(url = url) } ?: openAppStore()
-        }
+        binding.next.isVisible = args.action != null
+        binding.next.setOnClickListener { openAppStore() }
     }
-
-    private fun openLink(url: String) = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
 
     private fun openAppStore() {
         when (requireContext().packageManager.getInstallerPackageName(requireContext().packageName)) {
