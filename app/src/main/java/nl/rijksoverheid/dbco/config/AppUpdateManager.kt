@@ -33,7 +33,7 @@ class AppUpdateManager(
                 description = config.androidMinimumVersionMessage,
                 action = context.getString(R.string.update_app_action)
             )
-        } else if (config.isEndOfLife) {
+        } else if (config.endOfLife) {
             EndOfLife(
                 title = context.getString(R.string.end_of_life_headline),
                 description = context.getString(R.string.end_of_life_description)

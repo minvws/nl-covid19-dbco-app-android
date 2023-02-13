@@ -31,7 +31,7 @@ data class AppConfig(
     /**
      * Whether the app is end of life or not
      */
-    val isEndOfLife: Boolean = false,
+    val endOfLife: Boolean = false,
 
     /**
      * Current feature flag values, used to disable/enable some features in the app

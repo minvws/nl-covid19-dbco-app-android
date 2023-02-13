@@ -57,5 +57,5 @@ fun createAppConfig(
     featureFlags = featureFlags,
     symptoms = symptoms,
     guidelines = guidelines,
-    isEndOfLife = isEndOfLife
+    endOfLife = isEndOfLife
 )
