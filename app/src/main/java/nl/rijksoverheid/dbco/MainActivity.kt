@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        appViewModel.appLifecycleState.observe(this) { updateEvent ->
-            handleUpdateEvent(updateEvent)
+        appViewModel.appLifecycleState.observe(this) { state ->
+            handleLifecycleState(state)
         }
 
         checkIfRooted()
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleUpdateEvent(appLifecycleState: AppLifecycleState) {
+    private fun handleLifecycleState(appLifecycleState: AppLifecycleState) {
         configError?.dismiss()
         configError = null
         when (appLifecycleState) {
