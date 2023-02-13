@@ -120,16 +120,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleUpdateEvent(updateEvent: AppLifecycleState) {
+    private fun handleUpdateEvent(appLifecycleState: AppLifecycleState) {
         configError?.dismiss()
         configError = null
-        when (updateEvent) {
+        when (appLifecycleState) {
             is NotSupported -> {
                 findNavController(R.id.nav_host_fragment).navigate(
                     AppLifecycleStatusFragmentDirections.actionAppLifecycleStatus(
-                        title = updateEvent.title,
-                        description = updateEvent.description,
-                        action = updateEvent.action
+                        title = appLifecycleState.title,
+                        description = appLifecycleState.description,
+                        action = appLifecycleState.action
                     )
                 )
             }

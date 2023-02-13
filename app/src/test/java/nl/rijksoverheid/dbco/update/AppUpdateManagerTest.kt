@@ -67,8 +67,6 @@ class AppUpdateManagerTest {
 
         every { mockContext.getString(R.string.end_of_life_headline) } returns endOfLifeTitle
         every { mockContext.getString(R.string.end_of_life_description) } returns endOfLifeMessage
-        every { mockContext.getString(R.string.end_of_life_action) } returns endOfLifeAction
-        every { mockContext.getString(R.string.end_of_life_action_url) } returns endOfLifeActionUrl
 
         // when
         val manager = createManager(mockContext, currentVersionCode)
@@ -77,9 +75,7 @@ class AppUpdateManagerTest {
         Assert.assertEquals(
             manager.getAppLifecycleState(config), EndOfLife(
                 title = endOfLifeTitle,
-                description = endOfLifeMessage,
-                action = endOfLifeAction,
-                actionUrl = endOfLifeActionUrl
+                description = endOfLifeMessage
             )
         )
     }
