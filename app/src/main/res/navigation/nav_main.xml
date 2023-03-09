@@ -13,8 +13,8 @@
     app:startDestination="@id/splashFragment">
 
     <action
-        android:id="@+id/action_app_update_required"
-        app:destination="@id/nav_app_update_required"
+        android:id="@+id/action_app_lifecycle_status"
+        app:destination="@id/nav_app_lifecycle_status"
         app:popUpTo="@id/nav_main"
         app:popUpToInclusive="true" />
 
@@ -68,6 +68,23 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/myContactsFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/MyContactsExplanationFragment"
+        android:name="nl.rijksoverheid.dbco.contacts.mycontacts.MyContactsExplanationFragment"
+        android:label="MyContactsExplanationFragment">
+
+        <action
+            android:id="@+id/toMyContactsFragment"
+            app:destination="@id/myContactsFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -151,8 +168,8 @@
 
         <argument
             android:name="newTask"
-            app:argType="boolean"
             android:defaultValue="false"
+            app:argType="boolean"
             app:nullable="false" />
 
         <argument
@@ -196,8 +213,8 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/toExplanationFragment"
-            app:destination="@id/ExplanationFragment"
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -212,8 +229,8 @@
         tools:layout="@layout/fragment_onboarding_flow_selection">
 
         <action
-            android:id="@+id/toExplanationFragment"
-            app:destination="@id/ExplanationFragment"
+            android:id="@+id/toCodeFillFragment"
+            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -236,8 +253,8 @@
         tools:layout="@layout/fragment_fill_code">
 
         <action
-            android:id="@+id/to_onboardingPrivacyConsentFragment"
-            app:destination="@+id/onboardingPrivacyConsentFragment"
+            android:id="@+id/to_ExplanationFragment"
+            app:destination="@id/ExplanationFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -335,12 +352,22 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_app_update_required"
-        android:name="nl.rijksoverheid.dbco.config.AppUpdateRequiredFragment"
-        tools:layout="@layout/fragment_app_update_required">
+        android:id="@+id/nav_app_lifecycle_status"
+        android:name="nl.rijksoverheid.dbco.config.AppLifecycleStatusFragment"
+        tools:layout="@layout/fragment_app_lifecycle_status">
 
         <argument
-            android:name="app_store_package"
+            android:name="title"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="description"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="action"
             app:argType="string"
             app:nullable="true" />
 
@@ -374,9 +401,13 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/to_myContactsFragment"
-            app:destination="@id/myContactsFragment"
+            android:id="@+id/to_myContactsExplanationFragment"
+            app:destination="@id/MyContactsExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/nav_main"
             app:popUpToInclusive="true" />
 
@@ -388,6 +419,11 @@
         android:label="ExplanationFragment">
 
         <argument
+            android:name="canGoBack"
+            app:argType="boolean"
+            app:nullable="false" />
+
+        <argument
             android:name="flow"
             app:argType="integer"
             app:nullable="false" />
@@ -395,14 +431,6 @@
         <action
             android:id="@+id/toPrivacyConsentFragment"
             app:destination="@id/onboardingPrivacyConsentFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right" />
-
-        <action
-            android:id="@+id/toCodeFillFragment"
-            app:destination="@id/fillCodeFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -652,9 +680,13 @@
         android:label="TimelineFragment">
 
         <action
-            android:id="@+id/to_myContactsFragment"
-            app:destination="@id/myContactsFragment"
+            android:id="@+id/to_myContactsExplanationFragment"
+            app:destination="@id/MyContactsExplanationFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/nav_main"
             app:popUpToInclusive="true" />
 

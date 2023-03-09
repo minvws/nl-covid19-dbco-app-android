@@ -19,6 +19,7 @@ import nl.rijksoverheid.dbco.contacts.data.entity.CategoryHolder
 data class Question(
     val description: String? = null,
     val label: String? = null,
+    val explanation: String? = null,
     val questionType: QuestionType? = null,
     val group: Group? = null,
     val answerOptions: List<AnswerOption?>? = null
@@ -33,6 +34,18 @@ data class Question(
         }
         relevantForCategories?.forEach {
             if (it?.category == category) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun hasTrigger(vararg triggers: Trigger): Boolean {
+        answerOptions ?: return false
+        val triggerList = triggers.asList()
+        for (answer in answerOptions.filterNotNull()) {
+            answer.trigger ?: continue
+            if (triggerList.contains(answer.trigger)) {
                 return true
             }
         }

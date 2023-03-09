@@ -32,6 +32,29 @@ abstract class BaseFragment constructor(@LayoutRes layout: Int) : Fragment(layou
         return requireActivity().defaultViewModelProviderFactory
     }
 
+    fun showDialog(
+        title: String,
+        message: String,
+        positiveButtonText: String,
+        positiveAction: () -> Unit,
+        negativeButtonText: String,
+        negativeAction: (() -> Unit)? = null
+    ) {
+
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton(positiveButtonText) { dialog, _ ->
+            positiveAction()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(negativeButtonText) { dialog, _ ->
+            negativeAction?.invoke()
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
     fun showErrorDialog(message: String, tryAgainAction: () -> Unit, throwable: Throwable? = null) {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(R.string.error)

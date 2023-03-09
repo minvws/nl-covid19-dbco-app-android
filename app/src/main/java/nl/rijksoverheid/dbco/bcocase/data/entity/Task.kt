@@ -21,6 +21,7 @@ typealias JavaSerializable = java.io.Serializable
 @Serializable
 data class Task(
     var canBeUploaded: Boolean = true, // used only locally
+    var shareIndexNameAlreadyAnswered: Boolean = false,
     val taskType: TaskType? = null,
     var taskContext: String? = null,
     val source: Source? = null,
@@ -31,11 +32,16 @@ data class Task(
     var dateOfLastExposure: String? = null,
     var questionnaireResult: QuestionnaireResult? = null,
     var informedByIndexAt: String? = null,
+    var notGoingToBeInformedByIndex: Boolean = false,
+    var shareIndexNameWithContact: Boolean? = null,
     var linkedContact: LocalContact? = null
 ) : JavaSerializable {
 
     val didInform: Boolean
         get() = informedByIndexAt != null
+
+    val shouldInform: Boolean
+        get() = communication != CommunicationType.Staff && !didInform && !notGoingToBeInformedByIndex
 
     fun hasEssentialData(): Boolean {
         val hasEmailOrPhone = linkedContact?.hasValidEmailOrPhone() ?: false

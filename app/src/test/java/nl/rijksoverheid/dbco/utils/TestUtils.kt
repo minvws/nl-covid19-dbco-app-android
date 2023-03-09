@@ -11,8 +11,9 @@ package nl.rijksoverheid.dbco.utils
 import nl.rijksoverheid.dbco.config.*
 
 fun createAppConfig(
+    isEndOfLife: Boolean = false,
     androidMinimumVersionCode: Int = 0,
-    androidMinimumVersionMessage: String? = "test",
+    androidMinimumVersionMessage: String = "test",
     symptoms: List<Symptom> = emptyList(),
     guidelines: GuidelinesContainer = GuidelinesContainer(
         introExposureDateKnown = Guidelines(
@@ -55,5 +56,6 @@ fun createAppConfig(
     androidMinimumVersionMessage = androidMinimumVersionMessage,
     featureFlags = featureFlags,
     symptoms = symptoms,
-    guidelines = guidelines
+    guidelines = guidelines,
+    endOfLife = isEndOfLife
 )

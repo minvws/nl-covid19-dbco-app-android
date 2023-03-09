@@ -11,6 +11,7 @@ package nl.rijksoverheid.dbco.task
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.serialization.json.JsonObject
+import nl.rijksoverheid.dbco.bcocase.data.entity.CommunicationType
 import nl.rijksoverheid.dbco.bcocase.data.entity.Source
 import nl.rijksoverheid.dbco.bcocase.data.entity.Task
 import nl.rijksoverheid.dbco.contacts.data.entity.Category
@@ -268,5 +269,65 @@ class TaskTest {
 
         // then
         Assert.assertFalse(task.hasCategoryOrExposure())
+    }
+
+    @Test
+    fun `given a task with comm type staff, then shouldInform should be false`() {
+        // given
+        val task = Task(communication = CommunicationType.Staff)
+
+        // then
+        Assert.assertFalse(task.shouldInform)
+    }
+
+    @Test
+    fun `given a task with comm type index and task has not been informed and index has not denied informing, then shouldInform should be true`() {
+        // given
+        val task = Task(
+            communication = CommunicationType.Index,
+            informedByIndexAt = null,
+            notGoingToBeInformedByIndex = false
+        )
+
+        // then
+        Assert.assertTrue(task.shouldInform)
+    }
+
+    @Test
+    fun `given a task with comm type null and task has not been informed and index has not denied informing, then shouldInform should be true`() {
+        // given
+        val task = Task(
+            communication = null,
+            informedByIndexAt = null,
+            notGoingToBeInformedByIndex = false
+        )
+
+        // then
+        Assert.assertTrue(task.shouldInform)
+    }
+
+    @Test
+    fun `given a task with comm type index and task has not been informed and index has denied informing, then shouldInform should be false`() {
+        // given
+        val task = Task(
+            communication = CommunicationType.Index,
+            informedByIndexAt = null,
+            notGoingToBeInformedByIndex = true
+        )
+
+        // then
+        Assert.assertFalse(task.shouldInform)
+    }
+
+    @Test
+    fun `given a task with comm type index and task has been informed, then shouldInform should be false`() {
+        // given
+        val task = Task(
+            communication = CommunicationType.Index,
+            informedByIndexAt = "test",
+        )
+
+        // then
+        Assert.assertFalse(task.shouldInform)
     }
 }

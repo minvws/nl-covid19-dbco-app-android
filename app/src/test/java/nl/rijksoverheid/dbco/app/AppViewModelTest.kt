@@ -22,6 +22,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import java.lang.IllegalStateException
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.NotSupported.*
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.UpToDate
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.ConfigError
 
 @RunWith(MockitoJUnitRunner::class)
 class AppViewModelTest {
@@ -33,43 +36,43 @@ class AppViewModelTest {
     fun `given app needs updating, when config is fetched, then update event should be present`() {
         // given
         val config = createAppConfig()
-        val packageName = "test"
-        val updateRequired = AppUpdateManager.UpdateState.UpdateRequired(packageName)
+        val title = "title"
+        val description = "description"
+        val action = "action"
+        val updateRequired = AppUpdateRequired(
+            title = title,
+            description = description,
+            action = action
+        )
         val mockManager = mockk<AppUpdateManager>()
         val mockConfig = mockk<AppConfigRepository>()
         coEvery { mockConfig.getAppConfig() } returns config
-        every { mockManager.getUpdateState(config) } returns updateRequired
+        every { mockManager.getAppLifecycleState(config) } returns updateRequired
 
         // when
         val vm = createViewModel(mockManager, mockConfig)
         vm.fetchConfig()
 
         // then
-        Assert.assertEquals(
-            vm.updateEvent.value,
-            AppViewModel.AppLifecycleStatus.Update(packageName)
-        )
+        Assert.assertEquals(vm.appLifecycleState.value, updateRequired)
     }
 
     @Test
     fun `given app does not needs updating, when config is fetched, then post config and up to date event should be present`() {
         // given
         val config = createAppConfig()
-        val upToDate = AppUpdateManager.UpdateState.UpToDate
+        val upToDate = UpToDate
         val mockManager = mockk<AppUpdateManager>()
         val mockConfig = mockk<AppConfigRepository>()
         coEvery { mockConfig.getAppConfig() } returns config
-        every { mockManager.getUpdateState(config) } returns upToDate
+        every { mockManager.getAppLifecycleState(config) } returns upToDate
 
         // when
         val vm = createViewModel(mockManager, mockConfig)
         vm.fetchConfig()
 
         // then
-        Assert.assertEquals(
-            vm.updateEvent.value,
-            AppViewModel.AppLifecycleStatus.UpToDate
-        )
+        Assert.assertEquals(vm.appLifecycleState.value, UpToDate)
     }
 
     @Test
@@ -84,10 +87,7 @@ class AppViewModelTest {
         vm.fetchConfig()
 
         // then
-        Assert.assertEquals(
-            vm.updateEvent.value,
-            AppViewModel.AppLifecycleStatus.ConfigError
-        )
+        Assert.assertEquals(vm.appLifecycleState.value, ConfigError)
     }
 
     @Test
@@ -97,17 +97,14 @@ class AppViewModelTest {
         val mockManager = mockk<AppUpdateManager>()
         val mockConfig = mockk<AppConfigRepository>()
         coEvery { mockConfig.getAppConfig() } returns config
-        every { mockManager.getUpdateState(config) } throws IllegalStateException("test")
+        every { mockManager.getAppLifecycleState(config) } throws IllegalStateException("test")
 
         // when
         val vm = createViewModel(mockManager, mockConfig)
         vm.fetchConfig()
 
         // then
-        Assert.assertEquals(
-            vm.updateEvent.value,
-            AppViewModel.AppLifecycleStatus.ConfigError
-        )
+        Assert.assertEquals(vm.appLifecycleState.value, ConfigError)
     }
 
     private fun createViewModel(

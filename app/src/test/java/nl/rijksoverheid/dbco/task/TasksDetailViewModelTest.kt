@@ -276,7 +276,7 @@ class TasksDetailViewModelTest {
     fun `given a task with category, when view model init with task, livedata should have that category`() {
         // given
         val id = "test"
-        val cat = Category.THREE_B
+        val cat = Category.ONE
         val task = Task().apply {
             category = cat
         }
@@ -293,7 +293,7 @@ class TasksDetailViewModelTest {
     }
 
     @Test
-    fun `given a task with questionnaire, when view model init with task, text answers in questionnare should be cached`() {
+    fun `given a task with questionnaire, when view model init with task, text answers in questionnaire should be cached`() {
         // given
         val id = "test"
         val questionId = "questionId"
@@ -324,7 +324,7 @@ class TasksDetailViewModelTest {
     }
 
     @Test
-    fun `given a task with questionnaire, when view model init with task, non text answers in questionnare should not be cached`() {
+    fun `given a task with questionnaire, when view model init with task, non text answers in questionnaire should not be cached`() {
         // given
         val id = "test"
         val questionId = "questionId"
@@ -371,7 +371,6 @@ class TasksDetailViewModelTest {
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == true)
         Assert.assertTrue(viewModel.distanceRisk.value == null)
         Assert.assertTrue(viewModel.physicalContactRisk.value == null)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == null)
     }
 
     @Test
@@ -391,7 +390,6 @@ class TasksDetailViewModelTest {
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == false)
         Assert.assertTrue(viewModel.distanceRisk.value == Pair(first = true, second = true))
         Assert.assertTrue(viewModel.physicalContactRisk.value == null)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == null)
     }
 
     @Test
@@ -411,7 +409,6 @@ class TasksDetailViewModelTest {
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == false)
         Assert.assertTrue(viewModel.distanceRisk.value == Pair(first = true, second = false))
         Assert.assertTrue(viewModel.physicalContactRisk.value == true)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == null)
     }
 
     @Test
@@ -431,7 +428,6 @@ class TasksDetailViewModelTest {
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == false)
         Assert.assertTrue(viewModel.distanceRisk.value == Pair(first = true, second = false))
         Assert.assertTrue(viewModel.physicalContactRisk.value == false)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == null)
     }
 
     @Test
@@ -450,8 +446,6 @@ class TasksDetailViewModelTest {
         // then
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == false)
         Assert.assertTrue(viewModel.distanceRisk.value == Pair(first = false, second = false))
-        Assert.assertTrue(viewModel.physicalContactRisk.value == null)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == true)
     }
 
     @Test
@@ -471,7 +465,6 @@ class TasksDetailViewModelTest {
         Assert.assertTrue(viewModel.sameHouseholdRisk.value == false)
         Assert.assertTrue(viewModel.distanceRisk.value == Pair(first = false, second = false))
         Assert.assertTrue(viewModel.physicalContactRisk.value == false)
-        Assert.assertTrue(viewModel.sameRoomRisk.value == false)
     }
 
     @Test
@@ -578,18 +571,18 @@ class TasksDetailViewModelTest {
     }
 
     @Test
-    fun `when repository has start of contagious period, when start date is fetched, then it should be the same`() {
+    fun `when repository has start of allowed contagious period, when earliest exposure date is fetched, then it should be the same`() {
         // given
         val tasksMock = mockk<ICaseRepository>()
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
         val date = LocalDate.now(DateTimeZone.UTC)
-        every { tasksMock.getStartOfContagiousPeriod() } returns date
+        every { tasksMock.getStartOfAllowedContagiousPeriod() } returns date
 
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
 
         // then
-        Assert.assertEquals(viewModel.getStartOfContagiousPeriod(), date)
+        Assert.assertEquals(viewModel.getEarliestExposureDateOption(), date)
     }
 
     @Test
@@ -636,7 +629,7 @@ class TasksDetailViewModelTest {
         // given
         val id = "test"
         val task = Task(
-            category = Category.NO_RISK
+            category = Category.ONE
         )
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -645,8 +638,6 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = true
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
         Assert.assertTrue(viewModel.category.value == Category.ONE)
@@ -657,7 +648,7 @@ class TasksDetailViewModelTest {
         // given
         val id = "test"
         val task = Task(
-            category = Category.NO_RISK
+            category = Category.TWO_A
         )
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -666,9 +657,6 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = false
-        viewModel.distanceRisk.value = Pair(first = true, second = true)
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
         Assert.assertTrue(viewModel.category.value == Category.TWO_A)
@@ -679,7 +667,7 @@ class TasksDetailViewModelTest {
         // given
         val id = "test"
         val task = Task(
-            category = Category.NO_RISK
+            category = Category.TWO_B
         )
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -688,17 +676,13 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = false
-        viewModel.distanceRisk.value = Pair(first = true, second = false)
-        viewModel.physicalContactRisk.value = true
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
         Assert.assertTrue(viewModel.category.value == Category.TWO_B)
     }
 
     @Test
-    fun `given a task with category, when view model init with task and risk flags are, category should be set to the correct value of three a`() {
+    fun `for backwards compatibility given a task with category 3a, when view model init with task and risk flags are category should be set to the correct value of no risk`() {
         // given
         val id = "test"
         val task = Task(
@@ -711,21 +695,17 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = false
-        viewModel.distanceRisk.value = Pair(first = true, second = false)
-        viewModel.physicalContactRisk.value = false
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
-        Assert.assertTrue(viewModel.category.value == Category.THREE_A)
+        Assert.assertTrue(viewModel.category.value == Category.NO_RISK)
     }
 
     @Test
-    fun `given a task with category, when view model init with task and risk flags are, category should be set to the correct value of three b`() {
+    fun `for backwards compatibility, given a task with category 3b, when view model init with task and risk flags are, category should be set to the correct value of three b`() {
         // given
         val id = "test"
         val task = Task(
-            category = Category.NO_RISK
+            category = Category.THREE_B
         )
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -734,14 +714,9 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = false
-        viewModel.distanceRisk.value = Pair(first = false, second = false)
-        viewModel.physicalContactRisk.value = false
-        viewModel.sameRoomRisk.value = true
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
-        Assert.assertTrue(viewModel.category.value == Category.THREE_B)
+        Assert.assertTrue(viewModel.category.value == Category.NO_RISK)
     }
 
     @Test
@@ -749,7 +724,7 @@ class TasksDetailViewModelTest {
         // given
         val id = "test"
         val task = Task(
-            category = Category.ONE
+            category = Category.NO_RISK
         )
         val tasksMock = mockk<ICaseRepository>(relaxed = true)
         val questionnaireMock = mockk<IQuestionnaireRepository>(relaxed = true)
@@ -758,11 +733,6 @@ class TasksDetailViewModelTest {
         // when
         val viewModel = createViewModel(tasksMock, questionnaireMock)
         viewModel.init(id)
-        viewModel.sameHouseholdRisk.value = false
-        viewModel.distanceRisk.value = Pair(first = false, second = false)
-        viewModel.physicalContactRisk.value = false
-        viewModel.sameRoomRisk.value = false
-        viewModel.updateCategoryFromRiskFlags()
 
         // then
         Assert.assertTrue(viewModel.category.value == Category.NO_RISK)

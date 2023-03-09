@@ -99,7 +99,12 @@ class CaseRepository(
                     }
                 }
             }
-            mergedCase = mergedCase.copy(tasks = localTasks)
+            mergedCase = mergedCase.copy(tasks = localTasks.map { task ->
+                if (remoteTasks.find { it.uuid == task.uuid }?.shareIndexNameWithContact != null) {
+                    return@map task.copy(shareIndexNameAlreadyAnswered = true)
+                }
+                return@map task
+            })
         }
         persistCase(mergedCase)
 
@@ -216,7 +221,14 @@ class CaseRepository(
         val new = old.copy(
             canBeUploaded = false,
             isUploaded = true,
-            tasks = old.tasks.map { it.apply { canBeUploaded = false } }
+            tasks = old.tasks.map {
+                it.apply {
+                    canBeUploaded = false
+                    if (shareIndexNameWithContact != null) {
+                        shareIndexNameAlreadyAnswered = true
+                    }
+                }
+            }
         )
         persistCase(new)
     }
@@ -234,6 +246,12 @@ class CaseRepository(
                 LocalDate.parse(it, DateFormats.dateInputData).minusDays(2)
             } ?: LocalDate.parse(case.dateOfTest, DateFormats.dateInputData)
         }
+    }
+
+    override fun getStartOfAllowedContagiousPeriod(): LocalDate? {
+        val date = getStartOfContagiousPeriod()
+        val maxHistory = LocalDate.now().minusDays(14)
+        return if (date?.isBefore(maxHistory) == true) maxHistory else date
     }
 
     override fun updateSymptomOnsetDate(dateOfSymptomOnset: String) {

@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:14711935107:android:5ef53bbc991b05c1074bb6",
+        "mobilesdk_app_id": "1:14711935107:android:ef049bb38e6bad0c074bb6",
         "android_client_info": {
-          "package_name": "nl.rijksoverheid.dbco"
+          "package_name": "nl.rijksoverheid.dbco.test"
         }
       },
       "oauth_client": [

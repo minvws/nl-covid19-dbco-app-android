@@ -79,7 +79,7 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
 
         binding.btnNext.setOnClickListener {
             val result = save(state)
-            handleNavigation(state.nextAction(result, LocalDate.now()))
+            validateResult(result, state)
         }
 
         binding.btnInfo.setOnClickListener {
@@ -90,6 +90,31 @@ class SelfBcoDateCheckFragment : BaseFragment(R.layout.fragment_selfbco_date_che
         }
 
         binding.btnInfo.isVisible = state.showExplanation
+    }
+
+    private fun validateResult(result: LocalDate, state: SelfBcoDateCheckState) {
+        val next = {
+            handleNavigation(
+                state.nextAction(
+                    result,
+                    LocalDate.now()
+                )
+            )
+        }
+        if (selfBcoViewModel.isStartOfContagiousPeriodTooFarInPast()) {
+            showDialog(
+                title = getString(R.string.selfbco_date_old_dialog_title),
+                message = String.format(
+                    getString(R.string.selfbco_date_old_dialog_description),
+                    result.toString(DateFormats.selfBcoDateOnly)
+                ),
+                positiveButtonText = getString(R.string.selfbco_date_old_dialog_yes),
+                positiveAction = next,
+                negativeButtonText = getString(R.string.selfbco_date_old_dialog_no),
+            )
+        } else {
+            next()
+        }
     }
 
     private fun displayDate(date: LocalDate) {

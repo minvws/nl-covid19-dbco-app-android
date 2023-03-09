@@ -15,15 +15,15 @@ def getGitHash = { ->
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "nl.rijksoverheid.dbco"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode project.getVersionCode()
-        versionName '1.1.0.' + project.getVersionCode()
+        versionName '1.3.3.' + project.getVersionCode()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -49,7 +49,6 @@ android {
             buildConfigField "String", "GIT_VERSION", "\"dev\""
         }
     }
-
     signingConfigs {
         firebase {
             storeFile file('demo_keystore.jks')
@@ -62,19 +61,6 @@ android {
     flavorDimensions "environment"
 
     productFlavors {
-        localDev {
-            dimension "environment"
-            buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
-            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
-            buildConfigField "boolean", "FEATURE_LOGGING", "true"
-            buildConfigField "String", "GGD_PUBLIC_KEY", "\"06nK4dnlutiepJiipMHO36vH2t6jy73L16qZl53JmaTLv5+4utugvcbAm5s=\""
-            buildConfigField "String", "BASE_API_URL", "\"https://public.testing.dbco.egeniq.com/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"05na3qaiuajhotqZqLmoqM66qKGc3Ji+odzOqrrhwqy2mLneu6Ou2K6Yl9vh2tver6id\""
-            manifestPlaceholders = [appLabel: "@string/app_name"]
-            apply plugin: 'com.google.gms.google-services'
-            apply plugin: 'com.google.firebase.crashlytics'
-        }
-
         dbcoTest {
             dimension "environment"
             buildConfigField "boolean", "FEATURE_SSL_PINNING", "false"
@@ -82,11 +68,13 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "true"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"09jfya2/x7yrn8Cp3KTH2sKj26+g26qup+DG26HNoq62rb7Lu82c18jEua4=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-test.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"07/OyrnZ5drNrMG4wJzf3MCeycja5bqbmaqquM/Xyabh3cyZosvBycSrv6Lh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.firebase
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
+            applicationIdSuffix ".test"
         }
 
         dbcoAcc {
@@ -96,11 +84,29 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06m+yJ7CosXgyMycy5mbmMimzKaeq72ooMi6uMu/x9vC2by2zMvav+Db2Lg=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api-acc.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             apply plugin: 'com.google.gms.google-services'
             apply plugin: 'com.google.firebase.crashlytics'
             signingConfig signingConfigs.firebase
+            applicationIdSuffix ".acc"
+        }
+
+        dbcoStaging {
+            dimension "environment"
+            buildConfigField "boolean", "FEATURE_SSL_PINNING", "true"
+            buildConfigField "boolean", "FEATURE_SECURE_WINDOW", "false"
+            buildConfigField "boolean", "FEATURE_LOGGING", "false"
+            buildConfigField "String", "GGD_PUBLIC_KEY", "\"09ylocqm26msveC4yb3Yma6s3s+qqM+lmtykzsLDm5rCqqyouKqX3pbfr9o=\""
+            buildConfigField "String", "BASE_API_URL", "\"https://api-staging.bco-portaal.nl/\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
+            manifestPlaceholders = [appLabel: "@string/app_name"]
+            apply plugin: 'com.google.gms.google-services'
+            apply plugin: 'com.google.firebase.crashlytics'
+            signingConfig signingConfigs.firebase
+            applicationIdSuffix ".staging"
         }
 
         dbcoProd {
@@ -110,7 +116,8 @@ android {
             buildConfigField "boolean", "FEATURE_LOGGING", "false"
             buildConfigField "String", "GGD_PUBLIC_KEY", "\"06mlvt7fvb23w8zdqJa7qJ26vd/JodektpbBzavbu663qqvLuNvbyd2Xy+U=\""
             buildConfigField "String", "BASE_API_URL", "\"https://api.bco-portaal.nl/\""
-            buildConfigField "String", "OBFUSCATED_SSL_PIN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_SDN", "\"0+C/qsfNyJbPyNu/mMO5vKXGnOCfxMW82cvAvsPNnaii27nDzJ+avqnZvqTh2tver6id\""
+            buildConfigField "String", "OBFUSCATED_SSL_PIN_QV", "\"07vB4abdn8LZ3pzIw8jOqaDlyqCXyq3c4a3fy5bFtrrXzaapwOW9mpyipb3h2tver6id\""
             manifestPlaceholders = [appLabel: "@string/app_name"]
             signingConfig signingConfigs.firebase
         }
@@ -129,9 +136,9 @@ android {
 
 easylauncher {
     productFlavors {
-        localDev { filters chromeLike(label: "DEV") }
         dbcoTest { filters chromeLike(label: "TEST") }
         dbcoAcc { filters chromeLike(label: "ACC") }
+        dbcoStaging { filters chromeLike(label: "STAGING") }
         dbcoProd { filters chromeLike(label: "PROD") }
     }
     variants {

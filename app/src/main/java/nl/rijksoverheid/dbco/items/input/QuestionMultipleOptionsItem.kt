@@ -10,6 +10,7 @@ package nl.rijksoverheid.dbco.items.input
 
 import android.content.Context
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import nl.rijksoverheid.dbco.R
@@ -36,24 +37,22 @@ class QuestionMultipleOptionsItem(
     override fun getLayout() = R.layout.item_question_multiple_options
 
     override fun bind(viewBinding: ItemQuestionMultipleOptionsBinding, position: Int) {
-        viewBinding.item = this
 
         viewBinding.inputLayout.hint = question?.label
 
-        // Populate adapter with the answer options
-        val labels = question?.answerOptions?.map { it?.label }.orEmpty()
-        val adapter: ArrayAdapter<String> = ArrayAdapter(
+        val adapter = ArrayAdapter(
             context,
             R.layout.item_dropdown,
-            labels
+            question?.answerOptions?.map { it?.label }.orEmpty()
         )
-        viewBinding.inputLabel.setAdapter(adapter) // Dropdown is shown when end icon is clicked
 
-        viewBinding.inputLabel.setOnClickListener {
-            if (viewBinding.inputLabel.text.isNotEmpty()) {
-                adapter.filter.filter(null) // Do not filter to show all options at all time
+        viewBinding.requireEditText().setAdapter(adapter)
+
+        viewBinding.requireEditText().setOnClickListener {
+            if (viewBinding.requireEditText().text.isNotEmpty()) {
+                adapter.filter.filter(null)
             }
-            viewBinding.inputLabel.showDropDown()
+            viewBinding.requireEditText().showDropDown()
         }
 
         if (selectedAnswer == null && canShowEmptyWarning) {
@@ -67,34 +66,38 @@ class QuestionMultipleOptionsItem(
         }
 
         // Listen to selections that happen in the dropdown
-        viewBinding.inputLabel.setOnItemClickListener { _, _, position, _ ->
-            question?.answerOptions?.getOrNull(position)?.let { answer ->
+        viewBinding.requireEditText().setOnItemClickListener { _, _, clickPosition, _ ->
+            question?.answerOptions?.getOrNull(clickPosition)?.let { answer ->
                 answerSelectedListener.invoke(answer)
                 selectedAnswer = answer
                 viewBinding.inputLayout.error = null
             }
         }
 
-        selectedAnswer?.let {
-            viewBinding.inputLabel.setText(it.label)
-        }
-        viewBinding.inputLabel.setOnKeyListener(null)
+        viewBinding.requireEditText().setText(selectedAnswer?.label)
+        viewBinding.requireEditText().setOnKeyListener(null)
 
         // If values are set through the portal this item should be locked from input
         if (isLocked) {
             viewBinding.inputLayout.isEnabled = false
-            viewBinding.inputLabel.isEnabled = false
+            viewBinding.requireEditText().isEnabled = false
             viewBinding.questionLockedDescription.isVisible = false
         } else {
             viewBinding.inputLayout.isEnabled = isEnabled
-            viewBinding.inputLabel.isEnabled = isEnabled
+            viewBinding.requireEditText().isEnabled = isEnabled
             viewBinding.questionLockedDescription.isVisible = false
         }
+
+        viewBinding.questionExplanationContainer.isVisible = question?.explanation != null
+        viewBinding.questionExplanation.text = question?.explanation
     }
 
-    override fun onViewDetachedFromWindow(viewHolder: GroupieViewHolder<ItemQuestionMultipleOptionsBinding>) {
-        super.onViewDetachedFromWindow(viewHolder)
-        viewHolder.binding.inputLabel.setOnClickListener(null)
-        viewHolder.binding.inputLabel.onItemClickListener = null
+    override fun unbind(viewHolder: GroupieViewHolder<ItemQuestionMultipleOptionsBinding>) {
+        viewHolder.binding.requireEditText().setOnClickListener(null)
+        viewHolder.binding.requireEditText().onItemClickListener = null
+        super.unbind(viewHolder)
     }
+
+    private fun ItemQuestionMultipleOptionsBinding.requireEditText(): AutoCompleteTextView =
+        this.inputLayout.editText!! as AutoCompleteTextView
 }

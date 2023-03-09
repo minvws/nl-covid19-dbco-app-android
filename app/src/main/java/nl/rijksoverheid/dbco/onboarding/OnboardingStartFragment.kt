@@ -35,9 +35,7 @@ class OnboardingStartFragment : BaseFragment(R.layout.fragment_onboarding_start)
             val direction = if (appViewModel.getFeatureFlags().enableSelfBCO) {
                 OnboardingStartFragmentDirections.toOnboardingFlowSelectionFragment()
             } else {
-                OnboardingStartFragmentDirections.toExplanationFragment(
-                    flow = OnboardingExplanationFragment.REGULAR_FLOW
-                )
+                OnboardingStartFragmentDirections.toCodeFillFragment()
             }
             findNavController().navigate(direction)
         }

@@ -9,6 +9,8 @@
 package nl.rijksoverheid.dbco.config
 
 import kotlinx.serialization.Serializable
+import nl.rijksoverheid.dbco.contacts.data.DateFormats
+import org.joda.time.LocalDate
 
 /**
  * Dynamic configuration used throughout the app
@@ -19,12 +21,17 @@ data class AppConfig(
     /**
      * The message to show when the current version of the app is not supported anymore
      */
-    val androidMinimumVersionMessage: String?,
+    val androidMinimumVersionMessage: String,
 
     /**
      * The minimum version code of the app which is supported by the back-end
      */
     val androidMinimumVersion: Int,
+
+    /**
+     * Whether the app is end of life or not
+     */
+    val endOfLife: Boolean = false,
 
     /**
      * Current feature flag values, used to disable/enable some features in the app
@@ -63,23 +70,37 @@ data class Guidelines(
     private val category3: String
 ) {
 
-    fun getCategory1(): String = category1
-
-    fun getCategory2(exposureDate: String): String {
-        return category2.replace(EXPOSURE_DATE, exposureDate)
+    fun getCategory1(exposureDate: LocalDate): String {
+        return replaceExposureDateInstances(category1, exposureDate)
     }
 
-    fun getCategory3(exposureDate: String): String {
-        return category3.replace(EXPOSURE_DATE, exposureDate)
+    fun getCategory2(exposureDate: LocalDate): String {
+        return replaceExposureDateInstances(category2, exposureDate)
+    }
+
+    fun getCategory3(exposureDate: LocalDate): String {
+        return replaceExposureDateInstances(category3, exposureDate)
     }
 
     companion object {
-        const val EXPOSURE_DATE = "{ExposureDate}"
-        const val EXPOSURE_DATE_PLUS_FIVE = "{ExposureDate+5}"
-        const val EXPOSURE_DATE_PLUS_TEN = "{ExposureDate+10}"
-        const val EXPOSURE_DATE_PLUS_ELEVEN = "{ExposureDate+11}"
+
+        private const val EXPOSURE_DATE_REGEX = "\\{ExposureDate([+-][0-9]*)?\\}"
+
         const val REFERENCE_NUMBER_ITEM = "{ReferenceNumberItem}"
         const val REFERENCE_NUMBER = "{ReferenceNumber}"
+
+        fun replaceExposureDateInstances(input: String, exposureDate: LocalDate): String {
+            return input.replace(EXPOSURE_DATE_REGEX.toRegex()) { result ->
+                val dateResult = result.value.filter { it.isDigit() }.toIntOrNull()?.let { number ->
+                    if (result.value.contains("+")) {
+                        exposureDate.plusDays(number)
+                    } else {
+                        exposureDate.minusDays(number)
+                    }
+                } ?: exposureDate
+                dateResult.toString(DateFormats.informContactGuidelinesUI)
+            }
+        }
     }
 }
 
@@ -108,31 +129,26 @@ data class RangedGuidelines(
     private val category2: RangedGuideline,
     private val category3: String
 ) {
-    fun getCategory1(exposureDatePlusEleven: String, referenceNumberItem: String? = null): String {
-        return category1
-            .replace(Guidelines.EXPOSURE_DATE_PLUS_ELEVEN, exposureDatePlusEleven)
+    fun getCategory1(exposureDate: LocalDate, referenceNumberItem: String? = null): String {
+        return Guidelines.replaceExposureDateInstances(category1, exposureDate)
             .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory2(
         withinRange: Boolean,
-        exposureDatePlusFive: String,
-        exposureDatePlusTen: String,
+        exposureDate: LocalDate,
         referenceNumberItem: String? = null
     ): String {
         val text = if (withinRange) category2.withinRange else category2.outsideRange
-        return text
-            .replace(Guidelines.EXPOSURE_DATE_PLUS_FIVE, exposureDatePlusFive)
-            .replace(Guidelines.EXPOSURE_DATE_PLUS_TEN, exposureDatePlusTen)
+        return Guidelines.replaceExposureDateInstances(text, exposureDate)
             .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 
     fun getCategory3(
-        exposureDatePlusFive: String,
+        exposureDate: LocalDate,
         referenceNumberItem: String? = null
     ): String {
-        return category3
-            .replace(Guidelines.EXPOSURE_DATE_PLUS_FIVE, exposureDatePlusFive)
+        return Guidelines.replaceExposureDateInstances(category3, exposureDate)
             .replace(Guidelines.REFERENCE_NUMBER_ITEM, referenceNumberItem ?: "")
     }
 }

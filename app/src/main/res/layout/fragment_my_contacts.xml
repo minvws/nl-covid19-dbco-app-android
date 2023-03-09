@@ -7,25 +7,14 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionGroup="true"
         android:transitionName="content">
-
-        <TextView
-            android:id="@+id/my_contacts_header"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/mycontacts_header"
-            android:textAppearance="?attr/textAppearanceHeadline4"
-            app:accessibilityHeading="@{true}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -34,15 +23,14 @@
             app:layout_constraintBottom_toTopOf="@+id/send_button_holder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/my_contacts_header">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:clipToPadding="false"
-                android:paddingHorizontal="@dimen/activity_horizontal_margin"
                 android:paddingBottom="32dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -54,9 +42,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
 
             <View
                 android:layout_width="match_parent"
@@ -78,6 +68,7 @@
                 android:id="@+id/pairing_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/selfbco_reverse_pairing_pairing_waiting"
                 android:paddingHorizontal="16dp"
                 android:visibility="gone">
 
@@ -85,6 +76,7 @@
                     android:id="@+id/pairing_loading_indicator"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:importantForAccessibility="no"
                     app:layout_constraintBottom_toBottomOf="@+id/pairing_state_text"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/pairing_state_text" />
@@ -97,6 +89,7 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     android:drawablePadding="8dp"
+                    android:importantForAccessibility="no"
                     android:text="@string/selfbco_reverse_pairing_pairing_waiting"
                     android:textColor="@color/purple"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -113,7 +106,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/send_data" />
+                android:text="@string/send_data_im_ready" />
 
         </LinearLayout>
 

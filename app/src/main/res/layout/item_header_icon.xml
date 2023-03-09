@@ -15,6 +15,9 @@
         <variable
             name="text"
             type="CharSequence" />
+        <variable
+            name="contentDescription"
+            type="CharSequence" />
     </data>
 
 
@@ -43,6 +46,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@{text}"
+            android:contentDescription="@{contentDescription}"
             android:textAppearance="?attr/textAppearanceHeadline5"
             android:textColorLink="@color/primary"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -8,10 +8,10 @@
 
 package nl.rijksoverheid.dbco.items.input
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.view.View
-import android.widget.DatePicker
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.xwray.groupie.Item
 import kotlinx.serialization.json.JsonElement
 import nl.rijksoverheid.dbco.R
@@ -20,7 +20,9 @@ import nl.rijksoverheid.dbco.contacts.data.DateFormats.dateInputUI
 import nl.rijksoverheid.dbco.databinding.ItemQuestionDateBinding
 import nl.rijksoverheid.dbco.questionnaire.data.entity.Question
 import nl.rijksoverheid.dbco.util.toJsonPrimitive
+import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
+import kotlin.collections.HashMap
 
 class DateInputItem(
     val context: Context,
@@ -29,7 +31,7 @@ class DateInputItem(
     private val previousAnswerValue: String? = null,
     private val isEnabled: Boolean
 ) :
-    BaseQuestionItem<ItemQuestionDateBinding>(question), DatePickerDialog.OnDateSetListener {
+    BaseQuestionItem<ItemQuestionDateBinding>(question) {
 
     private var binding: ItemQuestionDateBinding? = null
 
@@ -55,36 +57,20 @@ class DateInputItem(
     }
 
     private fun showDatePicker() {
-        // Default date is 1 January 1980
-        val year = date?.year ?: 1980
-        val month = (date?.monthOfYear ?: 1) - 1 // Note: LocalDate uses 1-12 for dates, DatePickerDialog's date uses 0-11 instead. Decrease date by one here
-        val day = date?.dayOfMonth ?: 1
-
-        val dialog = DatePickerDialog(
-            context,
-            R.style.SpinnerDatePickerDialogTheme,
-            this,
-            year,
-            month,
-            day
-        )
-        dialog.datePicker.calendarViewShown = false
-        dialog.datePicker.spinnersShown = true
-        dialog.show()
-
-        // Override button color manually since Google doesn't support Spinner mode and/or spinner theming out of the box since API 24 & the Material design guidelines
-        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(context.resources.getColor(R.color.primary))
-        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.primary))
-    }
-
-    override fun onDateSet(picker: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        // Same issue as before, LocalDate uses 1-12 for months instead of the 0-11 we get from the DatePickerDialog, increase date by 1 here for proper processing.
-        date = LocalDate(year, month + 1, dayOfMonth).apply {
-            val text = this.toString(dateInputUI)
-            binding?.inputLabel?.setText(text)
-        }.also {
-            answerSelectedListener(it.toString(DateFormats.dateInputData))
-        }
+        val current = date ?: LocalDate(1980, 1, 1) // default date is january 1st, 1980
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText(R.string.selfbco_date_title)
+            .setSelection(current.toDateTimeAtStartOfDay(DateTimeZone.UTC).millis)
+            .build()
+            .apply {
+                addOnPositiveButtonClickListener {
+                    date = LocalDate(selection).also {
+                        val text = it.toString(dateInputUI)
+                        binding?.inputLabel?.setText(text)
+                        answerSelectedListener(it.toString(DateFormats.dateInputData))
+                    }
+                }
+            }.also { it.show((context as FragmentActivity).supportFragmentManager, "BirthdayPicker"); }
     }
 
     override fun isSameAs(other: Item<*>): Boolean =
