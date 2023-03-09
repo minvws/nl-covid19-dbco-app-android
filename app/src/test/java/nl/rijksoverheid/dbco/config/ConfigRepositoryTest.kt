@@ -8,7 +8,6 @@
 
 package nl.rijksoverheid.dbco.config
 
-import android.content.Context
 import android.content.SharedPreferences
 import io.mockk.*
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Response
 import kotlinx.serialization.encodeToString
-import nl.rijksoverheid.dbco.R
 import nl.rijksoverheid.dbco.config.AppConfigRepository.Companion.CACHE_VALIDITY_DAYS
 import nl.rijksoverheid.dbco.contacts.data.DateFormats
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -39,7 +37,6 @@ class ConfigRepositoryTest {
         runBlockingTest {
             // given
             val config = createAppConfig()
-            val mockContext = mockk<Context>()
             val mockApi = mockk<DbcoApi>()
             val mockStorage = mockk<SharedPreferences>()
             val configString = Defaults.json.encodeToString(config)
@@ -52,7 +49,7 @@ class ConfigRepositoryTest {
             } just Runs
 
             // when
-            val repo = createRepository(mockContext, mockApi, mockStorage)
+            val repo = createRepository(mockApi, mockStorage)
             val result = repo.getAppConfig()
 
             // then
@@ -74,7 +71,6 @@ class ConfigRepositoryTest {
             val cacheConfigString = Defaults.json.encodeToString(cacheConfig)
             val cacheDate = LocalDate.now(DateTimeZone.UTC).minusDays(CACHE_VALIDITY_DAYS - 1)
             val cacheDateString = cacheDate.toString(DateFormats.dateInputData)
-            val mockContext = mockk<Context>()
             val mockApi = mockk<DbcoApi>()
             val mockStorage = mockk<SharedPreferences>()
             coEvery { mockApi.getAppConfig() } returns Response.error(500, "test".toResponseBody())
@@ -93,7 +89,7 @@ class ConfigRepositoryTest {
             every { LocalDate.parse(cacheDateString, DateFormats.dateInputData) } returns cacheDate
 
             // when
-            val repo = createRepository(mockContext, mockApi, mockStorage)
+            val repo = createRepository(mockApi, mockStorage)
             val result = repo.getAppConfig()
 
             // then
@@ -109,7 +105,6 @@ class ConfigRepositoryTest {
             val cacheConfigString = Defaults.json.encodeToString(cacheConfig)
             val cacheDate = LocalDate.now(DateTimeZone.UTC).minusDays(CACHE_VALIDITY_DAYS + 1)
             val cacheDateString = cacheDate.toString(DateFormats.dateInputData)
-            val mockContext = mockk<Context>()
             val mockApi = mockk<DbcoApi>()
             val mockStorage = mockk<SharedPreferences>()
             coEvery { mockApi.getAppConfig() } throws IllegalStateException("test")
@@ -128,7 +123,7 @@ class ConfigRepositoryTest {
             every { LocalDate.parse(cacheDateString, DateFormats.dateInputData) } returns cacheDate
 
             // when
-            val repo = createRepository(mockContext, mockApi, mockStorage)
+            val repo = createRepository(mockApi, mockStorage)
             repo.getAppConfig()
         }
 
@@ -136,7 +131,6 @@ class ConfigRepositoryTest {
     fun `given a config, when config is stored, then it should be saved in storage`() {
         // given
         val config = createAppConfig()
-        val mockContext = mockk<Context>()
         val mockApi = mockk<DbcoApi>()
         val mockStorage = mockk<SharedPreferences>()
         val configString = Defaults.json.encodeToString(config)
@@ -148,7 +142,7 @@ class ConfigRepositoryTest {
         } just Runs
 
         // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
+        val repo = createRepository(mockApi, mockStorage)
         repo.storeConfig(config)
 
         // then
@@ -161,63 +155,10 @@ class ConfigRepositoryTest {
     }
 
     @Test
-    fun `given a update message in config, when update message is fetched, then it should be that message`() {
-        // given
-        val message = "test"
-        val fallback = "fallback"
-        val config = createAppConfig(androidMinimumVersionMessage = message)
-        val mockContext = mockk<Context>()
-        val mockApi = mockk<DbcoApi>()
-        val mockStorage = mockk<SharedPreferences>()
-        val configString = Defaults.json.encodeToString(config)
-        every { mockContext.getString(R.string.update_app_description) } returns fallback
-        every {
-            mockStorage.getString(
-                AppConfigRepository.KEY_CONFIG,
-                null
-            )
-        } returns configString
-
-        // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
-        val result = repo.getUpdateMessage()
-
-        // then
-        Assert.assertEquals(result, message)
-    }
-
-    @Test
-    fun `given no update message in config and a fallback, when update message is fetched, then it should be that fallback`() {
-        // given
-        val message = null
-        val fallback = "fallback"
-        val config = createAppConfig(androidMinimumVersionMessage = message)
-        val mockContext = mockk<Context>()
-        val mockApi = mockk<DbcoApi>()
-        val mockStorage = mockk<SharedPreferences>()
-        val configString = Defaults.json.encodeToString(config)
-        every { mockContext.getString(R.string.update_app_description) } returns fallback
-        every {
-            mockStorage.getString(
-                AppConfigRepository.KEY_CONFIG,
-                null
-            )
-        } returns configString
-
-        // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
-        val result = repo.getUpdateMessage()
-
-        // then
-        Assert.assertEquals(result, fallback)
-    }
-
-    @Test
     fun `given symptoms in config, when symptoms are fetched, then it should be that list`() {
         // given
         val symptoms = listOf(Symptom("test", "test"))
         val config = createAppConfig(symptoms = symptoms)
-        val mockContext = mockk<Context>()
         val mockApi = mockk<DbcoApi>()
         val mockStorage = mockk<SharedPreferences>()
         val configString = Defaults.json.encodeToString(config)
@@ -229,7 +170,7 @@ class ConfigRepositoryTest {
         } returns configString
 
         // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
+        val repo = createRepository(mockApi, mockStorage)
         val result = repo.getSymptoms()
 
         // then
@@ -245,7 +186,6 @@ class ConfigRepositoryTest {
             enableSelfBCO = true
         )
         val config = createAppConfig(featureFlags = flags)
-        val mockContext = mockk<Context>()
         val mockApi = mockk<DbcoApi>()
         val mockStorage = mockk<SharedPreferences>()
         val configString = Defaults.json.encodeToString(config)
@@ -257,7 +197,7 @@ class ConfigRepositoryTest {
         } returns configString
 
         // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
+        val repo = createRepository(mockApi, mockStorage)
         val result = repo.getFeatureFlags()
 
         // then
@@ -269,7 +209,6 @@ class ConfigRepositoryTest {
         // given
         val guidelines = createGuidelines(cat1 = "mcTest")
         val config = createAppConfig(guidelines = guidelines)
-        val mockContext = mockk<Context>()
         val mockApi = mockk<DbcoApi>()
         val mockStorage = mockk<SharedPreferences>()
         val configString = Defaults.json.encodeToString(config)
@@ -281,7 +220,7 @@ class ConfigRepositoryTest {
         } returns configString
 
         // when
-        val repo = createRepository(mockContext, mockApi, mockStorage)
+        val repo = createRepository(mockApi, mockStorage)
         val result = repo.getGuidelines()
 
         // then
@@ -332,9 +271,8 @@ class ConfigRepositoryTest {
         Assert.assertEquals(expected, Guidelines.replaceExposureDateInstances(input, localDate))
     }
 
-    private fun createRepository(context: Context, api: DbcoApi, storage: SharedPreferences) =
+    private fun createRepository(api: DbcoApi, storage: SharedPreferences) =
         AppConfigRepository(
-            context,
             api,
             storage,
             TestCoroutineDispatcher()

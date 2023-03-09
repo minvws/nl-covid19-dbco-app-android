@@ -12,7 +12,6 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
@@ -29,12 +28,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.scottyab.rootbeer.RootBeer
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.ConfigError
-import nl.rijksoverheid.dbco.AppViewModel.AppLifecycleStatus.Update
 import nl.rijksoverheid.dbco.bcocase.CaseRepository
 import nl.rijksoverheid.dbco.config.AppConfigRepository
-import nl.rijksoverheid.dbco.config.AppUpdateRequiredFragmentDirections
+import nl.rijksoverheid.dbco.config.AppLifecycleStatusFragmentDirections
 import nl.rijksoverheid.dbco.contacts.data.ContactsRepository
 import nl.rijksoverheid.dbco.network.DbcoApi
 import nl.rijksoverheid.dbco.questionnaire.QuestionnaireRepository
@@ -42,7 +38,9 @@ import nl.rijksoverheid.dbco.storage.LocalStorageRepository
 import nl.rijksoverheid.dbco.user.UserRepository
 import nl.rijksoverheid.dbco.util.hideKeyboard
 import java.util.*
-
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.NotSupported
+import nl.rijksoverheid.dbco.config.AppUpdateManager.AppLifecycleState.ConfigError
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,9 +61,9 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        appViewModel.updateEvent.observe(this, { updateEvent ->
-            handleUpdateEvent(updateEvent)
-        })
+        appViewModel.appLifecycleState.observe(this) { state ->
+            handleLifecycleState(state)
+        }
 
         checkIfRooted()
     }
@@ -115,21 +113,23 @@ class MainActivity : AppCompatActivity() {
             ContactsRepository(this),
             QuestionnaireRepository(storage, api),
             userRepository,
-            AppConfigRepository(this, api, storage),
+            AppConfigRepository(api, storage),
             LocalStorageRepository.getInstance(baseContext).getSharedPreferences()
         ).also {
             factory = it
         }
     }
 
-    private fun handleUpdateEvent(updateEvent: AppLifecycleStatus) {
+    private fun handleLifecycleState(appLifecycleState: AppLifecycleState) {
         configError?.dismiss()
         configError = null
-        when (updateEvent) {
-            is Update -> {
+        when (appLifecycleState) {
+            is NotSupported -> {
                 findNavController(R.id.nav_host_fragment).navigate(
-                    AppUpdateRequiredFragmentDirections.actionAppUpdateRequired(
-                        updateEvent.installerPackageName
+                    AppLifecycleStatusFragmentDirections.actionAppLifecycleStatus(
+                        title = appLifecycleState.title,
+                        description = appLifecycleState.description,
+                        action = appLifecycleState.action
                     )
                 )
             }
@@ -143,8 +143,7 @@ class MainActivity : AppCompatActivity() {
                     closeAction = { finish() }
                 )
             }
-            else -> { /* NO-OP*/
-            }
+            else -> { /* NO-OP*/ }
         }
     }
 

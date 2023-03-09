@@ -4,7 +4,15 @@
 
     <data>
         <variable
-            name="text"
+            name="title"
+            type="String" />
+
+        <variable
+            name="descriptionText"
+            type="String" />
+
+        <variable
+            name="buttonText"
             type="String" />
     </data>
 
@@ -43,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:text="@string/update_app_headline"
+                android:text="@{title}"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 app:layout_constraintBottom_toTopOf="@id/description"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +66,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="16dp"
-                android:text="@{text}"
+                android:text="@{descriptionText}"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:layout_constraintBottom_toTopOf="@id/next"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +80,7 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:text="@string/update_google_play_services"
+                android:text="@{buttonText}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
